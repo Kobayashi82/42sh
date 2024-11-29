@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/11/29 14:20:48 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/11/29 18:14:28 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,17 +48,21 @@ FLAGS				= -Wall -Wextra -Werror -g # -O0 -fsanitize=thread
 # ── DIRECTORIES ── #
 # ───────────────── #
 
-SRC_DIR				= src/
-INC_DIR				= -I./inc -I./inc/main -I./inc/terminal
+INC_DIR				= inc/
 OBJ_DIR				= build/obj/
+LIB_DIR				= build/lib/
+LIBFT_INC			= src/libft/inc/
+LIBFT_DIR			= src/libft/
+LIBFT				= libft.a
+SRC_DIR				= src/$(NAME)/
 
 # ────────── #
 # ── NAME ── #
 # ────────── #
 
 NAME	=	42sh
-SRCS	=	main/main.c																													\
-			terminal/terminal.c
+SRCS	=	main/main.c	main/signals.c											\
+			terminal/terminal.c terminal/banner.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 
@@ -66,38 +70,32 @@ SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 # ───────────────────────── NORMAL ───────────────────────── #
 # ────────────────────────────────────────────────────────── #
 
-all: $(NAME)
+TARGET=$(if $(SRCS),$(NAME),empty)
+TARGET=$(if $(NAME),$(NAME),empty)
+all: $(TARGET)
 
-OBJS      = $(SRCS:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
-DEPS		= $(OBJS:.o=.d)
+empty:
+#	Check if NAME is empty
+	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
+
+#all: $(NAME)
+
+OBJS	= $(SRCS:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
+DEPS	= $(OBJS:.o=.d)
 -include $(DEPS)
 
-#	Compile if the executable does not exist or there are changes in the .c files.
-#	This avoids re-linking and shows a more appropriate message.
-#	If you run "make -n", it should not show any compilation commands if it is already compiled.
-#	But it will show the "make -s" calls. This is to check if compilation is necessary.
-$(NAME): normal
-	@if [ ! -f $(NAME) ]; then \
-        $(MAKE) -s _compile; \
-	elif $(MAKE) -s -q $(OBJS); then \
-		$(MAKE) -s _uptodate; \
-	else \
-		$(MAKE) -s _compile; \
-	fi
-
-#	Show "up to date" message
-_uptodate:
-	@printf "\r%50s\r\t$(CYAN)Up to date    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"; \
-	$(MAKE) -s _progress; printf "\n"; \
-	$(MAKE) -s _show_cursor; \
-
+$(NAME): normal_extra $(OBJS)
 #	Compile program
-_compile: $(OBJS)
-	@printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"
-	@$(CC) $(FLAGS) $(INC_DIR) $(OBJS) -o $(NAME);
+	@if [ -f $(NAME) ]; then \
+		printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)"; \
+	else \
+		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
+	fi
+	@gcc $(FLAGS) -I$(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) -o $(NAME) $(EXTRA_FLAGS)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
-#	_Progress line
-	@$(MAKE) -s _progress; printf "\n"
+#	Progress line
+	@$(MAKE) -s _progress
+	@printf "\n"
 #	Restore cursor
 	@$(MAKE) -s _show_cursor
 
@@ -113,44 +111,41 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ ─ \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR  $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@$(CC) $(FLAGS) $(INC_DIR) -MMD -o $@ -c $<
+	@gcc $(FLAGS) -I$(INC_DIR) -I$(LIBFT_INC) -MMD -o $@ -c $(EXTRA_FLAGS_OBJ) $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #
 # ───────────────── #
 
-normal:
-	@if [ ! -d "$(SRC_DIR)" ]; then \
-		printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; \
-		rm -f .is_re; \
-		exit 1; \
-	fi
+normal_extra:
+#	Check if NAME is empty and source directory exists
+	@if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; rm -f .is_re; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
+#	Create folders
+	@mkdir -p build/lib
 #	Title
-	@if [ ! -f .is_re ]; then \
-		clear; $(MAKE) -s _title; \
+	@if [ ! -f .is_re ]; then clear; $(MAKE) -s _title; fi; rm -f .is_re
+#	Compile LIBFT
+	@if [ -d "$(LIBFT_DIR)" ]; then \
+		(make -s all -C $(LIBFT_DIR)/; exit 0); $(MAKE) -s _hide_cursor; \
 	else \
 		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
-		printf "\n\t────────────────────────$(NC)\033[1A\r"; \
-	fi; rm -f .is_re
+	fi; printf "\n\t────────────────────────$(NC)\033[1A\r"
 
 # ───────────────────────────────────────────────────────────── #
 # ────────────────────────── RE-MAKE ────────────────────────── #
 # ───────────────────────────────────────────────────────────── #
 
 re:
-	@rm -f .is_re
-	@if [ ! -d "$(SRC_DIR)" ]; then \
-		printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; \
-		exit 1; \
-	fi
+#	Check if NAME is empty and source directory exists
+	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
+#	FClean
 	@$(MAKE) -s fclean
 #	Create files
-	@touch .is_re
-	@printf "\033[1A\033[1A\r"
+	@touch .is_re; printf "\033[1A\033[1A\r"
 #	Execute $(NAME)
 	@$(MAKE) -s $(NAME)
 
@@ -159,14 +154,20 @@ re:
 # ───────────────────────────────────────────────────────────── #
 
 clean:
-	@rm -f .is_re
+#	Check if NAME is empty
+	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
 #	Title
-	@clear
-	@$(MAKE) -s _title
+	@clear; $(MAKE) -s _title
 #	Delete objects
-	@$(MAKE) -s _delete_objects
+	@if [ -d "$(LIBFT_DIR)" ]; then \
+		(make -s _delete_objects -C $(LIBFT_DIR)/; exit 0); \
+	else \
+		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
+	fi
+#	Delete objects
+	@$(MAKE) -s _delete_objects 
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)objects$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress; printf "\n"
@@ -178,12 +179,18 @@ clean:
 # ───────────────────────────────────────────────────────────── #
 
 fclean:
-	@rm -f .is_re webserv
+#	Check if NAME is empty
+	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
 #	Title
-	@clear
-	@$(MAKE) -s _title
+	@clear; $(MAKE) -s _title
+#	Delete LIBFT
+	@if [ -d "$(LIBFT_DIR)" ]; then \
+		(make -s -C $(LIBFT_DIR) fclean; exit 0); \
+	else \
+		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
+	fi
 #	Delete objects
 	@$(MAKE) -s _delete_objects
 #	Delete $(NAME)
@@ -192,9 +199,9 @@ fclean:
 		rm -f $(NAME); \
 	fi
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
-	@$(MAKE) -s _progress
-	@printf "\n"
+	@$(MAKE) -s _progress; printf "\n"
 #	Delete folder and files
+	@-find build/$(LIB_DIR) -type d -empty -delete >/dev/null 2>&1 || true
 	@-find build -type d -empty -delete >/dev/null 2>&1 || true
 #	Restore cursor
 	@$(MAKE) -s _show_cursor
@@ -211,12 +218,10 @@ _title:
 	@printf "\n$(NC)\t$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★\
 	$(INV_CYAN)    $(NC)$(INV_CYAN)$(shell echo $(NAME) | tr a-z A-Z | tr '_' ' ')$(INV_CYAN)    \
 	$(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(NC)\n"
-	@printf "\t$(WHITE)────────────────────────\n$(NC)";
-	@printf "\n\t────────────────────────$(NC)\033[1A\r"
 
-# ──────────── #
-# ── CURSOR ── #
-# ──────────── #
+# ───────────── #
+# ── CURSORS ── #
+# ───────────── #
 
 _hide_cursor:
 	@printf "\e[?25l"
@@ -246,6 +251,9 @@ _delete_objects:
 	fi; printf "\r%50s\r"
 	@-find $(OBJ_DIR) -type d -empty -delete >/dev/null 2>&1 || true
 
+wipe:
+	@rm -rf build ; rm -f .is_re $(NAME)
+
 # ─────────────────── #
 # ── PROGRESS LINE ── #
 # ─────────────────── #
@@ -258,7 +266,4 @@ _progress:
 # ── PHONY ── #
 # ─────────── #
 
-wipe:
-	@rm -rf build; rm -f .is_re; rm -f $(NAME); rm -f $(NAME);
-
-.PHONY: all clean fclean re normal _delete_objects _title _hide_cursor _show_cursor _progress _compile _uptodate wipe
+.PHONY: all clean fclean re normal_extra wipe _delete_objects _title _hide_cursor _show_cursor _progress

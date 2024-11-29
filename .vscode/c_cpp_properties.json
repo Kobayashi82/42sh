@@ -5,8 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
 				"${workspaceFolder}/inc",
-				"${workspaceFolder}/inc/main",
-				"${workspaceFolder}/inc/terminal"
+				"${workspaceFolder}/src/libft/inc"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

@@ -1,18 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   42sh.h                                             :+:      :+:    :+:   */
+/*   ft_str_dup.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/11/29 14:19:32 by vzurera-         ###   ########.fr       */
+/*   Created: 2023/11/27 20:13:57 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/03/20 20:53:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "libft.h"
 
-#include "terminal.h"
-#include <stdlib.h>
-#include <string.h>
+char	*ft_strdup(const char *s1)
+{
+	char	*copy;
 
+	copy = (char *)malloc(ft_strlen(s1) + 1);
+	if (!copy)
+		return (NULL);
+	copy[0] = '\0';
+	ft_strlcpy(copy, s1, ft_strlen(s1) + 1);
+	return (copy);
+}

@@ -1,21 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/11/29 14:19:44 by vzurera-         ###   ########.fr       */
+/*   Created: 2023/11/28 21:10:10 by vzurera-          #+#    #+#             */
+/*   Updated: 2023/11/28 22:28:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "libft.h"
 
-int main(int argc, char **argv, char **envp) {
-	(void) argc;
-	(void) argv;
-	(void) envp;
-	printf("Welcome to 42sh\n");
-	return (0);
+char	*ft_strtrim(const char *s1, const char *set)
+{
+	int		i;
+	int		j;
+
+	i = 0;
+	j = ft_strlen(s1) - 1;
+	while (s1[i] && ft_strchr(set, s1[i]))
+		++i;
+	while (j > i && ft_strchr(set, s1[j]))
+		--j;
+	return (ft_substr(s1, i, j - i + 1));
 }
