@@ -1,0 +1,13 @@
+*
+!.vscode
+!.vscode/**
+!doc
+!doc/**
+!inc
+!inc/**
+!src
+!src/**
+!Makefile
+!leaks
+!.gitignore
+!README.md
