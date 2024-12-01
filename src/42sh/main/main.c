@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 21:07:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/01 21:49:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,7 @@ int shell_time() { return (time(NULL) - data.shell.started); }
 int read_input() {
 	initialize_signals();
 
-	print_banner();
-	print_welcome();
-	if (!(data.terminal.input = readline(UN G "42sh"NC BR" > "NC))) return (1);
+	if (!(data.terminal.input = readline(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
 	free(data.terminal.input);
 
 	return (0);
@@ -52,7 +50,10 @@ int main(int argc, char **argv, char **envp) {
 		data.shell._inline = true;
 		data.terminal.input = safe_strdup(argv[2]);
 	 	if (ft_strlen(data.terminal.input)) printf("inline\n");
-	} else while (!data.shell.exit && !read_input()) ;
+	} else {
+		print_banner();
+		while (!data.shell.exit && !read_input()) ;
+	}
 
 	if (data.terminal.signal) data.shell.exit_code = 128 + data.terminal.signal;
 	return (data_free(), data.shell.exit_code % 256);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 16:26:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/01 21:11:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
