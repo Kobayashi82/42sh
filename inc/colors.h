@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:42:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/11/29 13:43:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/01 12:22:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@
 		#pragma region Foreground
 
 			#define BLACK			"\033[30m"
-			#define RESET			"\033[0m"
 
 			// Neutral
 			#define GRAY100			"\033[38;2;243;244;246m"

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 17:00:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/03/20 20:53:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/01 11:23:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*ft_strcpy(char *dst, const char *src)
 	int	i;
 
 	i = -1;
+	if (!dst || !src)
+		return (NULL);
 	while (src[++i])
 		dst[i] = src[i];
 	dst[i] = '\0';

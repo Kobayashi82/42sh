@@ -1,31 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   terminal.h                                         :+:      :+:    :+:   */
+/*   safe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 12:32:01 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/01 10:38:00 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/01 13:07:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "42sh.h"
 
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <termcap.h>
+char *safe_strdup(char *str) {
+	char	*new_str = NULL;
 
-enum e_print {
-	RESET,
-	RESET_PRINT,
-	FREE_RESET,
-	FREE_RESET_PRINT,
-	FREE_JOIN,
-	FREE_PRINT,
-	JOIN,
-	PRINT
-};
+	if (str && !(new_str = malloc((ft_strlen(str) + 1) * sizeof(char))))
+		exit_error(NO_MEMORY, 0, NULL, true);
+	if (str && new_str) ft_strcpy(new_str, str);
+	return (new_str);
+}
 
-int	print(int fd, char *str, int mode);
+int safe_dup(int fd) {
+	int	new_fd = -1;
+
+	if (fd >= 0) new_fd = dup(fd);
+	if (new_fd == -1)
+		exit_error(DUP_FAIL, 1, NULL, true);
+	return (new_fd);
+}

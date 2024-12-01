@@ -1,31 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   terminal.h                                         :+:      :+:    :+:   */
+/*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 12:32:01 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/01 10:55:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "42sh.h"
 
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <termcap.h>
-
-enum e_print {
-	RESET,
-	RESET_PRINT,
-	FREE_RESET,
-	FREE_RESET_PRINT,
-	FREE_JOIN,
-	FREE_PRINT,
-	JOIN,
-	PRINT
-};
-
-int	print(int fd, char *str, int mode);
+char * readline(char *prompt) {
+	(void) prompt;
+	// if ()
+	return (NULL);
+}
