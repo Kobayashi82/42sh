@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 13:02:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/01 16:26:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,23 +38,6 @@
 	typedef enum { SHELL = 0, SUBSHELL = 1, CHILD = 2 } e_process;
 	typedef enum { CMD, LT, GT, DLT, TLT, DGT, OPAR, CPAR, PIPE, AND, OR, SMCOL, SMAND } e_type;
 	typedef struct { int bk_stdin; int bk_stdout; int bk_stderr; } t_bk_std;
-
-	typedef struct {
-		int			pid;
-		time_t		started;
-		e_process	process;
-		t_bk_std	bk_std;
-		bool		exit;
-		int			exit_code;
-	} t_shell;
-
-	typedef struct {
-		char			*input;
-		char			quoted;
-		char			*prompt;
-		char			*msg;
-		struct termios	term;
-	} t_terminal;
 
 	typedef struct s_token {
 		int		pid;
@@ -102,6 +85,25 @@
 		t_var	*shell;
 		t_var	*env;
 	} t_vars;
+
+	typedef struct {
+		char			*input;
+		char			quoted;
+		char			*prompt;
+		char			*msg;
+		int				signal;
+		struct termios	term;
+	} t_terminal;
+
+	typedef struct {
+		int			pid;
+		time_t		started;
+		e_process	process;
+		t_bk_std	bk_std;
+		bool		_inline;
+		bool		exit;
+		int			exit_code;
+	} t_shell;
 
 	typedef struct s_data {
 		t_shell			shell;

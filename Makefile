@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/01 13:14:00 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/01 16:22:10 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,7 +64,7 @@ SRC_DIR				= src/$(NAME)/
 NAME	=	42sh
 SRCS	=	main/main.c																			\
 			readline/readline.c																	\
-			terminal/terminal.c terminal/banner.c terminal/signals.c terminal/print.c			\
+			terminal/terminal.c terminal/banner.c terminal/signal.c terminal/print.c			\
 			clean/safe.c clean/error.c clean/free.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
