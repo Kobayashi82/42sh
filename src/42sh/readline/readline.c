@@ -6,11 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/02 20:37:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/02 20:47:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
+
+// CTRL + T
+// ALT + T
+// CTRL + _ (CTRL + SHIFT + _)
+// Historial
 
 #pragma region Variables
 
@@ -39,6 +44,9 @@
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 	}
 
+	static void hide_cursor() { write(STDOUT_FILENO, "\033[?25l", 6); }
+	static void show_cursor() { write(STDOUT_FILENO, "\033[?25h", 6); }
+
 #pragma endregion
 
 #pragma region Input
@@ -54,6 +62,7 @@
 			if (result == 2) {
 				free(buffer);
 				write(STDOUT_FILENO, "\r\n", 2);
+				show_cursor();
 				disable_raw_mode();
 			}
 			return (result);
@@ -293,8 +302,9 @@
 		if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
 	
 		while (1) {
+			show_cursor();
 			int n = read(STDIN_FILENO, &c, 1);
-	
+			hide_cursor();
 			int result = check_EOF(n, c, position, buffer);
 			if (result == 1) continue;
 			else if (result == 2) return (NULL);
@@ -341,7 +351,8 @@
 				while (chars_to_move_back--) write(STDOUT_FILENO, "\033[D", 3);
 			}
 		}
-	
+
+		show_cursor();
 		disable_raw_mode();
 		return (buffer);
 	}
