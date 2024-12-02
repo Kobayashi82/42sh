@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/04/22 14:43:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/02 22:53:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ int		ft_isdigit_s(char *str);
 int		ft_isxdigit(int c);
 int		ft_isspace(int c);
 int		ft_isspace_s(char *str);
+//	FT_STR_IS_3.C
+int		ft_ispunct(const char c);
 //	FT_MEM.C
 void	*ft_memcpy(void *dst, const void *src, int n);
 void	*ft_memmove(void *dst, const void *src, int len);

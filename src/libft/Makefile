@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 16:40:56 by vzurera-          #+#    #+#              #
-#    Updated: 2024/11/29 17:52:52 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/02 22:54:16 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,9 +57,9 @@ NAME	= libft.a
 SRCS		= ft_str_cat.c ft_str_chr.c ft_str_cmp.c ft_str_cpy.c ft_str_dup.c 	\
 			  ft_str_join.c ft_str_len.c ft_str_num_1.c ft_str_num_2.c			\
 			  ft_str_put.c ft_str_to.c ft_str_split.c ft_str_str.c ft_str_sub.c \
-			  ft_str_trim.c ft_mem.c ft_str_is_1.c ft_str_is_2.c ft_realloc.c 	\
-			  ft_list_1.c ft_list_2.c ft_maths.c ft_get_next_line.c ft_printf.c \
-			  ft_dprintf.c														\
+			  ft_str_trim.c ft_mem.c ft_str_is_1.c ft_str_is_2.c ft_str_is_3.c 	\
+			  ft_realloc.c ft_list_1.c ft_list_2.c ft_maths.c					\
+			  ft_get_next_line.c ft_printf.c ft_dprintf.c
 
 # ────────────────────────────────────────────────────────── #
 # ───────────────────────── NORMAL ───────────────────────── #
