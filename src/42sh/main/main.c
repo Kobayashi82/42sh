@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 21:49:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/02 19:48:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int read_input() {
 	initialize_signals();
 
 	if (!(data.terminal.input = readline(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
+	if (data.terminal.input) printf("%s\n", data.terminal.input);
 	free(data.terminal.input);
 
 	return (0);
