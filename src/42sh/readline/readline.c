@@ -6,16 +6,47 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/02 23:01:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/03 09:48:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-// Caracteres de emoticonos
+// 漢字
 // ALT + T
 // CTRL + _ (CTRL + SHIFT + _)
 // Historial
+
+int char_length(unsigned char ch) {
+    if (ch >= 0xF0) return (4);  // 4-byte
+    if (ch >= 0xE0) return (3);  // 3-byte
+    if (ch >= 0xC0) return (2);  // 2-byte
+    if (ch < 0x80)  return (1);  // 1-byte
+    return (0);                  // Invalid byte
+}
+
+unsigned int char_codepoint(const char *buffer, size_t len) {
+    unsigned char c = buffer[0];
+    if (c < 0x80)					return (c);
+    else if (c < 0xE0 && len >= 2)	return (((c & 0x1F) << 6)  | (buffer[1] & 0x3F));
+    else if (c < 0xF0 && len >= 3)	return (((c & 0x0F) << 12) | ((buffer[1] & 0x3F) << 6)  | (buffer[2] & 0x3F));
+    else if (c < 0xF8 && len >= 4)	return (((c & 0x07) << 18) | ((buffer[1] & 0x3F) << 12) | ((buffer[2] & 0x3F) << 6) | (buffer[3] & 0x3F));
+    else							return (0);
+}
+
+int char_width(const size_t position, const char *buffer) {
+	unsigned int codepoint = char_codepoint(&buffer[position], char_length(buffer[position]));
+    if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
+        (codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
+        (codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
+        (codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
+        (codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
+        (codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
+        (codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
+        (codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
+    return 1;
+}
+
 
 #pragma region Variables
 
@@ -68,6 +99,7 @@
 					*position -= back_pos1; *position += back_pos2;
 					ft_memmove(&buffer[*position], temp, back_pos1);
 
+					if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
 					write(STDOUT_FILENO, "\033[D", 3);
 					write(STDOUT_FILENO, &buffer[*position - back_pos2], back_pos1 + back_pos2);
 					*position += back_pos1;
@@ -83,6 +115,8 @@
 					*position -= back_pos2; *position += back_pos1;
 					ft_memmove(&buffer[*position], temp, back_pos2);
 
+					if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
+					if (char_width(*position - back_pos1, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 					write(STDOUT_FILENO, "\033[D\033[D", 6);
 					write(STDOUT_FILENO, &buffer[*position - back_pos1], back_pos1 + back_pos2);
 					*position += back_pos2;
@@ -125,7 +159,7 @@
 
 	#pragma region C_EOF
 
-		static int check_EOF(const int n, const char c, const size_t position, char *buffer) {
+		static int check_EOF(const int n, const unsigned char c, const size_t position, char *buffer) {
 			int result = 0;
 
 			if (n <= 0) result = 2;
@@ -144,7 +178,7 @@
 
 	#pragma region C_SIGINT
 
-		static int check_SIGINT(const char c, size_t *position, size_t *len, const char *prompt) {
+		static int check_SIGINT(const unsigned char c, size_t *position, size_t *len, const char *prompt) {
 			if (c == 3) {	// Ctrl+C
 				*position = 0; *len = 0;
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
@@ -160,7 +194,7 @@
 
 	#pragma region NewLine
 
-		static int check_nl(const char c, const size_t len, char *buffer) {
+		static int check_nl(const unsigned char c, const size_t len, char *buffer) {
 			if (c == '\r' || c == '\n') {
 				buffer[len] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
@@ -182,10 +216,11 @@
 				*len -= back_pos;
 
 				write(STDOUT_FILENO, &buffer[*position], *len - *position);
-				write(STDOUT_FILENO, " ", 1);
+				write(STDOUT_FILENO, "  ", 2);
 
-				size_t move_back = 1;
+				size_t move_back = 2;
 				for (size_t i = *position; i < *len; ) {
+					if (char_width(i, buffer) == 2) move_back++;
 					if ((unsigned char)buffer[i] >= 0xC0) {
 						if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
 						else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
@@ -252,14 +287,17 @@
 					if (CTRL) {
 						while (*position > 0 && (ft_isspace(buffer[*position - 1]) || ft_ispunct(buffer[*position - 1]))) {
 							(*position)--;
+							if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 							write(STDOUT_FILENO, "\033[D", 3);
 						}
 						while (*position > 0 && !ft_isspace(buffer[*position - 1]) && !ft_ispunct(buffer[*position - 1])) {
 							do { (*position)--; } while (*position > 0 && (buffer[*position] & 0xC0) == 0x80);
+							if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 							write(STDOUT_FILENO, "\033[D", 3);
 						}
 					} else {
 						do { (*position)--; } while (*position > 0 && (buffer[*position] & 0xC0) == 0x80);
+						if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 						write(STDOUT_FILENO, "\033[D", 3);
 					}
 				}
@@ -271,18 +309,23 @@
 
 			static void arrow_right(size_t *position, size_t *len, char *buffer) {
 				if (!ALT && !SHIFT && *position < *len) {
+					size_t prev_pos = *position;
 					if (CTRL) {
 						while (*position < *len && (ft_isspace(buffer[*position]) || ft_ispunct(buffer[*position]))) {
 							(*position)++;
 							write(STDOUT_FILENO, "\033[C", 3);
 						}
 						while (*position < *len && !ft_isspace(buffer[*position]) && !ft_ispunct(buffer[*position])) {
+							prev_pos = *position;
 							do { (*position)++; } while (*position < *len && (buffer[*position] & 0xC0) == 0x80);
+							if (char_width(prev_pos, buffer) == 2) write(STDOUT_FILENO, "\033[C", 3);
 							write(STDOUT_FILENO, "\033[C", 3);
 						}
 					} else {
 						if (*position < *len) {
+							prev_pos = *position;
 							do { (*position)++; } while (*position < *len && (buffer[*position] & 0xC0) == 0x80);
+							if (char_width(prev_pos, buffer) == 2) write(STDOUT_FILENO, "\033[C", 3);
 							write(STDOUT_FILENO, "\033[C", 3);
 						}
 					}
@@ -296,6 +339,7 @@
 			static void arrow_home(size_t *position, char *buffer) {
 				while (*position > 0) {
 					do { (*position)--; } while (*position > 0 && (buffer[*position] & 0xC0) == 0x80);
+					if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 					write(STDOUT_FILENO, "\033[D", 3);
 				}
 			}
@@ -305,15 +349,18 @@
 		#pragma region Arrow End
 
 			static void arrow_end(size_t *position, size_t *len, char *buffer) {
+				size_t prev_pos;
 				while (*position < *len) {
+					prev_pos = *position;
 					do { (*position)++; } while (*position < *len && (buffer[*position] & 0xC0) == 0x80);
+					if (char_width(prev_pos, buffer) == 2) write(STDOUT_FILENO, "\033[C", 3);
 					write(STDOUT_FILENO, "\033[C", 3);
 				}
 			}
 
 		#pragma endregion
 
-		static int cursor(const char c, size_t *position, size_t *len, char *buffer) {
+		static int cursor(const unsigned char c, size_t *position, size_t *len, char *buffer) {
 			char seq[8];
 			ft_memset(&seq, 0, sizeof(seq));
 			if (c == '\033') {
@@ -338,20 +385,22 @@
 
 	#pragma region BackSpace
 
-		static int backspace(const char c, size_t *position, size_t *len, char *buffer) {
+		static int backspace(const unsigned char c, size_t *position, size_t *len, char *buffer) {
 			if (c == 127) {
 				if (*position > 0) {
 					size_t back_pos = 1;
 					while (*position - back_pos > 0 && (buffer[*position - back_pos] & 0xC0) == 0x80) back_pos++;
+					if (char_width(*position - back_pos, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
 					if (*position < *len) ft_memmove(&buffer[*position - back_pos], &buffer[*position], *len - *position);
 					*position -= back_pos; *len -= back_pos;
 
-					write(STDOUT_FILENO, "\033[D", 3);							// Move the cursor to the left
+					write(STDOUT_FILENO, "\033[D", 3);
 					write(STDOUT_FILENO, &buffer[*position], *len - *position);
-					write(STDOUT_FILENO, " ", 1);
+					write(STDOUT_FILENO, "  ", 2);
 
-					size_t move_back = 1;
-					for (size_t i = *position; i < *len; ) {					// Move the cursor to the correct position
+					size_t move_back = 2;
+					for (size_t i = *position; i < *len; ) {
+						if (char_width(i, buffer) == 2) move_back++;
 						if ((unsigned char)buffer[i] >= 0xC0) {
 							if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
 							else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
@@ -359,7 +408,7 @@
 						} else											i += 1;	// 1 byte
 						move_back++;
 					}
-					while (move_back--) write(STDOUT_FILENO, "\033[D", 3);		// Move the cursor to the left
+					while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
 				} return (1);
 			} else if (c == 2)	{ arrow_left(position, buffer);			return (1);
 			} else if (c == 6)	{ arrow_right(position, len, buffer);	return (1);
@@ -380,7 +429,7 @@
 		size_t buffer_size = 1024;
 		size_t position = 0, len = 0;
 		char *buffer = safe_malloc(buffer_size);
-		char c;
+		unsigned char c;
 	
 		enable_raw_mode();
 		if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
@@ -425,6 +474,7 @@
 				// Adjust the cursor position in the terminal
 				size_t move_back = 0;
 				for (size_t i = position; i < len; ) {
+					if (char_width(i, buffer) == 2) move_back++;
 					if ((unsigned char)buffer[i] >= 0xC0) {
 						if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
 						else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
