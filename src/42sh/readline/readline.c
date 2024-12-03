@@ -6,22 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/03 20:47:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/03 22:19:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-// 漢字
-// CTRL + _ (CTRL + SHIFT + _)
-// Historial
-
 #pragma region Variables
 
 	bool show_control_chars = true;
+	bool fake_segfault = false;
+
 	static bool SHIFT = false;
 	static bool ALT = false;
 	static bool CTRL = false;
+
 	typedef struct s_word { size_t start, end, len; char value[1024]; } t_word;
 
 #pragma endregion
@@ -105,124 +104,23 @@
 
 #pragma region Functions
 
-	#pragma region Swap Char
+	#pragma region History
 
-		static void swap_char(size_t *position, size_t *len, char *buffer) {
-			if (*position > 0) {
-				char temp[8];
-				if (*position < *len) {
-					size_t back_pos1 = 1, back_pos2 = 1;
-					while (*position - back_pos1 > 0 && (buffer[*position - back_pos1] & 0xC0) == 0x80) back_pos1++;
-					while (*position + back_pos2 < *len && (buffer[*position + back_pos2] & 0xC0) == 0x80) back_pos2++;
+		#pragma region Prev
 
-					if (back_pos1 > 8 || back_pos2 > 8) return;
-
-					ft_memcpy(temp, &buffer[*position - back_pos1], back_pos1);
-					ft_memmove(&buffer[*position - back_pos1], &buffer[*position], back_pos2);
-					*position -= back_pos1; *position += back_pos2;
-					ft_memmove(&buffer[*position], temp, back_pos1);
-
-					if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
-					write(STDOUT_FILENO, "\033[D", 3);
-					write(STDOUT_FILENO, &buffer[*position - back_pos2], back_pos1 + back_pos2);
-					*position += back_pos1;
-				} else {
-					size_t back_pos1 = 1, back_pos2 = 1;
-					while (*position - back_pos1 > 0 && (buffer[*position - back_pos1] & 0xC0) == 0x80) back_pos1++;
-					if (back_pos1 > 8) return;
-					*position -= back_pos1;
-					while (*position - back_pos2 > 0 && (buffer[*position - back_pos2] & 0xC0) == 0x80) back_pos2++;
-
-					ft_memcpy(temp, &buffer[*position - back_pos2], back_pos2);
-					ft_memmove(&buffer[*position - back_pos2], &buffer[*position], back_pos1);
-					*position -= back_pos2; *position += back_pos1;
-					ft_memmove(&buffer[*position], temp, back_pos2);
-
-					if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
-					if (char_width(*position - back_pos1, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
-					write(STDOUT_FILENO, "\033[D\033[D", 6);
-					write(STDOUT_FILENO, &buffer[*position - back_pos1], back_pos1 + back_pos2);
-					*position += back_pos2;
-				}
-			}
-		}
-
-	#pragma endregion
-
-	#pragma region Swap Word
-
-		// Not perfect, and multibyte characters are not handled consistently
-		static t_word get_word(size_t position, size_t len, char *buffer, bool prev_word) {
-			t_word	word;
-
-			if (prev_word) {
-				if (position == len && position > 0) do { (position)--; } while (position > 0 && (buffer[position] & 0xC0) == 0x80);
-				while (position > 0 && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position--;
-				if (position == 0) { word.len = 0; return (word); }
-				while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
-				word.start = position + (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]));
-			} else {
-				while (position < len && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position++;
-				if (position == len) { do { (position)--; } while (position > 0 && (buffer[position] & 0xC0) == 0x80);
-					while (position > 0 && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position--;
-					while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
-				} else
-					while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
-
-				word.start = position + (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]));
+			static void history_prev() {
+				write(1, "History Prev", 13);
 			}
 
-			size_t	temp_pos = word.start;
-			while (temp_pos < len && !ft_isspace(buffer[temp_pos]) && !ft_ispunct(buffer[temp_pos]))
-				do { temp_pos++; } while (temp_pos < len && (buffer[temp_pos] & 0xC0) == 0x80);
-			word.end = temp_pos;
+		#pragma endregion
 
-			word.len = word.end - word.start;
+		#pragma region Next
 
-			if (word.len > 0 && word.len < sizeof(word.value))
-				for (size_t i = 0, pos = word.start; i < word.len; i++, pos++)
-					word.value[i] = buffer[pos];
-
-			return (word);
-		}
-
-		static void swap_word(size_t *position, size_t *len, char *buffer) {
-			t_word prev, next, sep;
-			size_t temp_pos = *position;
-
-			if (*position == *len && *position == 0) return;
-
-			next = get_word(*position, *len, buffer, false);
-			if (next.len > sizeof(next.value)) return;
-			if (!next.len) next = get_word(*position, *len, buffer, true);
-			if (!next.len || next.start == 0) return;
-			temp_pos = next.start - 1;
-			prev = get_word(temp_pos, *len, buffer, true);
-			if (!prev.len || prev.len > sizeof(prev.value)) return;
-
-			//printf (" - %ld : %ld\n", prev.len, next.len); return ;
-			sep.start = prev.end;
-			sep.end = next.start;
-			if (sep.start < sep.end) {
-				sep.len = sep.end - sep.start;
-				if (sep.len > 0 && sep.len < sizeof(sep.value))
-					for (size_t i = 0, pos = sep.start; i < sep.len; i++, pos++) sep.value[i] = buffer[pos];
+			static void history_next() {
+				write(1, "History Next", 13);
 			}
 
-			ft_memmove(&buffer[prev.start], next.value, next.len);
-			ft_memmove(&buffer[prev.start + next.len], sep.value, sep.len);
-			ft_memmove(&buffer[prev.start + next.len + sep.len], prev.value, prev.len);
-
-			// printf("%ld\n", *position);
-			while (*position > 0 && *position > prev.start) {
-				do { (*position)--; } while (*position > 0 && (buffer[*position] & 0xC0) == 0x80);
-				if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
-				write(STDOUT_FILENO, "\033[D", 3);
-			}
-
-			write(STDOUT_FILENO, &buffer[*position], prev.len + sep.len + next.len);
-			*position = prev.start + next.len + sep.len + prev.len;
-		}
+		#pragma endregion
 
 	#pragma endregion
 
@@ -239,6 +137,131 @@
 		static void redo() {
 			write(1, "redo", 4);
 		}
+
+	#pragma endregion
+
+	#pragma region Swap
+
+		#pragma region Char
+
+			static void swap_char(size_t *position, size_t *len, char *buffer) {
+				if (*position > 0) {
+					char temp[8];
+					if (*position < *len) {
+						size_t back_pos1 = 1, back_pos2 = 1;
+						while (*position - back_pos1 > 0 && (buffer[*position - back_pos1] & 0xC0) == 0x80) back_pos1++;
+						while (*position + back_pos2 < *len && (buffer[*position + back_pos2] & 0xC0) == 0x80) back_pos2++;
+
+						if (back_pos1 > 8 || back_pos2 > 8) return;
+
+						ft_memcpy(temp, &buffer[*position - back_pos1], back_pos1);
+						ft_memmove(&buffer[*position - back_pos1], &buffer[*position], back_pos2);
+						*position -= back_pos1; *position += back_pos2;
+						ft_memmove(&buffer[*position], temp, back_pos1);
+
+						if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
+						write(STDOUT_FILENO, "\033[D", 3);
+						write(STDOUT_FILENO, &buffer[*position - back_pos2], back_pos1 + back_pos2);
+						*position += back_pos1;
+					} else {
+						size_t back_pos1 = 1, back_pos2 = 1;
+						while (*position - back_pos1 > 0 && (buffer[*position - back_pos1] & 0xC0) == 0x80) back_pos1++;
+						if (back_pos1 > 8) return;
+						*position -= back_pos1;
+						while (*position - back_pos2 > 0 && (buffer[*position - back_pos2] & 0xC0) == 0x80) back_pos2++;
+
+						ft_memcpy(temp, &buffer[*position - back_pos2], back_pos2);
+						ft_memmove(&buffer[*position - back_pos2], &buffer[*position], back_pos1);
+						*position -= back_pos2; *position += back_pos1;
+						ft_memmove(&buffer[*position], temp, back_pos2);
+
+						if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
+						if (char_width(*position - back_pos1, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
+						write(STDOUT_FILENO, "\033[D\033[D", 6);
+						write(STDOUT_FILENO, &buffer[*position - back_pos1], back_pos1 + back_pos2);
+						*position += back_pos2;
+					}
+				}
+			}
+
+		#pragma endregion
+
+		#pragma region Word
+
+			// Not perfect, and multibyte characters are not handled consistently
+			static t_word get_word(size_t position, size_t len, char *buffer, bool prev_word) {
+				t_word	word;
+
+				if (prev_word) {
+					if (position == len && position > 0) do { (position)--; } while (position > 0 && (buffer[position] & 0xC0) == 0x80);
+					while (position > 0 && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position--;
+					if (position == 0) { word.len = 0; return (word); }
+					while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
+					word.start = position + (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]));
+				} else {
+					while (position < len && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position++;
+					if (position == len) { do { (position)--; } while (position > 0 && (buffer[position] & 0xC0) == 0x80);
+						while (position > 0 && (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]))) position--;
+						while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
+					} else
+						while (position > 0 && !ft_isspace(buffer[position]) && !ft_ispunct(buffer[position])) position--;
+
+					word.start = position + (ft_isspace(buffer[position]) || ft_ispunct(buffer[position]));
+				}
+
+				size_t	temp_pos = word.start;
+				while (temp_pos < len && !ft_isspace(buffer[temp_pos]) && !ft_ispunct(buffer[temp_pos]))
+					do { temp_pos++; } while (temp_pos < len && (buffer[temp_pos] & 0xC0) == 0x80);
+				word.end = temp_pos;
+
+				word.len = word.end - word.start;
+
+				if (word.len > 0 && word.len < sizeof(word.value))
+					for (size_t i = 0, pos = word.start; i < word.len; i++, pos++)
+						word.value[i] = buffer[pos];
+
+				return (word);
+			}
+
+			static void swap_word(size_t *position, size_t *len, char *buffer) {
+				t_word prev, next, sep;
+				size_t temp_pos = *position;
+
+				if (*position == *len && *position == 0) return;
+
+				next = get_word(*position, *len, buffer, false);
+				if (next.len > sizeof(next.value)) return;
+				if (!next.len) next = get_word(*position, *len, buffer, true);
+				if (!next.len || next.start == 0) return;
+				temp_pos = next.start - 1;
+				prev = get_word(temp_pos, *len, buffer, true);
+				if (!prev.len || prev.len > sizeof(prev.value)) return;
+
+				//printf (" - %ld : %ld\n", prev.len, next.len); return ;
+				sep.start = prev.end;
+				sep.end = next.start;
+				if (sep.start < sep.end) {
+					sep.len = sep.end - sep.start;
+					if (sep.len > 0 && sep.len < sizeof(sep.value))
+						for (size_t i = 0, pos = sep.start; i < sep.len; i++, pos++) sep.value[i] = buffer[pos];
+				}
+
+				ft_memmove(&buffer[prev.start], next.value, next.len);
+				ft_memmove(&buffer[prev.start + next.len], sep.value, sep.len);
+				ft_memmove(&buffer[prev.start + next.len + sep.len], prev.value, prev.len);
+
+				// printf("%ld\n", *position);
+				while (*position > 0 && *position > prev.start) {
+					do { (*position)--; } while (*position > 0 && (buffer[*position] & 0xC0) == 0x80);
+					if (char_width(*position, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
+					write(STDOUT_FILENO, "\033[D", 3);
+				}
+
+				write(STDOUT_FILENO, &buffer[*position], prev.len + sep.len + next.len);
+				*position = prev.start + next.len + sep.len + prev.len;
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
@@ -296,32 +319,72 @@
 
 	#pragma region BackSpace
 
-		static int backspace(size_t *position, size_t *len, char *buffer) {
-			if (*position > 0) {
-				size_t back_pos = 1;
-				while (*position - back_pos > 0 && (buffer[*position - back_pos] & 0xC0) == 0x80) back_pos++;
-				if (char_width(*position - back_pos, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
-				if (*position < *len) ft_memmove(&buffer[*position - back_pos], &buffer[*position], *len - *position);
-				*position -= back_pos; *len -= back_pos;
+		#pragma region Char
 
-				write(STDOUT_FILENO, "\033[D", 3);
-				write(STDOUT_FILENO, &buffer[*position], *len - *position);
-				write(STDOUT_FILENO, "  ", 2);
+			static void backspace(size_t *position, size_t *len, char *buffer) {
+				if (*position > 0) {
+					size_t back_pos = 1;
+					while (*position - back_pos > 0 && (buffer[*position - back_pos] & 0xC0) == 0x80) back_pos++;
+					if (char_width(*position - back_pos, buffer) == 2) write(STDOUT_FILENO, "\033[D", 3);
+					if (*position < *len) ft_memmove(&buffer[*position - back_pos], &buffer[*position], *len - *position);
+					*position -= back_pos; *len -= back_pos;
 
-				size_t move_back = 2;
-				for (size_t i = *position; i < *len; ) {
-					if (char_width(i, buffer) == 2) move_back++;
-					if ((unsigned char)buffer[i] >= 0xC0) {
-						if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
-						else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
-						else										i += 2;	// 2 bytes
-					} else											i += 1;	// 1 byte
-					move_back++;
+					write(STDOUT_FILENO, "\033[D", 3);
+					write(STDOUT_FILENO, &buffer[*position], *len - *position);
+					write(STDOUT_FILENO, "  ", 2);
+
+					size_t move_back = 2;
+					for (size_t i = *position; i < *len; ) {
+						if (char_width(i, buffer) == 2) move_back++;
+						if ((unsigned char)buffer[i] >= 0xC0) {
+							if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
+							else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
+							else										i += 2;	// 2 bytes
+						} else											i += 1;	// 1 byte
+						move_back++;
+					}
+					while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
 				}
-				while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
-			} return (1);
-			return (0);
-		}
+			}
+
+		#pragma endregion
+
+		#pragma region Word
+
+			static void backspace_word(size_t *position, size_t *len, char *buffer) {
+				size_t pos = *position, back_pos;
+
+				if (*position > 0) {
+					while (pos > 0) { back_pos = 1;
+						while (pos - back_pos > 0 && (buffer[pos - back_pos] & 0xC0) == 0x80) back_pos++;
+						pos -= back_pos;
+						if (!ft_isspace(buffer[pos]) && !ft_ispunct(buffer[pos])) break;
+					} while (*position > pos) backspace(position, len, buffer);
+
+					while (pos > 0) { back_pos = 1;
+						while (pos - back_pos > 0 && (buffer[pos - back_pos] & 0xC0) == 0x80) back_pos++;
+						pos -= back_pos;
+						if (ft_isspace(buffer[pos]) || ft_ispunct(buffer[pos])) { pos += back_pos; break; }
+					} while (*position > pos) backspace(position, len, buffer);
+				}
+			}
+
+		#pragma endregion
+
+		#pragma region Start
+
+			static void backspace_start(size_t *position, size_t *len, char *buffer) {
+				size_t pos = *position, back_pos;
+
+				if (*position > 0) {
+					while (pos > 0) { back_pos = 1;
+						while (pos - back_pos > 0 && (buffer[pos - back_pos] & 0xC0) == 0x80) back_pos++;
+						pos -= back_pos;
+					} while (*position > pos) backspace(position, len, buffer);
+				}
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
@@ -369,6 +432,15 @@
 
 		#pragma endregion
 
+		#pragma region Word
+
+			static void delete_end(size_t *position, size_t *len, char *buffer) {
+				if (*position < *len)
+					while (*position < *len) delete_char(position, len, buffer);
+			}
+
+		#pragma endregion
+
 	#pragma endregion
 
 	#pragma region Cursors
@@ -404,7 +476,7 @@
 		#pragma region Arrow Up
 
 			static void arrow_up() {
-				write(1, "history prev", 13);
+				history_prev();
 			}
 
 		#pragma endregion
@@ -412,7 +484,7 @@
 		#pragma region Arrow Down
 
 			static void arrow_down() {
-				write(1, "history next", 13);
+				history_next();
 			}
 
 		#pragma endregion
@@ -497,43 +569,52 @@
 
 		#pragma endregion
 
-		static int cursor(const unsigned char c, size_t *position, size_t *len, char *buffer) {
-			char seq[8];
-			ft_memset(&seq, 0, sizeof(seq));
-			if (c == '\033') {
-				if (read(STDIN_FILENO, seq, sizeof(seq) - 1) > 0) {
-					if (seq[0] == 't') { swap_word(position, len, buffer); return (1); }	// ALT + T
-					if (seq[0] == '-') { redo(); return (1); }		// ALT + -
-					if (seq[0] == '[') {
-						if (seq[1] == '3' && seq[2] == '~')										{ delete_char(position, len, buffer); return (1); }
-						if (seq[1] == '3' && seq[2] == ';' && seq[3] == '5' && seq[4] == '~')	{ delete_word(position, len, buffer); return (1); }
-						seq[1] = modifiers(seq);
-						if (seq[1] == 'A') arrow_up();
-						if (seq[1] == 'B') arrow_down();
-						if (seq[1] == 'D') arrow_left(position, buffer);
-						if (seq[1] == 'C') arrow_right(position, len, buffer);
-						if (seq[1] == 'H') arrow_home(position, buffer);
-						if (seq[1] == 'F') arrow_end(position, len, buffer);
-					}
-				} return (1);
-			} return (0);
-		}
+		#pragma region Cursor
+
+			static int cursor(const unsigned char c, size_t *position, size_t *len, char *buffer) {
+				char seq[8];
+				ft_memset(&seq, 0, sizeof(seq));
+				if (c == '\033') {
+					if (read(STDIN_FILENO, seq, sizeof(seq) - 1) > 0) {
+						if (seq[0] == 't') { swap_word(position, len, buffer); return (1); }	// ALT + T
+						if (seq[0] == '-') { redo(); return (1); }		// ALT + -
+						if (seq[0] == '[') {
+							if (seq[1] == '3' && seq[2] == '~')										{ delete_char(position, len, buffer); return (1); }
+							if (seq[1] == '3' && seq[2] == ';' && seq[3] == '5' && seq[4] == '~')	{ delete_word(position, len, buffer); return (1); }
+							seq[1] = modifiers(seq);
+							if (seq[1] == 'A') arrow_up();
+							if (seq[1] == 'B') arrow_down();
+							if (seq[1] == 'D') arrow_left(position, buffer);
+							if (seq[1] == 'C') arrow_right(position, len, buffer);
+							if (seq[1] == 'H') arrow_home(position, buffer);
+							if (seq[1] == 'F') arrow_end(position, len, buffer);
+						}
+					} return (1);
+				} return (0);
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
 	#pragma region Specials
 
 		static int specials(const unsigned char c, size_t *position, size_t *len, char *buffer) {
-			if  	(c == 2)	arrow_left(position, buffer);		// CTRL + B
-			else if (c == 6)	arrow_right(position, len, buffer);	// CTRL + F
-			else if (c == 16)	arrow_up();							// CTRL + P
-			else if (c == 14)	arrow_down();						// CTRL + N
-			else if (c == 20)	swap_char(position, len, buffer);	// CTRL + T
-			else if (c == 31)	undo();								// CTRL + _
-			else if (c == 127)	backspace(position, len, buffer);	// BackSpace
-			else if (c == 1)	arrow_home(position, buffer);		// CTRL + A
-			else if (c == 5)	arrow_end(position, len, buffer);	// CTRL + E
-			else if (c >= 1 && c <= 26) return (1);
+			if		(c == 19)	fake_segfault = true;					// CTRL + S - Fake SegFault
+			else if (c == 31)	undo();									// CTRL + _ - Undo last action								(todo)
+			else if (c == 1)	arrow_home(position, buffer);			// CTRL + A - Cursor to the start of the line
+			else if (c == 5)	arrow_end(position, len, buffer);		// CTRL + E - Cursor to the end of the line
+			else if (c == 2)	arrow_left(position, buffer);			// CTRL + B - Cursor Right
+			else if (c == 6)	arrow_right(position, len, buffer);		// CTRL + F - Cursor left
+			else if (c == 16)	history_prev();							// CTRL + P - History prev									(todo)
+			else if (c == 14)	history_next();							// CTRL + N - History next									(todo)
+			else if (c == 20)	swap_char(position, len, buffer);		// CTRL + T - Swap char										(Not working right with multibytes 漢字)
+			else if (c == 11)	delete_end(position, len, buffer);		// CTRL + K - Delete from cursor to end of line
+			else if (c == 8)	backspace(position, len, buffer);		// CTRL + H - Backspace
+			else if (c == 21)	backspace_start(position, len, buffer);	// CTRL + U - Backspace from cursor to start of line
+			else if (c == 23)	backspace_word(position, len, buffer);	// CTRL + W	- Backspace current word 
+			else if (c == 127)	backspace(position, len, buffer);		// BackSpace
+			else if (c >= 1 && c <= 26) ;								// Ignore rest of the specials
 			else return (0);
 			return (1);
 		}

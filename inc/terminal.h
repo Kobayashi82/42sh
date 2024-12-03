@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 21:06:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/03 22:17:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 #pragma region Variables
 
 	extern bool show_control_chars;
+	extern bool fake_segfault;
 
 #pragma endregion
 
