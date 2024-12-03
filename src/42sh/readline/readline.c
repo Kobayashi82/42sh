@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/03 09:48:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/03 10:02:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,37 +16,6 @@
 // ALT + T
 // CTRL + _ (CTRL + SHIFT + _)
 // Historial
-
-int char_length(unsigned char ch) {
-    if (ch >= 0xF0) return (4);  // 4-byte
-    if (ch >= 0xE0) return (3);  // 3-byte
-    if (ch >= 0xC0) return (2);  // 2-byte
-    if (ch < 0x80)  return (1);  // 1-byte
-    return (0);                  // Invalid byte
-}
-
-unsigned int char_codepoint(const char *buffer, size_t len) {
-    unsigned char c = buffer[0];
-    if (c < 0x80)					return (c);
-    else if (c < 0xE0 && len >= 2)	return (((c & 0x1F) << 6)  | (buffer[1] & 0x3F));
-    else if (c < 0xF0 && len >= 3)	return (((c & 0x0F) << 12) | ((buffer[1] & 0x3F) << 6)  | (buffer[2] & 0x3F));
-    else if (c < 0xF8 && len >= 4)	return (((c & 0x07) << 18) | ((buffer[1] & 0x3F) << 12) | ((buffer[2] & 0x3F) << 6) | (buffer[3] & 0x3F));
-    else							return (0);
-}
-
-int char_width(const size_t position, const char *buffer) {
-	unsigned int codepoint = char_codepoint(&buffer[position], char_length(buffer[position]));
-    if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
-        (codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
-        (codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
-        (codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
-        (codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
-        (codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
-        (codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
-        (codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
-    return 1;
-}
-
 
 #pragma region Variables
 
@@ -75,8 +44,62 @@ int char_width(const size_t position, const char *buffer) {
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 	}
 
-	static void hide_cursor() { write(STDOUT_FILENO, "\033[?25l", 6); }
-	static void show_cursor() { write(STDOUT_FILENO, "\033[?25h", 6); }
+#pragma endregion
+
+#pragma region Utils
+
+	#pragma region Chars
+
+		#pragma region Char Length
+
+			int char_length(unsigned char ch) {
+				if (ch >= 0xF0) return (4);  // 4-byte
+				if (ch >= 0xE0) return (3);  // 3-byte
+				if (ch >= 0xC0) return (2);  // 2-byte
+				if (ch < 0x80)  return (1);  // 1-byte
+				return (0);                  // Invalid byte
+			}
+
+		#pragma endregion
+
+		#pragma region Char Codepoint
+
+			unsigned int char_codepoint(const char *buffer, size_t len) {
+				unsigned char c = buffer[0];
+				if (c < 0x80)					return (c);
+				else if (c < 0xE0 && len >= 2)	return (((c & 0x1F) << 6)  | (buffer[1] & 0x3F));
+				else if (c < 0xF0 && len >= 3)	return (((c & 0x0F) << 12) | ((buffer[1] & 0x3F) << 6)  | (buffer[2] & 0x3F));
+				else if (c < 0xF8 && len >= 4)	return (((c & 0x07) << 18) | ((buffer[1] & 0x3F) << 12) | ((buffer[2] & 0x3F) << 6) | (buffer[3] & 0x3F));
+				else							return (0);
+			}
+
+		#pragma endregion
+
+		#pragma region Char Width
+
+			int char_width(const size_t position, const char *buffer) {
+				unsigned int codepoint = char_codepoint(&buffer[position], char_length(buffer[position]));
+				if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
+					(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
+					(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
+					(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
+					(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
+					(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
+					(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
+					(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
+				return 1;
+			}
+
+		#pragma endregion
+
+	#pragma endregion
+
+	#pragma region Cursor
+
+		static void hide_cursor() { write(STDOUT_FILENO, "\033[?25l", 6); }
+		static void show_cursor() { write(STDOUT_FILENO, "\033[?25h", 6); }
+	
+	#pragma endregion
 
 #pragma endregion
 
@@ -421,6 +444,46 @@ int char_width(const size_t position, const char *buffer) {
 
 	#pragma endregion
 
+	#pragma region Print Char
+
+		static void print_char(unsigned char c, size_t *position, size_t *len, char *buffer, size_t *buffer_size) {
+			size_t char_size = 1;
+			if (c >= 0xF0)		char_size = 4;
+			else if (c >= 0xE0)	char_size = 3;
+			else if (c >= 0xC0)	char_size = 2;
+
+			// Expand buffer if necessary
+			if (*position + char_size >= *buffer_size) {
+				buffer = safe_realloc(buffer, *buffer_size, *buffer_size * 2);
+				if (!buffer) { free(buffer); exit_error(NO_MEMORY, 1, NULL, true); }
+				*buffer_size *= 2;
+			}
+
+			if (*position < *len) ft_memmove(&buffer[*position + char_size], &buffer[*position], *len - *position);
+
+			// Insert all bytes of the character into the buffer
+			buffer[(*position)++] = c;
+			for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer[(*position)++], 1);
+			*len += char_size;
+
+			write(STDOUT_FILENO, &buffer[*position - char_size], *len - (*position - char_size));
+
+			// Adjust the cursor position in the terminal
+			size_t move_back = 0;
+			for (size_t i = *position; i < *len; ) {
+				if (char_width(i, buffer) == 2) move_back++;
+				if ((unsigned char)buffer[i] >= 0xC0) {
+					if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
+					else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
+					else										i += 2;	// 2 bytes
+				} else											i++;	// 1 byte
+				move_back++;
+			}
+			while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
 #pragma region ReadLine
@@ -439,51 +502,14 @@ int char_width(const size_t position, const char *buffer) {
 			int n = read(STDIN_FILENO, &c, 1);
 			hide_cursor();
 			int result = check_EOF(n, c, position, buffer);
-			if (result == 1) continue;
-			else if (result == 2) return (NULL);
+			if		(result == 1)								continue;
+			else if	(result == 2)								return (NULL);
 	
-			if (check_SIGINT(c, &position, &len, prompt)) continue;
-			if (check_nl(c, len, buffer)) break; 
-			else if (backspace(c, &position, &len, buffer)) ;
-			else if (cursor(c, &position, &len, buffer)) ;
-			else if (position < buffer_size - 1) {
-				size_t char_size = 1;
-				if ((unsigned char)c >= 0xC0) {
-					char_size = 2;
-					if ((unsigned char)c >= 0xE0) char_size = 3;
-					if ((unsigned char)c >= 0xF0) char_size = 4;
-				}
-
-				// Expand buffer if necessary
-				if (position + char_size >= buffer_size) {
-					buffer = safe_realloc(buffer, buffer_size, buffer_size * 2);
-					if (!buffer) { free(buffer); exit_error(NO_MEMORY, 1, NULL, true); }
-					buffer_size *= 2;
-				}
-
-				if (position < len) ft_memmove(&buffer[position + char_size], &buffer[position], len - position);
-
-				// Insert all bytes of the character into the buffer
-				buffer[position++] = c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer[position++], 1);
-				len += char_size;
-
-				// Reprint from the current position to the end
-				write(STDOUT_FILENO, &buffer[position - char_size], len - (position - char_size));
-
-				// Adjust the cursor position in the terminal
-				size_t move_back = 0;
-				for (size_t i = position; i < len; ) {
-					if (char_width(i, buffer) == 2) move_back++;
-					if ((unsigned char)buffer[i] >= 0xC0) {
-						if ((unsigned char)buffer[i] >= 0xF0)		i += 4;	// 4 bytes
-						else if ((unsigned char)buffer[i] >= 0xE0)	i += 3;	// 3 bytes
-						else										i += 2;	// 2 bytes
-					} else											i++;	// 1 byte
-					move_back++;
-				}
-				while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
-			}
+			if		(check_SIGINT(c, &position, &len, prompt))	continue;
+			if		(check_nl(c, len, buffer))					break;
+			else if (backspace(c, &position, &len, buffer))		;
+			else if (cursor(c, &position, &len, buffer))		;
+			else if (position < buffer_size - 1)				print_char(c, &position, &len, buffer, &buffer_size);
 		}
 
 		show_cursor();
