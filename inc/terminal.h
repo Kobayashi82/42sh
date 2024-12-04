@@ -6,17 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/03 22:17:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/04 19:57:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#pragma region Includes
 
-#include <signal.h>
-#include <sys/ioctl.h>
-#include <termios.h>
-#include <termcap.h>
-#include <stdbool.h>
+	#pragma once
+
+	#include <signal.h>
+	#include <sys/ioctl.h>
+	#include <termios.h>
+	#include <termcap.h>
+	#include <stdbool.h>
+
+#pragma endregion
 
 #pragma region Enumerators
 
@@ -33,20 +37,45 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region Structures
 
-	extern bool show_control_chars;
-	extern bool fake_segfault;
+	typedef struct s_buffer {
+		unsigned char	c;
+		char			*value;
+		size_t			size, position, length;
+		bool			SHIFT, ALT, CTRL;
+	}	t_buffer;
+
+	typedef struct s_word {
+		size_t	start, end, len;
+		char	value[1024];
+	}	t_word;
 
 #pragma endregion
 
-//	---------- SIGNAL ----------
-void	sigquit_handler(int sig);
-void	sigint_handler(int sig);
-void	initialize_signals();
+#pragma region Variables
 
-void	print_banner();
-void	print_welcome();
-int		print(int fd, char *str, int mode);
+	extern bool fake_segfault;
+	extern bool show_control_chars;
+	extern t_buffer	buffer;
 
-char	*readline(const char* prompt);
+#pragma endregion
+
+#pragma region Methods
+
+	//	---------- SIGNAL ----------
+	void	sigquit_handler(int sig);
+	void	sigint_handler(int sig);
+	void	initialize_signals();
+
+	//	---------- PRINT -----------
+	void	print_banner();
+	void	print_welcome();
+	int		print(int fd, char *str, int mode);
+
+	//	--------- READLINE ---------
+	char	*readline(const char* prompt);
+
+	void	init_terminal_data();
+
+#pragma endregion

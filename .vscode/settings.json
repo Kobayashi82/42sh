@@ -1,6 +1,8 @@
 {
 	"files.associations": {
 		"42sh.h": "c",
-		"wait.h": "c"
+		"wait.h": "c",
+		"type_traits": "c",
+		"utility": "c"
 	}
 }

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/01 16:22:10 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/04 15:05:00 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,10 +41,10 @@ COUNTER 			= 0
 # ── FLAGS ── #
 # ─────────── #
 
-CC					= clang
+CC					= gcc
 FLAGS				= -Wall -Wextra -Werror -g # -O0 -fsanitize=thread
-MAKEFLAGS +=		--no-print-directory
-
+EXTRA_FLAGS			= -ltermcap
+EXTRA_FLAGS_OBJ		=
 # ───────────────── #
 # ── DIRECTORIES ── #
 # ───────────────── #
@@ -63,7 +63,7 @@ SRC_DIR				= src/$(NAME)/
 
 NAME	=	42sh
 SRCS	=	main/main.c																			\
-			readline/readline.c																	\
+			readline/readline.c readline/termcap.c												\
 			terminal/terminal.c terminal/banner.c terminal/signal.c terminal/print.c			\
 			clean/safe.c clean/error.c clean/free.c
 
@@ -94,7 +94,7 @@ $(NAME): normal_extra $(OBJS)
 	else \
 		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
 	fi
-	@gcc $(FLAGS) -I$(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) -o $(NAME) $(EXTRA_FLAGS)
+	@$(CC) $(FLAGS) -I$(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress
@@ -114,7 +114,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ ─ \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR  $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@gcc $(FLAGS) -I$(INC_DIR) -I$(LIBFT_INC) -MMD -o $@ -c $(EXTRA_FLAGS_OBJ) $<
+	@$(CC) $(FLAGS) -I$(INC_DIR) -I$(LIBFT_INC) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #
