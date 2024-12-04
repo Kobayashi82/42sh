@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/04 19:51:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/04 23:06:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,56 +46,6 @@
 
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 	}
-
-#pragma endregion
-
-#pragma region Utils
-
-	#pragma region Chars
-
-		#pragma region Char Length
-
-			int char_length(unsigned char c) {
-				if (c >= 0xF0) return (4);  // 4-byte
-				if (c >= 0xE0) return (3);  // 3-byte
-				if (c >= 0xC0) return (2);  // 2-byte
-				if (c < 0x80)  return (1);  // 1-byte
-				return (0);                  // Invalid byte
-			}
-
-		#pragma endregion
-
-		#pragma region Char Codepoint
-
-			unsigned int char_codepoint(const char *value, size_t length) {
-				unsigned char c = value[0];
-				if (c < 0x80)						return (c);
-				else if (c < 0xE0 && length >= 2)	return (((c & 0x1F) << 6)  | (value[1] & 0x3F));
-				else if (c < 0xF0 && length >= 3)	return (((c & 0x0F) << 12) | ((value[1] & 0x3F) << 6)  | (value[2] & 0x3F));
-				else if (c < 0xF8 && length >= 4)	return (((c & 0x07) << 18) | ((value[1] & 0x3F) << 12) | ((value[2] & 0x3F) << 6) | (value[3] & 0x3F));
-				else								return (0);
-			}
-
-		#pragma endregion
-
-		#pragma region Char Width
-
-			int char_width(size_t position, char *value) {
-				unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
-				if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
-					(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
-					(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
-					(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
-					(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
-					(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
-					(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
-					(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
-				return 1;
-			}
-
-		#pragma endregion
-
-	#pragma endregion
 
 #pragma endregion
 
@@ -156,8 +106,7 @@
 						buffer.position -= back_pos1; buffer.position += back_pos2;
 						ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
 
-						if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
-						write(STDOUT_FILENO, "\033[D", 3);
+						cursor_left(char_width(0, temp));
 						write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
 						buffer.position += back_pos1;
 					} else {
@@ -172,9 +121,9 @@
 						buffer.position -= back_pos2; buffer.position += back_pos1;
 						ft_memmove(&buffer.value[buffer.position], temp, back_pos2);
 
-						if (char_width(0, temp) == 2) write(STDOUT_FILENO, "\033[D", 3);
-						if (char_width(buffer.position - back_pos1, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-						write(STDOUT_FILENO, "\033[D\033[D", 6);
+						cursor_left(char_width(0, temp));
+						cursor_left(char_width(buffer.position - back_pos1, buffer.value));
+
 						write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 						buffer.position += back_pos2;
 					}
@@ -250,8 +199,7 @@
 				// printf("%ld\n", buffer.position);
 				while (buffer.position > 0 && buffer.position > prev.start) {
 					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-					if (char_width(buffer.position, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-					write(STDOUT_FILENO, "\033[D", 3);
+					cursor_left(char_width(buffer.position, buffer.value));
 				}
 
 				write(STDOUT_FILENO, &buffer.value[buffer.position], prev.len + sep.len + next.len);
@@ -269,17 +217,13 @@
 	#pragma region C_EOF
 
 		static int check_EOF(const int n) {
-			int result = 0;
-
-			if (n <= 0) result = 2;
-			else if (buffer.c == 4) result = (buffer.position == 0) + 1;
-
-			if (result == 2) {
+			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
 				free(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
 				disable_raw_mode();
+				return (1);
 			}
-			return (result);
+			return (0);
 		}
 
 	#pragma endregion
@@ -321,25 +265,14 @@
 				if (buffer.position > 0) {
 					size_t back_pos = 1;
 					while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
-					if (char_width(buffer.position - back_pos, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
 					if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
 					buffer.position -= back_pos; buffer.length -= back_pos;
 
-					write(STDOUT_FILENO, "\033[D", 3);
+					cursor_left(0);
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-					write(STDOUT_FILENO, "  ", 2);
+					write(STDOUT_FILENO, "  ", 2); cursor_left(2);
 
-					size_t move_back = 2;
-					for (size_t i = buffer.position; i < buffer.length; ) {
-						if (char_width(i, buffer.value) == 2) move_back++;
-						if ((unsigned char)buffer.value[i] >= 0xC0) {
-							if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-							else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-							else												i += 2;	// 2 bytes
-						} else													i += 1;	// 1 byte
-						move_back++;
-					}
-					while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
+					cursor_to_pos(buffer.length, buffer.position);
 				}
 			}
 
@@ -388,7 +321,7 @@
 
 		#pragma region Char
 
-			static void delete_char() {
+			void delete_char() {
 				if (buffer.position < buffer.length) {
 					size_t back_pos = 1;
 					while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
@@ -397,19 +330,8 @@
 					buffer.length -= back_pos;
 
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-					write(STDOUT_FILENO, "  ", 2);
-
-					size_t move_back = 2;
-					for (size_t i = buffer.position; i < buffer.length; ) {
-						if (char_width(i, buffer.value) == 2) move_back++;
-						if ((unsigned char)buffer.value[i] >= 0xC0) {
-							if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-							else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-							else												i += 2;	// 2 bytes
-						} else													i++;	// 1 byte
-						move_back++;
-					}
-					while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
+					write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+					cursor_to_pos(buffer.length, buffer.position);
 				}
 			}
 
@@ -428,7 +350,7 @@
 
 		#pragma endregion
 
-		#pragma region Word
+		#pragma region End
 
 			static void delete_end() {
 				if (buffer.position < buffer.length)
@@ -444,11 +366,12 @@
 		#pragma region Modifiers
 
 			static char modifiers(char *seq) {
-				int modifier = 0;
-				char key = seq[1];
-				size_t i = 0;
+				int		modifier = 0;
+				char	key = seq[1];
+				size_t	i = 0;
 
 				buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
+				if (seq[1] == '3') return (seq[1]);
 				if (seq[0] == '[') { while (seq[i] && seq[i] != ';') i++;
 					if (seq[i] == ';') { i++;
 						while (seq[i] >= '0' && seq[i] <= '9')
@@ -491,19 +414,15 @@
 				if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 					if (buffer.CTRL) {
 						while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
-							(buffer.position)--;
-							if (char_width(buffer.position, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-							write(STDOUT_FILENO, "\033[D", 3);
+							(buffer.position)--; cursor_left(0);
 						}
 						while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-							if (char_width(buffer.position, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-							write(STDOUT_FILENO, "\033[D", 3);
+							cursor_left(0);
 						}
 					} else {
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-						if (char_width(buffer.position, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-						write(STDOUT_FILENO, "\033[D", 3);
+						cursor_left(0);
 					}
 				}
 			}
@@ -514,24 +433,18 @@
 
 			static void arrow_right() {
 				if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length) {
-					size_t prev_pos = buffer.position;
 					if (buffer.CTRL) {
 						while (buffer.position < buffer.length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
-							(buffer.position)++;
-							write(STDOUT_FILENO, "\033[C", 3);
+							cursor_right(0); (buffer.position)++;
 						}
 						while (buffer.position < buffer.length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
-							prev_pos = buffer.position;
+							cursor_right(0);
 							do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-							if (char_width(prev_pos, buffer.value) == 2) write(STDOUT_FILENO, "\033[C", 3);
-							write(STDOUT_FILENO, "\033[C", 3);
 						}
 					} else {
 						if (buffer.position < buffer.length) {
-							prev_pos = buffer.position;
+							cursor_right(0);
 							do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-							if (char_width(prev_pos, buffer.value) == 2) write(STDOUT_FILENO, "\033[C", 3);
-							write(STDOUT_FILENO, "\033[C", 3);
 						}
 					}
 				}
@@ -544,8 +457,7 @@
 			static void arrow_home() {
 				while (buffer.position > 0) {
 					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-					if (char_width(buffer.position, buffer.value) == 2) write(STDOUT_FILENO, "\033[D", 3);
-					write(STDOUT_FILENO, "\033[D", 3);
+					cursor_left(0);
 				}
 			}
 
@@ -554,12 +466,9 @@
 		#pragma region Arrow End
 
 			static void arrow_end() {
-				size_t prev_pos;
 				while (buffer.position < buffer.length) {
-					prev_pos = buffer.position;
+					cursor_right(0);
 					do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-					if (char_width(prev_pos, buffer.value) == 2) write(STDOUT_FILENO, "\033[C", 3);
-					write(STDOUT_FILENO, "\033[C", 3);
 				}
 			}
 
@@ -572,18 +481,17 @@
 				ft_memset(&seq, 0, sizeof(seq));
 				if (buffer.c == '\033') {
 					if (read(STDIN_FILENO, seq, sizeof(seq) - 1) > 0) {
-						if (seq[0] == 't') { swap_word(); return (1); }	// ALT + T
-						if (seq[0] == '-') { redo(); return (1); }		// ALT + -
-						if (seq[0] == '[') {
-							if (seq[1] == '3' && seq[2] == '~')										{ delete_char(); return (1); }
-							if (seq[1] == '3' && seq[2] == ';' && seq[3] == '5' && seq[4] == '~')	{ delete_word(); return (1); }
-							seq[1] = modifiers(seq);
-							if (seq[1] == 'A') arrow_up();
-							if (seq[1] == 'B') arrow_down();
-							if (seq[1] == 'D') arrow_left();
-							if (seq[1] == 'C') arrow_right();
-							if (seq[1] == 'H') arrow_home();
-							if (seq[1] == 'F') arrow_end();
+						if (seq[0] == 't') { swap_word(); return (1); }				// ALT + T			- Swap word
+						if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
+						if (seq[0] == '[') { seq[1] = modifiers(seq);
+							if (seq[1] == 'A') 						arrow_up();		// Up				- History next
+							if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
+							if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
+							if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
+							if (seq[1] == 'H') 						arrow_home();	// Home				- Cursor to the start of the line
+							if (seq[1] == 'F')						arrow_end();	// End				- Cursor to the end of the line
+							if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Delete			- Delete
+							if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Delete	- Delete current word
 						}
 					} return (1);
 				} return (0);
@@ -600,11 +508,12 @@
 			else if (buffer.c == 31)	undo();					// CTRL + _ - Undo last action								(todo)
 			else if (buffer.c == 1)		arrow_home();			// CTRL + A - Cursor to the start of the line
 			else if (buffer.c == 5)		arrow_end();			// CTRL + E - Cursor to the end of the line
-			else if (buffer.c == 2)		arrow_left();			// CTRL + B - Cursor Right
+			else if (buffer.c == 2)		arrow_left();			// CTRL + B - Cursor right
 			else if (buffer.c == 6)		arrow_right();			// CTRL + F - Cursor left
 			else if (buffer.c == 16)	history_prev();			// CTRL + P - History prev									(todo)
 			else if (buffer.c == 14)	history_next();			// CTRL + N - History next									(todo)
 			else if (buffer.c == 20)	swap_char();			// CTRL + T - Swap char										(Not working right with multibytes 漢字)
+			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete
 			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end of line
 			else if (buffer.c == 8)		backspace();			// CTRL + H - Backspace
 			else if (buffer.c == 21)	backspace_start();		// CTRL + U - Backspace from cursor to start of line
@@ -677,22 +586,19 @@
 			show_cursor();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 			hide_cursor();
-			if (readed && buffer.c == 0x0C) {											// CTRL + L
+			if (readed && buffer.c == 0x0C) {								// CTRL + L
 				write(STDOUT_FILENO, "\033[H\033[2J", 7);
 				if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
 				write(STDOUT_FILENO, buffer.value, buffer.length);
-				buffer.position = buffer.length;				continue;
+				buffer.position = buffer.length;			continue;
 			}
 
-			int result = check_EOF(readed);						// CTRL + D
-			if		(result == 1)								continue;
-			else if	(result == 2)								return (NULL);
-	
-			if		(check_SIGINT(prompt))	continue;	// CTRL + C
-			if		(check_nl())					break;
-			else if (specials())		continue;
-			else if (cursor())		continue;
-			else if (buffer.position < buffer.size - 1)				print_char();
+			if		(check_EOF(readed))						return (NULL);	// CTRL + D
+			else if	(check_SIGINT(prompt))					continue;		// CTRL + C
+			else if	(check_nl())							break;
+			else if (specials())							continue;
+			else if (cursor())								continue;
+			else if (buffer.position < buffer.size - 1)		print_char();
 		}
 
 		disable_raw_mode();

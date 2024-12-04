@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/04 19:57:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/04 23:09:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 		char			*value;
 		size_t			size, position, length;
 		bool			SHIFT, ALT, CTRL;
+		int				col, row, cols, rows;
 	}	t_buffer;
 
 	typedef struct s_word {
@@ -77,5 +78,11 @@
 	char	*readline(const char* prompt);
 
 	void	init_terminal_data();
+	void	cursor_left(int moves);
+	void	cursor_right(int moves);
+	void	cursor_to_pos(size_t from_pos, size_t to_pos);
+	int		char_width(size_t position, char *value);
+
+	void	get_cursor_position();
 
 #pragma endregion
