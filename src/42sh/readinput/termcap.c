@@ -1,0 +1,237 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   termcap.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/05 11:47:17 by vzurera-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "42sh.h"
+
+#pragma region Terminal
+
+	#pragma region Initialize
+
+		void terminal_initialize() {
+			char *termtype = getenv("TERM");
+			if (!termtype) termtype = "dumb";
+
+			int success = tgetent(NULL, termtype);
+			if (success < 0)	write(2, "Could not access the termcap data base.\n", 41);
+			if (success == 0)	write(2, "Terminal type is not defined.\n", 31);
+		}
+
+	#pragma endregion
+
+	#pragma region Size
+
+		void terminal_size() {
+			buffer.cols = tgetnum("co");
+			buffer.rows = tgetnum("li");
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Cursor
+
+	#pragma region Up
+
+		void cursor_up() {
+			char *action = tgetstr("up", NULL);
+
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+		}
+
+	#pragma endregion
+
+	#pragma region Down
+
+		void cursor_down() {
+			char *action = tgetstr("do", NULL);
+
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+		}
+
+	#pragma endregion
+
+	#pragma region Left
+
+		void cursor_left(int moves) {
+			char *action = tgetstr("le", NULL);
+			if (!moves) moves = char_width(buffer.position, buffer.value);
+
+			while (action && moves--) {
+				cursor_get();
+				if (buffer.col == 0) {
+					buffer.col = 30;
+					cursor_up();
+				}
+				write(STDIN_FILENO, action, ft_strlen(action));
+			}
+		}
+
+	#pragma endregion
+
+	#pragma region Right
+
+		void cursor_right(int moves) {
+			char *action = tgetstr("nd", NULL);
+			if (!moves) moves = char_width(buffer.position, buffer.value);
+
+			while (action && moves--) write(STDIN_FILENO, action, ft_strlen(action));
+		}
+
+	#pragma endregion
+
+	#pragma region Move
+
+		void cursor_move(size_t from_pos, size_t to_pos) {
+			if (from_pos > to_pos) {
+				for (size_t i = to_pos; i < from_pos; ) {
+					if (char_width(i, buffer.value) == 2) cursor_left(1);
+					if ((unsigned char)buffer.value[i] >= 0xC0) {
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
+						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
+						else												i += 2;	// 2 bytes
+					} else													i++;	// 1 byte
+					cursor_left(1);
+				}
+			} else if (from_pos < to_pos) {
+				for (size_t i = from_pos; i < to_pos; ) {
+					if (char_width(i, buffer.value) == 2) cursor_right(1);
+					if ((unsigned char)buffer.value[i] >= 0xC0) {
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
+						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
+						else												i += 2;	// 2 bytes
+					} else													i++;	// 1 byte
+					cursor_right(1);
+				}	
+			}
+		}
+
+	#pragma endregion
+
+	#pragma region Get
+
+		void cursor_get() {
+			char	buf[32]; ft_memset(buf, 0, sizeof(buf));
+			int		a = 0, i = 0;
+			char *action = tgetstr("u7", NULL);
+
+			if (action) {
+				write(STDIN_FILENO, action, ft_strlen(action));
+				read(STDIN_FILENO, buf, sizeof(buf) - 1);
+
+				while (buf[i]) {
+					if (buf[i] >= '0' && buf[i] <= '9') {
+						int start = i;
+						while (buf[i] >= '0' && buf[i] <= '9') i++;
+						int value = ft_atoi(&buf[start]);
+						if (a++ == 0)	buffer.row = value - 1;
+						else			buffer.col = value - 1;
+					} i++;
+				}
+			}
+		}
+
+	#pragma endregion
+
+	#pragma region Set
+
+		void cursor_set(int row, int col) {
+			char *action = tgetstr("cm", NULL);
+
+			if (action != NULL) {
+				char buffer2[1024];  // Suficiente espacio para la cadena completa
+				char *y_str = ft_itoa(row);	if (!y_str) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+				char *x_str = ft_itoa(col);	if (!y_str) { free(y_str); disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+
+				int pos = 0;
+				for (const char *p = action; *p != '\0'; p++) {
+					if (*p == '%' && *(p + 1) == 'd') {
+						const char *replacement = (p == action || *(p - 1) == '%') ? y_str : x_str;
+						for (const char *r = replacement; *r != '\0'; ++r) buffer2[pos++] = *r;
+						p++;
+					} else buffer2[pos++] = *p;
+				} buffer2[pos] = '\0';
+
+				write(STDIN_FILENO, buffer2, pos);
+				free(y_str); free(x_str); 
+			}
+		}
+
+	#pragma endregion
+
+	#pragma region Hide
+
+		void cursor_hide() {
+			char *action = tgetstr("vi", NULL);
+
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+		}
+
+	#pragma endregion
+
+	#pragma region Show
+
+		void cursor_show() {
+			char *action = tgetstr("ve", NULL);
+
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Utils
+
+	#pragma region Char Width
+
+		#pragma region Char Length
+
+			static int char_length(unsigned char c) {
+				if (c >= 0xF0) return (4);  // 4-byte
+				if (c >= 0xE0) return (3);  // 3-byte
+				if (c >= 0xC0) return (2);  // 2-byte
+				if (c < 0x80)  return (1);  // 1-byte
+				return (0);                  // Invalid byte
+			}
+
+		#pragma endregion
+
+		#pragma region Char Codepoint
+
+			static unsigned int char_codepoint(const char *value, size_t length) {
+				unsigned char c = value[0];
+				if (c < 0x80)						return (c);
+				else if (c < 0xE0 && length >= 2)	return (((c & 0x1F) << 6)  | (value[1] & 0x3F));
+				else if (c < 0xF0 && length >= 3)	return (((c & 0x0F) << 12) | ((value[1] & 0x3F) << 6)  | (value[2] & 0x3F));
+				else if (c < 0xF8 && length >= 4)	return (((c & 0x07) << 18) | ((value[1] & 0x3F) << 12) | ((value[2] & 0x3F) << 6) | (value[3] & 0x3F));
+				else								return (0);
+			}
+
+		#pragma endregion
+
+		int char_width(size_t position, char *value) {
+			unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
+			if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
+				(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
+				(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
+				(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
+				(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
+				(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
+				(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
+				(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
+			return (1);
+		}
+
+	#pragma endregion
+
+#pragma endregion

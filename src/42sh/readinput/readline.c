@@ -6,86 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/04 23:06:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 11:15:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-#pragma region Variables
-
-	t_buffer	buffer;
-
-	bool		show_control_chars = true;
-	bool		fake_segfault = false;
-
-#pragma endregion
-
-#pragma region Raw Mode
-
-	static void hide_cursor() { write(STDOUT_FILENO, "\033[?25l", 6); }
-	static void show_cursor() { write(STDOUT_FILENO, "\033[?25h", 6); }
-
-	static void disable_raw_mode() {
-		show_cursor();
-		tgetent(NULL, "none");
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &data.terminal.term);
-	}
-
-	static void enable_raw_mode() {
-		tcgetattr(STDIN_FILENO, &data.terminal.term);
-		atexit(disable_raw_mode);
-		init_terminal_data();
-
-		struct termios raw = data.terminal.term;
-		raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);			// Disable echo (ECHO), canonical mode (ICANON), signals (ISIG), and extended input processing (IEXTEN)
-		raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);	// Disable break interrupt (BRKINT), carriage return to newline conversion (ICRNL), parity check (INPCK), stripping of eighth bit (ISTRIP), and software flow control (IXON)
-		raw.c_oflag &= ~(OPOST);									// Disable post-processing of output (OPOST)
-		raw.c_cc[VMIN] = 1;											// Read at least 1 character before returning
-		raw.c_cc[VTIME] = 0;										// No timeout for read
-
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
-	}
-
-#pragma endregion
-
 #pragma region Functions
-
-	#pragma region History
-
-		#pragma region Prev
-
-			static void history_prev() {
-				write(1, "History Prev", 13);
-			}
-
-		#pragma endregion
-
-		#pragma region Next
-
-			static void history_next() {
-				write(1, "History Next", 13);
-			}
-
-		#pragma endregion
-
-	#pragma endregion
-
-	#pragma region Undo
-
-		static void undo() {
-			write(1, "undo", 4);
-		}
-
-	#pragma endregion
-
-	#pragma region Redo
-
-		static void redo() {
-			write(1, "redo", 4);
-		}
-
-	#pragma endregion
 
 	#pragma region Swap
 
@@ -214,13 +141,12 @@
 
 #pragma region Input
 
-	#pragma region C_EOF
+	#pragma region EOF
 
-		static int check_EOF(const int n) {
+		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
 				free(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
-				disable_raw_mode();
 				return (1);
 			}
 			return (0);
@@ -228,14 +154,14 @@
 
 	#pragma endregion
 
-	#pragma region C_SIGINT
+	#pragma region SIGINT
 
-		static int check_SIGINT(const char *prompt) {
+		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
 				buffer.position = 0; buffer.length = 0;
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
-				if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
+				if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
 				data.terminal.signal = 2;
 				return (1);
 			}
@@ -246,7 +172,7 @@
 
 	#pragma region NewLine
 
-		static int check_nl() {
+		static int enter() {
 			if (buffer.c == '\r' || buffer.c == '\n') {
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
@@ -272,7 +198,7 @@
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 					write(STDOUT_FILENO, "  ", 2); cursor_left(2);
 
-					cursor_to_pos(buffer.length, buffer.position);
+					cursor_move(buffer.length, buffer.position);
 				}
 			}
 
@@ -331,7 +257,7 @@
 
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 					write(STDOUT_FILENO, "  ", 2); cursor_left(2);
-					cursor_to_pos(buffer.length, buffer.position);
+					cursor_move(buffer.length, buffer.position);
 				}
 			}
 
@@ -452,9 +378,9 @@
 
 		#pragma endregion
 
-		#pragma region Arrow Home
+		#pragma region Home
 
-			static void arrow_home() {
+			static void home() {
 				while (buffer.position > 0) {
 					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 					cursor_left(0);
@@ -463,9 +389,9 @@
 
 		#pragma endregion
 
-		#pragma region Arrow End
+		#pragma region End
 
-			static void arrow_end() {
+			static void end() {
 				while (buffer.position < buffer.length) {
 					cursor_right(0);
 					do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
@@ -488,8 +414,8 @@
 							if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
 							if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
 							if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
-							if (seq[1] == 'H') 						arrow_home();	// Home				- Cursor to the start of the line
-							if (seq[1] == 'F')						arrow_end();	// End				- Cursor to the end of the line
+							if (seq[1] == 'H') 						home();			// Home				- Cursor to the start of the line
+							if (seq[1] == 'F')						end();			// End				- Cursor to the end of the line
 							if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Delete			- Delete
 							if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Delete	- Delete current word
 						}
@@ -501,18 +427,26 @@
 
 	#pragma endregion
 
+		static void clear_screen() {
+			write(STDOUT_FILENO, "\033[H\033[2J", 7);
+			if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
+			write(STDOUT_FILENO, buffer.value, buffer.length);
+			buffer.position = buffer.length;
+		}
+
 	#pragma region Specials
 
 		static int specials() {
 			if		(buffer.c == 19)	fake_segfault = true;	// CTRL + S - Fake SegFault
 			else if (buffer.c == 31)	undo();					// CTRL + _ - Undo last action								(todo)
-			else if (buffer.c == 1)		arrow_home();			// CTRL + A - Cursor to the start of the line
-			else if (buffer.c == 5)		arrow_end();			// CTRL + E - Cursor to the end of the line
+			else if (buffer.c == 1)		home();					// CTRL + A - Cursor to the start of the line
+			else if (buffer.c == 5)		end();					// CTRL + E - Cursor to the end of the line
 			else if (buffer.c == 2)		arrow_left();			// CTRL + B - Cursor right
 			else if (buffer.c == 6)		arrow_right();			// CTRL + F - Cursor left
 			else if (buffer.c == 16)	history_prev();			// CTRL + P - History prev									(todo)
 			else if (buffer.c == 14)	history_next();			// CTRL + N - History next									(todo)
 			else if (buffer.c == 20)	swap_char();			// CTRL + T - Swap char										(Not working right with multibytes 漢字)
+			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
 			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete
 			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end of line
 			else if (buffer.c == 8)		backspace();			// CTRL + H - Backspace
@@ -528,20 +462,19 @@
 
 	#pragma region Print Char
 
-		static void print_char() {
+		static int print_char() {
 			size_t char_size = 1;
 			if		(buffer.c >= 0xF0)	char_size = 4;
 			else if (buffer.c >= 0xE0)	char_size = 3;
 			else if (buffer.c >= 0xC0)	char_size = 2;
 
+			if (buffer.position >= buffer.size - 1) return (0);
+
 			// Expand buffer if necessary
 			if (buffer.position + char_size >= buffer.size) {
 				buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
 				buffer.size *= 2;
-				if (!buffer.value) {
-					disable_raw_mode();
-					exit_error(NO_MEMORY, 1, NULL, true);
-				}
+				if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
 			}
 
 			if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
@@ -565,6 +498,7 @@
 				move_back++;
 			}
 			while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
+			return (0);
 		}
 
 	#pragma endregion
@@ -573,36 +507,14 @@
 
 #pragma region ReadLine
 
-	char *readline(const char* prompt) {
-		buffer.size = 1024;
-		buffer.position = 0, buffer.length = 0;
-		buffer.value = safe_malloc(buffer.size);
-		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
-
-		enable_raw_mode();
-		if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
-	
-		while (1) {
-			show_cursor();
-			int readed = read(STDIN_FILENO, &buffer.c, 1);
-			hide_cursor();
-			if (readed && buffer.c == 0x0C) {								// CTRL + L
-				write(STDOUT_FILENO, "\033[H\033[2J", 7);
-				if (prompt) write(STDOUT_FILENO, prompt, ft_strlen(prompt));
-				write(STDOUT_FILENO, buffer.value, buffer.length);
-				buffer.position = buffer.length;			continue;
-			}
-
-			if		(check_EOF(readed))						return (NULL);	// CTRL + D
-			else if	(check_SIGINT(prompt))					continue;		// CTRL + C
-			else if	(check_nl())							break;
-			else if (specials())							continue;
-			else if (cursor())								continue;
-			else if (buffer.position < buffer.size - 1)		print_char();
-		}
-
-		disable_raw_mode();
-		return (buffer.value);
+	int readline(int readed) {
+		if		(ctrl_d(readed))	return (1);
+		else if	(ctrl_c())			return (0);
+		else if	(enter())			return (1);
+		else if (specials())		return (0);
+		else if (cursor())			return (0);
+		else if (print_char())		return (0);
+		return (0);
 	}
 
 #pragma endregion

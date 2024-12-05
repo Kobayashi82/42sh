@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 21:51:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 10:04:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-//	Print the banner
-void print_banner() {                                            
+void banner() {                                            
 	print(1, RED600"\n\t        ,--,                                   \n", RESET);
 	print(1, RED600"\t      ,--.'|      ,----,  "Y"           ,---,     \n", JOIN);
 	print(1, RED600"\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n", JOIN);
@@ -30,7 +29,7 @@ void print_banner() {
 	print(1, RED600"\t      '--'  `---'                              \n\n"NC, PRINT);
 }
 
-void print_welcome() {
+void welcome() {
 	print(1, G"\n\t\t\tWELCOME TO "RED600"42"Y"sh"G" 1.0\n\n", RESET);
 	print(1, C"\t This "BR"project"C" has been made with ", JOIN);
     print(1, G"effort"C" and "G"care\n", JOIN);

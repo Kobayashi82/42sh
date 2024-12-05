@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/01 21:11:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 09:54:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "colors.h"
 #include "clean.h"
 #include "terminal.h"
+#include "readinput.h"
 
 #include <sys/wait.h>
 #include <time.h>
