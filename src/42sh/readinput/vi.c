@@ -6,11 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 10:59:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 21:50:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
+
+#pragma region Vi
+
+	int vi(int readed) {
+		(void) readed;
+		return (0);
+	}
+
+#pragma endregion
 
 #pragma region Info
 
@@ -73,14 +82,5 @@
 
 
 	// https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sh.html#tag_20_117_13_04
-
-#pragma endregion
-
-#pragma region Vi
-
-	int vi(int readed) {
-		(void) readed;
-		return (0);
-	}
 
 #pragma endregion

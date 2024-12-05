@@ -6,101 +6,65 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 23:43:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/02/01 00:53:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 00:20:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <unistd.h>
+#include <stdarg.h>
 
-static void	print_c(int c, int *total, int fd)
-{
+static void	print_c(int c, int *total, int fd) {
 	int	result;
 
 	result = write(fd, &c, 1);
 	*total += result;
-	if (result == -1)
-		*total = -1;
+	if (result == -1) *total = -1;
 }
 
-static void	print_s(char *s, int *total, int fd)
-{
-	if (!s)
-		s = "(null)";
-	while (*s && *total >= 0)
-		print_c(*s++, total, fd);
+static void	print_s(char *s, int *total, int fd) {
+	if (!s) s = "(null)";
+	while (*s && *total >= 0) print_c(*s++, total, fd);
 }
 
-static void	print_n(unsigned long n, unsigned int base, int *total, int fd)
-{
-	char	*strbase;
+static void	print_n(unsigned long n, unsigned int base, int *total, int fd) {
+	char	*strbase = "0123456789abcdef";
 
-	if (base == 11)
-	{
-		base = 10;
-		print_c('-', total, fd);
-	}
-	if (base == 17)
-	{
-		base = 16;
-		print_s("0x", total, fd);
-	}
-	strbase = "0123456789abcdef";
-	if (fd < 0)
-		strbase = "0123456789ABCDEF";
-	if (n >= base)
-		print_n(n / base, base, total, fd);
-	if (*total == -1)
-		return ;
-	if (fd < 0)
-		fd = -fd;
+	if (base == 11) {		base = 10; print_c('-', total, fd);  }
+	else if (base == 17) {	base = 16; print_s("0x", total, fd); }
+	if (fd < 0)				strbase = "0123456789ABCDEF";
+	if (n >= base)			print_n(n / base, base, total, fd);
+	if (*total == -1)		return ;
+	if (fd < 0)				fd = -fd;
+
 	print_c(strbase[n % base], total, fd);
 }
 
-static void	chooser(int c, va_list args, int *total, int fd)
-{
-	long long	n;
-
-	if (c == '%')
-		print_c('%', total, fd);
-	if (c == 'c')
-		print_c(va_arg(args, int), total, fd);
-	if (c == 's')
-		print_s(va_arg(args, char *), total, fd);
-	if (c == 'd' || c == 'i')
-	{
-		n = va_arg(args, int);
-		if (n < 0)
-			print_n(n * -1, 11, total, fd);
-		else
-			print_n(n, 10, total, fd);
+static void	chooser(int c, va_list args, int *total, int fd) {
+	if (c == '%')	print_c('%', total, fd);
+	if (c == 'c')	print_c(va_arg(args, int), total, fd);
+	if (c == 's')	print_s(va_arg(args, char *), total, fd);
+	if (c == 'u')	print_n(va_arg(args, unsigned int), 10, total, fd);
+	if (c == 'p')	print_n(va_arg(args, unsigned long), 17, total, fd);
+	if (c == 'x')	print_n(va_arg(args, unsigned int), 16, total, fd);
+	if (c == 'X')	print_n(va_arg(args, unsigned int), 16, total, -fd);
+	if (c == 'd' || c == 'i') { long long n = va_arg(args, int);
+		if (n < 0)	print_n(n * -1, 11, total, fd);
+		else		print_n(n, 10, total, fd);
 	}
-	if (c == 'u')
-		print_n(va_arg(args, unsigned int), 10, total, fd);
-	if (c == 'p')
-		print_n(va_arg(args, unsigned long), 17, total, fd);
-	if (c == 'x')
-		print_n(va_arg(args, unsigned int), 16, total, fd);
-	if (c == 'X')
-		print_n(va_arg(args, unsigned int), 16, total, -fd);
 }
 
-int	ft_printf(char const *format, ...)
-{
-	va_list	args;
-	int		total;
-	int		fd;
+int	ft_printf(int fd, char const *format, ...) {
+	va_list	args; va_start(args, format);
+	int		total = 0;
 
-	total = 0;
-	fd = 1;
-	va_start(args, format);
-	while (format && *format && total >= 0)
-	{
-		if (*format == '%')
-			chooser(*(++format), args, &total, fd);
-		else
-			print_c(*format, &total, fd);
+	if (fd < 1) return (0);
+
+	while (format && *format && total >= 0) {
+		if (*format == '%')	chooser(*(++format), args, &total, fd);
+		else				print_c(*format, &total, fd);
 		format++;
 	}
-	va_end(args);
-	return (total);
+
+	return (va_end(args), total);
 }

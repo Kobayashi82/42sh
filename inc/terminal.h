@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 10:21:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 21:35:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 #pragma endregion
 
 #pragma region Methods
-
 
 	//	---------- BANNER ----------
 	void	banner();
