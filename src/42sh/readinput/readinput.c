@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 11:49:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 13:29:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
-		enable_raw_mode();
+		enable_raw_mode(); terminal_size(); terminal_start();
 		if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
-	
+
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);

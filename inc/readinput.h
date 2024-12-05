@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 11:48:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 12:53:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@
 	//	--------- TERMCAP ----------
 	void	terminal_initialize();
 	void	terminal_size();
+	void	terminal_start();
 	void	cursor_left(int moves);
 	void	cursor_right(int moves);
 	void	cursor_move(size_t from_pos, size_t to_pos);

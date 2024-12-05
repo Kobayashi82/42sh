@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 11:47:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 16:21:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,67 @@
 	#pragma region Size
 
 		void terminal_size() {
-			buffer.cols = tgetnum("co");
 			buffer.rows = tgetnum("li");
+			buffer.cols = tgetnum("co");
 		}
 
 	#pragma endregion
 
+	#pragma region Start Position
+
+		void terminal_start() {
+			cursor_get();
+			buffer.start_row = buffer.row;
+			buffer.start_col = buffer.col;
+		}
+
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Cursor
+
+	#pragma region Logical
+
+		int cursor_logical() {
+			size_t position = buffer.start_col;
+			size_t length;
+
+			if (buffer.prompt) {
+				length = ft_strlen(buffer.prompt);
+				for (size_t i = 0; i < length;) {
+					int width = char_width(i, buffer.prompt);
+					if (width == 0) {
+						while (i < length && buffer.prompt[i] != 'm') ++i;
+						++i;
+					} else { position += width;
+						if ((unsigned char)buffer.prompt[i] >= 0xC0) {
+							if ((unsigned char)buffer.prompt[i] >= 0xF0)		i += 4; // 4 bytes
+							else if ((unsigned char)buffer.prompt[i] >= 0xE0)	i += 3; // 3 bytes
+							else												i += 2; // 2 bytes
+						} else 													i += 1;	// 1 byte
+					}
+				}
+			}
+
+			length = buffer.position;
+			for (size_t i = 0; i < length;) {
+				int width = char_width(i, buffer.value);
+				if (width == 0) {
+					while (i < length && buffer.value[i] != 'm') ++i;
+					++i;
+				} else { position += width;
+					if ((unsigned char)buffer.value[i] >= 0xC0) {
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4; // 4 bytes
+						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3; // 3 bytes
+						else												i += 2; // 2 bytes
+					} else 													i += 1;	// 1 byte
+				}
+			}
+			return (position);
+		}
+
+	#pragma endregion
 
 	#pragma region Up
 
@@ -68,11 +120,8 @@
 
 			while (action && moves--) {
 				cursor_get();
-				if (buffer.col == 0) {
-					buffer.col = 30;
-					cursor_up();
-				}
-				write(STDIN_FILENO, action, ft_strlen(action));
+				if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row - 1, buffer.cols);
+				else											write(STDIN_FILENO, action, ft_strlen(action));
 			}
 		}
 
@@ -84,7 +133,11 @@
 			char *action = tgetstr("nd", NULL);
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
-			while (action && moves--) write(STDIN_FILENO, action, ft_strlen(action));
+			while (action && moves--) {
+				cursor_get();
+				if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row + 1, 0);
+				else											write(STDIN_FILENO, action, ft_strlen(action));
+			}
 		}
 
 	#pragma endregion
@@ -144,27 +197,35 @@
 
 	#pragma region Set
 
+
 		void cursor_set(int row, int col) {
 			char *action = tgetstr("cm", NULL);
 
-			if (action != NULL) {
-				char buffer2[1024];  // Suficiente espacio para la cadena completa
-				char *y_str = ft_itoa(row);	if (!y_str) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
-				char *x_str = ft_itoa(col);	if (!y_str) { free(y_str); disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
-
-				int pos = 0;
-				for (const char *p = action; *p != '\0'; p++) {
-					if (*p == '%' && *(p + 1) == 'd') {
-						const char *replacement = (p == action || *(p - 1) == '%') ? y_str : x_str;
-						for (const char *r = replacement; *r != '\0'; ++r) buffer2[pos++] = *r;
-						p++;
-					} else buffer2[pos++] = *p;
-				} buffer2[pos] = '\0';
-
-				write(STDIN_FILENO, buffer2, pos);
-				free(y_str); free(x_str); 
-			}
+			if (action) action = tgoto(action, col, row);
+			if (action) write(STDOUT_FILENO, action, ft_strlen(action));
 		}
+
+		// void cursor_set2(int row, int col) {
+		// 	char *action = tgetstr("cm", NULL);
+
+		// 	if (action) {
+		// 		char buffer2[1024];
+		// 		char *y_str = ft_itoa(row);	if (!y_str) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+		// 		char *x_str = ft_itoa(col);	if (!y_str) { free(y_str); disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+
+		// 		int pos = 0;
+		// 		for (const char *p = action; *p != '\0'; p++) {
+		// 			if (*p == '%' && *(p + 1) == 'd') {
+		// 				const char *replacement = (p == action || *(p - 1) == '%') ? y_str : x_str;
+		// 				for (const char *r = replacement; *r != '\0'; ++r) buffer2[pos++] = *r;
+		// 				p++;
+		// 			} else buffer2[pos++] = *p;
+		// 		} buffer2[pos] = '\0';
+
+		// 		write(STDOUT_FILENO, buffer2, pos);
+		// 		free(y_str); free(x_str); 
+		// 	}
+		// }
 
 	#pragma endregion
 
@@ -220,6 +281,16 @@
 		#pragma endregion
 
 		int char_width(size_t position, char *value) {
+			unsigned char c = value[position];
+			if (c == '\033') { size_t i = position + 1;
+				if (value[i] == '[') {
+					while (value[++i]) {
+						if ((value[i] >= 'A' && value[i] <= 'Z') || (value[i] >= 'a' && value[i] <= 'z'))	return (0);
+						if (!(value[i] >= '0' && value[i] <= '9') && value[i] != ';' && value[i] != '[')	break;
+					}
+				} return (0);
+			}
+
 			unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
 			if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
 				(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
