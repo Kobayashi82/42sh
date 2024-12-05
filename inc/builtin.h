@@ -1,33 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   history.c                                          :+:      :+:    :+:   */
+/*   builtin.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 21:03:12 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/05 21:07:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#pragma once
 
-	#pragma region History
-
-		#pragma region Prev
-
-			void history_prev() {
-				write(1, "History Prev", 13);
-			}
-
-		#pragma endregion
-
-		#pragma region Next
-
-			void history_next() {
-				write(1, "History Next", 13);
-			}
-
-		#pragma endregion
-
-	#pragma endregion
+const char *default_editor();

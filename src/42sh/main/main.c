@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 11:20:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 21:10:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int shell_time() { return (time(NULL) - data.shell.started); }
 int read_input() {
 	initialize_signals();
 
-	if (!(data.terminal.input = readinput(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
+    if (!(data.terminal.input = readinput(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
 	if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; }
 	else if (data.terminal.input) printf("%s\n", data.terminal.input);
 	free(data.terminal.input);

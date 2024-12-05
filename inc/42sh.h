@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 09:54:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/05 21:01:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "clean.h"
 #include "terminal.h"
 #include "readinput.h"
+#include "builtin.h"
 
 #include <sys/wait.h>
 #include <time.h>
@@ -26,6 +27,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 #pragma region Structures
 
