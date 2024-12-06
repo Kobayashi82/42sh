@@ -8,6 +8,7 @@
 !src
 !src/**
 !Makefile
+!.valgrind.supp
 !leaks
 !.gitignore
 !README.md

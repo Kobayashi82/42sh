@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 16:40:56 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/06 00:16:37 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/06 11:54:27 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,22 +18,22 @@
 # ── COLORS ── #
 # ──────────── #
 
-NC    				= \033[0m
-RED     			= \033[0;31m
-GREEN   			= \033[0;32m
-YELLOW  			= \033[0;33m
-CYAN    			= \033[0;36m
-WHITE   			= \033[0;37m
-INV_CYAN			= \033[7;36m
-BG_CYAN				= \033[40m
-FG_YELLOW			= \033[89m
-COUNTER 			= 0
+NC    		= \033[0m
+RED     	= \033[0;31m
+GREEN   	= \033[0;32m
+YELLOW  	= \033[0;33m
+CYAN    	= \033[0;36m
+WHITE   	= \033[0;37m
+INV_CYAN	= \033[7;36m
+BG_CYAN		= \033[40m
+FG_YELLOW	= \033[89m
+COUNTER 	= 0
 
 # ─────────── #
 # ── FLAGS ── #
 # ─────────── #
 
-FLAGS	= -Wall -Wextra -Werror
+FLAGS		= -Wall -Wextra -Werror
 
 # ───────────────── #
 # ── DIRECTORIES ── #
@@ -48,20 +48,13 @@ SRC_DIR		= src/
 # ── NAME ── #
 # ────────── #
 
-NAME	= libft.a
+NAME		= libft.a
 
 # ─────────── #
 # ── FILES ── #
 # ─────────── #
 
-SRCS		= ft_mem.c			\
-			  ft_str_is_to.c	\
-			  ft_str_put.c		\
-			  ft_str_op.c		\
-			  ft_str_num.c		\
-			  ft_string.c		\
-			  ft_printf.c		\
-			  ft_get_next_line.c
+SRCS		= ft_mem.c ft_string.c ft_str_num.c ft_printf.c ft_gnl.c
 
 # ────────────────────────────────────────────────────────── #
 # ───────────────────────── NORMAL ───────────────────────── #
