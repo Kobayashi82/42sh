@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 21:36:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 14:04:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,24 +50,13 @@
 
 		#pragma region History
 
-			typedef struct s_history		t_history;
-			typedef struct s_history_list 	t_history_list;
-
-			typedef struct s_history {
-				char		*value;
-				int			event;
-				t_history	*prev;
-				t_history	*next;
-			}	t_history;
-
-			typedef struct s_history_list {
-				t_history	*head;
-				t_history	*tail;
-				size_t		size;
-				int 		file_start;
-				int			file_end;
-				int			next_event;
-			}	t_history_list;
+			typedef struct {
+				char	*line;
+				void	*data;
+				size_t	event;
+				size_t	length;
+				time_t	timestamp;
+			}	HIST_ENTRY;
 
 		#pragma endregion
 
