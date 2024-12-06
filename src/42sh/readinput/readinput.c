@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 21:12:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 23:02:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,23 +19,25 @@
 	bool		show_control_chars = true;
 	bool		fake_segfault = false;
 	bool		free_prompt = false;
-	int			input_mode = READLINE;
 	int			vi_mode = INSERT;
+	static bool	raw_mode = false;
 
 #pragma endregion
 
 #pragma region Raw Mode
 
 	void disable_raw_mode() {
-		cursor_show();
-		tgetent(NULL, "none");
-		tcsetattr(STDIN_FILENO, TCSAFLUSH, &data.terminal.term);
-		if (free_prompt) { free_prompt = false; free(buffer.prompt); buffer.prompt = NULL; }
+		if (raw_mode) {
+			raw_mode = false;
+			cursor_show();
+			tgetent(NULL, "none");
+			tcsetattr(STDIN_FILENO, TCSAFLUSH, &data.terminal.term);
+			if (free_prompt) { free_prompt = false; free(buffer.prompt); buffer.prompt = NULL; }
+		}
 	}
-
 	static void enable_raw_mode() {
+		raw_mode = true;
 		tcgetattr(STDIN_FILENO, &data.terminal.term);
-		atexit(disable_raw_mode);
 		terminal_initialize();
 
 		struct termios raw = data.terminal.term;
@@ -69,8 +71,8 @@
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 			cursor_hide();
 
-			if (input_mode == READLINE)	result = readline(readed);
-			if (input_mode == VI)		result = vi(readed);
+			if (options.input_mode == READLINE)	result = readline(readed);
+			if (options.input_mode == VI)		result = vi(readed);
 		}
 
 		disable_raw_mode();

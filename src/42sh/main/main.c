@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 14:38:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 23:00:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,6 @@
 #pragma region Main
 
 	int main(int argc, char **argv, char **envp) {
-		//const char *date = "01/2/2024 14:16:33";
-		char *current_date = format_timestamp(get_timestamp(NULL));
-		if (current_date) printf("%s\n", current_date);
-		return (free(current_date), 0);
-
 		if (initialize(argc, argv, envp)) return (1);
 		
 		if (argc == 2 && !ft_strcmp(argv[1], "-c"))

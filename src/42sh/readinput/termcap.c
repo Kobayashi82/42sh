@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 21:37:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 19:40:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,35 +197,12 @@
 
 	#pragma region Set
 
-
 		void cursor_set(int row, int col) {
 			char *action = tgetstr("cm", NULL);
 
 			if (action) action = tgoto(action, col, row);
 			if (action) write(STDOUT_FILENO, action, ft_strlen(action));
 		}
-
-		// void cursor_set2(int row, int col) {
-		// 	char *action = tgetstr("cm", NULL);
-
-		// 	if (action) {
-		// 		char buffer2[1024];
-		// 		char *y_str = ft_itoa(row);	if (!y_str) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
-		// 		char *x_str = ft_itoa(col);	if (!y_str) { free(y_str); disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
-
-		// 		int pos = 0;
-		// 		for (const char *p = action; *p != '\0'; p++) {
-		// 			if (*p == '%' && *(p + 1) == 'd') {
-		// 				const char *replacement = (p == action || *(p - 1) == '%') ? y_str : x_str;
-		// 				for (const char *r = replacement; *r != '\0'; ++r) buffer2[pos++] = *r;
-		// 				p++;
-		// 			} else buffer2[pos++] = *p;
-		// 		} buffer2[pos] = '\0';
-
-		// 		write(STDOUT_FILENO, buffer2, pos);
-		// 		free(y_str); free(x_str); 
-		// 	}
-		// }
 
 	#pragma endregion
 

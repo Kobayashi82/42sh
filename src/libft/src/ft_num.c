@@ -70,11 +70,11 @@
 
 	char	*ft_itoa(int n) {
 		char *str;
-		int len = 0, sign = 1;
+		int len = 0, sign = 1, tmp = n;
 
 		if (n == 0) return (ft_strdup("0"));
 		if (n < 0) { sign = -1; len++; }
-		while (n != 0) { n /= 10; len++; }
+		while (tmp != 0) { tmp /= 10; len++; }
 		str = malloc((len + 1));
 		if (!str) return (NULL);
 		str[len] = '\0';

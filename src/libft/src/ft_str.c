@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_string.c                                        :+:      :+:    :+:   */
+/*   ft_str.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 11:51:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 22:04:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -389,10 +389,9 @@
 	#pragma region StrJoin
 
 		char	*ft_strjoin(char *str1, char *str2, int frees) {
-			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
-
 			if (!str1 && !str2) return (NULL);
 
+			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
 			char *new_str = malloc(len);
 			ft_strlcpy (new_str, str1, len);
 			ft_strlcat(new_str, str2, len);

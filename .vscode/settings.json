@@ -4,6 +4,7 @@
 		"wait.h": "c",
 		"type_traits": "c",
 		"utility": "c",
-		"readinput.h": "c"
+		"readinput.h": "c",
+		"cstdio": "c"
 	}
 }

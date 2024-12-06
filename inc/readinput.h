@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 14:04:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 23:03:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,10 @@
 				time_t	timestamp;
 			}	HIST_ENTRY;
 
+			// HISTFILE=/home/kobayashi/.bash_history
+			// HISTFILESIZE=2000
+			// HISTCONTROL=ignoredups:ignorespace
+
 		#pragma endregion
 
 	#pragma endregion
@@ -65,7 +69,6 @@
 	extern bool		show_control_chars;
 	extern bool		fake_segfault;
 	extern bool		free_prompt;
-	extern int		input_mode;
 	extern int		vi_mode;
 	extern t_buffer	buffer;
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 14:38:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/06 19:45:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	#include "libft.h"
 	#include "colors.h"
 	#include "clean.h"
+	#include "options.h"
 	#include "terminal.h"
 	#include "readinput.h"
 	#include "builtin.h"

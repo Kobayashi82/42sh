@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/06 14:07:43 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/06 22:03:52 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,7 +62,7 @@ SRC_DIR				= src/$(NAME)/
 # ────────── #
 
 NAME	=	42sh
-SRCS	=	main/main.c main/time.c																																				\
+SRCS	=	main/main.c main/time.c	main/options.c																																\
 			readinput/termcap.c readinput/prompt.c readinput/autocomplete.c readinput/history.c readinput/undo_redo.c readinput/readinput.c readinput/readline.c readinput/vi.c	\
 			terminal/banner.c terminal/print.c terminal/signal.c																												\
 			builtin/history.c builtin/fc.c																																		\
