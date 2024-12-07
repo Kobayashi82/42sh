@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:39:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:25:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@
 
 #pragma endregion
 
+void testing(char **envp) {
+	print_array(envp);
+	printf("\n\n\n");
+	variables_add_array(main_table, envp);
+	variable_add(main_table, "Koba", "pollas", false, true, false);
+	variable_add(main_table, "Ala", NULL, true, true, false);
+	char **copia = variables_to_array(main_table, INTERNAL);
+	sort_array(copia);
+	print_array(copia);
+	free_array(copia);
+}
+
 #pragma region Varios
 
 	int shell_time() { return (time(NULL) - data.shell.started); }
@@ -27,7 +39,8 @@
 	int read_input() {
 		initialize_signals();
 
-		if (!(data.terminal.input = readinput(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
+		// if (!(data.terminal.input = readinput(BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC))) return (1);
+		if (!(data.terminal.input = readinput(NULL))) return (1);
 		if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; }
 		else if (data.terminal.input) printf("%s\n", data.terminal.input);
 		free(data.terminal.input);
@@ -58,7 +71,9 @@
 
 	int main(int argc, char **argv, char **envp) {
 		if (initialize(argc, argv, envp)) return (1);
-		
+
+		testing(envp);
+		return (data_free(), 0);
 		if (argc == 2 && !ft_strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);
 		else if (argc > 1 && ft_strcmp(argv[1], "-c")) ;

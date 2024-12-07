@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/06 22:03:52 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/07 20:35:25 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,8 +65,9 @@ NAME	=	42sh
 SRCS	=	main/main.c main/time.c	main/options.c																																\
 			readinput/termcap.c readinput/prompt.c readinput/autocomplete.c readinput/history.c readinput/undo_redo.c readinput/readinput.c readinput/readline.c readinput/vi.c	\
 			terminal/banner.c terminal/print.c terminal/signal.c																												\
+			variables/variables.c variables/varios.c																															\
 			builtin/history.c builtin/fc.c																																		\
-			clean/safe.c clean/error.c clean/free.c
+			clean/safe.c clean/error.c clean/free.c clean/borrar.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 

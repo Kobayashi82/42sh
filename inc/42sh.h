@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 19:45:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 19:48:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 	#include "options.h"
 	#include "terminal.h"
 	#include "readinput.h"
+	#include "variables.h"
 	#include "builtin.h"
 
 	#include <sys/wait.h>
@@ -93,24 +94,6 @@
 
 		#pragma endregion
 
-		#pragma region Variables
-
-			typedef struct s_var	t_var;
-
-			typedef struct s_var {
-				char	*key;
-				char	*value;
-				t_var	*prev;
-				t_var	*next;
-			}	t_var;
-
-			typedef struct {
-				t_var	*shell;
-				t_var	*env;
-			}	t_vars;
-
-		#pragma endregion
-
 		#pragma region Terminal
 
 			typedef struct {
@@ -143,7 +126,6 @@
 			typedef struct s_data {
 				t_shell			shell;
 				t_terminal		terminal;
-				t_vars			variables;
 				t_tokens		tokens;
 			} t_data;
 

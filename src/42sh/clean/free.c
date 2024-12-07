@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:38:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 21:33:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@
 		close(STDERR_FILENO);
 		if (prompt_PS1) free(prompt_PS1);
 		if (prompt_PS2) free(prompt_PS2);
+		variable_clear(main_table);
 	}
 
 #pragma endregion
+
+//	Free a char array
+void free_array(char **array) {
+	char **tmp_array = array;
+
+	while (array && *array) free(*(array++));
+	if (tmp_array)			free(tmp_array);
+}

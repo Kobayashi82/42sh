@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 22:04:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 20:49:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,7 +336,8 @@
 	#pragma region StrDup
 
 		char	*ft_strdup(const char *s1) {
-			char	*copy = malloc(ft_strlen(s1) + 1);
+			if (!s1) return (NULL);
+			char *copy = malloc(ft_strlen(s1) + 1);
 			if (!copy) return (NULL);
 			copy[0] = '\0';
 			ft_strlcpy(copy, s1, ft_strlen(s1) + 1);

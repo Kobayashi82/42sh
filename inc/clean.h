@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 20:25:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 20:38:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,9 +94,13 @@
 
 	//	----------- FREE -----------
 	void	data_free();
+	void	free_array(char **array);
 
 	//	----------- ERROR ----------
 	int		exit_error(int error, int code, char *value, bool fatal);
 	void	exit(int code);
+
+	//	----------- BORRAR ---------
+	void	print_array(char **array);
 
 #pragma endregion

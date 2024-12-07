@@ -6,38 +6,48 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:35:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 17:26:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-char	*prompt_PS1 = NULL;
-char	*prompt_PS2 = NULL;
+char	*prompt_PS1 = NULL;			//	Prompt normal
+char	*prompt_PS2 = NULL;			//	Prompt para heredoc y lineas extras
+
+char *process_backslashes(char *str) {
+	char *tmp = str;
+
+	while (tmp && *tmp) {
+		if (*tmp == '\\' && *(tmp + 1) == '\\')
+			ft_memmove(tmp, tmp + 1, ft_strlen(tmp + 1) + 1);
+		tmp++;
+	}
+
+	return (str);
+}
 
 void set_prompt(int type, char *new_prompt) {
-	char * tmp_prompt = NULL;
+	char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
+	char *tmp_prompt = NULL;
+
 	if (type == PS1 && prompt_PS1) { free(prompt_PS1); prompt_PS1 = NULL; }
 	if (type == PS2 && prompt_PS2) { free(prompt_PS2); prompt_PS2 = NULL; }
+
 	if (new_prompt) {
 		//	Procesa barras, variables ($var & \u)
 		tmp_prompt = safe_strdup(new_prompt);
 	} else {
-		//	Se asigna a PS1 "\\\\\\\\\\\\\\$USER-\\u"	//	"\\\\\\\$USER-\u"
-		//char *PS1 = "\\\\\\$USER-\\u";					//	"\\\$USER-\u"
-		//	Procesa \\ barras invetidas
-		//char *medio = "\\\\$USER-\\u";					//	"\\$USER-\u"
+		tmp_prompt = process_backslashes(safe_strdup(str_PS1));	//	"\\$USER-\u"
 		//	Procesa barras, variables ($var & \u)
-		//char *final = "\\kobayashi-kobayashi";
-		tmp_prompt = safe_strdup("promp from PS1> ");
 	}
+
 	if (type == PS1) prompt_PS1 = tmp_prompt;
 	if (type == PS2) prompt_PS2 = tmp_prompt;
 }
 
 //	PROMPT_COMMAND			Ejecuta antes de mostrar el prompt
-//	PS1						Prompt normal
-//	PS2						Prompt para heredoc y lineas extras
+
 
 // \d	Fecha en formato día mes fecha (e.g., Tue Mar 7).
 // \h	Nombre del host hasta el primer punto (e.g., mi-host).
