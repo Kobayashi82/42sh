@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 11:15:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:38:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,7 @@
 				buffer.position = 0; buffer.length = 0;
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
-				if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
+				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 				data.terminal.signal = 2;
 				return (1);
 			}
@@ -429,7 +429,7 @@
 
 		static void clear_screen() {
 			write(STDOUT_FILENO, "\033[H\033[2J", 7);
-			if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
+			if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 			write(STDOUT_FILENO, buffer.value, buffer.length);
 			buffer.position = buffer.length;
 		}

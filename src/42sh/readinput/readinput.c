@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 23:02:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:38:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 
 	bool		show_control_chars = true;
 	bool		fake_segfault = false;
-	bool		free_prompt = false;
 	int			vi_mode = INSERT;
 	static bool	raw_mode = false;
 
@@ -32,7 +31,6 @@
 			cursor_show();
 			tgetent(NULL, "none");
 			tcsetattr(STDIN_FILENO, TCSAFLUSH, &data.terminal.term);
-			if (free_prompt) { free_prompt = false; free(buffer.prompt); buffer.prompt = NULL; }
 		}
 	}
 	static void enable_raw_mode() {
@@ -55,16 +53,16 @@
 #pragma region ReadInput
 
 	char *readinput(char *prompt) {
-		int result = 0; free_prompt = false;
-		buffer.prompt = prompt ? prompt : get_prompt();
+		int result = 0;
 		buffer.size = 1024;
 		buffer.position = 0, buffer.length = 0;
 		buffer.value = safe_malloc(buffer.size);
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
+		set_prompt(PS1, prompt);
 		enable_raw_mode(); terminal_size(); terminal_start();
-		if (buffer.prompt) write(STDOUT_FILENO, buffer.prompt, ft_strlen(buffer.prompt));
+		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 
 		while (!result) {
 			cursor_show();

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 23:03:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:39:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 
 		enum e_input_mode { READLINE, VI };
 		enum e_vi_mode { INSERT, EDIT };
+		enum e_prompt_type { PS1, PS2 };
 
 	#pragma endregion
 
@@ -35,7 +36,7 @@
 
 			typedef struct s_buffer {
 				unsigned char	c;
-				char			*value, *prompt;
+				char			*value;
 				size_t			size, position, length;
 				bool			SHIFT, ALT, CTRL;
 				int				row, col, rows, cols, start_row, start_col;
@@ -66,9 +67,10 @@
 
 	#pragma endregion
 
+	extern char		*prompt_PS1;
+	extern char		*prompt_PS2;
 	extern bool		show_control_chars;
 	extern bool		fake_segfault;
-	extern bool		free_prompt;
 	extern int		vi_mode;
 	extern t_buffer	buffer;
 
@@ -90,7 +92,7 @@
 	int		char_width(size_t position, char *value);
 
 	//	---------- PROMPT ----------
-	char	*get_prompt();
+	void	set_prompt(int type, char *new_prompt);
 
 	//	------- AUTOCOMPLETE -------
 

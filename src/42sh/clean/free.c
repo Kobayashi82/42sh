@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/05 21:45:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:38:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 		close(STDIN_FILENO);
 		close(STDOUT_FILENO);
 		close(STDERR_FILENO);
+		if (prompt_PS1) free(prompt_PS1);
+		if (prompt_PS2) free(prompt_PS2);
 	}
 
 #pragma endregion

@@ -6,11 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 23:00:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:39:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
+
+//	Caracteres octal y hexadecimal
 
 #pragma region Variables
 

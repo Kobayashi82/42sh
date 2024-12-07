@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 19:40:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/07 16:37:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,19 +56,19 @@
 			size_t position = buffer.start_col;
 			size_t length;
 
-			if (buffer.prompt) {
-				length = ft_strlen(buffer.prompt);
+			if (prompt_PS1) {
+				length = ft_strlen(prompt_PS1);
 				for (size_t i = 0; i < length;) {
-					int width = char_width(i, buffer.prompt);
+					int width = char_width(i, prompt_PS1);
 					if (width == 0) {
-						while (i < length && buffer.prompt[i] != 'm') ++i;
+						while (i < length && prompt_PS1[i] != 'm') ++i;
 						++i;
 					} else { position += width;
-						if ((unsigned char)buffer.prompt[i] >= 0xC0) {
-							if ((unsigned char)buffer.prompt[i] >= 0xF0)		i += 4; // 4 bytes
-							else if ((unsigned char)buffer.prompt[i] >= 0xE0)	i += 3; // 3 bytes
-							else												i += 2; // 2 bytes
-						} else 													i += 1;	// 1 byte
+						if ((unsigned char)prompt_PS1[i] >= 0xC0) {
+							if ((unsigned char)prompt_PS1[i] >= 0xF0)		i += 4; // 4 bytes
+							else if ((unsigned char)prompt_PS1[i] >= 0xE0)	i += 3; // 3 bytes
+							else											i += 2; // 2 bytes
+						} else 												i += 1;	// 1 byte
 					}
 				}
 			}
@@ -119,9 +119,10 @@
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
 			while (action && moves--) {
-				cursor_get();
-				if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row - 1, buffer.cols);
-				else											write(STDIN_FILENO, action, ft_strlen(action));
+				// cursor_get();
+				// if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row - 1, buffer.cols);
+				// else											write(STDIN_FILENO, action, ft_strlen(action));
+				write(STDIN_FILENO, action, ft_strlen(action));
 			}
 		}
 
@@ -134,9 +135,10 @@
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
 			while (action && moves--) {
-				cursor_get();
-				if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row + 1, 0);
-				else											write(STDIN_FILENO, action, ft_strlen(action));
+				// cursor_get();
+				// if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row + 1, 0);
+				// else											write(STDIN_FILENO, action, ft_strlen(action));
+				write(STDIN_FILENO, action, ft_strlen(action));
 			}
 		}
 
