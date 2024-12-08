@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 11:53:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:07:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,14 @@ int		ft_abs(int n);
 int		ft_atoi(const char *str);
 long	ft_atol(char *str);
 char	*ft_itoa(int n);
+
+//	FT_ARRAY
+void	array_sort(char **array);
+void	array_int_sort(int *array);
+void	array_print(char **array, int numbered);
+void	array_int_print(int *array);
+void	array_free(char **array);
+void	array_free_ptr(char ***array);
 
 //	FT_PRINTF
 int		ft_printf(int fd, char const *format, ...);

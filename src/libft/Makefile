@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 16:40:56 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/06 11:59:15 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/08 16:01:39 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ NAME		= libft.a
 # ── FILES ── #
 # ─────────── #
 
-SRCS		= ft_mem.c ft_str.c ft_num.c ft_gnl.c ft_printf.c
+SRCS		= ft_mem.c ft_str.c ft_num.c ft_array.c ft_gnl.c ft_printf.c
 
 # ────────────────────────────────────────────────────────── #
 # ───────────────────────── NORMAL ───────────────────────── #

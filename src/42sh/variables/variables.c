@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 14:34:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/08 16:08:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -220,56 +220,6 @@
 					table[index] = NULL;
 				}
 			}
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region Arrays
-
-	#pragma region Sort
-
-		void array_sort(char **array) {
-			if (!array) return;
-
-			size_t count = 0;
-			while (array[count]) count++;
-
-			for (size_t i = 0; i < count - 1; i++) {
-				for (size_t j = 0; j < count - i - 1; j++) {
-					if (ft_strcmp(array[j], array[j + 1]) > 0) {
-						char *temp = array[j];
-						array[j] = array[j + 1];
-						array[j + 1] = temp;
-					}
-				}
-			}
-		}
-
-	#pragma endregion
-
-	#pragma region Print
-
-		void array_print(char **array, bool numbered) {
-			if (!array) return;
-
-			for (size_t i = 0; array[i]; i++){
-				if (numbered)	printf("[%03zu] %s\n", i, array[i]);
-				else			printf("%s\n", array[i]);
-			}
-		}
-
-	#pragma endregion
-
-	#pragma region Free
-
-		//	Free a char array
-		void array_free(char **array) {
-			char **tmp_array = array;
-
-			while (array && *array) free(*(array++));
-			if (tmp_array)			free(tmp_array);
 		}
 
 	#pragma endregion
