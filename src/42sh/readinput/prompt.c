@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 17:26:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:23:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,8 @@ char *process_backslashes(char *str) {
 }
 
 void set_prompt(int type, char *new_prompt) {
-	char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
+	// char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
+	char *str_PS1 = BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC;
 	char *tmp_prompt = NULL;
 
 	if (type == PS1 && prompt_PS1) { free(prompt_PS1); prompt_PS1 = NULL; }

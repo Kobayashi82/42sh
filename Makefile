@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/07 20:35:25 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/08 14:03:58 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,8 @@ SRCS	=	main/main.c main/time.c	main/options.c																																\
 			terminal/banner.c terminal/print.c terminal/signal.c																												\
 			variables/variables.c variables/varios.c																															\
 			builtin/history.c builtin/fc.c																																		\
-			clean/safe.c clean/error.c clean/free.c clean/borrar.c
+			clean/safe.c clean/error.c clean/free.c																																\
+			tests.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 

@@ -5,6 +5,7 @@
 		"type_traits": "c",
 		"utility": "c",
 		"readinput.h": "c",
-		"cstdio": "c"
+		"cstdio": "c",
+		"errno.h": "c"
 	}
 }

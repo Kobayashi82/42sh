@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 22:25:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/08 15:33:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,6 @@
 	t_data	data;
 
 #pragma endregion
-
-void testing(char **envp) {
-	print_array(envp);
-	printf("\n\n\n");
-	variables_add_array(main_table, envp);
-	variable_add(main_table, "Koba", "pollas", false, true, false);
-	variable_add(main_table, "Ala", NULL, true, true, false);
-	char **copia = variables_to_array(main_table, INTERNAL);
-	sort_array(copia);
-	print_array(copia);
-	free_array(copia);
-}
 
 #pragma region Varios
 
@@ -53,15 +41,15 @@ void testing(char **envp) {
 #pragma region Initialize
 
 	static int initialize(int argc, char **argv, char **envp) {
-		(void) argc;
-		(void) argv;
-		(void) envp;
+		(void) argc; (void) argv; (void) envp;
+
 		data.shell.pid = getpid();
 		data.shell.started = time(NULL);
 		srand(data.shell.started);
 		data.shell.bk_std.bk_stdin = safe_dup(STDIN_FILENO);
 		data.shell.bk_std.bk_stdout = safe_dup(STDOUT_FILENO);
 		data.shell.bk_std.bk_stderr = safe_dup(STDERR_FILENO);
+
 		return (0);
 	}
 
@@ -71,9 +59,8 @@ void testing(char **envp) {
 
 	int main(int argc, char **argv, char **envp) {
 		if (initialize(argc, argv, envp)) return (1);
+		if (tests(argc, argv, envp)) return (data.shell.exit_code);
 
-		testing(envp);
-		return (data_free(), 0);
 		if (argc == 2 && !ft_strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);
 		else if (argc > 1 && ft_strcmp(argv[1], "-c")) ;

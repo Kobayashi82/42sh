@@ -1,20 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   borrar.c                                           :+:      :+:    :+:   */
+/*   tests.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 20:29:11 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/08 15:38:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#pragma once
 
-void print_array(char **array) {
-    if (!array) return;
+#pragma region Methods
 
-    for (size_t i = 0; array[i]; i++)
-        printf("[%zu]: %s\n", i, array[i]);
-}
+	int	tests(int argc, char **argv, char **envp);
+
+#pragma endregion

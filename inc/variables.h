@@ -6,36 +6,67 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 22:05:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/08 14:30:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#define HASH_SIZE 101	//	Using a prime number improves the distribution in the hash table
+#pragma region Includes
 
-enum e__var_type { INTERNAL, EXPORTED, EXPORTED_LIST, READONLY };
+	#define HASH_SIZE 101	//	Using a prime number improves the distribution in the hash table
 
-typedef struct s_var t_var;
-typedef struct s_var {
-	char	*name;
-	char	*value;
-	bool	readonly;
-	bool	exported;
-	bool	integer;
-	t_var	*next;
-}	t_var;
+#pragma endregion
 
-extern t_var *main_table[HASH_SIZE];
+#pragma region Variables
 
-unsigned int	hash_index(const char *key);
-void			variable_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer);
-t_var			*variable_find(t_var **table, const char *name);
-int				variable_delete(t_var **table, const char *name);
-void			variable_clear(t_var **table);
-void			variables_add_array(t_var **table, char **array);
-char			**variables_to_array(t_var **table, int type);
+	#pragma region Enumerators
 
-void			sort_array(char **array);
-int				get_key_value(char *line, char **key, char **value, char sep);
-//void	variable_list(int type);
+		enum e__var_type { INTERNAL, EXPORTED, EXPORTED_LIST, READONLY };
+
+	#pragma endregion
+
+	#pragma region Structures
+
+		#pragma region Var
+
+			typedef struct s_var t_var;
+			typedef struct s_var {
+				char	*name;
+				char	*value;
+				bool	readonly;
+				bool	exported;
+				bool	integer;
+				t_var	*next;
+			}	t_var;
+
+		#pragma endregion
+
+	#pragma endregion
+
+	extern t_var *main_table[HASH_SIZE];
+
+#pragma endregion
+
+#pragma region Methods
+
+		//	----------- HASH -----------
+	unsigned int	hash_index(const char *key);
+		//	---------- IMPORT ----------
+	void			variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer);
+	void			variables_from_array(t_var **table, char **array);
+	void			variables_join(t_var **dst_table, t_var **src_table);
+		//	---------- EXPORT ----------
+	t_var			*variables_find(t_var **table, const char *name);
+	char			**variables_to_array(t_var **table, int type);
+		//	---------- DELETE ----------
+	int				variables_delete(t_var **table, const char *name);
+	void			variables_clear(t_var **table);
+		//	---------- ARRAY -----------
+	void			array_sort(char **array);
+	void			array_print(char **array, bool numbered);
+	void			array_free(char **array);
+		//	---------- OTROS -----------
+	int				get_key_value(char *line, char **key, char **value, char sep);
+
+#pragma endregion
