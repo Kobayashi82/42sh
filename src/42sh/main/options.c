@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 23:00:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 17:13:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
 t_options	options;
+
+//	hist_append			añade en vez de sobreescribir
 
 //	Set all options to their defaults values
 void options_default() {

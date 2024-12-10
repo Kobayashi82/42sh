@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 14:04:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:15:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 	#include "options.h"
 	#include "terminal.h"
 	#include "readinput.h"
+	#include "history.h"
+	#include "prompt.h"
 	#include "variables.h"
 	#include "builtin.h"
 
@@ -35,12 +37,15 @@
 
 	#include "tests.h"
 
+	#define VERSION "1.0"
+
 #pragma endregion
 
 #pragma region Variables
 
 	#pragma region Enumerators
 
+		enum { NOTHING = 0, FREE = 64, FORCE = 128, END = 256 };
 		typedef enum { SHELL = 0, SUBSHELL = 1, CHILD = 2 } e_process;
 		typedef enum { CMD, LT, GT, DLT, TLT, DGT, OPAR, CPAR, PIPE, AND, OR, SMCOL, SMAND } e_type;
 
@@ -54,10 +59,6 @@
 			typedef struct s_token	t_token;
 			typedef struct s_args	t_args;
 			typedef struct s_redir	t_redir;
-
-			typedef struct {
-				int bk_stdin; int bk_stdout; int bk_stderr;
-			}	t_bk_std;
 
 			typedef struct s_redir {
 				e_type	type;
@@ -96,26 +97,18 @@
 
 		#pragma endregion
 
-		#pragma region Terminal
-
-			typedef struct {
-				char			*input;
-				char			quoted;
-				char			*prompt;
-				char			*msg;
-				int				signal;
-				struct termios	term;
-			} t_terminal;
-
-		#pragma endregion
-
 		#pragma region Shell
 
 			typedef struct {
 				int			pid;
+				int			parent_pid;
+				int			subshell_level;
+				int			seconds;
+				int			epoch_seconds;
+				float		epoch_realtime;
+				int			uid, euid;
 				time_t		started;
 				e_process	process;
-				t_bk_std	bk_std;
 				bool		_inline;
 				bool		exit;
 				int			exit_code;
@@ -123,27 +116,19 @@
 
 		#pragma endregion
 
-		#pragma region Data
-
-			typedef struct s_data {
-				t_shell			shell;
-				t_terminal		terminal;
-				t_tokens		tokens;
-			} t_data;
-
-		#pragma endregion
-
 	#pragma endregion
 
-	extern t_data	data;
+	extern t_terminal	terminal;
+	extern t_shell		shell;
+	extern t_tokens		tokens;
 
 #pragma endregion
 
 #pragma region Methods
 
+	char	*format_timestamp(time_t timestamp);
+	time_t	get_timestamp(const char *date);
 
+	char	*get_home_path();
 
 #pragma endregion
-
-char	*format_timestamp(time_t timestamp);
-time_t	get_timestamp(const char *date);

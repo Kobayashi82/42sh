@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:38:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:07:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@
 			raw_mode = false;
 			cursor_show();
 			tgetent(NULL, "none");
-			tcsetattr(STDIN_FILENO, TCSAFLUSH, &data.terminal.term);
+			tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
 		}
 	}
 	static void enable_raw_mode() {
 		raw_mode = true;
-		tcgetattr(STDIN_FILENO, &data.terminal.term);
+		tcgetattr(STDIN_FILENO, &terminal.term);
 		terminal_initialize();
 
-		struct termios raw = data.terminal.term;
+		struct termios raw = terminal.term;
 		raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);			// Disable echo (ECHO), canonical mode (ICANON), signals (ISIG), and extended input processing (IEXTEN)
 		raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);	// Disable break interrupt (BRKINT), carriage return to newline conversion (ICRNL), parity check (INPCK), stripping of eighth bit (ISTRIP), and software flow control (IXON)
 		raw.c_oflag &= ~(OPOST);									// Disable post-processing of output (OPOST)

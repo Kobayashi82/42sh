@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/08 14:03:58 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/10 21:03:30 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ EXTRA_FLAGS_OBJ		=
 # ── DIRECTORIES ── #
 # ───────────────── #
 
-INC_DIR				= inc/
+INC_DIR				= -I./inc/ -I./inc/terminal
 OBJ_DIR				= build/obj/
 LIB_DIR				= build/lib/
 LIBFT_INC			= src/libft/inc/
@@ -62,12 +62,12 @@ SRC_DIR				= src/$(NAME)/
 # ────────── #
 
 NAME	=	42sh
-SRCS	=	main/main.c main/time.c	main/options.c																																\
-			readinput/termcap.c readinput/prompt.c readinput/autocomplete.c readinput/history.c readinput/undo_redo.c readinput/readinput.c readinput/readline.c readinput/vi.c	\
-			terminal/banner.c terminal/print.c terminal/signal.c																												\
-			variables/variables.c variables/varios.c																															\
-			builtin/history.c builtin/fc.c																																		\
-			clean/safe.c clean/error.c clean/free.c																																\
+SRCS	=	main/main.c main/time.c	main/options.c																																				\
+			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/autocomplete.c terminal/readinput/undo_redo.c	\
+			terminal/prompt.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c																							\
+			variables/variables.c variables/varios.c																																			\
+			builtin/history.c builtin/fc.c																																						\
+			clean/safe.c clean/error.c clean/free.c																																				\
 			tests.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
@@ -97,7 +97,7 @@ $(NAME): normal_extra $(OBJS)
 	else \
 		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
 	fi
-	@$(CC) $(FLAGS) -I$(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
+	@$(CC) $(FLAGS) $(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress
@@ -117,7 +117,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ ─ \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR  $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@$(CC) $(FLAGS) -I$(INC_DIR) -I$(LIBFT_INC) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
+	@$(CC) $(FLAGS) $(INC_DIR) -I$(LIBFT_INC) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #

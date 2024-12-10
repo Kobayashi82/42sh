@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 16:07:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 20:49:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 	#pragma region Enumerators
 
-		enum e__var_type { INTERNAL, EXPORTED, EXPORTED_LIST, READONLY };
+		enum e_var_type { INTERNAL = 1, EXPORTED = 2, READONLY = 4, INTEGER = 8, EXPORTED_LIST = 16 };
 
 	#pragma endregion
 
@@ -34,8 +34,8 @@
 			typedef struct s_var {
 				char	*name;
 				char	*value;
-				bool	readonly;
 				bool	exported;
+				bool	readonly;
 				bool	integer;
 				t_var	*next;
 			}	t_var;
@@ -53,7 +53,7 @@
 		//	----------- HASH -----------
 	unsigned int	hash_index(const char *key);
 		//	---------- IMPORT ----------
-	void			variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer);
+	int				variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer, int force);
 	void			variables_from_array(t_var **table, char **array);
 	void			variables_join(t_var **dst_table, t_var **src_table);
 		//	---------- EXPORT ----------
@@ -62,6 +62,8 @@
 		//	---------- DELETE ----------
 	int				variables_delete(t_var **table, const char *name);
 	void			variables_clear(t_var **table);
+		//	---------- DEFAULT ---------
+	void			variables_initialize(t_var **table);
 		//	---------- OTROS -----------
 	int				get_key_value(char *line, char **key, char **value, char sep);
 

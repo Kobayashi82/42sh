@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:38:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:07:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
 				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
-				data.terminal.signal = 2;
+				terminal.signal = 2;
 				return (1);
 			}
 			return (0);

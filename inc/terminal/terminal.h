@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 16:39:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:07:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,56 @@
 
 #pragma region Includes
 
+	#include <termios.h>
 	#include <signal.h>
 
 #pragma endregion
 
-#pragma region Enumerators
+#pragma region Variables
 
-	enum e_print {
-		RESET,
-		RESET_PRINT,
-		FREE_RESET,
-		FREE_RESET_PRINT,
-		FREE_JOIN,
-		FREE_PRINT,
-		JOIN,
-		PRINT
-	};
+	#pragma region Enumerators
+
+		enum e_print {
+			RESET,
+			RESET_PRINT,
+			FREE_RESET,
+			FREE_RESET_PRINT,
+			FREE_JOIN,
+			FREE_PRINT,
+			JOIN,
+			PRINT
+		};
+
+	#pragma endregion
+
+	#pragma region Structures
+
+		#pragma region Terminal
+
+			typedef struct termios t_termios;
+			typedef struct {
+				t_termios	term;
+				size_t		columns;
+				size_t		rows;
+				char		*input;
+				int			signal;
+
+				char 		*PS1;
+				char 		*PS2;
+				char		*prompt;
+
+				char		*msg;
+
+				int			bk_stdin;
+				int			bk_stdout;
+				int			bk_stderr;
+
+				char		quoted;
+			} t_terminal;
+
+		#pragma endregion
+
+	#pragma endregion
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 15:38:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:16:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 
 		if (envp_count != vars_count) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Clone\n"NC); }
 		if (!result && !variables_find(main_table, "PATH")) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Find\n"NC); }
-		if (!result) { variables_add(main_table, "testing", "test", true, false, false);
+		if (!result) { variables_add(main_table, "testing", "test", true, false, false, false);
 			if (!variables_find(main_table, "testing")) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Create\n"NC); }
 		}
 		if (!result) { variables_delete(main_table, "testing");
@@ -61,7 +61,7 @@
 		printf(BLUE700"\n============================\n\n"NC);
 		fflush(stdout);
 
-		data.shell.exit_code = failed;
+		shell.exit_code = failed;
 		data_free();
 		return (1);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 20:24:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/10 21:16:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,10 +57,10 @@
 		// builtsin_msg(error, value);
 		// execution_msg(error, value);
 
-		if (code) data.shell.exit_code = code;
-		if (fatal) { exit(data.shell.exit_code % 256); }
+		if (code) shell.exit_code = code;
+		if (fatal) { exit(shell.exit_code % 256); }
 
-		return (data.shell.exit_code);
+		return (shell.exit_code);
 	}
 
 #pragma endregion
