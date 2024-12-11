@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:41:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:10:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 	#include "readinput.h"
 	#include "history.h"
 	#include "prompt.h"
+	#include "shell.h"
 	#include "variables.h"
 	#include "builtin.h"
 	#include "utils.h"
@@ -45,8 +46,6 @@
 
 	#pragma region Enumerators
 
-		enum { NOTHING = 0, FREE = 64, FORCE = 128, END = 256 };
-		typedef enum { SHELL = 0, SUBSHELL = 1, CHILD = 2 } e_process;
 		typedef enum { CMD, LT, GT, DLT, TLT, DGT, OPAR, CPAR, PIPE, AND, OR, SMCOL, SMAND } e_type;
 
 	#pragma endregion
@@ -97,35 +96,18 @@
 
 		#pragma endregion
 
-		#pragma region Shell
-
-			typedef struct {
-				int			pid;
-				int			parent_pid;
-				int			subshell_level;
-				int			seconds;
-				int			epoch_seconds;
-				float		epoch_realtime;
-				int			uid, euid;
-				time_t		started;
-				e_process	process;
-				bool		_inline;
-				bool		exit;
-				int			exit_code;
-			} t_shell;
-
-		#pragma endregion
-
 	#pragma endregion
 
-	extern t_terminal	terminal;
-	extern t_shell		shell;
 	extern t_tokens		tokens;
 
 #pragma endregion
 
 #pragma region Methods
 
+	//	-------- INITIALIZE --------
+	int		initialize(int argc, char **argv, char **envp);
+
+	//	---------- VARIOS ----------
 	char	*home_path();
 
 #pragma endregion

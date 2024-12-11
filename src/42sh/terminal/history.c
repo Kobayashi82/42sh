@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:30:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:56:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,8 +234,8 @@
 
 #pragma region Initialize
 
-	void history_initialize() {
-
+	int history_initialize() {
+		return (0);
 	}
 
 #pragma endregion

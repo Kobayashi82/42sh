@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:43:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:57:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@
 		if (value && free_value) free(value);
 	}
 
-	void variables_initialize(t_var **table) {
+	int variables_initialize(t_var **table) {
 		default_add(table, "42HISTFILE", ft_strjoin(home_path(), "/.42sh_history", 0), 0, 0, 0, 0, 1);
 		default_add(table, "42HISTSIZE", "1000", 0, 0, 0, 0, 0);
 		default_add(table, "42HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
@@ -258,6 +258,8 @@
 		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
+	
+		return (0);
 	}
 
 #pragma endregion

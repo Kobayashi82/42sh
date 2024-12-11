@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 21:07:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:05:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,32 +38,30 @@
 
 	#pragma region Structures
 
-		#pragma region Terminal
+		typedef struct termios t_termios;
+		typedef struct {
+			t_termios	term;
+			size_t		columns;
+			size_t		rows;
+			char		*input;
+			int			signal;
 
-			typedef struct termios t_termios;
-			typedef struct {
-				t_termios	term;
-				size_t		columns;
-				size_t		rows;
-				char		*input;
-				int			signal;
+			char 		*PS1;
+			char 		*PS2;
+			char		*prompt;
 
-				char 		*PS1;
-				char 		*PS2;
-				char		*prompt;
+			char		*msg;
 
-				char		*msg;
+			int			bk_stdin;
+			int			bk_stdout;
+			int			bk_stderr;
 
-				int			bk_stdin;
-				int			bk_stdout;
-				int			bk_stderr;
-
-				char		quoted;
-			} t_terminal;
-
-		#pragma endregion
+			char		quoted;
+		} t_terminal;
 
 	#pragma endregion
+
+	extern t_terminal	terminal;
 
 #pragma endregion
 
@@ -77,7 +75,7 @@
 	int		print(int fd, char *str, int mode);
 
 	//	---------- SIGNAL ----------
-	void	initialize_signals();
+	void	signals_set();
 	void	sigint_handler(int sig);
 	void	sigquit_handler(int sig);
 

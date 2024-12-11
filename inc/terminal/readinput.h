@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 21:15:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:00:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 #pragma region Methods
 
 	//	--------- TERMCAP ----------
-	void	terminal_initialize();
+	int		terminal_initialize();
 	void	terminal_size();
 	void	terminal_start();
 	void	cursor_left(int moves);

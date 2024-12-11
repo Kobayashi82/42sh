@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:32:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:56:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,12 @@
 #pragma region Initialize
 
 	//	Set all options to their defaults values
-	void options_initialize() {
+	int options_initialize() {
 		options.input_mode = READLINE;
 		options.hist_local = true;
 		options.hist_on = true;
+
+		return (0);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 20:27:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:54:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,8 +97,5 @@
 	//	----------- ERROR ----------
 	int		exit_error(int error, int code, char *value, bool fatal);
 	void	exit(int code);
-
-	//	----------- BORRAR ---------
-	void	print_array(char **array);
 
 #pragma endregion

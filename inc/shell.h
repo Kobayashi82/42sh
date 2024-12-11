@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   options.h                                          :+:      :+:    :+:   */
+/*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:56:27 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/11 14:08:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,45 @@
 
 #pragma region Includes
 
-	#include <stdbool.h>
+	#include <time.h>
 
 #pragma endregion
 
 #pragma region Variables
 
-	#pragma region Structures
+	#pragma region Enumerators
 
-		typedef struct {
-			int		input_mode;
-			bool	hist_local;		//	1 = Guardar historial en disco, 0 = No guardar
-			bool	hist_on;		//	1 = ON, 0 = OFF
-		}	t_options;
+		enum { NOTHING = 0, FREE = 64, FORCE = 128, END = 256 };
+		typedef enum { SHELL = 0, SUBSHELL = 1, CHILD = 2 } e_process;
 
 	#pragma endregion
 
-	extern t_options	options;
+	#pragma region Structures
+
+		typedef struct {
+			int			pid;
+			int			parent_pid;
+			int			subshell_level;
+			int			seconds;
+			int			epoch_seconds;
+			float		epoch_realtime;
+			int			uid, euid;
+			time_t		started;
+			e_process	process;
+			bool		_inline;
+			bool		exit;
+			int			exit_code;
+		} t_shell;
+
+	#pragma endregion
+
+	extern t_shell		shell;
 
 #pragma endregion
-
+	
 #pragma region Methods
 
-	int		options_set(char *key, char *value);
-	void	options_print();
-	int		options_initialize();
+	//	----------- SHELL ----------
+	int	shell_initialize();
 
 #pragma endregion

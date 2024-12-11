@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:41:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:58:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,21 +46,21 @@
 
 #pragma region Methods
 
-		//	----------- HASH -----------
+	//	----------- HASH -----------
 	unsigned int	hash_index(const char *key);
-		//	---------- IMPORT ----------
+	//	---------- IMPORT ----------
 	int				variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer, int force);
 	void			variables_from_array(t_var **table, char **array);
 	void			variables_join(t_var **dst_table, t_var **src_table);
-		//	---------- EXPORT ----------
+	//	---------- EXPORT ----------
 	t_var			*variables_find(t_var **table, const char *name);
 	char			**variables_to_array(t_var **table, int type);
-		//	---------- DELETE ----------
+	//	---------- DELETE ----------
 	int				variables_delete(t_var **table, const char *name);
 	void			variables_clear(t_var **table);
-		//	---------- DEFAULT ---------
-	void			variables_initialize(t_var **table);
-		//	---------- OTROS -----------
+	//	-------- INITIALIZE --------
+	int				variables_initialize(t_var **table);
+	//	---------- OTROS -----------
 	int				get_key_value(char *line, char **key, char **value, char sep);
 
 #pragma endregion

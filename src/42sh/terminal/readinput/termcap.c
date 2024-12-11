@@ -6,23 +6,31 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:30:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:04:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
+#pragma region Variables
+
+	t_terminal	terminal;
+
+#pragma endregion
+
 #pragma region Terminal
 
 	#pragma region Initialize
 
-		void terminal_initialize() {
+		int terminal_initialize() {
 			char *termtype = getenv("TERM");
 			if (!termtype) termtype = "dumb";
 
 			int success = tgetent(NULL, termtype);
 			if (success < 0)	write(2, "Could not access the termcap data base.\n", 41);
 			if (success == 0)	write(2, "Terminal type is not defined.\n", 31);
+
+			return (0);
 		}
 
 	#pragma endregion

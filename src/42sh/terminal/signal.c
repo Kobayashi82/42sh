@@ -6,21 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:31:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:02:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
-
-#pragma region Initialize
-
-	void initialize_signals() {
-		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, SIG_IGN);
-		terminal.signal = 0;
-	}
-
-#pragma endregion
 
 #pragma region SIG_INT
 
@@ -38,6 +28,16 @@
 	void sigquit_handler(int sig) {
 		terminal.signal = sig;
 		write(1, "Quit\n", 5);
+	}
+
+#pragma endregion
+
+#pragma region Set
+
+	void signals_set() {
+		signal(SIGINT, sigint_handler);
+		signal(SIGQUIT, SIG_IGN);
+		terminal.signal = 0;
 	}
 
 #pragma endregion

@@ -6,17 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 20:53:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:57:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region Variables
-
-	#pragma region Enumerators
-
-	#pragma endregion
 
 	#pragma region Structures
 
@@ -41,5 +37,7 @@
 	//	--------- HISTORY ----------
 	void	history_prev();
 	void	history_next();
+	//	-------- INITIALIZE --------
+	int		history_initialize();
 
 #pragma endregion
