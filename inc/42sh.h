@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 21:15:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:41:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@
 	#include "prompt.h"
 	#include "variables.h"
 	#include "builtin.h"
+	#include "utils.h"
 
 	#include <sys/wait.h>
-	#include <time.h>
 	#include <fcntl.h>
 	#include <stdio.h>
 	#include <unistd.h>
@@ -126,9 +126,6 @@
 
 #pragma region Methods
 
-	char	*format_timestamp(time_t timestamp);
-	time_t	get_timestamp(const char *date);
-
-	char	*get_home_path();
+	char	*home_path();
 
 #pragma endregion

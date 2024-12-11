@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 20:49:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:41:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,15 @@
 
 	#pragma region Structures
 
-		#pragma region Var
-
-			typedef struct s_var t_var;
-			typedef struct s_var {
-				char	*name;
-				char	*value;
-				bool	exported;
-				bool	readonly;
-				bool	integer;
-				t_var	*next;
-			}	t_var;
-
-		#pragma endregion
+		typedef struct s_var t_var;
+		typedef struct s_var {
+			char	*name;
+			char	*value;
+			bool	exported;
+			bool	readonly;
+			bool	integer;
+			t_var	*next;
+		}	t_var;
 
 	#pragma endregion
 

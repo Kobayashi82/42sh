@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   options.h                                          :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:40:51 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/11 12:40:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,30 +14,13 @@
 
 #pragma region Includes
 
-	#include <stdbool.h>
-
-#pragma endregion
-
-#pragma region Variables
-
-	#pragma region Structures
-
-		typedef struct {
-			int		input_mode;
-			bool	hist_local;		//	1 = Guardar historial en disco, 0 = No guardar
-			bool	hist_on;		//	1 = ON, 0 = OFF
-		}	t_options;
-
-	#pragma endregion
-
-	extern t_options	options;
+	#include <time.h>
 
 #pragma endregion
 
 #pragma region Methods
 
-	void	options_initialize();
-	int		options_set(char *key, char *value);
-	void	options_print();
+	char	*format_timestamp(time_t timestamp);
+	time_t	get_timestamp(const char *date);
 
 #pragma endregion

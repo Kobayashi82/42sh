@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 17:00:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:30:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
-//.42shrc
 
 #pragma region Variables
 
+	//.42shrc
 	// static HIST_ENTRY	**history = NULL;		//	Array del historial
 	// static char			*history_file = NULL;	//	Ruta al archivo fisico del historial
 	// static bool			limited = false;		//	Indica si está limitado por un tamaño máximo
@@ -27,104 +27,217 @@
 
 #pragma endregion
 
-//	Muestra la entrada anterior
-void history_prev() {
+#pragma region Local
 
-}
+	#pragma region Read
 
-//	Muestra la entrada siguiente
-void history_next() {
+		//	Lee las entradas desde un archivo
+		void history_read(const char *filename) {
+			(void) filename;
+		}
 
-}
+	#pragma endregion
 
-//	Añade una entrada al historial
-void history_add(const char *line) {
-	(void) line;
-}
+	#pragma region Write
 
-//	Lee las entradas desde un archivo
-void history_read(const char *filename) {
-	(void) filename;
-}
+		//	Guarda las entradas en un archivo
+		void history_write(const char *filename) {
+			(void) filename;
+		}
 
-//	Guarda las entradas en un archivo
-void history_write(const char *filename) {
-	(void) filename;
-}
+	#pragma endregion
 
-//	Elimina todas las entradas
-void history_clear() {
+	#pragma region Set Size
 
-}
+		//	Asigna un tamaño maximo al historial
+		void history_set_size(int size) {
+			(void) size;
+		}
 
-//	Asigna un tamaño maximo al historial
-void history_set_size(int size) {
-	(void) size;
-}
+	#pragma endregion
 
-//	Elimina la asignacion de tamaño máximo
-void history_unset_size() {
-	
-}
+	#pragma region Unset Size
 
-//	Devuelve el indice de la entrada actual
-int history_where() {
-	return (0);
-}
+		//	Elimina la asignacion de tamaño máximo
+		void history_unset_size() {
+			
+		}
 
-//	Devuelve un array de punteros al historial
-HIST_ENTRY **history_list() {
-	return (NULL);
-}
+	#pragma endregion
 
-//	Obtiene el tamaño del historial
-size_t history_length() {
-	return (0);
-}
+#pragma endregion
 
-//	Devuelve un puntero a la entrada indicada
-HIST_ENTRY *history_get(int pos) {
-	(void) pos;
-	return (NULL);
-}
+#pragma region Add
 
-//	Elimina la entrada indicada
-void history_remove(int pos) {
-	(void) pos;
-}
+	#pragma region Add
 
-//	Reemplaza la entrada indicada
-void history_replace_entry(int pos, const char *line, void *data) {
-	(void) pos;
-	(void) line;
-	(void) data;
-}
+		//	Añade una entrada al historial
+		void history_add(const char *line) {
+			(void) line;
+		}
 
-//	Devuelve un puntero a la entrada actual del historial
-HIST_ENTRY *history_current() {
-	return (NULL);
-}
+	#pragma endregion
 
-//	Cambia la posicion del historial (no lo muestra en pantalla)
-void history_set_pos(int pos) {
-	(void) pos;
-}
+	#pragma region Replace
 
-//	
-HIST_ENTRY *history_event(size_t event) {
-	(void) event;
-	return (NULL);
-}
+		//	Reemplaza la entrada indicada
+		void history_replace_entry(int pos, const char *line, void *data) {
+			(void) pos;
+			(void) line;
+			(void) data;
+		}
 
-HIST_ENTRY *history_search(const char *term, bool reverse) {
-	(void) term;
-	(void) reverse;
-	return (NULL);
-}
+	#pragma endregion
 
-//	Actualiza el timestamp de la entrada
-void history_update_timestamp(int pos) {
-	(void) pos;
-}
+	#pragma region Timestamp
+
+		//	Actualiza el timestamp de la entrada
+		void history_update_timestamp(int pos) {
+			(void) pos;
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Delete
+
+	#pragma region Remove
+
+		//	Elimina la entrada indicada
+		void history_remove(int pos) {
+			(void) pos;
+		}
+
+	#pragma endregion
+
+	#pragma region Clear
+
+		//	Elimina todas las entradas
+		void history_clear() {
+
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Get
+
+	#pragma region Where
+
+		//	Devuelve el indice de la entrada actual
+		int history_where() {
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region List
+
+		//	Devuelve un array de punteros al historial
+		HIST_ENTRY **history_list() {
+			return (NULL);
+		}
+
+	#pragma endregion
+
+	#pragma region Length
+
+		//	Obtiene el tamaño del historial
+		size_t history_length() {
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region Get
+
+		//	Devuelve un puntero a la entrada indicada
+		HIST_ENTRY *history_get(int pos) {
+			(void) pos;
+			return (NULL);
+		}
+
+	#pragma endregion
+
+	#pragma region Current
+
+		//	Devuelve un puntero a la entrada actual del historial
+		HIST_ENTRY *history_current() {
+			return (NULL);
+		}
+
+	#pragma endregion
+
+	#pragma region Event
+
+		//	Devuelve un puntero a la con el evento indicado
+		HIST_ENTRY *history_event(size_t event) {
+			(void) event;
+			return (NULL);
+		}
+
+	#pragma endregion
+
+	#pragma region Search
+
+		HIST_ENTRY *history_search(const char *term, bool reverse) {
+			(void) term;
+			(void) reverse;
+			return (NULL);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Navigate
+
+	#pragma region Previous
+
+		//	Muestra la entrada anterior
+		void history_prev() {
+
+		}
+
+	#pragma endregion
+
+	#pragma region Next
+
+		//	Muestra la entrada siguiente
+		void history_next() {
+
+		}
+
+	#pragma endregion
+
+	#pragma region Set Position
+
+		//	Cambia la posicion del historial (no lo muestra en pantalla)
+		void history_set_pos(int pos) {
+			(void) pos;
+		}
+
+	#pragma endregion
+
+	#pragma region Get Position
+
+		//	Devuelve la posicion del historial (no lo muestra en pantalla)
+		int history_get_pos() {
+			return (0);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Initialize
+
+	void history_initialize() {
+
+	}
+
+#pragma endregion
 
 // SIGHUP, SIGTERM para guardar historial

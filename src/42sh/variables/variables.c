@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/10 21:22:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 13:43:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,66 +229,74 @@
 
 #pragma endregion
 
-//	42HISTCMD			la crea al cargar el historial y le asigna el numero de evento actual (readonly)
-//	42HISTSIZE			1000
-//	42HISTFILESIZE		2000
-//	42HISTCONTROL		ignorespace:ignoredups:ignoreboth:erasedups
-//	42HISTFILE			~/.42sh_history
+#pragma region Initialize
+
+	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
+		if (!value) return;
+		if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
+		if (value && free_value) free(value);
+	}
+
+	void variables_initialize(t_var **table) {
+		default_add(table, "42HISTFILE", ft_strjoin(home_path(), "/.42sh_history", 0), 0, 0, 0, 0, 1);
+		default_add(table, "42HISTSIZE", "1000", 0, 0, 0, 0, 0);
+		default_add(table, "42HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
+		default_add(table, "42HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);
+
+		default_add(table, "42SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
+		default_add(table, "42SH_SUBSHELL", "0", 0, 0, 0, 1, 0);								//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
+		default_add(table, "42SH_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
+		default_add(table, "42SHPID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
+		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) READONLY
+		default_add(table, "COLUMNS", ft_itoa(terminal.columns), 0, 0, 1, 1, 1);				//	Update var when expanded (terminal_columns)
+		default_add(table, "LINES", ft_itoa(terminal.rows), 0, 0, 1, 1, 1);						//	Update var when expanded (terminal_rows)
+		default_add(table, "SECONDS", "0", 0, 0, 0, 1, 0);										//	Can be modified, but expand dinamic value
+		default_add(table, "EPOCHSECONDS", ft_itoa(shell.epoch_seconds), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
+		default_add(table, "EPOCHREALTIME", ft_itoa(shell.epoch_realtime), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
+		default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) READONLY
+		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) READONLY
+		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
+		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
+		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
+	}
+
+#pragma endregion
+
+#pragma region Information
+
+	//	42HISTCMD			la crea al cargar el historial y le asigna el numero de evento actual (readonly)
+	//	42HISTSIZE			1000
+	//	42HISTFILESIZE		2000
+	//	42HISTCONTROL		ignorespace:ignoredups:ignoreboth:erasedups
+	//	42HISTFILE			~/.42sh_history
 
 
-//	VARIABLES DINAMICAS (no se añaden a la lista de variables)
+	//	VARIABLES DINAMICAS (no se añaden a la lista de variables)
 
-//	$$				Current process PID
-//	$!				Last background process PID
-//	EPOCHSECONDS
-//	EPOCHREALTIME
-//	SECONDS
-//	BASH_COMMAND	Contiene el comando que está siendo ejecutado en ese momento.
-//	$?				Código de salida del último comando ejecutado.
-//	$#				Número de argumentos pasados al script o función.
-//	$@ y $*			Lista de todos los argumentos pasados al script o función.
-//	$0				Nombre del script o shell en ejecución.
+	//	$$				Current process PID
+	//	$!				Last background process PID
+	//	EPOCHSECONDS
+	//	EPOCHREALTIME
+	//	SECONDS
+	//	BASH_COMMAND	Contiene el comando que está siendo ejecutado en ese momento.
+	//	$?				Código de salida del último comando ejecutado.
+	//	$#				Número de argumentos pasados al script o función.
+	//	$@ y $*			Lista de todos los argumentos pasados al script o función.
+	//	$0				Nombre del script o shell en ejecución.
 
 
-//	HISTCMD			Número del comando actual en el historial.
-//	HISTFILESIZE	Número máximo de líneas permitidas en el archivo del historial.
-//	HISTSIZE		Número máximo de líneas guardadas en el historial de la sesión.
+	//	HISTCMD			Número del comando actual en el historial.
+	//	HISTFILESIZE	Número máximo de líneas permitidas en el archivo del historial.
+	//	HISTSIZE		Número máximo de líneas guardadas en el historial de la sesión.
 
-//	BASH_VERSION	La versión de Bash que estás ejecutando.
-//	BASHPID			PID del proceso del shell actual.
-//	PPID			Parent process PID.
+	//	BASH_VERSION	La versión de Bash que estás ejecutando.
+	//	BASHPID			PID del proceso del shell actual.
+	//	PPID			Parent process PID.
 
-//	COLUMNS			Número de columnas del terminal.
-//	LINES			Número de líneas del terminal.
+	//	COLUMNS			Número de columnas del terminal.
+	//	LINES			Número de líneas del terminal.
 
-//	UID y EUID		El UID (User ID) y EUID (Effective User ID) del usuario que ejecuta el shell.
-//	PS1, PS2, PS4	Variables relacionadas con los prompts del shell.
+	//	UID y EUID		El UID (User ID) y EUID (Effective User ID) del usuario que ejecuta el shell.
+	//	PS1, PS2, PS4	Variables relacionadas con los prompts del shell.
 
-static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
-	if (!value) return;
-	if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
-	if (value && free_value) free(value);
-}
-
-void variables_initialize(t_var **table) {
-	default_add(table, "42HISTFILE", ft_strjoin(get_home_path(), "/.42sh_history", 0), 0, 0, 0, 0, 1);
-	default_add(table, "42HISTSIZE", "1000", 0, 0, 0, 0, 0);
-	default_add(table, "42HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
-	default_add(table, "42HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);
-
-	default_add(table, "42SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-	default_add(table, "42SH_SUBSHELL", "0", 0, 0, 0, 1, 0);								//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
-	default_add(table, "42SH_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-	default_add(table, "42SHPID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
-	default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) READONLY
-	default_add(table, "COLUMNS", ft_itoa(terminal.columns), 0, 0, 1, 1, 1);				//	Update var when expanded (terminal_columns)
-	default_add(table, "LINES", ft_itoa(terminal.rows), 0, 0, 1, 1, 1);						//	Update var when expanded (terminal_rows)
-	default_add(table, "SECONDS", "0", 0, 0, 0, 1, 0);										//	Can be modified, but expand dinamic value
-	default_add(table, "EPOCHSECONDS", ft_itoa(shell.epoch_seconds), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
-	default_add(table, "EPOCHREALTIME", ft_itoa(shell.epoch_realtime), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
-	default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) READONLY
-	default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) READONLY
-	default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-	default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-	//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
-}
+#pragma endregion
