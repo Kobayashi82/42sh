@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:30:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 17:10:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -455,6 +455,7 @@
 			else if (buffer.c == 127)	backspace();			// BackSpace
 			else if (buffer.c >= 1 && buffer.c <= 26) ;			// Ignore rest of the specials
 			else return (0);
+
 			return (1);
 		}
 

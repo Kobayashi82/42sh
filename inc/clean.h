@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:54:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:11:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@
 	void	*safe_malloc(long bytes);
 	void	*safe_calloc(int count, long bytes);
 	void	*safe_realloc(void *ptr, int old_size, int size);
-	char	*safe_strdup(char *str);
+	char	*safe_strdup(const char *str);
 	int		safe_dup(int fd);
 	int		safe_dup2(int *fd1, int fd2, bool closeFD);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:10:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:56:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,9 @@
 #pragma region Methods
 
 	//	-------- INITIALIZE --------
-	int		initialize(int argc, char **argv, char **envp);
+	int		initialize(int argc, const char **argv, const char **envp);
 
 	//	---------- VARIOS ----------
-	char	*home_path();
+	char	*home_path(const char *user);
 
 #pragma endregion

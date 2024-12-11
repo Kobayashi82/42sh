@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:42:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:50:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region Value
 
-	char *get_value(char *key) {
+	const char *get_value(const char *key) {
 		if (!key) return (NULL);
 
 		char *delimiter = ft_strchr(key, '=');
@@ -27,7 +27,7 @@
 
 #pragma region Key / Value
 
-	int get_key_value(char *line, char **key, char **value, char sep) {
+	int get_key_value(const char *line, char **key, char **value, char sep) {
 		if (*key)	{ free(*key); *key = NULL; }
 		if (*value) { free(*value); *value = NULL; }
 		if (!line) 	{ return (2); }
@@ -58,10 +58,13 @@
 
 #pragma region Home Path
 
-	char *home_path() {
-		static char *path = NULL;
+	char *home_path(const char *user) {
+		char *path = ".";
 
-		path = ".";
+		if (user) {
+			return (path);
+		}
+
 		return (path);
 	}
 

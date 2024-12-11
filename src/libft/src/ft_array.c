@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 16:07:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 16:04:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 
 #pragma region Print
 
-	void array_print(char **array, int numbered) {
+	void array_print(const char **array, int numbered) {
 		if (!array) return;
 
 		for (size_t i = 0; array[i]; i++) {

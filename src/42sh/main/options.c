@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:56:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 16:51:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,17 @@
 #pragma region Set
 
 	//	Set an option
-	int options_set(char *key, char *value) {
-		if (!ft_strcmp("input_mode", key)) 	{ options.input_mode = ft_atoi(value);	return (0); }
-		if (!ft_strcmp("hist_local", key)) 	{ options.hist_local = ft_atoi(value);	return (0); }
-		if (!ft_strcmp("hist_on", key)) 	{ options.hist_on = ft_atoi(value);		return (0); }
+	int options_set(const char *option, bool value) {
+		if (!ft_strcmp("emacs", option)) {
+			if (value) options.vi = !value;
+			options.emacs = value;	return (0);
+		}
+		if (!ft_strcmp("vi", option)) {
+			if (value) options.emacs = !value;
+			options.vi = value;	return (0);
+		}
+		if (!ft_strcmp("hist_local", option)) 	{ options.hist_local = value;	return (0); }
+		if (!ft_strcmp("hist_on", option)) 		{ options.hist_on = value;		return (0); }
 
 		return (1);
 	}
@@ -41,10 +48,10 @@
 
 	//	Print all options
 	void options_print() {
-		print(STDOUT_FILENO, CYAN300"emacs \t\t", RESET);	print_value(!options.input_mode, JOIN);
+		print(STDOUT_FILENO, CYAN300"emacs \t\t", RESET);	print_value(!options.emacs, JOIN);
 		print(STDOUT_FILENO, CYAN300"hist_local \t", JOIN);	print_value(options.hist_local, JOIN);
 		print(STDOUT_FILENO, CYAN300"hist_on \t", JOIN);	print_value(options.hist_on, JOIN);
-		print(STDOUT_FILENO, CYAN300"vi \t\t", JOIN);		print_value(options.input_mode, PRINT);
+		print(STDOUT_FILENO, CYAN300"vi \t\t", JOIN);		print_value(options.vi, PRINT);
 	}
 
 #pragma endregion
@@ -53,7 +60,8 @@
 
 	//	Set all options to their defaults values
 	int options_initialize() {
-		options.input_mode = READLINE;
+		options.emacs = true;
+		options.vi = false;
 		options.hist_local = true;
 		options.hist_on = true;
 

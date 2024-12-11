@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:09:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:56:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 
 #pragma region Main
 
-	int main(int argc, char **argv, char **envp) {
+	int main(int argc, const char **argv, const char **envp) {
 		if (initialize(argc, argv, envp)) return (1);
 		if (tests(argc, argv, envp)) return (shell.exit_code);
 

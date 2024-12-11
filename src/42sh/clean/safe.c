@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:38:00 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:31:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:10:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ void *safe_realloc(void *ptr, int old_size, int size) {
 	#pragma region StrDup
 
 	//	A strdup function with builtin exit_error
-	char *safe_strdup(char *str) {
+	char *safe_strdup(const char *str) {
 		char	*new_str = NULL;
 
 		if (str && !(new_str = malloc((ft_strlen(str) + 1) * sizeof(char))))

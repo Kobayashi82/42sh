@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:57:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:53:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@
 
 	#pragma region Array
 
-		void variables_from_array(t_var **table, char **array) {
+		void variables_from_array(t_var **table, const char **array) {
 			if (!array) return;
 
 			for (size_t i = 0; array[i]; i++) {
@@ -94,6 +94,8 @@
 	#pragma region Join
 
 		void variables_join(t_var **dst_table, t_var **src_table) {
+			if (dst_table == src_table) return;
+
 			for (int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = src_table[index];
 				while (var) {
@@ -101,6 +103,7 @@
 					var = var->next;
 				}
 			}
+			variables_clear(src_table);
 		}
 
 	#pragma endregion
@@ -238,7 +241,7 @@
 	}
 
 	int variables_initialize(t_var **table) {
-		default_add(table, "42HISTFILE", ft_strjoin(home_path(), "/.42sh_history", 0), 0, 0, 0, 0, 1);
+		default_add(table, "42HISTFILE", ft_strjoin(home_path(NULL), "/.42sh_history", 0), 0, 0, 0, 0, 1);
 		default_add(table, "42HISTSIZE", "1000", 0, 0, 0, 0, 0);
 		default_add(table, "42HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
 		default_add(table, "42HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);

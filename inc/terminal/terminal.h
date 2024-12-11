@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:05:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 14:55:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@
 		typedef struct termios t_termios;
 		typedef struct {
 			t_termios	term;
-			size_t		columns;
 			size_t		rows;
+			size_t		columns;
 			char		*input;
 			int			signal;
 

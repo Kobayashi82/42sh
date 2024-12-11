@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:30:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 17:11:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,9 @@
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 			cursor_hide();
 
-			if (options.input_mode == READLINE)	result = readline(readed);
-			if (options.input_mode == VI)		result = vi(readed);
+			if 		(options.emacs)	result = readline(readed);
+			else if	(options.vi)	result = vi(readed);
+			else					result = dumb(readed);
 		}
 
 		disable_raw_mode();

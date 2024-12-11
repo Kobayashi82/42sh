@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/08 16:07:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 16:04:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	*ft_itoa(int n);
 //	FT_ARRAY
 void	array_sort(char **array);
 void	array_int_sort(int *array);
-void	array_print(char **array, int numbered);
+void	array_print(const char **array, int numbered);
 void	array_int_print(int *array);
 void	array_free(char **array);
 void	array_free_ptr(char ***array);

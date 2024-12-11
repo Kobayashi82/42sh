@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:58:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:54:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 	unsigned int	hash_index(const char *key);
 	//	---------- IMPORT ----------
 	int				variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer, int force);
-	void			variables_from_array(t_var **table, char **array);
+	void			variables_from_array(t_var **table, const char **array);
 	void			variables_join(t_var **dst_table, t_var **src_table);
 	//	---------- EXPORT ----------
 	t_var			*variables_find(t_var **table, const char *name);
@@ -61,6 +61,6 @@
 	//	-------- INITIALIZE --------
 	int				variables_initialize(t_var **table);
 	//	---------- OTROS -----------
-	int				get_key_value(char *line, char **key, char **value, char sep);
+	int				get_key_value(const char *line, char **key, char **value, char sep);
 
 #pragma endregion

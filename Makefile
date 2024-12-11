@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/11 14:11:27 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/11 17:03:25 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -62,13 +62,14 @@ SRC_DIR				= src/$(NAME)/
 # ────────── #
 
 NAME	=	42sh
-SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																															\
-			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/autocomplete.c terminal/readinput/undo_redo.c	\
-			terminal/prompt.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c																							\
-			variables/variables.c variables/varios.c																																			\
-			builtin/history.c builtin/fc.c																																						\
-			clean/safe.c clean/error.c clean/free.c																																				\
-			utils/time.c																																										\
+SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																						\
+			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/dumb.c		\
+			terminal/readinput/autocomplete.c terminal/readinput/undo_redo.c																				\
+			terminal/prompt.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c														\
+			variables/variables.c variables/varios.c																										\
+			builtin/history.c builtin/fc.c																													\
+			clean/safe.c clean/error.c clean/free.c																											\
+			utils/time.c																																	\
 			tests/tests.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
@@ -102,6 +103,9 @@ $(NAME): normal_extra $(OBJS)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress
+#	----- REMOVE TO DISABLED TEST -----
+	@printf "\033[A" && ./leaks test || true
+#	----- REMOVE TO DISABLED TEST -----
 	@printf "\n"
 #	Restore cursor
 	@$(MAKE) -s _show_cursor

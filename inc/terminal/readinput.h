@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:00:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 16:42:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 			char			*value;
 			size_t			size, position, length;
 			bool			SHIFT, ALT, CTRL;
-			int				row, col, rows, cols, start_row, start_col;
+			int				row, col, start_row, start_col;
 		}	t_buffer;
 
 		typedef struct s_word {
@@ -55,9 +55,10 @@
 #pragma region Methods
 
 	//	--------- TERMCAP ----------
-	int		terminal_initialize();
 	void	terminal_size();
 	void	terminal_start();
+	int		char_width(size_t position, char *value);
+	
 	void	cursor_left(int moves);
 	void	cursor_right(int moves);
 	void	cursor_move(size_t from_pos, size_t to_pos);
@@ -65,7 +66,7 @@
 	void	cursor_set(int row, int col);
 	void	cursor_hide();
 	void	cursor_show();
-	int		char_width(size_t position, char *value);
+	int		terminal_initialize();
 
 	//	------- AUTOCOMPLETE -------
 
@@ -81,6 +82,9 @@
 
 	//	--------- READLINE ---------
 	int		readline(int readed);
+
+	//	----------- DUMB -----------
+	int		dumb(int readed);
 
 	//	------------ VI ------------
 	int		vi(int readed);

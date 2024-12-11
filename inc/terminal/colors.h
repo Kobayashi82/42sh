@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:42:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/06 12:01:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 15:22:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,22 @@
 
 		#define NC   	"\033[0m"		 						//	Default
 
-		#define RD		"\033[0;31m"	 						//	Bold Red
-		#define G     	"\033[0;32m"	 						//	Bold Green
-		#define Y     	"\033[0;33m"	 						//	Bold Yellow
-		#define B     	"\033[1;34m"	 						//	Bold Blue
-		#define M     	"\033[1;35m"	 						//	Bold Magenta
-		#define C     	"\033[1;36m"	 						//	Bold Cyan
-		#define W     	"\033[1;37m"	 						//	Bold White
+		#define RD		"\033[0;31m"	 						//	Red
+		#define G     	"\033[0;32m"	 						//	Green
+		#define Y     	"\033[0;33m"	 						//	Yellow
+		#define B     	"\033[0;34m"	 						//	Blue
+		#define M     	"\033[0;35m"	 						//	Magenta
+		#define C     	"\033[0;36m"	 						//	Cyan
+		#define W     	"\033[0;37m"	 						//	White
 		#define BR 		"\033[38;5;130m" 						//	Light Brown
+
+		#define BRD		"\033[1;31m"	 						//	Bold Red
+		#define BG     	"\033[1;32m"	 						//	Bold Green
+		#define BY     	"\033[1;33m"	 						//	Bold Yellow
+		#define BB     	"\033[1;34m"	 						//	Bold Blue
+		#define BM     	"\033[1;35m"	 						//	Bold Magenta
+		#define BCY     "\033[1;36m"	 						//	Bold Cyan
+		#define BW     	"\033[1;37m"	 						//	Bold White
 
 	#pragma endregion
 

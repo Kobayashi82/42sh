@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:31:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/11 17:02:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 #pragma region Variables
 
-	int test_variables(char **envp, int print_array) {
-		printf(CYAN300" Variables:\t\t ");
+	int test_variables(const char **envp, int print_array) {
+		printf(W"\t────────────────────────\n"NC);
+		printf(C"\tVariables   ");
 
 		int result = 0, envp_count = 0, vars_count = 0;
 		variables_from_array(main_table,envp);
@@ -25,24 +26,43 @@
 		if (print_array) {
 			array_print(envp, true);
 			printf("\n=========================\n\n");
-			array_print(vars, true);
+			array_print((const char **)vars, true);
 			printf("\n\n");
 		}
 		array_free(vars);
 
-		if (envp_count != vars_count) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Clone\n"NC); }
-		if (!result && !variables_find(main_table, "PATH")) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Find\n"NC); }
+		if (envp_count != vars_count)																			{ result = 1; printf(RD"X"RED500" clone\n"NC); }
+		if (!result && !variables_find(main_table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
 		if (!result) { variables_add(main_table, "testing", "test", true, false, false, false);
-			if (!variables_find(main_table, "testing")) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Create\n"NC); }
+			if (!variables_find(main_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
 		}
 		if (!result) { variables_delete(main_table, "testing");
-			if (variables_find(main_table, "testing")) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Delete\n"NC); }
+			if (variables_find(main_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
 		if (!result) { variables_clear(main_table);
 			vars = variables_to_array(main_table, EXPORTED);
-			if (vars && vars[0]) { result = 1; printf(RED500"KO "YELLOW500"- "RED500"Clear\n"NC); }
+			if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
-		if (!result) printf(GREEN500"OK\n"NC);
+
+		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+		return (result);
+	}
+
+#pragma endregion
+
+#pragma region Options
+
+	int test_options() {
+		printf(W"\t────────────────────────\n"NC);
+		printf(C"\tOptions     ");
+
+		int result = 0;
+
+		if (!options_set(NULL, 0) || !options_set("none", 0))													{ result = 1; printf(RD"X"RED500" invalid\n"NC); }
+		if (!result && ((options_set("emacs", 0) || options_set("vi", 0)) || (options.emacs || options.vi)))	{ result = 1; printf(RD"X"RED500" set option\n"NC); }
+
+		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 
 		return (result);
 	}
@@ -51,15 +71,16 @@
 
 #pragma region Test
 
-	int tests(int argc, char **argv, char **envp) {
-		if (argc == 1 || ft_strcmp(argv[1], "test")) return (0);
-
+	int tests(int argc, const char **argv, const char **envp) {
+		if (argc == 1 || (ft_strcmp(argv[1], "test") && ft_strcmp(argv[1], "tests"))) return (0);
 		int failed = 0;
+		printf(W"\t────────────────────────\n"NC);
+		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);
 
-		printf(BLUE700"\n============================\n\n"NC);
+		if (test_options()) failed = 1;
 		if (test_variables(envp, false)) failed = 1;
-		printf(BLUE700"\n============================\n\n"NC);
-		fflush(stdout);
+
+		printf(W"\t────────────────────────\n"NC); fflush(stdout);
 
 		shell.exit_code = failed;
 		data_free();
