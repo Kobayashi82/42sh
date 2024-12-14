@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 17:10:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:02:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -318,10 +318,39 @@
 
 		#pragma endregion
 
+		#pragma region Home
+
+			static void home() {
+				while (buffer.position > 0) {
+					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+					cursor_left(0);
+				}
+			}
+
+		#pragma endregion
+
+		#pragma region End
+
+			static void end() {
+				while (buffer.position < buffer.length) {
+					cursor_right(0);
+					do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
+				}
+			}
+
+		#pragma endregion
+
 		#pragma region Arrow Up
 
 			static void arrow_up() {
-				history_prev();
+				char *new_line = history_prev();
+				if (!new_line) return;
+				end(); backspace_start();
+				if (buffer.value) free(buffer.value);
+				buffer.value = safe_strdup(new_line);
+				buffer.length = ft_strlen(buffer.value);
+				buffer.position = buffer.length;
+				write(STDOUT_FILENO, buffer.value, buffer.length);
 			}
 
 		#pragma endregion
@@ -329,7 +358,14 @@
 		#pragma region Arrow Down
 
 			static void arrow_down() {
-				history_next();
+				char *new_line = history_next();
+				if (!new_line) return;
+				end(); backspace_start();
+				if (buffer.value) free(buffer.value);
+				buffer.value = safe_strdup(new_line);
+				buffer.length = ft_strlen(buffer.value);
+				buffer.position = buffer.length;
+				write(STDOUT_FILENO, buffer.value, buffer.length);
 			}
 
 		#pragma endregion
@@ -378,28 +414,6 @@
 
 		#pragma endregion
 
-		#pragma region Home
-
-			static void home() {
-				while (buffer.position > 0) {
-					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-					cursor_left(0);
-				}
-			}
-
-		#pragma endregion
-
-		#pragma region End
-
-			static void end() {
-				while (buffer.position < buffer.length) {
-					cursor_right(0);
-					do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-				}
-			}
-
-		#pragma endregion
-
 		#pragma region Cursor
 
 			static int cursor() {
@@ -427,12 +441,16 @@
 
 	#pragma endregion
 
+	#pragma region Clear Screen
+
 		static void clear_screen() {
 			write(STDOUT_FILENO, "\033[H\033[2J", 7);
 			if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 			write(STDOUT_FILENO, buffer.value, buffer.length);
 			buffer.position = buffer.length;
 		}
+
+	#pragma endregion
 
 	#pragma region Specials
 
@@ -443,8 +461,8 @@
 			else if (buffer.c == 5)		end();					// CTRL + E - Cursor to the end of the line
 			else if (buffer.c == 2)		arrow_left();			// CTRL + B - Cursor right
 			else if (buffer.c == 6)		arrow_right();			// CTRL + F - Cursor left
-			else if (buffer.c == 16)	history_prev();			// CTRL + P - History prev									(todo)
-			else if (buffer.c == 14)	history_next();			// CTRL + N - History next									(todo)
+			else if (buffer.c == 16)	arrow_up();				// CTRL + P - History prev
+			else if (buffer.c == 14)	arrow_down();			// CTRL + N - History next
 			else if (buffer.c == 20)	swap_char();			// CTRL + T - Swap char										(Not working right with multibytes 漢字)
 			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
 			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 17:02:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 16:08:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,40 @@
 
 #pragma endregion
 
+#pragma region History
+
+	int test_history() {
+		printf(W"\t────────────────────────\n"NC);
+		printf(C"\tHistory     ");
+
+		int		result = 0;
+		char	*add_line = "Testing";
+		char	*replace_line = "Testing Replaced";
+
+		history_clear();
+		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
+		if (!result && !history_add(ft_strdup(add_line))) {
+			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			else if (ft_strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
+		}
+		if (!result) { history_replace(history_get_pos(), ft_strdup(replace_line), NULL);
+			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+			else if (ft_strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+		}
+		if (!result) { size_t length = history_length(); history_remove_current();
+			if (history_length() == length)								{ result = 1; printf(RD"X"RED500" delete\n"NC); }
+		}
+		if (!result) { history_clear();
+			if (history_current() || history_length())					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
+		}
+
+		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+		return (result);
+	}
+
+#pragma endregion
+
 #pragma region Test
 
 	int tests(int argc, const char **argv, const char **envp) {
@@ -79,6 +113,7 @@
 
 		if (test_options()) failed = 1;
 		if (test_variables(envp, false)) failed = 1;
+		if (test_history()) failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
 

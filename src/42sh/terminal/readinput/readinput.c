@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 17:11:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:19:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,11 @@
 
 	t_buffer	buffer;
 
-	bool		show_control_chars = true;
-	bool		fake_segfault = false;
-	int			vi_mode = INSERT;
-	static bool	raw_mode = false;
+	bool		show_control_chars	= true;
+	bool		fake_segfault		= false;
+	int			vi_mode				= INSERT;
+	static bool	raw_mode			= false;
+	static char	*tmp_line			= NULL;
 
 #pragma endregion
 

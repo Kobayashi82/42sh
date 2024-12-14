@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/12 13:49:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 16:14:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,25 @@
 
 #pragma region Methods
 
+	int		history_read(const char *filename);
+	int		history_write(const char *filename);
+
+	int		history_add(char *line);
+
+	HIST_ENTRY	*history_get(size_t pos);
+	HIST_ENTRY	*history_current();
+
+	void	history_print(bool hide_events);
+	size_t	history_length();
+	void	history_remove(size_t pos);
+	void	history_remove_current();
+	void	history_clear();
+	void	history_replace(size_t pos, char *line, void *data);
+	size_t	history_get_pos();
+	void	history_set_pos(size_t pos);
 	//	--------- HISTORY ----------
-	int		history_prev();
-	int		history_next();
+	char	*history_prev();
+	char	*history_next();
 	//	-------- INITIALIZE --------
 	int		history_initialize();
 

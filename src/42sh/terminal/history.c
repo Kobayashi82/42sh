@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/12 13:50:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 17:08:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,106 +30,22 @@
 
 	static size_t		position		 = 0;		//	Current position within the array
 	// static size_t		search_pos		 = 0;		//	Position for CTRL + R searches
+	static bool			begining = false;
+	static bool			ending = false;
 
 	static char			**tmp_history	= NULL;		//	Temporary array to store history entries
 	static size_t		tmp_length		= 0;		//	Number of entries currently in the temporary history
 
 #pragma endregion
 
-#pragma region Local
+#pragma region Size
 
-	#pragma region Read
+	#pragma region Get Size
 
-		//	Read entries from a file into a temporary array
-		static int read_history_file(const char *filename) {
-			if (!filename) filename = history_file;
-			if (!filename || !options.hist_on || !options.hist_local || mem_max == 0) return (1);
-
-			int fd = open(filename, O_RDONLY);
-			if (fd < 0) return (1);
-
-			tmp_length = 0;
-			char	*line = NULL;
-
-			//	Reserve space for the temporary history
-			tmp_history = safe_malloc(HIST_MAXSIZE * sizeof(char *));
-			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
-				//	Replace "\\n" with actual newlines
-				const char *src = line; char *dst = line;
-				while (*src) {
-					if (src[0] == '\\' && src[1] == 'n') { *dst++ = '\n'; src += 2; }
-					else 								   *dst++ = *src++;
-				} *dst = '\0';
-				tmp_history[tmp_length++] = line;
-			} tmp_history[tmp_length] = NULL;
-
-			close(fd);
-			return (0);
-		}
-
-		//	Add the entries to the history
-		int history_read(const char *filename) {
-			if (!read_history_file(filename) || tmp_length < 1) return (1);
-
-			//	Adjust capacity to the required size
-			while (capacity <= tmp_length) capacity *= 2;
-			if (capacity > mem_max) capacity = mem_max;
-
-			//	Adjust `tmp_length` to load only the most recent entries
-			if (capacity + 1 > tmp_length)	tmp_length = 0;
-			else							tmp_length -= (capacity + 1);
-
-			//	Allocate memory for the final history
-			history = malloc((capacity + 1) * sizeof(char *));
-			if (!history) {
-				array_free(tmp_history);
-				exit_error(NO_MEMORY, 1, NULL, true);
-			}
-
-			//	Copy entries from the temporary array to the final history
-			while (tmp_history[tmp_length]) {
-				if (length >= mem_max) { break; }
-				history[length]->line = tmp_history[tmp_length];
-				history[length]->length = ft_strlen(history[length]->line);
-				history[length]->event = event++;
-				history[length++]->data = NULL;
-				tmp_history[tmp_length++] = NULL;
-			} history[length] = NULL;
-
-			//	Free the temporary history
-			array_free(tmp_history); tmp_history = NULL; tmp_length = 0;
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region Write
-
-		//	42HISTFILESIZE
-
-		//	Save the entries to a file
-		int history_write(const char *filename) {
-			if (!filename) filename = history_file;
-			if (!filename || !history || !options.hist_on || !options.hist_local || file_max == 0 || length == 0) return (1);
-
-			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
-			if (fd < 0) return (1);
-
-			for (size_t i = 0; i < length; i++) {
-				if (history[i]) {
-					//	Replace newlines with "\\n"
-					const char *entry = history[i]->line;
-					while (entry) {
-						if (*entry == '\n')	write(fd, "\\n", 2);
-						else				write(fd, entry, 1);
-						entry++;
-					}
-				}
-			}
-
-			close(fd);
-			return (0);
+		int history_get_size(int type) {
+			if (type == HIST_MEM)	{ return (mem_max); }
+			if (type == HIST_FILE)	{ return (file_max); }
+			return (mem_max);
 		}
 
 	#pragma endregion
@@ -154,6 +70,136 @@
 
 	#pragma endregion
 
+	#pragma region Resize
+
+		static void history_resize(bool initialize) {
+			if (initialize || !history) {
+				if (history) history_clear();
+				capacity = 10; length = 0;
+				history = safe_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+			} else if (length == capacity) {
+				capacity *= 2;
+				HIST_ENTRY **new_history = safe_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+				for (size_t i = 0; i < length && history[i]; ++i)
+					new_history[i] = history[i];
+				free(history);
+				history = new_history;
+			}
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Local
+
+	#pragma region Read
+
+		//	Read entries from a file into a temporary array
+		static int read_history_file(const char *filename) {
+			if (!filename) filename = history_file;
+			if (!filename) return (1);
+			if (!mem_max)  return (0);
+
+			int fd = open(filename, O_RDONLY);
+			if (fd < 0) return (1);
+
+			tmp_length = 0;
+			char	*line = NULL;
+
+			//	Reserve space for the temporary history
+			tmp_history = safe_malloc(HIST_MAXSIZE * sizeof(char *));
+			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
+				//	Replace "\\n" with actual newlines
+				const char *src = line; char *dst = line;
+				while (*src) {
+					if (src[0] == '\\' && src[1] == 'n')	{ *dst++ = '\n'; src += 2; }
+					else if (src[0] == '\n')				{ *dst++ = '\0'; break;	   }
+					else 									*dst++ = *src++;
+				} *dst = '\0';
+				tmp_history[tmp_length++] = line;
+			} tmp_history[tmp_length] = NULL;
+
+			close(fd);
+			return (0);
+		}
+
+		//	Add the entries to the history
+		int history_read(const char *filename) {
+			if (read_history_file(filename)) {		 history_resize(true); return (1); }
+			if (tmp_length < 1) { free(tmp_history); history_resize(true); return (0); }
+
+			//	Adjust capacity to the required size
+			while (capacity <= tmp_length) capacity *= 2;
+			if (capacity > mem_max) capacity = mem_max;
+
+			//	Adjust `tmp_length` to load only the most recent entries
+			if (capacity + 1 > tmp_length)	tmp_length = 0;
+			else							tmp_length -= (capacity + 1);
+
+			//	Allocate memory for the final history
+			history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+			if (!history) {
+				array_free(tmp_history);
+				exit_error(NO_MEMORY, 1, NULL, true);
+			}
+
+			length = 0;
+			//	Copy entries from the temporary array to the final history
+			while (tmp_history[tmp_length]) {
+				if (length >= mem_max) { break; }
+				history[length] = malloc(sizeof(HIST_ENTRY));
+				if (!history[length]) { history_clear(); break; }
+				history[length]->line = tmp_history[tmp_length];
+				history[length]->length = ft_strlen(history[length]->line);
+				history[length]->event = event++;
+				history[length++]->data = NULL;
+				tmp_history[tmp_length++] = NULL;
+			} history[length] = NULL;
+
+			//	Free the temporary history
+			array_free(tmp_history); tmp_history = NULL; tmp_length = 0;
+			position = length - 1;
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region Write
+
+		//	Save the entries to a file
+		int history_write(const char *filename) {
+			if (!filename) filename = history_file;
+			if (!filename)				return (1);
+			if (!options.hist_local)	return (0);
+
+			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
+			if (fd < 0) return (1);
+
+			if (!history || !file_max || !length) { close (fd); return (0); }
+
+			size_t i = 0;
+			if (length > file_max) i = length - file_max;
+
+			for (;i < length; i++) {
+				if (history[i]) {
+					//	Replace newlines with "\\n"
+					const char *entry = history[i]->line;
+					while (entry) {
+						if (*entry == '\n')	write(fd, "\\n", 2);
+						else				write(fd, entry, 1);
+						entry++;
+					}
+				}
+			}
+
+			close(fd);
+			return (0);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
 #pragma region Add
@@ -161,28 +207,43 @@
 	#pragma region Add
 
 		//	Añade una entrada al historial
-		void history_add(const char *line) {
-			(void) line;
+		int history_add(char *line) {
+			if (mem_max == 0) return (0);
+			history_resize(false);
+			if (length >= mem_max) {
+				free(history[0]->line);
+				free(history[0]->data);
+				free(history[0]); history[0] = NULL;
+				for (size_t i = 0; i < length; ++i)
+					history[i] = history[i + 1];
+				length -= 1;
+			}
+			history[length] = safe_malloc(sizeof(HIST_ENTRY));
+			history[length]->line = line;
+			history[length]->length = ft_strlen(line);
+			history[length]->event = event++;
+			history[length++]->data = NULL;
+			history[length] = NULL;
+			position = length - 1;
+
+			begining = false;
+			ending = false;
+			return (0);
 		}
 
 	#pragma endregion
 
 	#pragma region Replace
 
-		//	Reemplaza la entrada indicada
-		void history_replace_entry(int pos, const char *line, void *data) {
-			(void) pos;
-			(void) line;
-			(void) data;
-		}
-
-	#pragma endregion
-
-	#pragma region Timestamp
-
-		//	Actualiza el timestamp de la entrada
-		void history_update_timestamp(int pos) {
-			(void) pos;
+		//	Replace the indicated entrie
+		void history_replace(size_t pos, char *line, void *data) {
+			if (history && pos < length && history[pos]) {
+				if (history[pos]->line) free(history[pos]->line);
+				if (history[pos]->data) free(history[pos]->data);
+				history[pos]->line = line;
+				history[pos]->length = ft_strlen(line);
+				history[pos]->data = data;
+			}
 		}
 
 	#pragma endregion
@@ -193,18 +254,44 @@
 
 	#pragma region Remove
 
-		//	Elimina la entrada indicada
-		void history_remove(int pos) {
-			(void) pos;
+		//	Remove the indicate entrie
+		void history_remove(size_t pos) {
+			if (history && pos < length && history[pos]) {
+				if (history[pos]->line) free(history[pos]->line);
+				if (history[pos]->data) free(history[pos]->data);
+				free(history[pos]); history[pos] = NULL;
+				for (size_t i = pos; i < length; ++i)
+					history[i] = history[i + 1];
+				length -= 1;
+			}
+		}
+
+		//	Remove the current entrie
+		void history_remove_current() {
+			if (history && position < length && history[position]) {
+				if (history[position]->line) free(history[position]->line);
+				if (history[position]->data) free(history[position]->data);
+				free(history[position]); history[position] = NULL;
+				for (size_t i = position; i < length; ++i)
+					history[i] = history[i + 1];
+				length -= 1;
+			}
 		}
 
 	#pragma endregion
 
 	#pragma region Clear
 
-		//	Elimina todas las entradas
+		//	Clear all entries
 		void history_clear() {
-
+			for (size_t i = 0; i < length; ++i) {
+				if (!history || !history[i]) break;
+				if (history[i]->line) free(history[i]->line);
+				if (history[i]->data) free(history[i]->data);
+				free(history[i]); history[i] = NULL;
+			}
+			if (history) { free(history); history = NULL; }
+			position = 0; length = 0; capacity = 10;
 		}
 
 	#pragma endregion
@@ -213,47 +300,43 @@
 
 #pragma region Get
 
-	#pragma region Where
+	#pragma region Clone
 
-		//	Devuelve el indice de la entrada actual
-		int history_where() {
-			return (0);
-		}
+		//	Return a clone of the history
+		HIST_ENTRY **history_clone() {
+			if (!history) return (NULL);
 
-	#pragma endregion
+			HIST_ENTRY **copy = safe_malloc((length + 1) * sizeof(HIST_ENTRY *));
 
-	#pragma region List
+			for (size_t i = 0; i < length && history[i]; ++i)
+				copy[i] = history[i];
+			copy[length] = NULL;
 
-		//	Devuelve un array de punteros al historial
-		HIST_ENTRY **history_list() {
-			return (NULL);
+			return (copy);
 		}
 
 	#pragma endregion
 
 	#pragma region Length
 
-		//	Obtiene el tamaño del historial
+		//	Return the length of the history
 		size_t history_length() {
-			return (0);
+			return (length);
 		}
 
 	#pragma endregion
 
 	#pragma region Get
 
-		//	Devuelve un puntero a la entrada indicada
-		HIST_ENTRY *history_get(int pos) {
-			(void) pos;
+		//	Return a pointer to the indicated entrie
+		HIST_ENTRY *history_get(size_t pos) {
+			if (history && pos < length) return (history[pos]);
 			return (NULL);
 		}
 
-	#pragma endregion
-
-	#pragma region Current
-
-		//	Devuelve un puntero a la entrada actual del historial
+		//	Return a pointer to the current entrie
 		HIST_ENTRY *history_current() {
+			if (history && position < length) return (history[position]);
 			return (NULL);
 		}
 
@@ -261,9 +344,13 @@
 
 	#pragma region Event
 
-		//	Devuelve un puntero a la con el evento indicado
+		//	Return a pointer to the entry with the indicated event
 		HIST_ENTRY *history_event(size_t event) {
-			(void) event;
+			if (!history) return (NULL);
+
+			for (size_t i = 0; i < length && history[i]; ++i)
+				if (history[i]->event == event) return (history[i]);
+
 			return (NULL);
 		}
 
@@ -285,36 +372,48 @@
 
 	#pragma region Previous
 
-		//	Display the previous entry (display it on screen)
-		int history_prev() {
-			if (!options.hist_on || mem_max == 0) return (1);
-			size_t curr = position;
+		//	Return the previous entry line
+		char *history_prev() {
+			if (!history || !options.hist_on || mem_max == 0 || length == 0) return (NULL);
+			if (begining || position > length || position > capacity) return (NULL);
+
+			if (ending && length > 1) {
+				position--;
+				ending = false;
+			}
+			char *tmp = history[position]->line;
+
+			if (position == 0) begining = true;
+			if (length > 1) ending = false;
+
 			if (position > 0) position--;
 
-			if (position != curr && position <= capacity && history && history[position]->line) {
-				write(STDOUT_FILENO, history[position]->line, history[position]->length);
-				write(STDOUT_FILENO, "\n", 1);
-			}
-
-			return (0);
+			return (tmp);
 		}
 
 	#pragma endregion
 
 	#pragma region Next
 
-		//	Display the next entry (display it on screen)
-		int history_next() {
-			if (!options.hist_on || mem_max == 0) return (1);
-			size_t curr = position;
-			position = ft_min(position + 1, ft_max(ft_min(mem_max, HIST_MAXSIZE - 1), 0));
+		//	Return the next entry line
+		char *history_next() {
+			if (!history || !options.hist_on || mem_max == 0 || length == 0) return (NULL);
+			if (ending || position > length || position > capacity) return (NULL);
 
-			if (position != curr && position <= capacity && history && history[position]->line) {
-				write(STDOUT_FILENO, history[position]->line, history[position]->length);
-				write(STDOUT_FILENO, "\n", 1);
+			if (begining && length > 1) {
+				position = ft_min(position + 1, ft_max(ft_min(mem_max, HIST_MAXSIZE - 1), 0));
+				if (length > 0 && position >= length) position = length - 1;
+				begining = false;
 			}
+			char *tmp = history[position]->line;
 
-			return (0);
+			if (position == length - 1) ending = true;
+			if (length > 1) begining = false;
+
+			position = ft_min(position + 1, ft_max(ft_min(mem_max, HIST_MAXSIZE - 1), 0));
+			if (length > 0 && position >= length) position = length - 1;
+
+			return (tmp);
 		}
 
 	#pragma endregion
@@ -339,9 +438,35 @@
 
 #pragma endregion
 
+#pragma region Print
+
+	void history_print(bool hide_events) {
+		if (!history) return;
+
+		print(STDOUT_FILENO, NULL, RESET);
+
+		for (size_t i = 0; i < length && history[i]; ++i) {
+			if (!hide_events) {
+				char * txt_event = ft_itoa(history[i]->event);
+				if (!txt_event) exit_error(NO_MEMORY, 1, NULL, true);
+				int spaces = 5 - ft_strlen(txt_event);
+				while (spaces--) print(STDOUT_FILENO, " ", JOIN);
+				print(STDOUT_FILENO, txt_event, FREE_JOIN);
+				print(STDOUT_FILENO, "  ", JOIN);
+			}
+			print(STDOUT_FILENO, history[i]->line, JOIN);
+			print(STDOUT_FILENO, "\n", JOIN);
+		}
+
+		print(STDOUT_FILENO, NULL, PRINT);
+	}
+
+#pragma endregion
+
 #pragma region Initialize
 
 	int history_initialize() {
+		history_read("history");
 
 		return (0);
 	}
