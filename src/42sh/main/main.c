@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:56:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 21:48:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,16 @@
 		signals_set();
 		if (!(terminal.input = readinput(NULL))) return (1);
 		if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; }
-		else if (terminal.input) printf("%s\n", terminal.input);
+		else if (terminal.input) {
+			history_add(terminal.input);
+			printf("%s\n", terminal.input);
+		}
 		free(terminal.input);
 
 		return (0);
 	}
 
 #pragma endregion
-
 
 #pragma region Main
 

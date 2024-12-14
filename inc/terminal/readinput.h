@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 16:42:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 18:02:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,12 @@
 
 	#pragma endregion
 
+	extern t_buffer	buffer;
+
 	extern bool		show_control_chars;
 	extern bool		fake_segfault;
 	extern int		vi_mode;
-	extern t_buffer	buffer;
+	extern char		*tmp_line;
 
 #pragma endregion
 

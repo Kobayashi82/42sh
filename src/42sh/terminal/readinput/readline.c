@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 17:02:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 21:48:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,8 @@
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
 				buffer.position = 0; buffer.length = 0;
+				if (tmp_line) { free(tmp_line); tmp_line = NULL; }
+				history_set_pos_end();
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
 				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
@@ -174,8 +176,10 @@
 
 		static int enter() {
 			if (buffer.c == '\r' || buffer.c == '\n') {
+				history_set_pos_end();
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
+				if (tmp_line) { free(tmp_line); tmp_line = NULL; }
 				return (1);
 			}
 			return (0);
@@ -343,11 +347,20 @@
 		#pragma region Arrow Up
 
 			static void arrow_up() {
+				if (!options.hist_on || !history_length()) return;
 				char *new_line = history_prev();
+
 				if (!new_line) return;
+				if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
+				if (!tmp_line) exit_error(NO_MEMORY, 1, NULL, true);
+
 				end(); backspace_start();
-				if (buffer.value) free(buffer.value);
-				buffer.value = safe_strdup(new_line);
+				while (ft_strlen(new_line) >= (int)buffer.size) {
+					buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+					if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+				}
+				ft_strcpy(buffer.value, new_line);
 				buffer.length = ft_strlen(buffer.value);
 				buffer.position = buffer.length;
 				write(STDOUT_FILENO, buffer.value, buffer.length);
@@ -358,14 +371,30 @@
 		#pragma region Arrow Down
 
 			static void arrow_down() {
+				if (!options.hist_on || !history_length()) return;
+
 				char *new_line = history_next();
-				if (!new_line) return;
+				bool free_line = false;
+
+				if (!tmp_line && history_get_pos() == history_length() - 1) return;
+				if (!new_line && history_get_pos() == history_length() - 1) {
+					new_line = tmp_line;
+					tmp_line = NULL;
+					free_line = true;
+				}
+
 				end(); backspace_start();
-				if (buffer.value) free(buffer.value);
-				buffer.value = safe_strdup(new_line);
+				while (ft_strlen(new_line) >= (int)buffer.size) {
+					buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+					if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
+				}
+				ft_strcpy(buffer.value, new_line);
 				buffer.length = ft_strlen(buffer.value);
 				buffer.position = buffer.length;
 				write(STDOUT_FILENO, buffer.value, buffer.length);
+
+				if (free_line && new_line) free(new_line);
 			}
 
 		#pragma endregion
@@ -467,7 +496,7 @@
 			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
 			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete
 			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end of line
-			else if (buffer.c == 8)		backspace();			// CTRL + H - Backspace
+			else if (buffer.c == 8)		history_print(false); // backspace();			// CTRL + H - Backspace
 			else if (buffer.c == 21)	backspace_start();		// CTRL + U - Backspace from cursor to start of line
 			else if (buffer.c == 23)	backspace_word();		// CTRL + W	- Backspace current word 
 			else if (buffer.c == 127)	backspace();			// BackSpace

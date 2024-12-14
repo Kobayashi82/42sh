@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 16:08:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 19:34:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,11 @@
 
 		history_clear();
 		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
-		if (!result && !history_add(ft_strdup(add_line))) {
+		if (!result && !history_add(add_line)) {
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
 			else if (ft_strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
-		if (!result) { history_replace(history_get_pos(), ft_strdup(replace_line), NULL);
+		if (!result) { history_replace(history_get_pos(), replace_line, NULL);
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 			else if (ft_strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 		}

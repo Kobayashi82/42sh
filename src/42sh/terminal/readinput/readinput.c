@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 17:19:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/14 18:20:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,9 @@
 	bool		show_control_chars	= true;
 	bool		fake_segfault		= false;
 	int			vi_mode				= INSERT;
+	char		*tmp_line			= NULL;
+
 	static bool	raw_mode			= false;
-	static char	*tmp_line			= NULL;
 
 #pragma endregion
 
@@ -57,7 +58,7 @@
 		int result = 0;
 		buffer.size = 1024;
 		buffer.position = 0, buffer.length = 0;
-		buffer.value = safe_malloc(buffer.size);
+		buffer.value = ft_calloc(buffer.size, sizeof(char));
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
