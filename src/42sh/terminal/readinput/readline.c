@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 21:48:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/15 15:29:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,7 +496,7 @@
 			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
 			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete
 			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end of line
-			else if (buffer.c == 8)		history_print(false); // backspace();			// CTRL + H - Backspace
+			else if (buffer.c == 8)		backspace();			// CTRL + H - Backspace
 			else if (buffer.c == 21)	backspace_start();		// CTRL + U - Backspace from cursor to start of line
 			else if (buffer.c == 23)	backspace_word();		// CTRL + W	- Backspace current word 
 			else if (buffer.c == 127)	backspace();			// BackSpace

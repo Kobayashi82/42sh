@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 19:34:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/15 15:32:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@
 
 		history_clear();
 		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
-		if (!result && !history_add(add_line)) {
+		if (!result && !history_add(add_line, false)) {
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
 			else if (ft_strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
