@@ -6,22 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/15 15:21:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/15 19:52:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
 //  history [-c] [-d offset] [n]
-//	history -rw [filename]
-//	history -ps arg [arg...]
+//	history [-rw] [filename]
+//	history [-sp] arg [arg...]
 
 // -c				Elimina el historial
 // -d[+-n]			Elimina el evento desde el inicio/fin o con el numero de evento
 // -r [filename]	Carga todo el archivo en el historial actual	([filename], HISTFILE or ~/.bash_history)
 // -w [filename]	Guarda el historial actual en el archivo		([filename], HISTFILE or ~/.bash_history)
-// -s				Añade el argumento en el historial
-// -p				Expansion de comando '!-1' sin ejecutar			(imprime el argumento si no es expansible)
+// -s				Añade el argumento en el historial y se aplica HISTCONTROL									(no añade el de history, pero solo si tiene argumentos)
+// -p				Muestra cada argumento en una linea después de realizar todas las expansiones				(no añade el comando al historial, ni siquiera el de history, pero solo si tiene argumentos)
 // --help			Muestra la ayuda
 
 // !! es igual a !-1
@@ -44,3 +44,5 @@
 //						 					ignoredups:	 No guarda comandos duplicados consecutivos.
 // 											ignoreboth:	 Combina ignorespace e ignoredups.
 //											erasedups:	 Elimina duplicados.
+//
+// Nota:	si se juntan flags, tiene prioridad [--help], [--version], [-c], [-d], [-s], [-p], [-w], [-r]
