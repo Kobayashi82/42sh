@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/11/29 13:41:50 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/11 17:03:25 by vzurera-         ###   ########.fr        #
+#    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
+#    Updated: 2024/12/16 21:39:39 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,9 @@ SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																
 			terminal/readinput/autocomplete.c terminal/readinput/undo_redo.c																				\
 			terminal/prompt.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c														\
 			variables/variables.c variables/varios.c																										\
-			builtin/history.c builtin/fc.c																													\
+			builtin/alias.c builtin/bg.c builtin/cd.c builtin/declare.c builtin/echo.c builtin/exec.c builtin/exit.c builtin/export.c builtin/fc.c			\
+			builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c builtin/set.c builtin/test.c		\
+			builtin/type.c builtin/unset.c builtin/wait.c																									\
 			clean/safe.c clean/error.c clean/free.c																											\
 			utils/time.c																																	\
 			tests/tests.c

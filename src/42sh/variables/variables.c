@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:53:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/16 12:07:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,12 @@
 #pragma endregion
 
 #pragma region Information
+
+	//	VARIABLES
+	//
+	// Readonly	La variable es de solo lectura. No se puede modificar ni eliminar.
+	// Exported	La variable está exportada al entorno y será visible para procesos hijo.
+	// Integer	La variable solo almacena valores numéricos (realiza cálculos automáticamente).
 
 	//	42HISTCMD			la crea al cargar el historial y le asigna el numero de evento actual (readonly)
 	//	42HISTSIZE			1000
