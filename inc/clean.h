@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:11:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:09:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,6 @@
 
 	//	----------- FREE -----------
 	void	data_free();
-	void	free_array(char **array);
 
 	//	----------- ERROR ----------
 	int		exit_error(int error, int code, char *value, bool fatal);
