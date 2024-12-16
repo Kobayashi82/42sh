@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/15 15:30:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 00:02:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 	static HIST_ENTRY	**history			= NULL;		//	History array
 
-	static char			*history_file		= NULL;		//	Path to the physical history file
+	static char			history_file[PATH_MAX];			//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entry
 	static bool			file_unlimited		= false;	//	Indicates if it is limited by a maximum size
 
@@ -39,6 +39,15 @@
 
 	static char			**tmp_history		= NULL;		//	Temporary array to store history entry
 	static size_t		tmp_length			= 0;		//	Number of entry currently in the temporary history
+
+#pragma endregion
+
+#pragma region File
+
+	void history_file_set(const char *filename) {
+		if (!filename) return;
+		ft_strcpy(history_file, filename);
+	}
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:16:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 00:20:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 	#pragma region UserInfo
 
 		void test_userinfo() {
-			t_user *user = get_user_by_name("root");
+			t_userinfo *user = get_userinfo_by_name("root");
 			if (user) {
 				printf("Usuario: %s\nHome: %s\nShell: %s\nUID: %d\nGID: %d\n", user->username, user->home, user->shell, user->uid, user->gid);
 				free_user(user);
 			};
-			user = get_user_by_id(getuid());
+			user = get_userinfo_by_id(getuid());
 			if (user) {
 				printf("Usuario: %s\nHome: %s\nShell: %s\nUID: %d\nGID: %d\n", user->username, user->home, user->shell, user->uid, user->gid);
 				free_user(user);

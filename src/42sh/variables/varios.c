@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:50:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:22:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,20 +52,6 @@
 		}
 
 		return (0);
-	}
-
-#pragma endregion
-
-#pragma region Home Path
-
-	char *home_path(const char *user) {
-		char *path = ".";
-
-		if (user) {
-			return (path);
-		}
-
-		return (path);
 	}
 
 #pragma endregion

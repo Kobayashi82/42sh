@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:08:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/16 23:45:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,15 @@
 
 	#pragma endregion
 
+	#pragma region Current
+
+		t_userinfo *get_userinfo() { return (get_userinfo_by_id(getuid())); }
+
+	#pragma endregion
+
 	#pragma region By ID
 
-		t_user *get_user_by_id(int uid) {
+		t_userinfo *get_userinfo_by_id(int uid) {
 			int fd = open("/etc/passwd", O_RDONLY);
 			if (fd == -1) return (NULL);
 
@@ -54,7 +60,7 @@
 				char *shell		= extract_field(line, 6);
 
 				if (id && uid_str && home && !ft_strcmp(uid_str, id)) {
-					t_user *info	= safe_calloc(1, sizeof(t_user));
+					t_userinfo *info	= safe_calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;
@@ -86,7 +92,7 @@
 
 	#pragma region By Name
 
-		t_user *get_user_by_name(const char *name) {
+		t_userinfo *get_userinfo_by_name(const char *name) {
 			int fd = open("/etc/passwd", O_RDONLY);
 			if (fd == -1) return (NULL);
 
@@ -99,7 +105,7 @@
 				char *shell		= extract_field(line, 6);
 
 				if (username && home && !ft_strcmp(username, name)) {
-					t_user *info	= safe_calloc(1, sizeof(t_user));
+					t_userinfo *info	= safe_calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;
@@ -129,12 +135,12 @@
 
 	#pragma region Free
 
-		void free_user(t_user *user) {
-			if (user) {
-				free(user->username);
-				free(user->home);
-				free(user->shell);
-				free(user);
+		void free_user(t_userinfo *userinfo) {
+			if (userinfo) {
+				free(userinfo->username);
+				free(userinfo->home);
+				free(userinfo->shell);
+				free(userinfo);
 			}
 		}
 
@@ -144,10 +150,16 @@
 
 #pragma region Home
 
+	#pragma region Current
+
+		char *get_home() { return get_home_by_id(getuid()); }
+
+	#pragma endregion
+
 	#pragma region By ID
 
 		char *get_home_by_id(int uid) {
-			t_user *user = get_user_by_id(uid);
+			t_userinfo *user = get_userinfo_by_id(uid);
 			char *tmp = safe_strdup(user->home);
 			free_user(user);
 
@@ -159,7 +171,7 @@
 	#pragma region By Name
 
 		char *get_home_by_name(const char *name) {
-			t_user *user = get_user_by_name(name);
+			t_userinfo *user = get_userinfo_by_name(name);
 			char *tmp = safe_strdup(user->home);
 			free_user(user);
 
