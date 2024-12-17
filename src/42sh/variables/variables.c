@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 00:19:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 18:58:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region Variables
 
-	t_var *main_table[HASH_SIZE];
+	t_var *vars_table[HASH_SIZE];
 
 #pragma endregion
 

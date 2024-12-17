@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:54:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,17 @@
 			t_var	*next;
 		}	t_var;
 
+		typedef struct s_alias t_alias;
+		typedef struct s_alias {
+			char	*name;
+			char	*value;
+			t_alias	*next;
+		} t_alias;
+
 	#pragma endregion
 
-	extern t_var *main_table[HASH_SIZE];
+	extern t_var	*vars_table[HASH_SIZE];
+	extern t_alias	*alias_table[HASH_SIZE];
 
 #pragma endregion
 
@@ -48,6 +56,25 @@
 
 	//	----------- HASH -----------
 	unsigned int	hash_index(const char *key);
+
+	//	---------- IMPORT ----------
+	int				alias_add(const char *name, const char *value);
+	void			alias_from_array(const char **array);
+	//	---------- EXPORT ----------
+	t_alias			*alias_find(const char *name);
+	char			**alias_to_array();
+	//	---------- DELETE ----------
+	int				alias_delete(const char *name);
+	void			alias_clear();
+	//	-------- INITIALIZE --------
+	int				alias_initialize();
+
+
+
+
+
+
+
 	//	---------- IMPORT ----------
 	int				variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer, int force);
 	void			variables_from_array(t_var **table, const char **array);

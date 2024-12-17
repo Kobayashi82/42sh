@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 14:22:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 18:58:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 		close(STDERR_FILENO);
 		if (prompt_PS1) free(prompt_PS1);
 		if (prompt_PS2) free(prompt_PS2);
-		variables_clear(main_table);
+		variables_clear(vars_table);
 		history_clear();
 	}
 

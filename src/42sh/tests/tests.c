@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 17:28:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 19:37:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,35 @@
 
 #pragma region Testing
 
+	#pragma region Alias
+
+		int test_alias() {
+			printf(W"\t────────────────────────\n"NC);
+			printf(C"\tAlias       ");
+
+			int result = 0;
+
+			if (!result && alias_find("testing"))		{ result = 1; printf(RD"X"RED500" find\n"NC); }
+			if (!result) { alias_add("testing", "ls");
+				if (!alias_find("testing"))				{ result = 1; printf(RD"X"RED500" create\n"NC); }
+			}
+
+			if (!result) { alias_delete("testing");
+				if (alias_find("testing"))				{ result = 1; printf(RD"X"RED500" delete\n"NC); }
+			}
+
+			if (!result) { alias_clear();
+				char **alias = alias_to_array();
+				if (alias && alias[0])					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
+			}
+
+			if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+			return (result);
+		}
+
+	#pragma endregion
+
 	#pragma region Variables
 
 		int test_variables(const char **envp, int print_array) {
@@ -46,8 +75,8 @@
 			printf(C"\tVariables   ");
 
 			int result = 0, envp_count = 0, vars_count = 0;
-			variables_from_array(main_table,envp);
-			char **vars = variables_to_array(main_table, EXPORTED);
+			variables_from_array(vars_table, envp);
+			char **vars = variables_to_array(vars_table, EXPORTED);
 			for (int i = 0; envp[i]; ++i) ++envp_count;
 			for (int i = 0; vars[i]; ++i) ++vars_count;
 			if (print_array) {
@@ -59,15 +88,15 @@
 			array_free(vars);
 
 			if (envp_count != vars_count)																			{ result = 1; printf(RD"X"RED500" clone\n"NC); }
-			if (!result && !variables_find(main_table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
-			if (!result) { variables_add(main_table, "testing", "test", true, false, false, false);
-				if (!variables_find(main_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
+			if (!result && !variables_find(vars_table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
+			if (!result) { variables_add(vars_table, "testing", "test", true, false, false, false);
+				if (!variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
 			}
-			if (!result) { variables_delete(main_table, "testing");
-				if (variables_find(main_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
+			if (!result) { variables_delete(vars_table, "testing");
+				if (variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 			}
-			if (!result) { variables_clear(main_table);
-				vars = variables_to_array(main_table, EXPORTED);
+			if (!result) { variables_clear(vars_table);
+				vars = variables_to_array(vars_table, EXPORTED);
 				if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 			}
 
@@ -133,7 +162,7 @@
 	int test_builtin_options() {   
 		t_arg arg6 = {"argu2", NULL};
 		t_arg arg5 = {"argu1", &arg6};
-		t_arg arg4 = {"-arc", &arg5};
+		t_arg arg4 = {"-arec", &arg5};
 		t_arg arg3 = {"-nnnn", &arg4};
 		t_arg arg2 = {"-eeeeeeE", &arg3};
 		t_arg arg1 = {"--help", &arg2};
@@ -160,12 +189,13 @@
 		printf(W"\t────────────────────────\n"NC);
 		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);
 
-		if (test_options()) failed = 1;
-		if (test_variables(envp, false)) failed = 1;
-		if (test_history()) failed = 1;
+		if (test_options())					failed = 1;
+		if (test_alias())					failed = 1;
+		if (test_variables(envp, false))	failed = 1;
+		if (test_history())					failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
-		test_builtin_options();
+
 		shell.exit_code = failed;
 		data_free();
 		return (1);

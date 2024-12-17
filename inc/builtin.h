@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 17:30:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 18:25:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,21 @@
 
 #pragma endregion
 
-typedef struct s_opt {
-	const char	*options;
-	char		valid[MAX_OPTIONS];
-	char		invalid[MAX_OPTIONS];
-	int			valid_index, invalid_index;
-	bool		too_many;
-    t_arg		*args;
-}	t_opt;
+#pragma region Variables
+
+	#pragma region Structures
+
+		typedef struct s_opt {
+			const char	*options;
+			char		valid[MAX_OPTIONS];
+			char		invalid[MAX_OPTIONS];
+			bool		too_many;
+			t_arg		*args;
+		}	t_opt;
+
+	#pragma endregion
+
+#pragma endregion
 
 #pragma region Methods
 
