@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/16 22:30:38 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/17 17:31:12 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,12 +66,13 @@ NAME	=	42sh
 SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																						\
 			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/dumb.c		\
 			terminal/readinput/undo.c terminal/prompt.c terminal/readinput/auto.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c	\
+			lexer/tokens.c																																	\
 			variables/variables.c variables/varios.c																										\
-			builtin/builtin.c builtin/alias.c builtin/bg.c builtin/cd.c builtin/declare.c builtin/echo.c builtin/exec.c builtin/exit.c builtin/export.c		\
-			builtin/fc.c builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c builtin/set.c 		\
-			builtin/test.c builtin/type.c builtin/unset.c builtin/wait.c																					\
+			builtin/builtin.c builtin/options.c builtin/alias.c builtin/bg.c builtin/cd.c builtin/declare.c builtin/echo.c builtin/exec.c builtin/exit.c	\
+			builtin/export.c builtin/fc.c builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c 		\
+			builtin/set.c builtin/test.c builtin/type.c builtin/unset.c builtin/wait.c																		\
 			clean/safe.c clean/error.c clean/free.c																											\
-			utils/users.c utils/time.c																														\
+			utils/paths.c utils/users.c utils/time.c																										\
 			tests/tests.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))

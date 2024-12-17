@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:44:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 15:38:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,9 @@
 #pragma endregion
 
 #pragma region Methods
+
+	//	----------- PATH -----------
+	char *resolve_symlink(const char *path);
 
 	//	----------- USER -----------
 	t_userinfo	*get_userinfo();

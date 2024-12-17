@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 00:20:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 17:28:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,26 @@
 
 	#pragma endregion
 
+	int test_builtin_options() {   
+		t_arg arg6 = {"argu2", NULL};
+		t_arg arg5 = {"argu1", &arg6};
+		t_arg arg4 = {"-arc", &arg5};
+		t_arg arg3 = {"-nnnn", &arg4};
+		t_arg arg2 = {"-eeeeeeE", &arg3};
+		t_arg arg1 = {"--help", &arg2};
+		t_arg *args = &arg1;
+
+		t_opt *options = parse_options(args, "eEn", false);
+
+		printf("Opciones válidas: %s\n", options->valid);
+		printf("Opciones inválidas: %s\n", options->invalid);
+		printf("Argumentos a partir de: %s\n", options->args ? options->args->value : "(null)");
+
+		free(options);
+
+		return (0);
+	}
+
 #pragma endregion
 
 #pragma region Test
@@ -145,7 +165,7 @@
 		if (test_history()) failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
-
+		test_builtin_options();
 		shell.exit_code = failed;
 		data_free();
 		return (1);
