@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 17:31:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:20:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@
 
 	#include "tests.h"
 
-	#define VERSION "1.0"
+	#define PROYECTNAME	"42sh"
+	#define VERSION		"1.0"
+	#define DEVELOPER	"Kobayashi"
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 19:25:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:46:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,22 +20,22 @@
 
 #pragma region Import
 
-	#pragma region Variable
+	#pragma region Alias
 
-		int alias_add(const char *name, const char *value) {
-			if (!name) return (0);
+		int alias_add(const char *key, const char *value) {
+			if (!key) return (0);
 
-			t_alias *new_alias = alias_find(name);
+			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
 				free(new_alias->value);
 				new_alias->value = ft_strdup(value);
 				return (0);
 			}
 
-			unsigned int index = hash_index(name);
+			unsigned int index = hash_index(key);
 			new_alias = safe_malloc(sizeof(t_alias));
 
-			new_alias->name = ft_strdup(name);
+			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;
 			if (value) new_alias->value = ft_strdup(value);
 			if (!new_alias->name || (value && !new_alias->value)) {
@@ -71,17 +71,17 @@
 
 #pragma region Export
 
-	#pragma region Variable
+	#pragma region Alias
 
-		t_alias *alias_find(const char *name) {
-			if (!name) return (NULL);
+		t_alias *alias_find(const char *key) {
+			if (!key) return (NULL);
 
-			unsigned int index = hash_index(name);
-			t_alias *var = alias_table[index];
+			unsigned int index = hash_index(key);
+			t_alias *alias = alias_table[index];
 
-			while (var) {
-				if (!ft_strcmp(var->name, name)) return (var);
-				var = var->next;
+			while (alias) {
+				if (!ft_strcmp(alias->name, key)) return (alias);
+				alias = alias->next;
 			}
 
 			return (NULL);
@@ -91,14 +91,14 @@
 
 	#pragma region Array
 
-		char **alias_to_array() {
+		char **alias_to_array(bool sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *var = alias_table[index];
-				while (var) {
-					if (var->value) i++;
-					var = var->next;
+				t_alias *alias = alias_table[index];
+				while (alias) {
+					if (alias->name && alias->value) i++;
+					alias = alias->next;
 				}
 			}
 
@@ -107,30 +107,74 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *var = alias_table[index];
-				while (var) {
-					if (var->value) {
-						size_t len = ft_strlen(var->name) + ft_strlen(var->value) + 2;
-						array[i] = malloc(len);
+				t_alias *alias = alias_table[index];
+				while (alias) {
+					
+					if (alias->name && alias->value) {
+						array[i] = ft_strjoin_sep(alias->name, "=", alias->value, 0);
 						if (!array[i]) {
-							for (size_t j = 0; j < i; j++) free(array[j]);
-							free(array); exit_error(NO_MEMORY, 1, NULL, true);
+							array_free(array);
+							exit_error(NO_MEMORY, 1, NULL, true);
 						}
-
-						ft_strcpy(array[i], var->name);
-						if (var->value) {
-							ft_strcat(array[i], "=");
-							ft_strcat(array[i], var->value);
-						}
-
 						i++;
 					}
-					var = var->next;
+					alias = alias->next;
 				}
 			} array[i] = NULL;
 
-			array_sort(array);
+			if (sort) array_sort(array);
 			return (array);
+		}
+
+	#pragma endregion
+
+	#pragma region Print
+
+		int alias_print(bool sort) {
+			size_t i = 0;
+
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = alias_table[index];
+				while (alias) {
+					if (alias->name && alias->value) i++;
+					alias = alias->next;
+				}
+			}
+
+			if (i == 0) return (1);
+			char **array = safe_malloc((i + 1) * sizeof(char *));
+
+			i = 0;
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = alias_table[index];
+				while (alias) {
+					
+					if (alias->name && alias->value) {
+						array[i] = ft_strjoin_sep("alias: ", alias->name, "='", 0);
+						array[i] = ft_strjoin_sep(array[i], alias->value, "'", 1);
+						if (!array[i] || !ft_strcmp(array[i], "'")) {
+							array_free(array);
+							exit_error(NO_MEMORY, 1, NULL, true);
+						}
+						i++;
+					}
+					alias = alias->next;
+				}
+			} array[i] = NULL;
+
+			if (sort) array_sort(array);
+
+			if (array && array[0]) {
+				print(STDOUT_FILENO, NULL, RESET);
+				for (size_t i = 0; array[i]; ++i) {
+					print(STDOUT_FILENO, array[i], JOIN);
+					print(STDOUT_FILENO, "\n", JOIN);
+				}
+				print(STDOUT_FILENO, NULL, PRINT);
+			}
+			if (array) array_free(array);
+
+			return (0);
 		}
 
 	#pragma endregion
@@ -139,24 +183,24 @@
 
 #pragma region Delete
 
-	#pragma region Variable
+	#pragma region Alias
 
-		int alias_delete(const char *name) {
-			if (!name) return (1);
+		int alias_delete(const char *key) {
+			if (!key) return (1);
 
-			unsigned int index = hash_index(name);
-			t_alias *var = alias_table[index];
+			unsigned int index = hash_index(key);
+			t_alias *alias = alias_table[index];
 			t_alias *prev = NULL;
 
-			while (var) {
-				if (!ft_strcmp(var->name, name)) {
-					if (prev)	prev->next = var->next;
-					else		alias_table[index] = var->next;
-					free(var->name); free(var->value); free(var);
+			while (alias) {
+				if (!ft_strcmp(alias->name, key)) {
+					if (prev)	prev->next = alias->next;
+					else		alias_table[index] = alias->next;
+					free(alias->name); free(alias->value); free(alias);
 					return (0);
 				}
-				prev = var;
-				var = var->next;
+				prev = alias;
+				alias = alias->next;
 			}
 			
 			return (1);
@@ -169,13 +213,13 @@
 		void alias_clear() {
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (alias_table[index]) {
-					t_alias *var = alias_table[index];
-					while (var) {
-						t_alias *next = var->next;
-						free(var->name);
-						free(var->value);
-						free(var);
-						var = next;
+					t_alias *alias = alias_table[index];
+					while (alias) {
+						t_alias *next = alias->next;
+						free(alias->name);
+						free(alias->value);
+						free(alias);
+						alias = next;
 					}
 					alias_table[index] = NULL;
 				}

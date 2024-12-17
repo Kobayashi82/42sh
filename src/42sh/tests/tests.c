@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 19:37:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:47:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,36 @@
 
 	#pragma endregion
 
+	#pragma region Builtin Options
+
+		int test_builtin_options() {   
+			t_arg arg6 = {"argu2", NULL};
+			t_arg arg5 = {"k", &arg6};
+			t_arg arg4 = {"k=koba", &arg5};
+			t_arg arg3 = {"c", &arg4};
+			t_arg arg2 = {"--", &arg3};
+			t_arg arg1 = {"-p", &arg2};
+			t_arg *args = &arg1;
+
+			alias_add("a", "f");
+			alias_add("b", "g");
+			alias_add("c", "h");
+			alias_add("d", "j");
+			alias(args);
+
+			//t_opt *options = parse_options(args, "eEn", false);
+
+			// printf("Opciones válidas: %s\n", options->valid);
+			// printf("Opciones inválidas: %s\n", options->invalid);
+			// printf("Argumentos a partir de: %s\n", options->args ? options->args->value : "(null)");
+
+			//free(options);
+
+			return (0);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
 #pragma region Testing
@@ -57,7 +87,7 @@
 			}
 
 			if (!result) { alias_clear();
-				char **alias = alias_to_array();
+				char **alias = alias_to_array(true);
 				if (alias && alias[0])					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 			}
 
@@ -70,21 +100,15 @@
 
 	#pragma region Variables
 
-		int test_variables(const char **envp, int print_array) {
+		int test_variables(const char **envp) {
 			printf(W"\t────────────────────────\n"NC);
 			printf(C"\tVariables   ");
 
 			int result = 0, envp_count = 0, vars_count = 0;
 			variables_from_array(vars_table, envp);
-			char **vars = variables_to_array(vars_table, EXPORTED);
+			char **vars = variables_to_array(vars_table, EXPORTED, true);
 			for (int i = 0; envp[i]; ++i) ++envp_count;
 			for (int i = 0; vars[i]; ++i) ++vars_count;
-			if (print_array) {
-				array_print(envp, true);
-				printf("\n=========================\n\n");
-				array_print((const char **)vars, true);
-				printf("\n\n");
-			}
 			array_free(vars);
 
 			if (envp_count != vars_count)																			{ result = 1; printf(RD"X"RED500" clone\n"NC); }
@@ -92,11 +116,12 @@
 			if (!result) { variables_add(vars_table, "testing", "test", true, false, false, false);
 				if (!variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
 			}
+
 			if (!result) { variables_delete(vars_table, "testing");
 				if (variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 			}
 			if (!result) { variables_clear(vars_table);
-				vars = variables_to_array(vars_table, EXPORTED);
+				vars = variables_to_array(vars_table, EXPORTED, true);
 				if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 			}
 
@@ -159,26 +184,6 @@
 
 	#pragma endregion
 
-	int test_builtin_options() {   
-		t_arg arg6 = {"argu2", NULL};
-		t_arg arg5 = {"argu1", &arg6};
-		t_arg arg4 = {"-arec", &arg5};
-		t_arg arg3 = {"-nnnn", &arg4};
-		t_arg arg2 = {"-eeeeeeE", &arg3};
-		t_arg arg1 = {"--help", &arg2};
-		t_arg *args = &arg1;
-
-		t_opt *options = parse_options(args, "eEn", false);
-
-		printf("Opciones válidas: %s\n", options->valid);
-		printf("Opciones inválidas: %s\n", options->invalid);
-		printf("Argumentos a partir de: %s\n", options->args ? options->args->value : "(null)");
-
-		free(options);
-
-		return (0);
-	}
-
 #pragma endregion
 
 #pragma region Test
@@ -189,10 +194,10 @@
 		printf(W"\t────────────────────────\n"NC);
 		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);
 
-		if (test_options())					failed = 1;
-		if (test_alias())					failed = 1;
-		if (test_variables(envp, false))	failed = 1;
-		if (test_history())					failed = 1;
+		if (test_options())			failed = 1;
+		if (test_alias())			failed = 1;
+		if (test_variables(envp))	failed = 1;
+		if (test_history())			failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
 

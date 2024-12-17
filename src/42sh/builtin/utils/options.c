@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 18:38:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:37:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,56 @@
 		result->args = args;
 
 		return (result);
+	}
+
+#pragma endregion
+
+#pragma region Invalid
+
+	int invalid_option(char *name, char *opts, char *usage) {
+		if (!name) return (0);
+
+		print(STDOUT_FILENO, NULL, RESET);
+		if (opts) {
+			print(STDOUT_FILENO, name, JOIN);
+			print(STDOUT_FILENO, ": -", JOIN);
+			print(STDOUT_FILENO, opts, JOIN);
+			if (ft_strlen(opts) > 1)	print(STDOUT_FILENO, ": invalid options\n", JOIN);
+			else 						print(STDOUT_FILENO, ": invalid option\n", JOIN);
+		}
+		if (usage) {
+			print(STDOUT_FILENO, "usage: ", JOIN);
+			print(STDOUT_FILENO, name, JOIN);
+			print(STDOUT_FILENO, " ", JOIN);
+			print(STDOUT_FILENO, usage, JOIN);
+			print(STDOUT_FILENO, "\n", JOIN);
+		}
+		print(STDOUT_FILENO, "Try '", JOIN);
+		print(STDOUT_FILENO, name, JOIN);
+		print(STDOUT_FILENO, " --help' for more information\n", PRINT);
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region Version
+
+	int print_version(char *name, char *version) {
+		if (!name || !version) return (0);
+
+		print(STDOUT_FILENO, name, RESET);
+		print(STDOUT_FILENO, " version ", JOIN);
+		print(STDOUT_FILENO, version, JOIN);
+		print(STDOUT_FILENO, "\n\n", JOIN);
+
+		print(STDOUT_FILENO, "This is free software: you are free to change and redistribute it.\n", JOIN);
+		print(STDOUT_FILENO, "There is NO WARRANTY, to the extent permitted by law.\n\n", JOIN);
+
+		print(STDOUT_FILENO, "Copyright (C) 2025 The "PROYECTNAME" Project.\n\n", JOIN);
+		print(STDOUT_FILENO, "Written by "DEVELOPER".\n", PRINT);
+
+		return (0);
 	}
 
 #pragma endregion

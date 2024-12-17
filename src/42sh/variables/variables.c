@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 18:58:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:36:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@
 
 	#pragma region Variable
 
-		int variables_add(t_var **table, const char *name, const char *value, int exported, int readonly, int integer, int force) {
-			if (!name) return (0);
+		int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
+			if (!key) return (0);
 
-			t_var *new_var = variables_find(table, name);
+			t_var *new_var = variables_find(table, key);
 			if (new_var) {
 				if (!readonly || force) {
 					free(new_var->value);
@@ -53,10 +53,10 @@
 				} else return (1);
 			}
 
-			unsigned int index = hash_index(name);
+			unsigned int index = hash_index(key);
 			new_var = safe_malloc(sizeof(t_var));
 
-			new_var->name = ft_strdup(name);
+			new_var->name = ft_strdup(key);
 			new_var->value = NULL;
 			if (value) new_var->value = ft_strdup(value);
 			if (!new_var->name || (value && !new_var->value)) {
@@ -114,14 +114,14 @@
 
 	#pragma region Variable
 
-		t_var *variables_find(t_var **table, const char *name) {
-			if (!name) return (NULL);
+		t_var *variables_find(t_var **table, const char *key) {
+			if (!key) return (NULL);
 
-			unsigned int index = hash_index(name);
+			unsigned int index = hash_index(key);
 			t_var *var = table[index];
 
 			while (var) {
-				if (!ft_strcmp(var->name, name)) return (var);
+				if (!ft_strcmp(var->name, key)) return (var);
 				var = var->next;
 			}
 
@@ -132,16 +132,18 @@
 
 	#pragma region Array
 
-		char **variables_to_array(t_var **table, int type) {
+		char **variables_to_array(t_var **table, int type, bool sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
-					if ((type == EXPORTED_LIST && var->exported) || (type == EXPORTED  && var->exported && var->value)) i++;
-					if (type == INTERNAL && !var->exported && var->value) i++;
-					if (type == READONLY && var->readonly && var->value) i++;
-					var = var->next;
+					if (var->name) {
+						if ((type == EXPORTED_LIST && var->exported) || (type == EXPORTED  && var->exported && var->value)) i++;
+						if (type == INTERNAL && !var->exported && var->value) i++;
+						if (type == READONLY && var->readonly && var->value) i++;
+						var = var->next;
+					}
 				}
 			}
 
@@ -156,27 +158,42 @@
 						if ((type == EXPORTED_LIST || type == EXPORTED) && !var->exported)	{ var = var->next; continue; }
 						if (type == INTERNAL && var->exported) 								{ var = var->next; continue; }
 						if (type == READONLY && !var->readonly)								{ var = var->next; continue; }
-						size_t len = ft_strlen(var->name) + ft_strlen(var->value) + 2;
-						array[i] = malloc(len);
-						if (!array[i]) {
-							for (size_t j = 0; j < i; j++) free(array[j]);
-							free(array); exit_error(NO_MEMORY, 1, NULL, true);
-						}
 
-						ft_strcpy(array[i], var->name);
-						if (var->value) {
-							ft_strcat(array[i], "=");
-							ft_strcat(array[i], var->value);
+						if (var->name) {
+							array[i] = ft_strjoin_sep(var->name, "=", var->value, 0);
+							if (!array[i]) {
+								array_free(array);
+								exit_error(NO_MEMORY, 1, NULL, true);
+							}
+							i++;
 						}
-
-						i++;
 					}
 					var = var->next;
 				}
 			} array[i] = NULL;
 
-			array_sort(array);
+			if (sort) array_sort(array);
 			return (array);
+		}
+
+	#pragma endregion
+
+	#pragma region Print
+
+		int variables_print(t_var **table, int type, bool sort) {
+			char **array = variables_to_array(table, type, sort);
+
+			if (array && array[0]) {
+				print(STDOUT_FILENO, NULL, RESET);
+				for (size_t i = 0; array[i]; ++i) {
+					print(STDOUT_FILENO, array[i], JOIN);
+					print(STDOUT_FILENO, "\n", JOIN);
+				}
+				print(STDOUT_FILENO, NULL, PRINT);
+			}
+			if (array) array_free(array);
+
+			return (0);
 		}
 
 	#pragma endregion
@@ -187,15 +204,15 @@
 
 	#pragma region Variable
 
-		int variables_delete(t_var **table, const char *name) {
-			if (!name) return (1);
+		int variables_delete(t_var **table, const char *key) {
+			if (!key) return (1);
 
-			unsigned int index = hash_index(name);
+			unsigned int index = hash_index(key);
 			t_var *var = table[index];
 			t_var *prev = NULL;
 
 			while (var) {
-				if (!ft_strcmp(var->name, name)) {
+				if (!ft_strcmp(var->name, key)) {
 					if (prev)	prev->next = var->next;
 					else		table[index] = var->next;
 					free(var->name); free(var->value); free(var);

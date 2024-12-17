@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 18:25:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 22:36:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,15 @@
 
 #pragma region Methods
 
-	//	---------- OPTIONS ---------
+	//	=========== UTILS ==========
 	t_opt		*parse_options(t_arg *args, const char *opts, bool no_invalid);
+	int			invalid_option(char *name, char *opts, char *usage);
+	int			print_version(char *name, char *version);
 
-	//	------------ FC ------------
-	const char *default_editor();
+	//	=========== ALIAS ==========
+	int			alias(t_arg *args);
+
+	//	============ FC ============
+	const char	*default_editor();
 
 #pragma endregion

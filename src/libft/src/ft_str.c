@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/07 20:49:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/17 23:24:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -394,8 +394,11 @@
 
 			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
 			char *new_str = malloc(len);
-			ft_strlcpy (new_str, str1, len);
-			ft_strlcat(new_str, str2, len);
+			if (!new_str) return (NULL);
+			if (str1) {
+				ft_strlcpy (new_str, str1, len);
+				if (str2) ft_strlcat(new_str, str2, len);
+			} else if (str2) ft_strcpy (new_str, str2);
 
 			if (frees == 1 || frees == 3) free(str1);
 			if (frees == 2 || frees == 3) free(str2);
