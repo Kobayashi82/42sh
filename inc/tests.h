@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:57:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 19:16:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,16 @@
 
 #pragma region Methods
 
-	int	tests(int argc, const char **argv, const char **envp);
+	void	test_userinfo();
+
+	int		test_built_alias();
+	int		test_built_export();
+
+	int		test_alias();
+	int		test_variables(const char **envp);
+	int		test_options();
+	int		test_history();
+
+	int		tests(int argc, const char **argv, const char **envp);
 
 #pragma endregion

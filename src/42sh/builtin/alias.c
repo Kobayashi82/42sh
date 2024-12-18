@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 23:47:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 16:38:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 			"      -p        print all defined aliases in a reusable format\n\n"
 
 			"    Exit Status:\n"
-			"    alias returns true unless a NAME is supplied for which no alias has been defined.\n";
+			"      Returns success unless a NAME is supplied for which no alias has been defined.\n";
 
 		print(STDOUT_FILENO, msg, RESET_PRINT);
 

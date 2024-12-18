@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 22:37:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 19:04:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,45 @@
 		print(STDOUT_FILENO, "Written by "DEVELOPER".\n", PRINT);
 
 		return (0);
+	}
+
+#pragma endregion
+
+#pragma region Format for Shell
+
+	char *format_for_shell(const char *value, char quote_type) {
+		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
+
+		size_t length = ft_strlen(value), j = 0;
+		char *escaped = safe_malloc(length * 6 + 3);
+
+		if (quote_type == '\'') escaped[j++] = '\'';
+		if (quote_type == '\"') escaped[j++] = '\"';
+
+		for (size_t i = 0; i < length; i++) {
+			if (quote_type == '\'' && value[i] == '\'') {
+				escaped[j++] = '\'';
+				escaped[j++] = '\\';
+				escaped[j++] = '\'';
+				escaped[j++] = '\'';
+			} else if (quote_type == '\"' && value[i] == '\"') {
+				escaped[j++] = '\\';
+				escaped[j++] = '\"';
+			} else if (quote_type == '\"' && (value[i] == '$' || value[i] == '`' || value[i] == '\\')) {
+				escaped[j++] = '\\';
+				escaped[j++] = value[i];
+			} else if (quote_type == '\"' && value[i] == '!') {
+				escaped[j++] = '\\';
+				escaped[j++] = value[i];
+				if (value[i + 1] == '!') escaped[j++] = value[++i];
+			} else escaped[j++] = value[i];
+		}
+
+		if (quote_type == '\'') escaped[j++] = '\'';
+		if (quote_type == '\"') escaped[j++] = '\"';
+		escaped[j] = '\0';
+
+		return (escaped);
 	}
 
 #pragma endregion

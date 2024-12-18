@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 22:36:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 14:44:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,13 @@
 	t_opt		*parse_options(t_arg *args, const char *opts, bool no_invalid);
 	int			invalid_option(char *name, char *opts, char *usage);
 	int			print_version(char *name, char *version);
+	char		*format_for_shell(const char *value, char quote_type);
 
 	//	=========== ALIAS ==========
 	int			alias(t_arg *args);
+
+	//	=========== EXPORT =========
+	int			export(t_arg *args);
 
 	//	============ FC ============
 	const char	*default_editor();

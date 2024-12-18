@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 16:04:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 18:05:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #pragma region Sort
 
 	void array_sort(char **array) {
-		if (!array) return;
+		if (!array || !*array) return;
 
 		size_t count = 0;
 		while (array[count]) count++;

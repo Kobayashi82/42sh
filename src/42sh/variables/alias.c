@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 23:46:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 17:16:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
 				free(new_alias->value);
-				new_alias->value = ft_strdup(value);
+				if (value)	new_alias->value = ft_strdup(value);
+				else		new_alias->value = ft_strdup("");
+
 				return (0);
 			}
 
@@ -37,7 +39,8 @@
 
 			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;
-			if (value) new_alias->value = ft_strdup(value);
+			if (value)	new_alias->value = ft_strdup(value);
+			else		new_alias->value = ft_strdup("");
 			if (!new_alias->name || (value && !new_alias->value)) {
 				free(new_alias->name); free(new_alias->value);
 				exit_error(NO_MEMORY, 1, NULL, true);
@@ -149,10 +152,10 @@
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					
-					if (alias->name && alias->value) {
-						array[i] = ft_strjoin_sep("alias: ", alias->name, "='", 0);
-						array[i] = ft_strjoin_sep(array[i], alias->value, "'", 1);
-						if (!array[i] || !ft_strcmp(array[i], "'")) {
+					if (alias->name) {
+						array[i] = ft_strjoin("alias: ", alias->name, 0);
+						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), 6);
+						if (!array[i]) {
 							array_free(array);
 							exit_error(NO_MEMORY, 1, NULL, true);
 						}

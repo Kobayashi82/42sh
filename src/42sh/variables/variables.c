@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 23:36:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 18:05:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,21 +180,80 @@
 
 	#pragma region Print
 
-		int variables_print(t_var **table, int type, bool sort) {
-			char **array = variables_to_array(table, type, sort);
+		#pragma region Array Value
 
-			if (array && array[0]) {
-				print(STDOUT_FILENO, NULL, RESET);
-				for (size_t i = 0; array[i]; ++i) {
-					print(STDOUT_FILENO, array[i], JOIN);
-					print(STDOUT_FILENO, "\n", JOIN);
+			static int array_value(int type, char **array, size_t i, t_var *var) {
+				if (type < 0 || type > 4) 									return (0);
+				if (!var->name || (type != EXPORTED_LIST && !var->value))	return (0);
+				if (type == EXPORTED_LIST && !var->exported)				return (0);
+				if (type == EXPORTED && !var->exported)						return (0);
+				if (type == READONLY && !var->readonly)						return (0);
+				if (type == INTERNAL && var->exported)						return (0);
+
+				char var_type[6]; int j = 1;
+				var_type[0] = '-';
+				if (var->integer) var_type[j++] = 'i';
+				if (var->readonly) var_type[j++] = 'r';
+				if (var->exported) var_type[j++] = 'x';
+				var_type[j++] = ' ';
+				var_type[j] = '\0';
+				if (ft_strlen(var_type) == 2) var_type[0] = '\0';
+				
+				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
+				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
+
+				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
+				if (!array[i]) {
+					array_free(array);
+					exit_error(NO_MEMORY, 1, NULL, true);
 				}
-				print(STDOUT_FILENO, NULL, PRINT);
-			}
-			if (array) array_free(array);
 
-			return (0);
-		}
+				return (1);
+			}
+
+		#pragma endregion
+
+		#pragma region Print
+
+			int variables_print(t_var **table, int type, bool sort) {
+				size_t i = 0;
+
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
+					t_var *var = table[index];
+					while (var) {
+						if (var->name) i++;
+						var = var->next;
+					}
+				}
+
+				if (i == 0) return (1);
+				char **array = safe_malloc((i + 1) * sizeof(char *));
+
+				i = 0;
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
+					t_var *var = table[index];
+					while (var) {
+						i += array_value(type, array, i, var);
+						var = var->next;
+					}
+				} array[i] = NULL;
+
+				if (sort) array_sort(array);
+
+				if (array && array[0]) {
+					print(STDOUT_FILENO, NULL, RESET);
+					for (size_t i = 0; array[i]; ++i) {
+						print(STDOUT_FILENO, array[i], JOIN);
+						print(STDOUT_FILENO, "\n", JOIN);
+					}
+					print(STDOUT_FILENO, NULL, PRINT);
+				}
+				if (array) array_free(array);
+
+				return (0);
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 

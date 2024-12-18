@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/17 19:07:47 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/18 19:18:01 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -74,7 +74,7 @@ SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																
 			builtin/set.c builtin/test.c builtin/type.c builtin/unset.c builtin/wait.c																		\
 			clean/safe.c clean/error.c clean/free.c																											\
 			utils/paths.c utils/users.c utils/time.c																										\
-			tests/tests.c
+			tests/tests.c tests/untests.c tests/internal.c tests/builtin.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 
