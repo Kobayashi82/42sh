@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 18:05:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 20:51:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,31 @@
 #include <stdio.h>
 
 #pragma region Sort
+
+	void array_nsort(char **array, int skip) {
+		if (!array || !*array) return;
+		if (skip < 0) skip = 0;
+
+		size_t count = 0;
+		while (array[count]) count++;
+
+		for (size_t i = 0; i < count - 1; i++) {
+			for (size_t j = 0; j < count - i - 1; j++) {
+				const char *str1 = array[j];
+				const char *str2 = array[j + 1];
+
+				if (ft_strlen(str1) > skip) str1 += skip;
+				if (ft_strlen(str2) > skip) str2 += skip;
+
+				if (ft_strcmp(str1, str2) > 0) {
+					char *temp = array[j];
+					array[j] = array[j + 1];
+					array[j + 1] = temp;
+				}
+			}
+		}
+	}
+
 
 	void array_sort(char **array) {
 		if (!array || !*array) return;

@@ -1,31 +1,13 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tests.h                                            :+:      :+:    :+:   */
+/*   unalias.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 22:02:50 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/18 21:38:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
-
-#pragma region Methods
-
-	t_arg	*test_create_args(char *line);
-	void	test_free_args(t_arg *args);
-
-	void	test_userinfo();
-
-	int		test_aliases();
-	int		test_variables(const char **envp);
-	int		test_options();
-	int		test_history();
-
-	int		test_builtin();
-
-	int		tests(int argc, const char **argv, const char **envp);
-
-#pragma endregion
+#include "42sh.h"

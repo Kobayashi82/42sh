@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 19:04:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:51:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,24 +58,24 @@
 	int invalid_option(char *name, char *opts, char *usage) {
 		if (!name) return (0);
 
-		print(STDOUT_FILENO, NULL, RESET);
+		print(STDERR_FILENO, NULL, RESET);
 		if (opts) {
-			print(STDOUT_FILENO, name, JOIN);
-			print(STDOUT_FILENO, ": -", JOIN);
-			print(STDOUT_FILENO, opts, JOIN);
-			if (ft_strlen(opts) > 1)	print(STDOUT_FILENO, ": invalid options\n", JOIN);
-			else 						print(STDOUT_FILENO, ": invalid option\n", JOIN);
+			print(STDERR_FILENO, name, JOIN);
+			print(STDERR_FILENO, ": -", JOIN);
+			print(STDERR_FILENO, opts, JOIN);
+			if (ft_strlen(opts) > 1)	print(STDERR_FILENO, ": invalid options\n", JOIN);
+			else 						print(STDERR_FILENO, ": invalid option\n", JOIN);
 		}
 		if (usage) {
-			print(STDOUT_FILENO, "usage: ", JOIN);
-			print(STDOUT_FILENO, name, JOIN);
-			print(STDOUT_FILENO, " ", JOIN);
-			print(STDOUT_FILENO, usage, JOIN);
-			print(STDOUT_FILENO, "\n", JOIN);
+			print(STDERR_FILENO, "usage: ", JOIN);
+			print(STDERR_FILENO, name, JOIN);
+			print(STDERR_FILENO, " ", JOIN);
+			print(STDERR_FILENO, usage, JOIN);
+			print(STDERR_FILENO, "\n", JOIN);
 		}
-		print(STDOUT_FILENO, "Try '", JOIN);
-		print(STDOUT_FILENO, name, JOIN);
-		print(STDOUT_FILENO, " --help' for more information\n", PRINT);
+		print(STDERR_FILENO, "Try '", JOIN);
+		print(STDERR_FILENO, name, JOIN);
+		print(STDERR_FILENO, " --help' for more information\n", PRINT);
 
 		return (0);
 	}

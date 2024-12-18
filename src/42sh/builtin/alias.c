@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 16:38:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:58:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,22 +54,22 @@
 
 #pragma region Print
 
-	static char *print_alias(char *arg, char *values) {
-		if (!arg) return (values);
+	static int print_alias(char *arg, char **values, char **invalues) {
+		if (!arg) return (0);
 
 		t_alias *alias = alias_find(arg);
 		if (alias && alias->name) {
-			char *value = ft_strjoin_sep("alias: ", alias->name, "='", 0);
+			char *value = ft_strjoin_sep("alias ", alias->name, "='", 0);
 			if (alias->value) value = ft_strjoin_sep(value, alias->value, "'\n", 1);
-			if (value) values = ft_strjoin(values, value, 3);
+			if (value) *values = ft_strjoin(*values, value, 3);
 		}
 
 		if (!alias) {
 			char *value = ft_strjoin_sep("alias: ", arg, ": not found\n", 0);
-			if (value) values = ft_strjoin(values, value, 3);
+			if (value) *invalues = ft_strjoin(*invalues, value, 3);
 		}
 
-		return (values);
+		return (0);
 	}
 
 #pragma endregion
@@ -87,15 +87,20 @@
 			return (free(opts), 1);
 		}
 
-		char *values = NULL;
-		while (opts->args) {
-			if (ft_strchr(opts->args->value, '='))	add_alias(opts->args->value);
-			else									values = print_alias(opts->args->value, values);
-			opts->args = opts->args->next;
-		}
+		char *values = NULL, *invalues = NULL;
+		if (opts->args) {
+			while (opts->args) {
+				// Validate alias and return 1 if invalid
+				if (ft_strchr(opts->args->value, '='))	add_alias(opts->args->value);
+				else									print_alias(opts->args->value, &values, &invalues);
+				opts->args = opts->args->next;
+			}
+		} else alias_print(true);
+		
+		if (ft_strchr(opts->valid, 'p')) alias_print(true);
 
-		if (!opts->args || ft_strchr(opts->valid, 'p')) alias_print(true);
 		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
 
 		return (free(opts), 0);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 17:16:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:35:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@
 				while (alias) {
 					
 					if (alias->name) {
-						array[i] = ft_strjoin("alias: ", alias->name, 0);
+						array[i] = ft_strjoin("alias ", alias->name, 0);
 						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), 6);
 						if (!array[i]) {
 							array_free(array);
@@ -165,7 +165,7 @@
 				}
 			} array[i] = NULL;
 
-			if (sort) array_sort(array);
+			if (sort) array_nsort(array, 6);
 
 			if (array && array[0]) {
 				print(STDOUT_FILENO, NULL, RESET);
@@ -178,6 +178,24 @@
 			if (array) array_free(array);
 
 			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region Length
+
+		size_t alias_length() {
+			size_t i = 0;
+
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = alias_table[index];
+				while (alias) {
+					if (alias->name) i++;
+					alias = alias->next;
+				}
+			}
+
+			return (i);
 		}
 
 	#pragma endregion

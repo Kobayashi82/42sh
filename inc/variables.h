@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 14:27:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:34:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 	t_alias			*alias_find(const char *key);
 	char			**alias_to_array(bool sort);
 	int				alias_print(bool sort);
+	size_t			alias_length();
 	//	---------- DELETE ----------
 	int				alias_delete(const char *key);
 	void			alias_clear();
@@ -80,6 +81,7 @@
 	t_var			*variables_find(t_var **table, const char *key);
 	char			**variables_to_array(t_var **table, int type, bool sort);
 	int				variables_print(t_var **table, int type, bool sort);
+	size_t			variables_length(t_var **table, int type);
 	//	---------- DELETE ----------
 	int				variables_delete(t_var **table, const char *key);
 	void			variables_clear(t_var **table);

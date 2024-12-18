@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 18:44:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:31:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@
 
 		if (var->value != *value && var->readonly) {
 			print(STDOUT_FILENO, NULL, RESET);
-			print(STDOUT_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			return (1);
 		}
 

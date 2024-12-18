@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 19:17:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 20:55:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region Alias
 
-	int test_alias() {
+	int test_aliases() {
 		printf(W"\t────────────────────────\n"NC);
 		printf(C"\tAlias       ");
 

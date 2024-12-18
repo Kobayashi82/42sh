@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 19:17:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:21:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@
 		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);
 
 		if (test_options())			failed = 1;
-		if (test_alias())			failed = 1;
+		if (test_aliases())			failed = 1;
 		if (test_variables(envp))	failed = 1;
 		if (test_history())			failed = 1;
+		if (test_builtin())			failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
 

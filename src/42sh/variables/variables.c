@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 18:05:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 21:33:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,6 +198,10 @@
 				var_type[j++] = ' ';
 				var_type[j] = '\0';
 				if (ft_strlen(var_type) == 2) var_type[0] = '\0';
+				else {
+					while (j < 5) var_type[j++] = ' ';
+					var_type[j] = '\0';
+				}
 				
 				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
 				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
@@ -238,7 +242,7 @@
 					}
 				} array[i] = NULL;
 
-				if (sort) array_sort(array);
+				if (sort) array_nsort(array, 13);
 
 				if (array && array[0]) {
 					print(STDOUT_FILENO, NULL, RESET);
@@ -254,6 +258,28 @@
 			}
 
 		#pragma endregion
+
+	#pragma endregion
+
+	#pragma region Length
+
+		size_t variables_length(t_var **table, int type) {
+			size_t i = 0;
+
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_var *var = table[index];
+				while (var) {
+					if (var->name) {
+						if (type == INTERNAL && !var->exported) i++;
+						if (type == EXPORTED && var->exported && var->value) i++;
+						if (type == EXPORTED_LIST && var->exported) i++;
+					}
+					var = var->next;
+				}
+			}
+
+			return (i);
+		}
 
 	#pragma endregion
 
