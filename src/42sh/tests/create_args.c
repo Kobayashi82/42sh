@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 20:29:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/18 22:05:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ static t_arg *add_arg(t_arg **head, char *value) {
     return (new_arg);
 }
 
-t_arg *create_args(char *line) {
+t_arg *test_create_args(char *line) {
     t_arg *args = NULL;
 
     int i = 0;
@@ -95,7 +95,7 @@ t_arg *create_args(char *line) {
     return (args);
 }
 
-void free_args(t_arg *args) {
+void test_free_args(t_arg *args) {
     t_arg *current = args;
     t_arg *next;
 
