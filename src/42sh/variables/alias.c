@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 21:35:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 13:40:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,29 @@
 		}
 
 #pragma endregion
+
+	#pragma region Validate
+
+		int alias_validate(char *key, bool show_msg) {
+			if (!key) return (0);
+			int result = 0;
+
+			size_t len = ft_strlen(key);
+
+			if (!len || (!ft_isalpha(key[0]) && key[0] != '_')) result = 1;
+
+			for (size_t i = 1; i < len; ++i)
+				if (!ft_isalnum(key[i]) && key[i] != '_') { result = 1; break; }
+
+			if (result && show_msg) {
+				print(STDERR_FILENO, ft_strjoin("alias: `", key, 0), FREE_RESET);
+				print(STDERR_FILENO, "': invalid alias name\n", PRINT);
+			}
+
+			return (result);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 

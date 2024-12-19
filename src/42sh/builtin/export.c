@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 21:31:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:30:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,19 +63,28 @@
 		int result = 0;
 
 		if (!ft_strchr(arg, '=')) {
-			// Validate var and return 1 if invalid
+			if (variables_validate(arg, NULL, "export", false, true)) return (1);
 			t_var *var = variables_find(vars_table, arg);
 			if (var) { var->exported = true; return (0); }
 		}
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-		// Validate key and value and return 1 if invalid
+
+		int len = ft_strlen(key);
+		bool concatenate = false;
+		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
+		if (variables_validate(key, value, "export", true, true)) return (free(key), free(value), 1);
+
 		t_var *var = variables_find(vars_table, key);
-		if (var) {
-			var->exported = true;
-			if (set_value(var, key, &value)) result = 1;
-		} else if (variables_add(vars_table, key, value, 1, 0, 0, 0)) result = 1;
+		if (var && var->readonly) {
+			print(STDOUT_FILENO, NULL, RESET);
+			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			result = 1;
+		} else {
+			if (concatenate && variables_concatenate(vars_table, key, value, 1, -1, -1, -1))	result = 1;
+			if (!concatenate && variables_add(vars_table, key, value, 1, -1, -1, -1))			result = 1;
+		}
 
 		return (free(key), free(value), result);
 	}
@@ -88,7 +97,7 @@
 		if (!arg) return (0);
 
 		if (!ft_strchr(arg, '=')) {
-			// Validate var and return 1 if invalid
+			if (variables_validate(arg, NULL, "export", false, true)) return (1);
 			t_var *var = variables_find(vars_table, arg);
 			if (var) var->exported = false;
 			return (0);
@@ -96,7 +105,7 @@
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-		// Validate key and value and return 1 if invalid
+		if (variables_validate(key, value, "export", true, true)) return (free(key), free(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var) {
 			var->exported = false;
@@ -137,15 +146,3 @@
 	}
 
 #pragma endregion
-
-//	EXPORT
-//
-// 	export c	// el value es NULL y por lo tanto no se exportará
-//
-// 			Escapado de values
-//
-// "	Para que las comillas dobles no terminen la cadena prematuramente.
-// \	Siempre se escapa para preservar su literalidad.
-// $	Para evitar la expansión de variables.
-// `	Para evitar que se interprete como un comando (backtick).
-// !	Escapado para prevenir la expansión del historial en configuraciones donde el historial está habilitado.

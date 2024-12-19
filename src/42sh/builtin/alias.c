@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 21:58:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:37:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,14 @@
 
 #pragma region Add
 
-	static void add_alias(char *arg) {
-		if (!arg) return;
+	static int add_alias(char *arg) {
+		if (!arg) return (0);
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
+		if (alias_validate(key, true)) return (free(key), free(value), 1);
 		alias_add(key, value);
-		free(key); free(value);
+		return (free(key), free(value), 0);
 	}
 
 #pragma endregion
@@ -87,12 +88,13 @@
 			return (free(opts), 1);
 		}
 
+		int result = 0;
 		char *values = NULL, *invalues = NULL;
 		if (opts->args) {
 			while (opts->args) {
-				// Validate alias and return 1 if invalid
-				if (ft_strchr(opts->args->value, '='))	add_alias(opts->args->value);
-				else									print_alias(opts->args->value, &values, &invalues);
+				if (opts->args->value && opts->args->value[0] != '=' && ft_strchr(opts->args->value, '=')) {
+					if (add_alias(opts->args->value)) result = 1;
+				} else print_alias(opts->args->value, &values, &invalues);
 				opts->args = opts->args->next;
 			}
 		} else alias_print(true);
@@ -102,7 +104,7 @@
 		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
 		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
 
-		return (free(opts), 0);
+		return (free(opts), result);
 	}
 
 #pragma endregion

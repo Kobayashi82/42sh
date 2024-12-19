@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 22:02:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:37:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,25 +43,29 @@
 		export(args->next); test_free_args(args);
 		if (!result && variables_length(vars_table, EXPORTED_LIST) != 0) result = 1;
 
-		args = test_create_args("export a");
+		args = test_create_args("export a+=k");
 		export(args->next); test_free_args(args);
 		if (!result && variables_length(vars_table, EXPORTED_LIST) != 1) result = 1;
-		if (!result && ft_strcmp(variables_find(vars_table, "a")->value, "c")) result = 1;
+		if (!result && ft_strcmp(variables_find(vars_table, "a")->value, "ck")) result = 1;
 
 		return (result);
 	}
 
 #pragma endregion
 
-int test_builtin() {
-	printf(W"\t────────────────────────\n"NC);
-	printf(C"\tBuiltin     ");
-	int result = 0;
+#pragma region Builtin
 
-	if (!result && test_alias())		{ result = 1; printf(RD"X"RED500" alias\n"NC); }
-	if (!result && test_export())		{ result = 1; printf(RD"X"RED500" export\n"NC); }
+	int test_builtin() {
+		printf(W"\t────────────────────────\n"NC);
+		printf(C"\tBuiltin     ");
+		int result = 0;
 
-	if (!result) printf(G"✓"GREEN500" passed\n"NC);
+		if (!result && test_alias())		{ result = 1; printf(RD"X"RED500" alias\n"NC); }
+		if (!result && test_export())		{ result = 1; printf(RD"X"RED500" export\n"NC); }
 
-	return (result);
-}
+		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+		return (result);
+	}
+
+#pragma endregion

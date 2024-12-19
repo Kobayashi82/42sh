@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 21:34:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:11:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@
 	//	---------- IMPORT ----------
 	int				alias_add(const char *key, const char *value);
 	void			alias_from_array(const char **array);
+	int				alias_validate(char *key, bool show_msg);
 	//	---------- EXPORT ----------
 	t_alias			*alias_find(const char *key);
 	char			**alias_to_array(bool sort);
@@ -75,8 +76,10 @@
 	//	======== VARIABLES =========
 	//	---------- IMPORT ----------
 	int				variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);
+	int				variables_concatenate(t_var **table, const char *key, char *value, int exported, int readonly, int integer, int force);
 	void			variables_from_array(t_var **table, const char **array);
 	void			variables_join(t_var **dst_table, t_var **src_table);
+	int				variables_validate(char *key, char *value, char *name, bool is_asign, bool show_msg);
 	//	---------- EXPORT ----------
 	t_var			*variables_find(t_var **table, const char *key);
 	char			**variables_to_array(t_var **table, int type, bool sort);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 21:33:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 14:29:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,54 @@
 
 		int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
 			if (!key) return (0);
+			if (force == -1) force = 0;
 
 			t_var *new_var = variables_find(table, key);
 			if (new_var) {
-				if (!readonly || force) {
+				if (!new_var->readonly || force) {
 					free(new_var->value);
 					new_var->value = ft_strdup(value);
-					new_var->readonly = readonly;
-					new_var->exported = exported;
-					new_var->integer = integer;
+					if (readonly != -1) new_var->readonly = readonly;
+					if (exported != -1) new_var->exported = exported;
+					if (integer != -1) new_var->integer = integer;
+					return (0);
+				} else return (1);
+			}
+
+			unsigned int index = hash_index(key);
+			new_var = safe_calloc(1, sizeof(t_var));
+
+			new_var->name = ft_strdup(key);
+			if (value) new_var->value = ft_strdup(value);
+			if (!new_var->name || (value && !new_var->value)) {
+				free(new_var->name); free(new_var->value);
+				exit_error(NO_MEMORY, 1, NULL, true);
+			}
+
+			if (readonly != -1) new_var->readonly = readonly;
+			if (exported != -1) new_var->exported = exported;
+			if (integer != -1) new_var->integer = integer;
+			new_var->next = table[index];
+			table[index] = new_var;
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region Concatenate
+
+		int variables_concatenate(t_var **table, const char *key, char *value, int exported, int readonly, int integer, int force) {
+			if (!key) return (0);
+			if (force == -1) force = 0;
+
+			t_var *new_var = variables_find(table, key);
+			if (new_var) {
+				if (!new_var->readonly || force) {
+					new_var->value = ft_strjoin(new_var->value, value, 1);
+					if (readonly != -1) new_var->readonly = readonly;
+					if (exported != -1) new_var->exported = exported;
+					if (integer != -1) new_var->integer = integer;
 					return (0);
 				} else return (1);
 			}
@@ -64,9 +103,9 @@
 				exit_error(NO_MEMORY, 1, NULL, true);
 			}
 
-			new_var->readonly = readonly;
-			new_var->exported = exported;
-			new_var->integer = integer;
+			if (readonly != -1) new_var->readonly = readonly;
+			if (exported != -1) new_var->exported = exported;
+			if (integer != -1) new_var->integer = integer;
 			new_var->next = table[index];
 			table[index] = new_var;
 
@@ -104,6 +143,31 @@
 				}
 			}
 			variables_clear(src_table);
+		}
+
+	#pragma endregion
+
+	#pragma region Validate
+
+		int variables_validate(char *key, char *value, char *name, bool is_asign, bool show_msg) {
+			if (!key) return (0);
+			int result = 0;
+
+			size_t len = ft_strlen(key);
+
+			if (!len || (!ft_isalpha(key[0]) && key[0] != '_')) result = 1;
+
+			for (size_t i = 1; i < len; ++i)
+				if (!ft_isalnum(key[i]) && key[i] != '_') { result = 1; break; }
+
+			if (result && show_msg) {
+				if (!name) name = PROYECTNAME;
+				print(STDERR_FILENO, ft_strjoin_sep(name, ": `", key, 0), FREE_RESET);
+				if (is_asign)	print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 0), FREE_PRINT);
+				else			print(STDERR_FILENO, "': not a valid identifier\n", PRINT);
+			}
+
+			return (result);
 		}
 
 	#pragma endregion
