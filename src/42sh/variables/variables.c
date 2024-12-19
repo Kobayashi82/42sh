@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 14:29:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:21:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,8 +204,8 @@
 				while (var) {
 					if (var->name) {
 						if ((type == EXPORTED_LIST && var->exported) || (type == EXPORTED  && var->exported && var->value)) i++;
-						if (type == INTERNAL && !var->exported && var->value) i++;
-						if (type == READONLY && var->readonly && var->value) i++;
+						if (type == INTERNAL && !var->exported) i++;
+						if (type == READONLY && var->readonly) i++;
 						var = var->next;
 					}
 				}
@@ -248,24 +248,20 @@
 
 			static int array_value(int type, char **array, size_t i, t_var *var) {
 				if (type < 0 || type > 4) 									return (0);
-				if (!var->name || (type != EXPORTED_LIST && !var->value))	return (0);
+				if (!var->name)												return (0);
 				if (type == EXPORTED_LIST && !var->exported)				return (0);
-				if (type == EXPORTED && !var->exported)						return (0);
+				if (type == EXPORTED && (!var->exported || !var->value))	return (0);
 				if (type == READONLY && !var->readonly)						return (0);
 				if (type == INTERNAL && var->exported)						return (0);
 
-				char var_type[6]; int j = 1;
-				var_type[0] = '-';
+				char var_type[6]; int j = 0;
+				var_type[j++] = '-';
 				if (var->integer) var_type[j++] = 'i';
 				if (var->readonly) var_type[j++] = 'r';
 				if (var->exported) var_type[j++] = 'x';
-				var_type[j++] = ' ';
+				if (j == 1) var_type[j++] = '-';
+				while (j < 5) var_type[j++] = ' ';
 				var_type[j] = '\0';
-				if (ft_strlen(var_type) == 2) var_type[0] = '\0';
-				else {
-					while (j < 5) var_type[j++] = ' ';
-					var_type[j] = '\0';
-				}
 				
 				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
 				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
@@ -335,6 +331,7 @@
 				while (var) {
 					if (var->name) {
 						if (type == INTERNAL && !var->exported) i++;
+						if (type == READONLY && var->readonly) i++;
 						if (type == EXPORTED && var->exported && var->value) i++;
 						if (type == EXPORTED_LIST && var->exported) i++;
 					}

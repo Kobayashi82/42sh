@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 14:37:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 19:26:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@
 #pragma region Alias
 
 	int alias(t_arg *args) {
-		t_opt *opts = parse_options(args, "p", false);
+		t_opt *opts = parse_options(args, "p", '-', false);
 
 		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
 		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("alias", "1.0"));
