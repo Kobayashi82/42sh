@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 14:11:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/20 18:06:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region Includes
 
-	#define HASH_SIZE 101	//	Using a prime number improves the distribution in the hash table
+	#define HASH_SIZE 101
 
 #pragma endregion
 
@@ -28,7 +28,15 @@
 
 	#pragma region Structures
 
-		typedef struct s_var t_var;
+		typedef struct s_alias	t_alias;
+		typedef struct s_var	t_var;
+
+		typedef struct s_alias {
+			char	*name;
+			char	*value;
+			t_alias	*next;
+		}	t_alias;
+
 		typedef struct s_var {
 			char	*name;
 			char	*value;
@@ -37,13 +45,6 @@
 			bool	integer;
 			t_var	*next;
 		}	t_var;
-
-		typedef struct s_alias t_alias;
-		typedef struct s_alias {
-			char	*name;
-			char	*value;
-			t_alias	*next;
-		} t_alias;
 
 	#pragma endregion
 

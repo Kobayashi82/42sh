@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 19:26:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/19 21:52:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,10 +126,6 @@
 			} else if (quote_type == '\"' && (value[i] == '$' || value[i] == '`' || value[i] == '\\')) {
 				escaped[j++] = '\\';
 				escaped[j++] = value[i];
-			} else if (quote_type == '\"' && value[i] == '!') {
-				escaped[j++] = '\\';
-				escaped[j++] = value[i];
-				if (value[i + 1] == '!') escaped[j++] = value[++i];
 			} else escaped[j++] = value[i];
 		}
 
