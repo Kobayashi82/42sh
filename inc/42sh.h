@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/20 17:18:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/21 17:43:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 	#include "prompt.h"
 	#include "shell.h"
 	#include "variables.h"
-	#include "lexer.h"
+	#include "parser.h"
 	#include "builtin.h"
 	#include "utils.h"
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/15 14:56:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/21 17:46:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #pragma region Variables
 
-	t_tokens	tokens;
+	t_token	tokens;
 
 #pragma endregion
 

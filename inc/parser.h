@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/20 19:47:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/21 17:45:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,20 +18,15 @@
 
 #pragma endregion
 
-typedef struct s_arg {
-    char			*value;
-    struct s_arg	*next;
-}	t_arg;
-
 #pragma region Variables
 
 	#pragma region Enumerators
 
 		typedef enum {
 			CMD,				// Normal command
-			CMD_SHELL,			// Executed in a subshell			()
-			BLOCK,				// Execute in the current shell		{}
-			ARITH				// Arithmetic						(())
+			// CMD_SHELL,			// Executed in a subshell			()
+			// BLOCK,				// Execute in the current shell		{}
+			// ARITH				// Arithmetic						(())
 		} e_cmd;
 
 		typedef enum {
@@ -68,7 +63,7 @@ typedef struct s_arg {
 
 		#pragma region Tokens
 
-			typedef struct s_token	t_tokens;
+			typedef struct s_token	t_token;
 			typedef struct s_cmd	t_cmd;
 			typedef struct s_arg	t_arg;
 			typedef struct s_redir	t_redir;
@@ -109,16 +104,16 @@ typedef struct s_arg {
 			// 	int		fd[2];
 			// }	t_token;
 
-			typedef struct s_tokens {
+			typedef struct s_token {
 				t_cmd	*cmd;
 				t_cmd	*last_cmd;
 				t_arg	*files;
-			}	t_tokens;
+			}	t_token;
 
 		#pragma endregion
 
 	#pragma endregion
 
-	extern t_tokens		tokens;
+	extern t_token		tokens;
 
 #pragma endregion
