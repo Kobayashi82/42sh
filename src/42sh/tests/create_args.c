@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 22:05:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:14:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static char *extract_word(char *line, int *index) {
     int start = *index;
     while (line[*index] && !ft_isspace(line[*index]) && !is_quote(line[*index]))
         (*index)++;
-    return strndup(&line[start], *index - start);
+    return (strndup(&line[start], *index - start));
 }
 
 static t_arg *add_arg(t_arg **head, char *value) {

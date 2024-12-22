@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 19:26:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:15:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,13 +112,13 @@
 	int export(t_arg *args) {
 		t_opt *opts = parse_options(args, "np", '-', false);
 
-		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("export", "1.0"));
-
 		if (*opts->invalid) {
 			invalid_option("export", opts->invalid, "[-n] [name[=value] ...] or export -p");
 			return (free(opts), 1);
 		}
+
+		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("export", "1.0"));
 
 		if (!opts->args) {
 			variables_print(vars_table, EXPORTED_LIST, true);

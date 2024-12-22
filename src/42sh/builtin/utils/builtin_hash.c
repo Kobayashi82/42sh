@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 13:39:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:13:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@
 
 	#pragma region Array
 
-		char **builtin_to_array(bool sort) {
+		char **builtin_to_array(int disabled, bool special, bool sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
-					if (builtin->name) i++;
+					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
 					builtin = builtin->next;
 				}
 			}
@@ -88,8 +88,8 @@
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
-				while (builtin) {				
-					if (builtin->name) {
+				while (builtin) {
+					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
 						array[i] = ft_strdup(builtin->name);
 						if (!array[i]) {
 							array_free(array);
@@ -109,8 +109,42 @@
 
 	#pragma region Print
 
-		int builtin_print(bool sort) {
-			char **array = builtin_to_array(sort);
+		int builtin_print(int disabled, bool special, bool sort) {
+			size_t i = 0;
+
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = builtin_table[index];
+				while (builtin) {
+					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
+					builtin = builtin->next;
+				}
+			}
+
+			if (i == 0) return (1);
+			char **array = safe_malloc((i + 1) * sizeof(char *));
+
+			i = 0;
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = builtin_table[index];
+				while (builtin) {
+				
+					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
+						if ( builtin->disabled && (disabled == 1 || disabled == 2))
+							array[i] = ft_strjoin("disable ", builtin->name, 0);
+						if (!builtin->disabled && (disabled == 0 || disabled == 2))
+							array[i] = ft_strjoin("enable  ", builtin->name, 0);
+						if (!array[i]) {
+							array_free(array);
+							exit_error(NO_MEMORY, 1, NULL, true);
+						}
+						i++;
+					}
+					builtin = builtin->next;
+				}
+			} array[i] = NULL;
+
+			if (sort) array_nsort(array, 8);
+
 			if (array && array[0]) {
 				print(STDOUT_FILENO, NULL, RESET);
 				for (size_t i = 0; array[i]; ++i) {
@@ -128,13 +162,13 @@
 
 	#pragma region Length
 
-		size_t builtin_length() {
+		size_t builtin_length(int disabled, bool special) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
-					if (builtin->name) i++;
+					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || (!special || builtin->special == special))) i++;
 					builtin = builtin->next;
 				}
 			}
@@ -197,15 +231,32 @@
 #pragma region Initialize
 
 	int builtin_initialize() {
+		//	Specials
+		// builtin_add(".", 0, 1, &bt_dot);
+		// builtin_add(":", 0, 1, &bt_dots);
+		// builtin_add("break", 0, 1, &bt_break);
+		// builtin_add("continue", 0, 1, &bt_continue);
+		// builtin_add(\"eval", 0, 1, &eval);
+		// builtin_add("exec", 0, 1, &exec);
+		// builtin_add("exit", 0, 1, &bt_exit);
+		builtin_add("export", 0, 1, &export);
+		builtin_add("readonly", 0, 1, &readonly);
+		// builtin_add("return", 0, 1, &bt_return);
+		// builtin_add("set", 0, 1, &set);
+		// builtin_add("shift", 0, 1, &shift);
+		// builtin_add("source", 0, 1, &source);
+		// builtin_add("times", 0, 1, &times);
+		// builtin_add("trap", 0, 1, &trap);
+		builtin_add("unset", 0, 1, &unset);
+
+		//	Normal
 		builtin_add("alias", 0, 0, &alias);
 		// builtin_add("bg", 0, 0, &bg);
 		// builtin_add("builtin", 0, 0, &builtin);
 		// builtin_add("cd", 0, 0, &cd);
 		builtin_add("declare", 0, 0, &declare);
 		// builtin_add("echo", 0, 0, &echo);
-		// builtin_add("exec", 0, 0, &exec);
-		// builtin_add("exit", 0, 0, &blt_exit);
-		builtin_add("export", 0, 0, &export);
+		builtin_add("enable", 0, 0, &enable);
 		// builtin_add("fc", 0, 0, &fc);
 		// builtin_add("fg", 0, 0, &fg);
 		// builtin_add("hash", 0, 0, &hash);
@@ -215,13 +266,10 @@
 		// builtin_add("kill", 0, 0, &kill);
 		// builtin_add("let", 0, 0, &let);
 		// builtin_add("pwd", 0, 0, &pwd);
-		builtin_add("readonly", 0, 0, &readonly);
-		// builtin_add("set", 0, 0, &set);
 		// builtin_add("test", 0, 0, &test);
 		// builtin_add("type", 0, 0, &type);
 		builtin_add("unalias", 0, 0, &unalias);
-		builtin_add("unset", 0, 0, &unset);
-		// builtin_add("wait", 0, 0, &wait);
+		// builtin_add("wait", 0, 0, &bt_wait);
 		return (0);
 	}
 

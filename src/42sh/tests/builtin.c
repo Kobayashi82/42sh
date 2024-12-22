@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 13:47:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:17:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,24 @@
 
 #pragma endregion
 
+#pragma region Enable
+
+	static int test_enable() {
+		int result = 0;
+
+		t_arg *args = test_create_args("enable -n readonly");
+		builtin_exec(args); test_free_args(args);
+		if (!result && builtin_length(1, false) != 1) result = 1;
+
+		args = test_create_args("enable readonly");
+		builtin_exec(args); test_free_args(args);
+		if (!result && builtin_length(1, false) != 0) result = 1;
+		
+		return (result);
+	}
+
+#pragma endregion
+
 #pragma region Builtin
 
 	int test_builtin() {
@@ -140,6 +158,7 @@
 		if (!result && test_readonly())		{ result = 1; printf(RD"X"RED500" readonly\n"NC); }
 		if (!result && test_export())		{ result = 1; printf(RD"X"RED500" export\n"NC); }
 		if (!result && test_unset())		{ result = 1; printf(RD"X"RED500" unset\n"NC); }
+		if (!result && test_enable())		{ result = 1; printf(RD"X"RED500" enable\n"NC); }
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

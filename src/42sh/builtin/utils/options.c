@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 21:52:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:14:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@
 			print(STDERR_FILENO, usage, JOIN);
 			print(STDERR_FILENO, "\n", JOIN);
 		}
-		print(STDERR_FILENO, "Try '", JOIN);
+		print(STDERR_FILENO, "\nTry '", JOIN);
 		print(STDERR_FILENO, name, JOIN);
 		print(STDERR_FILENO, " --help' for more information\n", PRINT);
 

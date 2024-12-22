@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 13:41:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 19:48:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,9 @@
 	//	======= BUILTIN_HASH =======
 	int			builtin_add(const char *name, int disabled, int special, int (*execute)(t_arg *args));
 	t_builtin	*builtin_find(const char *name);
-	char		**builtin_to_array(bool sort);
-	int			builtin_print(bool sort);
-	size_t		builtin_length();
+	char		**builtin_to_array(int disabled, bool special, bool sort);
+	int			builtin_print(int disabled, bool special, bool sort);
+	size_t		builtin_length(int disabled, bool special);
 	void		builtin_clear();
 	int			builtin_delete(const char *name);
 	int			builtin_initialize();
@@ -82,6 +82,9 @@
 
 	//	=========== UNSET ==========
 	int			unset(t_arg *args);
+
+	//	========== ENABLE ==========
+	int			enable(t_arg *args);
 
 	//	============ FC ============
 	const char	*default_editor();

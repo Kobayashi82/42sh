@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 19:29:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 20:15:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,13 +136,13 @@
 
 		(void) opts_plus;
 
-		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("declare", "1.0"));
-
 		if (*opts->invalid) {
 			invalid_option("declare", opts->invalid, "[-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]");
 			return (free(opts), 1);
 		}
+
+		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("declare", "1.0"));
 
 		if (!opts->args) {
 			variables_print(vars_table, EXPORTED_LIST, true);
