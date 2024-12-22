@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 20:55:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 01:45:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@
 			vars = variables_to_array(vars_table, EXPORTED, true);
 			if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
+
+		variables_clear(vars_table);
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

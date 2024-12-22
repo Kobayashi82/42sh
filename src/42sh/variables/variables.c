@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 19:21:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 01:40:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,20 @@
 
 			while (var) {
 				if (!ft_strcmp(var->name, key)) return (var);
+				var = var->next;
+			}
+
+			return (NULL);
+		}
+
+		char *variables_find_value(t_var **table, const char *key) {
+			if (!key) return (NULL);
+
+			unsigned int index = hash_index(key);
+			t_var *var = table[index];
+
+			while (var) {
+				if (!ft_strcmp(var->name, key)) return (var->value);
 				var = var->next;
 			}
 

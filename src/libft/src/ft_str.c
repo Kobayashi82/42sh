@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 23:24:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 02:02:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -568,5 +568,28 @@
 			}
 		}
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region STR_TOK
+
+	char *ft_strtok(char *str, const char *delim) {
+		static char *static_str = NULL;
+		char *token = NULL;
+
+		if (str != NULL) static_str = str;
+		if (static_str == NULL) return (NULL);
+
+		while (*static_str && ft_strchr(delim, *static_str)) static_str++;
+		if (!*static_str) { static_str = NULL; return (NULL); }
+
+		token = static_str;
+		while (*static_str && !ft_strchr(delim, *static_str)) static_str++;
+
+		if (*static_str) { *static_str = '\0'; static_str++; }
+		else static_str = NULL;
+
+		return (token);
+	}
 
 #pragma endregion

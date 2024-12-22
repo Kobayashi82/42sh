@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/20 18:06:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 01:41:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@
 	int				variables_validate(char *key, char *value, char *name, bool is_asign, bool show_msg);
 	//	---------- EXPORT ----------
 	t_var			*variables_find(t_var **table, const char *key);
+	char			*variables_find_value(t_var **table, const char *key);
 	char			**variables_to_array(t_var **table, int type, bool sort);
 	int				variables_print(t_var **table, int type, bool sort);
 	size_t			variables_length(t_var **table, int type);

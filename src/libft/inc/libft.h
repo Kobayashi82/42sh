@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 20:50:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 02:01:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,8 @@ char	**ft_split(char *s, char c);
 void	ft_putchar_fd(int fd, char c);
 void	ft_putstr_fd(int fd, char *str, int add_nl);
 void	ft_putnbr_fd(int fd, int n);
+//	STR_TOK
+char	*ft_strtok(char *str, const char *delim);
 
 //	FT_STR_NUM
 int		ft_max(int n1, int n2);

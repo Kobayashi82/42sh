@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:45:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 01:53:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,11 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					close(fd);
 					free(id);
 					free(line);
 					free(uid_str);
 					free(gid_str);
+					close(fd);
 					return (info);
 				}
 
@@ -93,6 +93,7 @@
 	#pragma region By Name
 
 		t_userinfo *get_userinfo_by_name(const char *name) {
+			if (!name) return (NULL);
 			int fd = open("/etc/passwd", O_RDONLY);
 			if (fd == -1) return (NULL);
 
@@ -112,10 +113,10 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					close(fd);
 					free(line);
 					free(uid_str);
 					free(gid_str);
+					close(fd);
 					return (info);
 				}
 
@@ -160,8 +161,11 @@
 
 		char *get_home_by_id(int uid) {
 			t_userinfo *user = get_userinfo_by_id(uid);
-			char *tmp = safe_strdup(user->home);
-			free_user(user);
+			char *tmp = NULL;
+			if (user) {
+				tmp = safe_strdup(user->home);
+				free_user(user);
+			}
 
 			return (tmp);
 		}
@@ -172,8 +176,11 @@
 
 		char *get_home_by_name(const char *name) {
 			t_userinfo *user = get_userinfo_by_name(name);
-			char *tmp = safe_strdup(user->home);
-			free_user(user);
+			char *tmp = NULL;
+			if (user) {
+				tmp = safe_strdup(user->home);
+				free_user(user);
+			}
 
 			return (tmp);
 		}
