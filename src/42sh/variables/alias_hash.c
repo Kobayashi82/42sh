@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alias.c                                            :+:      :+:    :+:   */
+/*   alias_hash.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 17:18:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:05:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
 				free(new_alias->value);
-				if (value)	new_alias->value = ft_strdup(value);
-				else		new_alias->value = ft_strdup("");
+				if (value)	new_alias->value = safe_strdup(value);
+				else		new_alias->value = safe_strdup("");
 
 				return (0);
 			}
 
 			unsigned int index = hash_index(key);
-			new_alias = safe_malloc(sizeof(t_alias));
+			new_alias = safe_calloc(1, sizeof(t_alias));
 
 			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;
@@ -53,22 +53,6 @@
 		}
 
 	#pragma endregion
-
-	#pragma region Array
-
-		void alias_from_array(const char **array) {
-			if (!array) return;
-
-			for (size_t i = 0; array[i]; i++) {
-				char *key = NULL, *value = NULL;
-				get_key_value(array[i], &key, &value, '=');
-				if (!key) continue;
-				alias_add(key, value);
-				free(key); free(value);
-			}
-		}
-
-#pragma endregion
 
 	#pragma region Validate
 

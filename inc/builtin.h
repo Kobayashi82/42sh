@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/19 19:24:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 13:41:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,16 @@
 
 #pragma region Includes
 
-	#define MAX_OPTIONS 128
+	#define MAX_OPTIONS	128
+	#define HASH_SIZE	101
 
 #pragma endregion
 
 #pragma region Variables
 
 	#pragma region Structures
+
+		typedef struct s_builtin t_builtin;
 
 		typedef struct s_opt {
 			const char	*options;
@@ -30,11 +33,31 @@
 			t_arg		*args;
 		}	t_opt;
 
+		typedef struct s_builtin{
+			char		*name;
+			bool		disabled;
+			bool		special;
+		    int         (*execute)(t_arg *args);
+			t_builtin	*next;
+		}	t_builtin;
+
 	#pragma endregion
+
+	extern t_builtin	*builtin_table[HASH_SIZE];
 
 #pragma endregion
 
 #pragma region Methods
+
+	//	======= BUILTIN_HASH =======
+	int			builtin_add(const char *name, int disabled, int special, int (*execute)(t_arg *args));
+	t_builtin	*builtin_find(const char *name);
+	char		**builtin_to_array(bool sort);
+	int			builtin_print(bool sort);
+	size_t		builtin_length();
+	void		builtin_clear();
+	int			builtin_delete(const char *name);
+	int			builtin_initialize();
 
 	//	========== UTILS ===========
 	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid);
@@ -62,5 +85,7 @@
 
 	//	============ FC ============
 	const char	*default_editor();
+
+	int			builtin_exec(t_arg *args);
 
 #pragma endregion

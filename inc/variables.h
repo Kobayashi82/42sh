@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 01:41:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:16:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 	#pragma region Structures
 
 		typedef struct s_alias	t_alias;
+		typedef struct s_cmdp	t_cmdp;
 		typedef struct s_var	t_var;
 
 		typedef struct s_alias {
@@ -36,6 +37,12 @@
 			char	*value;
 			t_alias	*next;
 		}	t_alias;
+
+		typedef struct s_cmdp {
+			char	*name;
+			char	*path;
+			t_cmdp	*next;
+		}	t_cmdp;
 
 		typedef struct s_var {
 			char	*name;
@@ -48,8 +55,9 @@
 
 	#pragma endregion
 
-	extern t_var	*vars_table[HASH_SIZE];
 	extern t_alias	*alias_table[HASH_SIZE];
+	extern t_cmdp	*cmdp_table[HASH_SIZE];
+	extern t_var	*vars_table[HASH_SIZE];
 
 #pragma endregion
 
@@ -61,7 +69,6 @@
 	//	========== ALIAS ===========
 	//	---------- IMPORT ----------
 	int				alias_add(const char *key, const char *value);
-	void			alias_from_array(const char **array);
 	int				alias_validate(char *key, bool show_msg);
 	//	---------- EXPORT ----------
 	t_alias			*alias_find(const char *key);
@@ -73,6 +80,21 @@
 	void			alias_clear();
 	//	-------- INITIALIZE --------
 	int				alias_initialize();
+
+	//	=========== CMD ============
+	//	---------- IMPORT ----------
+	int				cmdp_add(const char *path);
+	//	---------- EXPORT ----------
+	t_cmdp			*cmdp_find(const char *name);
+	char			*cmdp_find_value(const char *name);
+	char			**cmdp_to_array(bool sort);
+	int				cmdp_print(bool sort);
+	size_t			cmdp_length();
+	//	---------- DELETE ----------
+	int				cmdp_delete(const char *name);
+	void			cmdp_clear();
+	//	-------- INITIALIZE --------
+	int				cmd_initialize();
 
 	//	======== VARIABLES =========
 	//	---------- IMPORT ----------

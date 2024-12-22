@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:47:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 19:37:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 13:20:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ int initialize(int argc, const char **argv, const char **envp) {
 	//	PS1, PS2
 	//	column, row
 	terminal_initialize();
+	builtin_initialize();
 	options_initialize();
 	alias_initialize();
 	variables_initialize(vars_table);

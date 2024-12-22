@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 20:51:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/22 14:16:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@
 		alias_clear();
 		variables_clear(vars_table);
 		history_clear();
+		cmdp_clear();
+		builtin_clear();
 	}
 
 #pragma endregion
