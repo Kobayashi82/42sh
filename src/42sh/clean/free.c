@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 14:16:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 23:32:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	//	Free the data structure
 	void data_free() {
 		free(terminal.input);
-		free(terminal.msg);
+		for (int i = 0; i < 1024; ++i) if (terminal.msg[i]) free(terminal.msg[i]);
 		close(terminal.bk_stdin);
 		close(terminal.bk_stdout);
 		close(terminal.bk_stderr);

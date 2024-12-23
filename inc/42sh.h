@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/21 17:43:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 19:52:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@
 	#define PROYECTNAME	"42sh"
 	#define VERSION		"1.0"
 	#define DEVELOPER	"Kobayashi"
+	#define PATH		"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 14:19:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 23:42:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,9 @@
 		if (test_aliases())			failed = 1;
 		if (test_variables(envp))	failed = 1;
 		if (test_history())			failed = 1;
-		if (test_builtin())			failed = 1;
+		if (test_builtin(envp))			failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
-
-		cmdp_add("/usr/bin/echo2");
-		cmdp_print(true);
 
 		shell.exit_code = failed;
 		data_free();

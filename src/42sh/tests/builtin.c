@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 20:17:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 00:05:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,11 +146,33 @@
 
 #pragma endregion
 
+#pragma region Type
+
+	static int test_type(const char **envp) {
+		int result = 0;
+		return (result);
+
+		variables_from_array(vars_table, envp);
+
+		alias_add("echo", "echo");
+		cmdp_add("/usr/bin/date");
+
+		t_arg *args = test_create_args("type -a echo popo date");
+		builtin_exec(args); test_free_args(args);
+
+		alias_clear();
+		cmdp_clear();
+
+		return (result);
+	}
+
+#pragma endregion
+
 #pragma region Builtin
 
-	int test_builtin() {
+	int test_builtin(const char **envp) {
 		printf(W"\t────────────────────────\n"NC);
-		printf(C"\tBuiltin     ");
+		printf(C"\tBuiltin     "); fflush(stdout);
 		int result = 0;
 
 		if (!result && test_alias())		{ result = 1; printf(RD"X"RED500" alias\n"NC); }
@@ -159,6 +181,7 @@
 		if (!result && test_export())		{ result = 1; printf(RD"X"RED500" export\n"NC); }
 		if (!result && test_unset())		{ result = 1; printf(RD"X"RED500" unset\n"NC); }
 		if (!result && test_enable())		{ result = 1; printf(RD"X"RED500" enable\n"NC); }
+		if (!result && test_type(envp))		{ result = 1; printf(RD"X"RED500" type\n"NC); }
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

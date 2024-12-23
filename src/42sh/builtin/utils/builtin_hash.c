@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 20:13:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 23:04:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,20 @@
 			}
 
 			return (NULL);
+		}
+
+		bool builtin_isactive(const char *name) {
+			if (!name) return (false);
+
+			unsigned int index = hash_index(name);
+			t_builtin *builtin = builtin_table[index];
+
+			while (builtin) {
+				if (!ft_strcmp(builtin->name, name)) return (!builtin->disabled);
+				builtin = builtin->next;
+			}
+
+			return (false);
 		}
 
 	#pragma endregion
@@ -255,7 +269,7 @@
 		// builtin_add("builtin", 0, 0, &builtin);
 		// builtin_add("cd", 0, 0, &cd);
 		builtin_add("declare", 0, 0, &declare);
-		// builtin_add("echo", 0, 0, &echo);
+		builtin_add("echo", 0, 0, &alias);
 		builtin_add("enable", 0, 0, &enable);
 		// builtin_add("fc", 0, 0, &fc);
 		// builtin_add("fg", 0, 0, &fg);
@@ -267,7 +281,7 @@
 		// builtin_add("let", 0, 0, &let);
 		// builtin_add("pwd", 0, 0, &pwd);
 		// builtin_add("test", 0, 0, &test);
-		// builtin_add("type", 0, 0, &type);
+		builtin_add("type", 0, 0, &type);
 		builtin_add("unalias", 0, 0, &unalias);
 		// builtin_add("wait", 0, 0, &bt_wait);
 		return (0);

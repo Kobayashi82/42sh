@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 22:02:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 23:06:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@
 	int		test_options();
 	int		test_history();
 
-	int		test_builtin();
+	int		test_builtin(const char **envp);
 
 	int		tests(int argc, const char **argv, const char **envp);
+
+	extern char **environ;
 
 #pragma endregion

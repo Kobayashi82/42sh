@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/22 20:25:56 by vzurera-         ###   ########.fr        #
+#    Updated: 2024/12/23 14:05:05 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -69,7 +69,7 @@ SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																
 			parser/tokenizer.c parser/lexer.c parser/parser.c																								\
 			variables/alias_hash.c variables/cmdp_hash.c variables/variables_hash.c variables/varios.c														\
 			builtin/utils/builtin_hash.c builtin/utils/builtin_exec.c builtin/utils/options.c																\
-			builtin/alias.c builtin/bg.c builtin/cd.c builtin/declare.c builtin/echo.c builtin/enable.c builtin/exec.c builtin/exit.c						\
+			builtin/alias.c builtin/bg.c builtin/cd.c builtin/command.c builtin/declare.c builtin/echo.c builtin/enable.c builtin/exec.c builtin/exit.c		\
 			builtin/export.c builtin/fc.c builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c 		\
 			builtin/set.c builtin/test.c builtin/type.c builtin/unalias.c builtin/unset.c builtin/wait.c builtin/let.c builtin/builtin.c builtin/help.c		\
 			clean/safe.c clean/error.c clean/free.c																											\

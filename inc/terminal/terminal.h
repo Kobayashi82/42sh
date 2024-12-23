@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:55:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/23 23:27:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 			char 		*PS2;
 			char		*prompt;
 
-			char		*msg;
+			char		*msg[1024];
 
 			int			bk_stdin;
 			int			bk_stdout;
