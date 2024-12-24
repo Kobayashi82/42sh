@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:43:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 20:48:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,16 @@
 
 	#pragma region CMDP
 
-		int cmdp_add(const char *path) {
+		int cmdp_add(const char *path, bool check_file, bool check_exec) {
 			if (!path) return (1);
 
-			if (access(path, X_OK) == -1) return (1);
+			if (check_exec && access(path, X_OK) == -1) return (1);
+			if (check_file && access(path, F_OK) == -1) return (1);
 			char *name = ft_strrchr(path, '/');
 			if (name && *name) name++;
 			if (ft_isspace_s(name)) return (1);
 
-			t_cmdp *new_cmdp = cmdp_find(name);
+			t_cmdp *new_cmdp = cmdp_find(name, true);
 			if (new_cmdp) {
 				free(new_cmdp->path);
 				new_cmdp->path = safe_strdup(path);
@@ -62,28 +63,34 @@
 
 	#pragma region CMDP
 
-		t_cmdp *cmdp_find(const char *name) {
+		t_cmdp *cmdp_find(const char *name, bool ninja) {
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
 			t_cmdp *cmdp = cmdp_table[index];
 
 			while (cmdp) {
-				if (!ft_strcmp(cmdp->name, name)) return (cmdp);
+				if (!ft_strcmp(cmdp->name, name)) {
+					if (!ninja) cmdp->hits++;
+					return (cmdp);
+				}
 				cmdp = cmdp->next;
 			}
 
 			return (NULL);
 		}
 
-		char *cmdp_find_value(const char *name) {
+		char *cmdp_find_value(const char *name, bool ninja) {
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
 			t_cmdp *cmdp = cmdp_table[index];
 
 			while (cmdp) {
-				if (!ft_strcmp(cmdp->name, name)) return (cmdp->path);
+				if (!ft_strcmp(cmdp->name, name)) {
+					if (!ninja) cmdp->hits++;
+					return (cmdp->path);
+				}
 				cmdp = cmdp->next;
 			}
 
@@ -97,7 +104,7 @@
 		char **cmdp_to_array(bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
@@ -109,7 +116,7 @@
 			char **array = safe_malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) {
@@ -155,7 +162,7 @@
 		size_t cmdp_length() {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
@@ -200,7 +207,7 @@
 	#pragma region Clear
 
 		void cmdp_clear() {
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 				if (cmdp_table[index]) {
 					t_cmdp *cmdp = cmdp_table[index];
 					while (cmdp) {

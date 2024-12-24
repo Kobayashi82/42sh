@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 00:02:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 20:04:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -524,7 +524,7 @@
 
 		for (size_t i = length - offset; i < length && history[i]; ++i) {
 			if (!hide_events) {
-				char * txt_event = ft_itoa(history[i]->event);
+				char *txt_event = ft_itoa(history[i]->event);
 				if (!txt_event) exit_error(NO_MEMORY, 1, NULL, true);
 				int spaces = 5 - ft_strlen(txt_event);
 				while (spaces--) print(STDOUT_FILENO, " ", JOIN);

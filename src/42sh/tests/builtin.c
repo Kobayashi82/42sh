@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 14:54:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 21:23:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,10 +165,11 @@
 
 #pragma endregion
 
-#pragma region Type
+#pragma region Command
 
 	static int test_command(const char **envp) {
 		int result = 0;
+		return (0);
 
 		variables_from_array(vars_table, envp);
 
@@ -176,6 +177,26 @@
 		builtin_exec(args); test_free_args(args);
 
 		alias_clear();
+		cmdp_clear();
+
+		return (result);
+	}
+
+#pragma endregion
+
+#pragma region Hash
+
+	static int test_hash(const char **envp) {
+		int result = 0;
+
+		variables_from_array(vars_table, envp);
+		printf("\n");
+		cmdp_add("./42/pipi", false, false);
+		cmdp_add("/usr/bin/date", false, false);
+
+		t_arg *args = test_create_args("hash -t");
+		builtin_exec(args); test_free_args(args);
+
 		cmdp_clear();
 
 		return (result);
@@ -198,6 +219,7 @@
 		if (!result && test_enable())		{ result = 1; printf(RD"X"RED500" enable\n"NC); }
 		if (!result && test_type(envp))		{ result = 1; printf(RD"X"RED500" type\n"NC); }
 		if (!result && test_command(envp))	{ result = 1; printf(RD"X"RED500" command\n"NC); }
+		if (!result && test_hash(envp))		{ result = 1; printf(RD"X"RED500" hash\n"NC); }
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

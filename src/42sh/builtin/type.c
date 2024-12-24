@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 15:11:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 20:49:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@
 
 			if (!opts || !*opts) {
 				if (alias_find(arg) || builtin_isactive(arg)) return (0);
-				t_cmdp *cmdp = cmdp_find(arg);
+				t_cmdp *cmdp = cmdp_find(arg, false);
 				if (cmdp) {
 					if (access(cmdp->path, F_OK) != -1) {
 						print(STDOUT_FILENO, cmdp->name, JOIN);
@@ -201,6 +201,7 @@
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
+
 		int result = 0;
 		while (opts->args) {
 			if (opts->args->value) {

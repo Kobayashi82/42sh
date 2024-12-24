@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 15:09:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 19:55:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,9 @@
 
 	//	========== EXPORT ==========
 	int			export(t_arg *args);
+
+	//	=========== HASH ===========
+	int			hash(t_arg *args);
 
 	//	=========== UNSET ==========
 	int			unset(t_arg *args);

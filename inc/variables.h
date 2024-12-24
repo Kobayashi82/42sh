@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 14:16:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 20:16:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 		typedef struct s_cmdp {
 			char	*name;
 			char	*path;
+			int		hits;
 			t_cmdp	*next;
 		}	t_cmdp;
 
@@ -83,10 +84,10 @@
 
 	//	=========== CMD ============
 	//	---------- IMPORT ----------
-	int				cmdp_add(const char *path);
+	int				cmdp_add(const char *path, bool check_file, bool check_exec);
 	//	---------- EXPORT ----------
-	t_cmdp			*cmdp_find(const char *name);
-	char			*cmdp_find_value(const char *name);
+	t_cmdp			*cmdp_find(const char *name, bool ninja);
+	char			*cmdp_find_value(const char *name, bool ninja);
 	char			**cmdp_to_array(bool sort);
 	int				cmdp_print(bool sort);
 	size_t			cmdp_length();
@@ -94,7 +95,7 @@
 	int				cmdp_delete(const char *name);
 	void			cmdp_clear();
 	//	-------- INITIALIZE --------
-	int				cmd_initialize();
+	int				cmdp_initialize();
 
 	//	======== VARIABLES =========
 	//	---------- IMPORT ----------
