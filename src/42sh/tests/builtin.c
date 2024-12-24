@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 00:05:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 14:54:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,14 +150,29 @@
 
 	static int test_type(const char **envp) {
 		int result = 0;
-		return (result);
+		return (0);
 
 		variables_from_array(vars_table, envp);
 
-		alias_add("echo", "echo");
-		cmdp_add("/usr/bin/date");
+		t_arg *args = test_create_args("type -pP echo popo date");
+		builtin_exec(args); test_free_args(args);
 
-		t_arg *args = test_create_args("type -a echo popo date");
+		alias_clear();
+		cmdp_clear();
+
+		return (result);
+	}
+
+#pragma endregion
+
+#pragma region Type
+
+	static int test_command(const char **envp) {
+		int result = 0;
+
+		variables_from_array(vars_table, envp);
+
+		t_arg *args = test_create_args("command -v echo popo date");
 		builtin_exec(args); test_free_args(args);
 
 		alias_clear();
@@ -182,6 +197,7 @@
 		if (!result && test_unset())		{ result = 1; printf(RD"X"RED500" unset\n"NC); }
 		if (!result && test_enable())		{ result = 1; printf(RD"X"RED500" enable\n"NC); }
 		if (!result && test_type(envp))		{ result = 1; printf(RD"X"RED500" type\n"NC); }
+		if (!result && test_command(envp))	{ result = 1; printf(RD"X"RED500" command\n"NC); }
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

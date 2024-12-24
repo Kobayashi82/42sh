@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 00:03:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 15:11:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@
 
 	#pragma region Command
 
-		static int check_command(char *arg, char *opts) {
+		static int check_command(char *arg, char *opts, bool is_command) {
 			if (!arg) return (0);
 
 			if (!opts || !*opts) {
@@ -145,13 +145,14 @@
 				}
 
 				char *path = path_find_first(arg, NULL);
-				if (path && access(path, F_OK) != -1) {
+				if (path) {
 					print(STDOUT_FILENO, arg, JOIN);
 					print(STDOUT_FILENO, ft_strjoin_sep(" is ", path, "\n", 0), FREE_JOIN);
 					return (free(path), 1);
 				}
 
-				print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
+				if (is_command)	print(STDERR_FILENO, ft_strjoin_sep("command: ", arg, ": not found\n", 0), FREE_JOIN);
+				else			print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
 				return (free(path), 0);
 			}
 
@@ -163,9 +164,9 @@
 
 				if (ft_strchr(opts, 't'))
 					print(STDOUT_FILENO, "file\n", JOIN);
-				else if (ft_strchr(opts, 'P') || ft_strchr(opts, 'P')) {
+				else if (ft_strchr(opts, 'P') || ft_strchr(opts, 'p'))
 					print(STDOUT_FILENO, ft_strjoin(paths[i], "\n", 0), FREE_JOIN);
-				} else if (ft_strchr(opts, 'a')) {
+				else if (ft_strchr(opts, 'a')) {
 					print(STDOUT_FILENO, arg, JOIN);
 					print(STDOUT_FILENO, ft_strjoin_sep(" is ", paths[i], "\n", 0), FREE_JOIN);
 				}
@@ -186,6 +187,8 @@
 #pragma region Type
 
 	int type(t_arg *args) {
+		bool is_command = false;
+		if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
 		t_opt *opts = parse_options(args, "afptP", '-', false);
 
 		if (*opts->invalid) {
@@ -193,8 +196,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, 'H')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, 'V')) return (free(opts), print_version("type", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
@@ -205,8 +208,11 @@
 				tmp_result += check_alias(opts->args->value, opts->valid);
 				tmp_result += check_builtin(opts->args->value, opts->valid);
 				tmp_result += check_function(opts->args->value, opts->valid);
-				tmp_result += check_command(opts->args->value, opts->valid);
-				if (!tmp_result) result = 1;
+				tmp_result += check_command(opts->args->value, opts->valid, is_command);
+				if (is_command) {
+					if (!tmp_result && result == 0) result = 1;
+					if (tmp_result) result = 2;
+				} else if (!tmp_result) result = 1;
 			}
 			opts->args = opts->args->next;
 		}
@@ -214,6 +220,7 @@
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);
 
+		if (result == 2) result = 0;
 		return (free(opts), result);
 	}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:04:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 14:05:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,7 @@
 		// builtin_add("bg", 0, 0, &bg);
 		// builtin_add("builtin", 0, 0, &builtin);
 		// builtin_add("cd", 0, 0, &cd);
+		builtin_add("command", 0, 0, &command);
 		builtin_add("declare", 0, 0, &declare);
 		builtin_add("echo", 0, 0, &alias);
 		builtin_add("enable", 0, 0, &enable);

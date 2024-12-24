@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:04:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 15:09:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@
 	int			type(t_arg *args);
 
 	//	========= COMMAND ==========
+	int			command(t_arg *args);
 
 	//	========= UNALIAS ==========
 	int			unalias(t_arg *args);

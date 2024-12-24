@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/21 17:45:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/24 15:09:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@
 
 			typedef struct s_arg {
 				char	*value;
+				int		extra;
 				t_cmd	*cmd;
 				t_arg	*subarg;
 				t_arg	*prev;
