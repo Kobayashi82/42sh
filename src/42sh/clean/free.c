@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:07:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:32:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:45:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@
 		history_clear();
 		cmdp_clear();
 		builtin_clear();
+		while (tokens.args) {
+			t_arg *tmp = tokens.args;
+			if (tokens.args->value) free(tokens.args->value);
+			tokens.args = tokens.args->next;
+			free(tmp);
+		}
+
 	}
 
 #pragma endregion

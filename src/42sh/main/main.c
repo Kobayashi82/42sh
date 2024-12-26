@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/21 17:46:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:38:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 			history_add(terminal.input, false);
 			printf("%s\n", terminal.input);
 		}
+		first_step();
 		free(terminal.input);
 
 		return (0);

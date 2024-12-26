@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 15:09:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/26 17:47:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,16 +99,11 @@
 				e_redir	type;
 			}	t_redir;
 
-			
-			// typedef struct s_token {
-			// 	int		pid;
-			// 	int		fd[2];
-			// }	t_token;
-
 			typedef struct s_token {
 				t_cmd	*cmd;
 				t_cmd	*last_cmd;
 				t_arg	*files;
+				t_arg	*args;
 			}	t_token;
 
 		#pragma endregion
@@ -116,5 +111,12 @@
 	#pragma endregion
 
 	extern t_token		tokens;
+
+#pragma endregion
+
+#pragma region Methods
+
+	char	*get_next_word(const char *input, size_t *pos, bool only_space);
+	void	first_step();
 
 #pragma endregion

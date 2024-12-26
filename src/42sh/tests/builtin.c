@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 21:23:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/26 12:17:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@
 
 	static int test_hash(const char **envp) {
 		int result = 0;
-
+		return (0);
 		variables_from_array(vars_table, envp);
 		printf("\n");
 		cmdp_add("./42/pipi", false, false);

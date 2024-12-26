@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 18:49:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/26 14:09:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ char	*ft_strstr(const char *haystack, const char *needle);
 char	*ft_strnstr(const char *str, const char *substr, int len);
 //	STR_DUP
 char	*ft_strdup(const char *s1);
+char	*ft_strndup(const char *s1, int n);
 //	STR_TRIM
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_substr(const char *str, int start, int len);
