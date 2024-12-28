@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/28 15:08:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/28 16:46:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,21 +83,12 @@ static size_t handle_variables(const char *input, size_t start, size_t len) {
 	return (end);
 }
 
-static size_t handle_separators(const char *input, size_t start, size_t len) {
-	size_t end = start + 1;
+static size_t handle_redirection(const char *input, size_t start, size_t len, bool is_fd) {
+	size_t end = start;
 
-	if (start + 2 < len && input[start] == '<' && input[start + 1] == '<' && input[start + 2] == '<')		end += 2;	//	<<<	Herestring
-	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '<')								end += 1;	//	<<	Heredoc
-	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '>')								end += 1;	//	<>	Read & Write
-	else if (start + 1 < len && input[start] == '>' && input[start + 1] == '>')								end += 1;	//	>>	Append
-	else if (start + 2 < len && input[start] == '&' && input[start + 1] == '>' && input[start + 2] == '>')	end += 2;	//	&>>	stdin & stdout to file (Append)
-	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '>')								end += 1;	//	&>	stdin & stdout to file
-	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '&')								end += 1;	//	&&	And
-	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '|')								end += 1;	//	||	Or
-	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '&')								end += 1;	//	|&	Pipe with stderr
-	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '(')	end = handle_parenthesis(input, start + 1, len);
-	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '&') {
-		end += 1;																										//	n>&m or n<&m
+	if (!is_fd) {
+
+	} else {
 		if (input[end] == '-') end++;
 		else if (!ft_isspace(input[end]))
 			while(end < len && !ft_isspace(input[end])) end++;
@@ -111,6 +102,26 @@ static size_t handle_separators(const char *input, size_t start, size_t len) {
 				while(end < len && !ft_isspace(input[end])) end++;
 		}
 	}
+
+	return (end);
+}
+
+static size_t handle_separators(const char *input, size_t start, size_t len) {
+	size_t end = start + 1;
+
+	if (start + 2 < len && input[start] == '<' && input[start + 1] == '<' && input[start + 2] == '<')		end = handle_redirection(input, end + 2, len, false);	//	<<<	Herestring
+	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '<')								end = handle_redirection(input, end + 1, len, false);	//	<<	Heredoc
+	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '>')								end = handle_redirection(input, end + 1, len, false);	//	<>	Read & Write
+	else if (start + 1 < len && input[start] == '>' && input[start + 1] == '>')								end = handle_redirection(input, end + 1, len, false);	//	>>	Append
+	else if (start + 2 < len && input[start] == '&' && input[start + 1] == '>' && input[start + 2] == '>')	end = handle_redirection(input, end + 2, len, false);	//	&>>	stdin & stdout to file (Append)
+	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '>')								end = handle_redirection(input, end + 1, len, false);	//	&>	stdin & stdout to file
+
+	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '&')	end = handle_redirection(input, end + 1, len, true);	//	n>&m or n<&m
+	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '(')	end = handle_parenthesis(input, start + 1, len);
+	
+	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '&')								end += 1;												//	&&	And
+	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '|')								end += 1;												//	||	Or
+	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '&')								end += 1;												//	|&	Pipe with stderr
 
 	return (end);
 }
@@ -153,7 +164,8 @@ char *get_next_word(const char *input, size_t *pos, bool only_space) {
 			} else													end = handle_word(input, end, len);
 		}
 
-		if (!only_space || ft_strchr(";|&<>(){}", input[end])) break;
+		if (end > 0 && ft_strchr(";|&", input[end - 1])) break;
+		if (!only_space || ft_strchr(";|&<>", input[end]) || (ft_strchr("{(", input[end]) && !(end > 0 && input[end -1] == '$'))) break;
 	}
 
 	word = ft_strndup(&input[start], end - start); *pos = end;															// Crear la palabra
@@ -165,7 +177,7 @@ void first_step() {
 	size_t pos = 0;
 	char *word = NULL;
 
-	while ((word = get_next_word(terminal.input, &pos, false)) != NULL) {
+	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
 		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
 		if (!new_arg) {
 			free(word);
