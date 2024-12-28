@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/26 17:57:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2024/12/28 15:08:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,27 @@ static size_t handle_separators(const char *input, size_t start, size_t len) {
 	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '<')								end += 1;	//	<<	Heredoc
 	else if (start + 1 < len && input[start] == '<' && input[start + 1] == '>')								end += 1;	//	<>	Read & Write
 	else if (start + 1 < len && input[start] == '>' && input[start + 1] == '>')								end += 1;	//	>>	Append
-	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '&')								end += 1;	//	|&	Pipe with stderr
-	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '|')								end += 1;	//	||	Or
+	else if (start + 2 < len && input[start] == '&' && input[start + 1] == '>' && input[start + 2] == '>')	end += 2;	//	&>>	stdin & stdout to file (Append)
+	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '>')								end += 1;	//	&>	stdin & stdout to file
 	else if (start + 1 < len && input[start] == '&' && input[start + 1] == '&')								end += 1;	//	&&	And
-	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '&')	end += 1;	//	n>&n or n<&n
+	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '|')								end += 1;	//	||	Or
+	else if (start + 1 < len && input[start] == '|' && input[start + 1] == '&')								end += 1;	//	|&	Pipe with stderr
 	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '(')	end = handle_parenthesis(input, start + 1, len);
+	else if (start + 1 < len && (input[start] == '<' || input[start] == '>') && input[start + 1] == '&') {
+		end += 1;																										//	n>&m or n<&m
+		if (input[end] == '-') end++;
+		else if (!ft_isspace(input[end]))
+			while(end < len && !ft_isspace(input[end])) end++;
+		else if (ft_isspace(input[end])) {
+			size_t tmp = end;
+			while(tmp < len && ft_isspace(input[tmp])) tmp++;
+			if (tmp == len) return (end);
+			end = tmp;
+			if (input[end] == '-') end++;
+			else
+				while(end < len && !ft_isspace(input[end])) end++;
+		}
+	}
 
 	return (end);
 }
@@ -102,7 +118,7 @@ static size_t handle_separators(const char *input, size_t start, size_t len) {
 static size_t handle_word(const char *input, size_t start, size_t len) {
 	size_t end = start;
 
-	while (end < len && !ft_isspace(input[end]) && !ft_strchr(";|&><(){}", input[end])) {
+	while (end < len && !ft_isspace(input[end]) && !ft_strchr(";|&<>(){}", input[end])) {
 		if (input[end] == '\\' && end + 1 < len) end += 2;
 		else end++;
 	}
@@ -127,10 +143,17 @@ char *get_next_word(const char *input, size_t *pos, bool only_space) {
 		else if (input[end] == '(')									end = handle_parenthesis(input, end, len);
 		else if (input[end] == '{')									end = handle_braces(input, end, len);
 		else if (input[end] == '$')									end = handle_variables(input, end, len);
-		else if (ft_strchr(";|&><", input[end]))					end = handle_separators(input, end, len);
-		else														end = handle_word(input, end, len);
-		if (end > 0 && ft_strchr(";|&><(){}", input[end - 1])) break;
-		if (!only_space || ft_strchr(";|&><(){}", input[end])) break;
+		else if (ft_strchr(";|&<>", input[end]))					end = handle_separators(input, end, len);
+		else {
+			if (ft_isdigit(input[end])) {
+				size_t tmp = end;
+				while(tmp < len && ft_isdigit(input[tmp])) tmp++;
+				if (tmp != len && ft_strchr("<>", input[tmp])) {	end = handle_separators(input, tmp, len); break; }
+				else												end = handle_word(input, end, len);
+			} else													end = handle_word(input, end, len);
+		}
+
+		if (!only_space || ft_strchr(";|&<>(){}", input[end])) break;
 	}
 
 	word = ft_strndup(&input[start], end - start); *pos = end;															// Crear la palabra
@@ -142,7 +165,7 @@ void first_step() {
 	size_t pos = 0;
 	char *word = NULL;
 
-	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
+	while ((word = get_next_word(terminal.input, &pos, false)) != NULL) {
 		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
 		if (!new_arg) {
 			free(word);
@@ -185,16 +208,17 @@ void first_step() {
 //	<<		Heredoc: Usa texto literal como entrada estándar (stdin).
 //	<<<		Here-string: Usa una cadena como entrada estándar (stdin).
 
-//	n< o <n	Redirige al descriptor n un archivo.
+//	n<		Redirige al descriptor n un archivo.
 //	n>		Redirige el descriptor n a un archivo (sobrescribe).
 //	n>>		Redirige el descriptor n a un archivo (añade al final).
-//	n<>		Abre un archivo en modo bidireccional (lectura y escritura).
+//	n<>		Redirige el descriptor n a un archivo en modo bidireccional (lectura y escritura).
 //	n>&m	Redirige el descriptor n al mismo destino que el descriptor m.
 //	n<&m	Redirige el descriptor n para leer desde el mismo origen que m.
 //	n<&-	Cierra el descriptor n para lectura.
 //	n>&-	Cierra el descriptor n para escritura.
 
 //	&>		Redirige tanto stdout como stderr a un archivo (sobrescribe).
+//	&>>		Redirige tanto stdout como stderr a un archivo (añade al final).
 
 
 //	PARSER
