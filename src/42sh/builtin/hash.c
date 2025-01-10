@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 21:23:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,19 +90,19 @@
 
 		if (*opts->invalid) {
 			invalid_option("hash", opts->invalid, "[-lr] [-p pathname] [-dt] [name ...]");
-			return (free(opts), 1);
+			return (safe_free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("hash", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("hash", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 		
 		if ((!*opts->valid || !ft_strcmp(opts->valid, "l")) && !opts->args) {
 			int result = print_hash((ft_strchr(opts->valid, 'l')));
-			if (result == 2) { free(opts); exit_error(NO_MEMORY, 1, NULL, true); }
-			return (free(opts), result);
+			if (result == 2) { safe_free(opts); exit_error(NO_MEMORY, 1, NULL, true); }
+			return (safe_free(opts), result);
 		}
 
 		if ((ft_strchr(opts->valid, 't') || ft_strchr(opts->valid, 'p') || ft_strchr(opts->valid, 'd')) && !opts->args) {
@@ -114,13 +114,13 @@
 			print(STDERR_FILENO, ft_strjoin_sep("hash: -", opt, ": option requires an argument\n", 0), FREE_JOIN);
 			print(STDERR_FILENO, "usage: hash [-lr] [-p pathname] [-dt] [name ...]\n\n", JOIN);
 			print(STDERR_FILENO, "Try 'hash --help' for more information\n", PRINT);
-			return (free(opts), 1);
+			return (safe_free(opts), 1);
 		}
 
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);
 
-		return (free(opts), 0);
+		return (safe_free(opts), 0);
 	}
 
 #pragma endregion

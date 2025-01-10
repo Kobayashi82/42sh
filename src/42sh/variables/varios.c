@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:22:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@
 #pragma region Key / Value
 
 	int get_key_value(const char *line, char **key, char **value, char sep) {
-		if (*key)	{ free(*key); *key = NULL; }
-		if (*value) { free(*value); *value = NULL; }
+		if (*key)	{ safe_free(*key); *key = NULL; }
+		if (*value) { safe_free(*value); *value = NULL; }
 		if (!line) 	{ return (2); }
 
 		char *delimiter = ft_strchr(line, sep);
@@ -64,7 +64,7 @@
 	// int options_write() {
 	// 	char *filename = ft_strjoin(get_home_path(), "/opciones", 0);
 
-	// 	int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); free(filename);
+	// 	int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); safe_free(filename);
 	// 	if (fd == -1) return (1);
 
 	// 	print(fd, ft_strjoin_sep("input_mode=", ft_itoa(options.input_mode), "\n", 2), FREE_RESET);
@@ -80,15 +80,15 @@
 	// 	char *filename = ft_strjoin(get_home_path(), "/.42sh", 0);
 
 	// 	options_default();
-	// 	int fd = open(filename, O_RDONLY); free(filename);
+	// 	int fd = open(filename, O_RDONLY); safe_free(filename);
 	// 	if (fd == -1) { options_write(); return (1); }
 
 	// 	char *line = NULL, *key = NULL, *value = NULL;
 	// 	while ((line = ft_get_next_line(fd))) {
 	// 		get_key_value(line, &key, &value, '=');
 	// 		if (key && key[0] && value && value[0]) options_set(key, value);
-	// 		free(line);
-	// 	} free(key); free(value);
+	// 		safe_free(line);
+	// 	} safe_free(key); safe_free(value);
 
 	// 	close(fd); options_write();
 

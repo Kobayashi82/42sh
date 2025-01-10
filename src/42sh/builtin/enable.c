@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 14:22:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,34 +53,34 @@
 
 		if (*opts->invalid) {
 			invalid_option("enable", opts->invalid, "[-a] [-nps] [name ...]");
-			return (free(opts), 1);
+			return (safe_free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("enable", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("enable", "1.0"));
 
 		if (ft_strchr(opts->valid, 'a')) {
 			builtin_print(2, false, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 
 		if (ft_strchr(opts->valid, 'n') && ft_strchr(opts->valid, 's')) {
 			builtin_print(1, true, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 		if (ft_strchr(opts->valid, 's')) {
 			builtin_print(2, true, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 
 		if ((ft_strchr(opts->valid, 'n') && !opts->args) || (ft_strchr(opts->valid, 'n') && ft_strchr(opts->valid, 'p'))) {
 			builtin_print(1, false, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 
 		if (ft_strchr(opts->valid, 'p')) {
 			builtin_print(0, false, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 
 		int result = 0;
@@ -100,9 +100,9 @@
 			}
 		} else builtin_print(0, false, true);
 
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); safe_free(invalues); }
 
-		return (free(opts), result);
+		return (safe_free(opts), result);
 	}
 
 #pragma endregion

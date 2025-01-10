@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 17:10:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-				free(buffer.value); buffer.value = NULL;
+				safe_free(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
 				return (1);
 			}

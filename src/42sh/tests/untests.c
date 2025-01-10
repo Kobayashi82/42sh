@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/18 19:14:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@
 		}
 
 		char *path = get_home_by_name("root");
-		if (path) { printf("%s\n", path); free(path); }
+		if (path) { printf("%s\n", path); safe_free(path); }
 		path = get_home_by_id(getuid());
-		if (path) { printf("%s\n", path); free(path); }
+		if (path) { printf("%s\n", path); safe_free(path); }
 	}
 
 #pragma endregion

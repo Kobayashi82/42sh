@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 19:14:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,19 +74,19 @@ t_arg *test_create_args(char *line) {
             while (args) {
                 t_arg *tmp = args;
                 args = args->next;
-                free(tmp->value);
-                free(tmp);
+                safe_free(tmp->value);
+                safe_free(tmp);
             }
             return (NULL);
         }
 
         if (!add_arg(&args, arg)) {
-            free(arg);
+            safe_free(arg);
             while (args) {
                 t_arg *tmp = args;
                 args = args->next;
-                free(tmp->value);
-                free(tmp);
+                safe_free(tmp->value);
+                safe_free(tmp);
             }
             return (NULL);
         }
@@ -101,8 +101,8 @@ void test_free_args(t_arg *args) {
 
     while (current) {
         next = current->next; // Guardar el siguiente nodo
-        free(current->value); // Liberar el valor del argumento
-        free(current);        // Liberar el nodo actual
+        safe_free(current->value); // Liberar el valor del argumento
+        safe_free(current);        // Liberar el nodo actual
         current = next;       // Avanzar al siguiente nodo
     }
 }

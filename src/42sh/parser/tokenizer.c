@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/28 16:46:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,7 +180,7 @@ void first_step() {
 	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
 		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
 		if (!new_arg) {
-			free(word);
+			safe_free(word);
 			exit_error(NO_MEMORY, 1, NULL, true);
 		}
 

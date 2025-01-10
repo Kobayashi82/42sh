@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 01:53:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,23 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					free(id);
-					free(line);
-					free(uid_str);
-					free(gid_str);
+					safe_free(id);
+					safe_free(line);
+					safe_free(uid_str);
+					safe_free(gid_str);
 					close(fd);
 					return (info);
 				}
 
-				free(line);
-				free(username);
-				free(uid_str);
-				free(gid_str);
-				free(home);
-				free(shell);
+				safe_free(line);
+				safe_free(username);
+				safe_free(uid_str);
+				safe_free(gid_str);
+				safe_free(home);
+				safe_free(shell);
 			}
 
-			free(id);
+			safe_free(id);
 			close(fd);
 			return (NULL);
 		}
@@ -113,19 +113,19 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					free(line);
-					free(uid_str);
-					free(gid_str);
+					safe_free(line);
+					safe_free(uid_str);
+					safe_free(gid_str);
 					close(fd);
 					return (info);
 				}
 
-				free(line);
-				free(username);
-				free(uid_str);
-				free(gid_str);
-				free(home);
-				free(shell);
+				safe_free(line);
+				safe_free(username);
+				safe_free(uid_str);
+				safe_free(gid_str);
+				safe_free(home);
+				safe_free(shell);
 			}
 
 			close(fd);
@@ -138,10 +138,10 @@
 
 		void free_user(t_userinfo *userinfo) {
 			if (userinfo) {
-				free(userinfo->username);
-				free(userinfo->home);
-				free(userinfo->shell);
-				free(userinfo);
+				safe_free(userinfo->username);
+				safe_free(userinfo->home);
+				safe_free(userinfo->shell);
+				safe_free(userinfo);
 			}
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 19:55:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@
 				if (!ft_strcmp(builtin->name, name)) {
 					if (prev)	prev->next = builtin->next;
 					else		builtin_table[index] = builtin->next;
-					free(builtin->name); free(builtin);
+					safe_free(builtin->name); safe_free(builtin);
 					return (0);
 				}
 				prev = builtin;
@@ -229,8 +229,8 @@
 					t_builtin *builtin = builtin_table[index];
 					while (builtin) {
 						t_builtin *next = builtin->next;
-						free(builtin->name);
-						free(builtin);
+						safe_free(builtin->name);
+						safe_free(builtin);
 						builtin = next;
 					}
 					builtin_table[index] = NULL;

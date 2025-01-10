@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 14:22:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-		if (alias_validate(key, true)) return (free(key), free(value), 1);
+		if (alias_validate(key, true)) return (safe_free(key), safe_free(value), 1);
 		alias_add(key, value);
-		return (free(key), free(value), 0);
+		return (safe_free(key), safe_free(value), 0);
 	}
 
 #pragma endregion
@@ -82,11 +82,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("alias", opts->invalid, "[-p] [name[=value] ... ]");
-			return (free(opts), 1);
+			return (safe_free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("alias", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("alias", "1.0"));
 
 		int result = 0;
 		char *values = NULL, *invalues = NULL;
@@ -101,10 +101,10 @@
 		
 		if (ft_strchr(opts->valid, 'p')) alias_print(true);
 
-		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
+		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); safe_free(values); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); safe_free(invalues); }
 
-		return (free(opts), result);
+		return (safe_free(opts), result);
 	}
 
 #pragma endregion

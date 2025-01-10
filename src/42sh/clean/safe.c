@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:38:00 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 18:48:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,60 +14,60 @@
 
 #pragma region Memory Allocation
 
-	#pragma region Malloc
+	// #pragma region Malloc
 
-	//	A malloc function with builtin exit_error
-	void *safe_malloc(long bytes) {
-		void	*ptr;
+	// //	A malloc function with builtin exit_error
+	// void *safe_malloc(long bytes) {
+	// 	void	*ptr;
 
-		if (!(ptr = malloc(bytes)))
-			exit_error(NO_MEMORY, 1, NULL ,true);
+	// 	if (!(ptr = malloc(bytes)))
+	// 		exit_error(NO_MEMORY, 1, NULL ,true);
 
-		return (ptr);
-	}
+	// 	return (ptr);
+	// }
 
-	#pragma endregion
+	// #pragma endregion
 
-	#pragma region Calloc
+	// #pragma region Calloc
 
-	//	A calloc function with builtin exit_error
-	void *safe_calloc(int count, long bytes) {
+	// //	A calloc function with builtin exit_error
+	// void *safe_calloc(int count, long bytes) {
 
-		char	*ptr;
-		int		n = count * bytes - 1;
+	// 	char	*ptr;
+	// 	int		n = count * bytes - 1;
 
-		if (!(ptr = malloc(count * bytes)))
-			exit_error(NO_MEMORY, 1, NULL, true);
-		while (n >= 0) ptr[n--] = '\0';
+	// 	if (!(ptr = malloc(count * bytes)))
+	// 		exit_error(NO_MEMORY, 1, NULL, true);
+	// 	while (n >= 0) ptr[n--] = '\0';
 
-		return (ptr);
-	}
+	// 	return (ptr);
+	// }
 
-	#pragma endregion
+	// #pragma endregion
 
-	#pragma region Realloc
+	// #pragma region Realloc
 
-	void *safe_realloc(void *ptr, int old_size, int size) {
-		void	*new_ptr;
-		int		copy_size;
+	// void *safe_realloc(void *ptr, int old_size, int size) {
+	// 	void	*new_ptr;
+	// 	int		copy_size;
 
-		if (size > 0) {
-			new_ptr = malloc(size);
-			if (!new_ptr) { free(ptr); exit_error(NO_MEMORY, 1, NULL, true); }
-			if (ptr) {
-				if (old_size < size)	copy_size = old_size;
-				else					copy_size = size;
-				ft_memcpy(new_ptr, ptr, copy_size);
-				free(ptr);
-			}
-			return (new_ptr);
-		}
-		free(ptr);
+	// 	if (size > 0) {
+	// 		new_ptr = malloc(size);
+	// 		if (!new_ptr) { safe_free(ptr); exit_error(NO_MEMORY, 1, NULL, true); }
+	// 		if (ptr) {
+	// 			if (old_size < size)	copy_size = old_size;
+	// 			else					copy_size = size;
+	// 			ft_memcpy(new_ptr, ptr, copy_size);
+	// 			safe_free(ptr);
+	// 		}
+	// 		return (new_ptr);
+	// 	}
+	// 	safe_free(ptr);
 
-		return (NULL);
-	}
+	// 	return (NULL);
+	// }
 
-	#pragma endregion
+	// #pragma endregion
 
 #pragma endregion
 

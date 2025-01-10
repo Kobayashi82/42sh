@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 20:48:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 
 			t_cmdp *new_cmdp = cmdp_find(name, true);
 			if (new_cmdp) {
-				free(new_cmdp->path);
+				safe_free(new_cmdp->path);
 				new_cmdp->path = safe_strdup(path);
 
 				return (0);
@@ -45,7 +45,7 @@
 			new_cmdp->name = ft_strdup(name);
 			new_cmdp->path = ft_strdup(path);
 			if (!new_cmdp->name || (path && !new_cmdp->path)) {
-				free(new_cmdp->name); free(new_cmdp->path);
+				safe_free(new_cmdp->name); safe_free(new_cmdp->path);
 				exit_error(NO_MEMORY, 1, NULL, true);
 			}
 
@@ -192,7 +192,7 @@
 				if (!ft_strcmp(cmdp->name, name)) {
 					if (prev)	prev->next = cmdp->next;
 					else		cmdp_table[index] = cmdp->next;
-					free(cmdp->name); free(cmdp->path); free(cmdp);
+					safe_free(cmdp->name); safe_free(cmdp->path); safe_free(cmdp);
 					return (0);
 				}
 				prev = cmdp;
@@ -212,9 +212,9 @@
 					t_cmdp *cmdp = cmdp_table[index];
 					while (cmdp) {
 						t_cmdp *next = cmdp->next;
-						free(cmdp->name);
-						free(cmdp->path);
-						free(cmdp);
+						safe_free(cmdp->name);
+						safe_free(cmdp->path);
+						safe_free(cmdp);
 						cmdp = next;
 					}
 					cmdp_table[index] = NULL;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:27:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 		int	result = 0;
 
 		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && terminal.msg[fd]) {
-			free(terminal.msg[fd]);
+			safe_free(terminal.msg[fd]);
 			terminal.msg[fd] = NULL;
 		}
 
@@ -28,11 +28,11 @@
 
 		if (mode % 2 && terminal.msg[fd] && fd > 0) {
 			result = write(fd, terminal.msg[fd], ft_strlen(terminal.msg[fd]));
-			free(terminal.msg[fd]);
+			safe_free(terminal.msg[fd]);
 			terminal.msg[fd] = NULL;
 		}
 		
-		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free(str);
+		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) safe_free(str);
 		return (result == -1);
 	}
 

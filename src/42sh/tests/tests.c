@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/26 14:37:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 
 		// while ((word = get_next_word(input, &pos)) != NULL) {
 		// 	printf("Word: %s\n", word);
-		// 	free(word);
+		// 	safe_free(word);
 		// }
 
 		first_step();

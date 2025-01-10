@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 14:22:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 		int len = ft_strlen(key);
 		bool concatenate = false;
 		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
-		if (variables_validate(key, value, "readonly", true, true)) return (free(key), free(value), 1);
+		if (variables_validate(key, value, "readonly", true, true)) return (safe_free(key), safe_free(value), 1);
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
@@ -66,7 +66,7 @@
 			if (!concatenate && variables_add(vars_table, key, value, -1, 1, -1, -1))			result = 1;
 		}
 
-		return (free(key), free(value), result);
+		return (safe_free(key), safe_free(value), result);
 	}
 
 #pragma endregion
@@ -78,16 +78,16 @@
 
 		if (*opts->invalid) {
 			invalid_option("readonly", opts->invalid, "[name[=value] ...] or readonly -p");
-			return (free(opts), 1);
+			return (safe_free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("readonly", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("readonly", "1.0"));
 
 
 		if (!opts->args) {
 			variables_print(vars_table, READONLY, true);
-			return (free(opts), 0);
+			return (safe_free(opts), 0);
 		}
 
 		int result = 0;
@@ -96,7 +96,7 @@
 			opts->args = opts->args->next;
 		}
 
-		return (free(opts), result);
+		return (safe_free(opts), result);
 	}
 
 #pragma endregion

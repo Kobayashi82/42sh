@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/22 14:05:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
-				free(new_alias->value);
+				safe_free(new_alias->value);
 				if (value)	new_alias->value = safe_strdup(value);
 				else		new_alias->value = safe_strdup("");
 
@@ -42,7 +42,7 @@
 			if (value)	new_alias->value = ft_strdup(value);
 			else		new_alias->value = ft_strdup("");
 			if (!new_alias->name || (value && !new_alias->value)) {
-				free(new_alias->name); free(new_alias->value);
+				safe_free(new_alias->name); safe_free(new_alias->value);
 				exit_error(NO_MEMORY, 1, NULL, true);
 			}
 
@@ -224,7 +224,7 @@
 				if (!ft_strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
 					else		alias_table[index] = alias->next;
-					free(alias->name); free(alias->value); free(alias);
+					safe_free(alias->name); safe_free(alias->value); safe_free(alias);
 					return (0);
 				}
 				prev = alias;
@@ -244,9 +244,9 @@
 					t_alias *alias = alias_table[index];
 					while (alias) {
 						t_alias *next = alias->next;
-						free(alias->name);
-						free(alias->value);
-						free(alias);
+						safe_free(alias->name);
+						safe_free(alias->value);
+						safe_free(alias);
 						alias = next;
 					}
 					alias_table[index] = NULL;

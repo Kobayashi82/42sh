@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/15 15:29:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:09:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-				free(buffer.value); buffer.value = NULL;
+				safe_free(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
 				return (1);
 			}
@@ -159,7 +159,7 @@
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
 				buffer.position = 0; buffer.length = 0;
-				if (tmp_line) { free(tmp_line); tmp_line = NULL; }
+				if (tmp_line) { safe_free(tmp_line); tmp_line = NULL; }
 				history_set_pos_end();
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
@@ -179,7 +179,7 @@
 				history_set_pos_end();
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
-				if (tmp_line) { free(tmp_line); tmp_line = NULL; }
+				if (tmp_line) { safe_free(tmp_line); tmp_line = NULL; }
 				return (1);
 			}
 			return (0);
@@ -394,7 +394,7 @@
 				buffer.position = buffer.length;
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 
-				if (free_line && new_line) free(new_line);
+				if (free_line && new_line) safe_free(new_line);
 			}
 
 		#pragma endregion

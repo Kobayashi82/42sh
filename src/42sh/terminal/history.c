@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 20:04:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:20:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@
 				HIST_ENTRY **new_history = safe_calloc(capacity + 1, sizeof(HIST_ENTRY *));
 				for (size_t i = 0; i < length && history[i]; ++i)
 					new_history[i] = history[i];
-				free(history);
+				safe_free(history);
 				history = new_history;
 			}
 		}
@@ -143,7 +143,9 @@
 			char	*line = NULL;
 
 			//	Reserve space for the temporary history
-			tmp_history = safe_malloc(HIST_MAXSIZE * sizeof(char *));
+			tmp_history = malloc(HIST_MAXSIZE * sizeof(char *));
+			if (!tmp_history) exit_error(NO_MEMORY, 1, NULL, true);
+
 			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
 				if (ft_isspace_s(line)) continue;
 				//	Replace "\\n" with actual newlines
@@ -162,8 +164,8 @@
 
 		//	Add the entries to the history
 		int history_read(const char *filename) {
-			if (read_history_file(filename)) {		 history_resize(true); return (1); }
-			if (tmp_length < 1) { free(tmp_history); history_resize(true); return (0); }
+			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
+			if (tmp_length < 1) { free(tmp_history);	history_resize(true); return (0); }
 
 			//	Adjust capacity to the required size
 			while (capacity <= tmp_length) capacity *= 2;
@@ -260,9 +262,9 @@
 
 			history_resize(false);
 			if (length >= mem_max && !mem_unlimited) {
-				free(history[0]->line);
-				free(history[0]->data);
-				free(history[0]); history[0] = NULL;
+				safe_free(history[0]->line);
+				safe_free(history[0]->data);
+				safe_free(history[0]); history[0] = NULL;
 				for (size_t i = 0; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -292,8 +294,8 @@
 			if (erasedups) erase_dups(line, pos);
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) free(history[pos]->line);
-				if (history[pos]->data) free(history[pos]->data);
+				if (history[pos]->line) safe_free(history[pos]->line);
+				if (history[pos]->data) safe_free(history[pos]->data);
 				history[pos]->line = safe_strdup(line);
 				history[pos]->length = ft_strlen(line);
 				history[pos]->data = data;
@@ -324,9 +326,9 @@
 			}
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) free(history[pos]->line);
-				if (history[pos]->data) free(history[pos]->data);
-				free(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) safe_free(history[pos]->line);
+				if (history[pos]->data) safe_free(history[pos]->data);
+				safe_free(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -338,9 +340,9 @@
 			if (!history || length == 0) return;
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) free(history[pos]->line);
-				if (history[pos]->data) free(history[pos]->data);
-				free(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) safe_free(history[pos]->line);
+				if (history[pos]->data) safe_free(history[pos]->data);
+				safe_free(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -352,9 +354,9 @@
 			if (!history || length == 0) return;
 
 			if (history && position < length && history[position]) {
-				if (history[position]->line) free(history[position]->line);
-				if (history[position]->data) free(history[position]->data);
-				free(history[position]); history[position] = NULL;
+				if (history[position]->line) safe_free(history[position]->line);
+				if (history[position]->data) safe_free(history[position]->data);
+				safe_free(history[position]); history[position] = NULL;
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -371,11 +373,11 @@
 
 			for (size_t i = 0; i < length; ++i) {
 				if (!history || !history[i]) break;
-				if (history[i]->line) free(history[i]->line);
-				if (history[i]->data) free(history[i]->data);
-				free(history[i]); history[i] = NULL;
+				if (history[i]->line) safe_free(history[i]->line);
+				if (history[i]->data) safe_free(history[i]->data);
+				safe_free(history[i]); history[i] = NULL;
 			}
-			if (history) { free(history); history = NULL; }
+			if (history) { safe_free(history); history = NULL; }
 			position = 0; length = 0; capacity = 10;
 		}
 

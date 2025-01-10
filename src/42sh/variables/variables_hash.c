@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 22:10:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/10 14:21:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 			t_var *new_var = variables_find(table, key);
 			if (new_var) {
 				if (!new_var->readonly || force) {
-					free(new_var->value);
+					safe_free(new_var->value);
 					new_var->value = safe_strdup(value);
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
@@ -60,7 +60,7 @@
 			new_var->name = ft_strdup(key);
 			if (value) new_var->value = ft_strdup(value);
 			if (!new_var->name || (value && !new_var->value)) {
-				free(new_var->name); free(new_var->value);
+				safe_free(new_var->name); safe_free(new_var->value);
 				exit_error(NO_MEMORY, 1, NULL, true);
 			}
 
@@ -99,7 +99,7 @@
 			new_var->value = NULL;
 			if (value) new_var->value = ft_strdup(value);
 			if (!new_var->name || (value && !new_var->value)) {
-				free(new_var->name); free(new_var->value);
+				safe_free(new_var->name); safe_free(new_var->value);
 				exit_error(NO_MEMORY, 1, NULL, true);
 			}
 
@@ -124,7 +124,7 @@
 				get_key_value(array[i], &key, &value, '=');
 				if (!key) continue;
 				variables_add(table, key, value, 1, 0, 0, 0);
-				free(key); free(value);
+				safe_free(key); safe_free(value);
 			}
 		}
 
@@ -226,7 +226,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
@@ -375,7 +375,7 @@
 				if (!ft_strcmp(var->name, key)) {
 					if (prev)	prev->next = var->next;
 					else		table[index] = var->next;
-					free(var->name); free(var->value); free(var);
+					safe_free(var->name); safe_free(var->value); safe_free(var);
 					return (0);
 				}
 				prev = var;
@@ -395,9 +395,9 @@
 					t_var *var = table[index];
 					while (var) {
 						t_var *next = var->next;
-						free(var->name);
-						free(var->value);
-						free(var);
+						safe_free(var->name);
+						safe_free(var->value);
+						safe_free(var);
 						var = next;
 					}
 					table[index] = NULL;
@@ -414,7 +414,7 @@
 	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
 		if (!value) return;
 		if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
-		if (value && free_value) free(value);
+		if (value && free_value) safe_free(value);
 	}
 
 	int variables_initialize(t_var **table) {
