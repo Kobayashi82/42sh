@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/26 14:09:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:23:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,16 @@ void	*ft_memchr(const void *s, int c, int n);
 void	*ft_memset(void *b, int c, int len);
 void	*ft_calloc(int count, int size);
 void	*ft_realloc(void *ptr, int old_size, int size);
+void	*smalloc(long bytes);
+void	sfree(void *ptr);
+void	sfree_all();
+int		sopen(const char *file, int oflag, int perm);
+int		sclose(int fd);
+void	sclose_all();
+int		sdup(int fd);
+int		sdup2(int *fd1, int fd2, int closeFD);
+int		spipe(int *fd);
+void	sexit(int code);
 
 //	STR_IS
 int		ft_isprint(int c);

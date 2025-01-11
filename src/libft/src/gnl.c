@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_gnl.c                                           :+:      :+:    :+:   */
+/*   gnl.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 02:19:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:18:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@
 					ft_memset(buffer, '\0', GNL_BUFFER + 1);
 					int readed = read(fd, buffer, GNL_BUFFER);
 					if (readed == 0 && line)	return (line);
-					if (readed < 1)				return (free(line), NULL);
+					if (readed < 1)				return (sfree(line), NULL);
 				}
 				newline = ft_memchr(buffer, '\n', ft_strlen(buffer));
 				if (newline)					return (get_line(line, newline, buffer));

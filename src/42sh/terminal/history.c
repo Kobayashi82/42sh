@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:20:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:28:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@
 			if (type == HIST_FILE) { file_max = new_size; file_unlimited = false; }
 			if (type == HIST_MEM)  { mem_max = new_size;  mem_unlimited = false;
 				if (mem_max < length) {
-					HIST_ENTRY **tmp_history = safe_calloc(mem_max * 2, sizeof(HIST_ENTRY *));
+					HIST_ENTRY **tmp_history = ft_calloc(mem_max * 2, sizeof(HIST_ENTRY *));
 					size_t i = 0;
 
 					for (size_t start = length - mem_max; start < length && history[start]; ++start) {
@@ -111,13 +111,13 @@
 			if (initialize || !history) {
 				if (history) history_clear();
 				capacity = 10; length = 0;
-				history = safe_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+				history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
 			} else if (length == capacity) {
 				capacity *= 2;
-				HIST_ENTRY **new_history = safe_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+				HIST_ENTRY **new_history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
 				for (size_t i = 0; i < length && history[i]; ++i)
 					new_history[i] = history[i];
-				safe_free(history);
+				sfree(history);
 				history = new_history;
 			}
 		}
@@ -136,15 +136,14 @@
 			if (!filename) return (1);
 			if (!mem_max && !mem_unlimited)  return (0);
 
-			int fd = open(filename, O_RDONLY);
+			int fd = sopen(filename, O_RDONLY, -1);
 			if (fd < 0) return (1);
 
 			tmp_length = 0;
 			char	*line = NULL;
 
 			//	Reserve space for the temporary history
-			tmp_history = malloc(HIST_MAXSIZE * sizeof(char *));
-			if (!tmp_history) exit_error(NO_MEMORY, 1, NULL, true);
+			tmp_history = smalloc(HIST_MAXSIZE * sizeof(char *));
 
 			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
 				if (ft_isspace_s(line)) continue;
@@ -158,14 +157,14 @@
 				tmp_history[tmp_length++] = line;
 			} tmp_history[tmp_length] = NULL;
 
-			close(fd);
+			sclose(fd);
 			return (0);
 		}
 
 		//	Add the entries to the history
 		int history_read(const char *filename) {
-			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
-			if (tmp_length < 1) { free(tmp_history);	history_resize(true); return (0); }
+			if (read_history_file(filename)) {		 		history_resize(true); return (1); }
+			if (tmp_length < 1) { sfree(tmp_history);	history_resize(true); return (0); }
 
 			//	Adjust capacity to the required size
 			while (capacity <= tmp_length) capacity *= 2;
@@ -177,16 +176,12 @@
 
 			//	Allocate memory for the final history
 			history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
-			if (!history) {
-				array_free(tmp_history);
-				exit_error(NO_MEMORY, 1, NULL, true);
-			}
 
 			length = 0;
 			//	Copy entry from the temporary array to the final history
 			while (tmp_history[tmp_length]) {
 				if (length >= mem_max && !mem_unlimited) { break; }
-				history[length] = malloc(sizeof(HIST_ENTRY));
+				history[length] = smalloc(sizeof(HIST_ENTRY));
 				if (!history[length]) { history_clear(); break; }
 				history[length]->line = tmp_history[tmp_length];
 				history[length]->length = ft_strlen(history[length]->line);
@@ -212,10 +207,10 @@
 			if (!filename)				return (1);
 			if (!options.hist_local)	return (0);
 
-			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
+			int fd = sopen(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
 			if (fd < 0) return (1);
 
-			if (!history || !file_max || !length) { close (fd); return (0); }
+			if (!history || !file_max || !length) { sclose (fd); return (0); }
 
 			size_t i = 0;
 			if (length > file_max) i = length - file_max;
@@ -232,7 +227,7 @@
 				}
 			}
 
-			close(fd);
+			sclose(fd);
 			return (0);
 		}
 
@@ -262,15 +257,15 @@
 
 			history_resize(false);
 			if (length >= mem_max && !mem_unlimited) {
-				safe_free(history[0]->line);
-				safe_free(history[0]->data);
-				safe_free(history[0]); history[0] = NULL;
+				sfree(history[0]->line);
+				sfree(history[0]->data);
+				sfree(history[0]); history[0] = NULL;
 				for (size_t i = 0; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
 			}
-			history[length] = safe_malloc(sizeof(HIST_ENTRY));
-			history[length]->line = safe_strdup(line);
+			history[length] = smalloc(sizeof(HIST_ENTRY));
+			history[length]->line = ft_strdup(line);
 			history[length]->length = ft_strlen(line);
 			history[length]->event = event++;
 			history[length++]->data = NULL;
@@ -294,9 +289,9 @@
 			if (erasedups) erase_dups(line, pos);
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) safe_free(history[pos]->line);
-				if (history[pos]->data) safe_free(history[pos]->data);
-				history[pos]->line = safe_strdup(line);
+				if (history[pos]->line) sfree(history[pos]->line);
+				if (history[pos]->data) sfree(history[pos]->data);
+				history[pos]->line = ft_strdup(line);
 				history[pos]->length = ft_strlen(line);
 				history[pos]->data = data;
 			}
@@ -326,9 +321,9 @@
 			}
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) safe_free(history[pos]->line);
-				if (history[pos]->data) safe_free(history[pos]->data);
-				safe_free(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) sfree(history[pos]->line);
+				if (history[pos]->data) sfree(history[pos]->data);
+				sfree(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -340,9 +335,9 @@
 			if (!history || length == 0) return;
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) safe_free(history[pos]->line);
-				if (history[pos]->data) safe_free(history[pos]->data);
-				safe_free(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) sfree(history[pos]->line);
+				if (history[pos]->data) sfree(history[pos]->data);
+				sfree(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -354,9 +349,9 @@
 			if (!history || length == 0) return;
 
 			if (history && position < length && history[position]) {
-				if (history[position]->line) safe_free(history[position]->line);
-				if (history[position]->data) safe_free(history[position]->data);
-				safe_free(history[position]); history[position] = NULL;
+				if (history[position]->line) sfree(history[position]->line);
+				if (history[position]->data) sfree(history[position]->data);
+				sfree(history[position]); history[position] = NULL;
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -373,11 +368,11 @@
 
 			for (size_t i = 0; i < length; ++i) {
 				if (!history || !history[i]) break;
-				if (history[i]->line) safe_free(history[i]->line);
-				if (history[i]->data) safe_free(history[i]->data);
-				safe_free(history[i]); history[i] = NULL;
+				if (history[i]->line) sfree(history[i]->line);
+				if (history[i]->data) sfree(history[i]->data);
+				sfree(history[i]); history[i] = NULL;
 			}
-			if (history) { safe_free(history); history = NULL; }
+			if (history) { sfree(history); history = NULL; }
 			position = 0; length = 0; capacity = 10;
 		}
 
@@ -393,7 +388,7 @@
 		HIST_ENTRY **history_clone() {
 			if (!history) return (NULL);
 
-			HIST_ENTRY **copy = safe_malloc((length + 1) * sizeof(HIST_ENTRY *));
+			HIST_ENTRY **copy = smalloc((length + 1) * sizeof(HIST_ENTRY *));
 
 			for (size_t i = 0; i < length && history[i]; ++i)
 				copy[i] = history[i];
@@ -527,7 +522,6 @@
 		for (size_t i = length - offset; i < length && history[i]; ++i) {
 			if (!hide_events) {
 				char *txt_event = ft_itoa(history[i]->event);
-				if (!txt_event) exit_error(NO_MEMORY, 1, NULL, true);
 				int spaces = 5 - ft_strlen(txt_event);
 				while (spaces--) print(STDOUT_FILENO, " ", JOIN);
 				print(STDOUT_FILENO, txt_event, FREE_JOIN);

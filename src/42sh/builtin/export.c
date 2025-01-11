@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 13:58:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 		int len = ft_strlen(key);
 		bool concatenate = false;
 		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
-		if (variables_validate(key, value, "export", true, true)) return (safe_free(key), free(value), 1);
+		if (variables_validate(key, value, "export", true, true)) return (sfree(key), sfree(value), 1);
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
@@ -66,7 +66,7 @@
 			if (!concatenate && variables_add(vars_table, key, value, 1, -1, -1, -1))			result = 1;
 		}
 
-		return (safe_free(key), free(value), result);
+		return (sfree(key), sfree(value), result);
 	}
 
 #pragma endregion
@@ -91,7 +91,7 @@
 		bool concatenate = false;
 		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
 
-		if (variables_validate(key, value, "export", true, true)) return (safe_free(key), free(value), 1);
+		if (variables_validate(key, value, "export", true, true)) return (sfree(key), sfree(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
 			print(STDOUT_FILENO, NULL, RESET);
@@ -102,7 +102,7 @@
 			if (!concatenate && variables_add(vars_table, key, value, 0, -1, -1, -1))			result = 1;
 		}
 		
-		return (safe_free(key), free(value), result);
+		return (sfree(key), sfree(value), result);
 	}
 
 #pragma endregion
@@ -114,15 +114,15 @@
 
 		if (*opts->invalid) {
 			invalid_option("export", opts->invalid, "[-n] [name[=value] ...] or export -p");
-			return (safe_free(opts), 1);
+			return (sfree(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("export", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("export", "1.0"));
 
 		if (!opts->args) {
 			variables_print(vars_table, EXPORTED_LIST, true);
-			return (safe_free(opts), 0);
+			return (sfree(opts), 0);
 		}
 
 		int result = 0;
@@ -132,7 +132,7 @@
 			opts->args = opts->args->next;
 		}
 
-		return (safe_free(opts), result);
+		return (sfree(opts), result);
 	}
 
 #pragma endregion

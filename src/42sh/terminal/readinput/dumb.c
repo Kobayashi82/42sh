@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:03:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-				safe_free(buffer.value); buffer.value = NULL;
+				sfree(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
 				return (1);
 			}
@@ -98,9 +98,8 @@
 
 			// Expand buffer if necessary
 			if (buffer.position + char_size >= buffer.size) {
-				buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+				buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 				buffer.size *= 2;
-				if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
 			}
 
 			if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);

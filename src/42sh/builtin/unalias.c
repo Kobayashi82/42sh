@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@
 
 		if (*opts->invalid) {
 			invalid_option("unalias", opts->invalid, "[-a] name [name ...]");
-			return (safe_free(opts), 1);
+			return (sfree(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("unalias", "1.0"));
-		if (ft_strchr(opts->valid, 'a')) return (safe_free(opts), alias_clear(), 0);
+		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("unalias", "1.0"));
+		if (ft_strchr(opts->valid, 'a')) return (sfree(opts), alias_clear(), 0);
 
 		int result = 0;
 		char *invalues = NULL;
@@ -72,9 +72,9 @@
 			opts->args = opts->args->next;
 		}
 		
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); safe_free(invalues); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); sfree(invalues); }
 
-		return (safe_free(opts), result);
+		return (sfree(opts), result);
 	}
 
 #pragma endregion

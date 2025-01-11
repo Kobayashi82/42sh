@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 14:21:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:15:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #pragma region Parse
 
 	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid) {
-		t_opt *result = safe_calloc(1, sizeof(t_opt));
+		t_opt *result = ft_calloc(1, sizeof(t_opt));
 		result->options = valid_opts; result->args = args;
 		if (!args || !valid_opts || !*valid_opts) return (result);
 
@@ -109,7 +109,7 @@
 		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
 
 		size_t length = ft_strlen(value), j = 0;
-		char *escaped = safe_malloc(length * 6 + 3);
+		char *escaped = smalloc(length * 6 + 3);
 
 		if (quote_type == '\'') escaped[j++] = '\'';
 		if (quote_type == '\"') escaped[j++] = '\"';

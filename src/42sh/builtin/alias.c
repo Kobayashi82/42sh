@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-		if (alias_validate(key, true)) return (safe_free(key), safe_free(value), 1);
+		if (alias_validate(key, true)) return (sfree(key), sfree(value), 1);
 		alias_add(key, value);
-		return (safe_free(key), safe_free(value), 0);
+		return (sfree(key), sfree(value), 0);
 	}
 
 #pragma endregion
@@ -82,11 +82,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("alias", opts->invalid, "[-p] [name[=value] ... ]");
-			return (safe_free(opts), 1);
+			return (sfree(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (safe_free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (safe_free(opts), print_version("alias", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("alias", "1.0"));
 
 		int result = 0;
 		char *values = NULL, *invalues = NULL;
@@ -101,10 +101,10 @@
 		
 		if (ft_strchr(opts->valid, 'p')) alias_print(true);
 
-		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); safe_free(values); }
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); safe_free(invalues); }
+		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); sfree(values); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); sfree(invalues); }
 
-		return (safe_free(opts), result);
+		return (sfree(opts), result);
 	}
 
 #pragma endregion

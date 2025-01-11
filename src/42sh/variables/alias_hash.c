@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:04:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,24 +27,20 @@
 
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
-				safe_free(new_alias->value);
-				if (value)	new_alias->value = safe_strdup(value);
-				else		new_alias->value = safe_strdup("");
+				sfree(new_alias->value);
+				if (value)	new_alias->value = ft_strdup(value);
+				else		new_alias->value = ft_strdup("");
 
 				return (0);
 			}
 
 			unsigned int index = hash_index(key);
-			new_alias = safe_calloc(1, sizeof(t_alias));
+			new_alias = ft_calloc(1, sizeof(t_alias));
 
 			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;
 			if (value)	new_alias->value = ft_strdup(value);
 			else		new_alias->value = ft_strdup("");
-			if (!new_alias->name || (value && !new_alias->value)) {
-				safe_free(new_alias->name); safe_free(new_alias->value);
-				exit_error(NO_MEMORY, 1, NULL, true);
-			}
 
 			new_alias->next = alias_table[index];
 			alias_table[index] = new_alias;
@@ -113,7 +109,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
@@ -122,10 +118,6 @@
 					
 					if (alias->name && alias->value) {
 						array[i] = ft_strjoin_sep(alias->name, "=", alias->value, 0);
-						if (!array[i]) {
-							array_free(array);
-							exit_error(NO_MEMORY, 1, NULL, true);
-						}
 						i++;
 					}
 					alias = alias->next;
@@ -152,7 +144,7 @@
 			}
 
 			if (i == 0) return (1);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
@@ -162,10 +154,6 @@
 					if (alias->name) {
 						array[i] = ft_strjoin("alias ", alias->name, 0);
 						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), 6);
-						if (!array[i]) {
-							array_free(array);
-							exit_error(NO_MEMORY, 1, NULL, true);
-						}
 						i++;
 					}
 					alias = alias->next;
@@ -224,7 +212,7 @@
 				if (!ft_strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
 					else		alias_table[index] = alias->next;
-					safe_free(alias->name); safe_free(alias->value); safe_free(alias);
+					sfree(alias->name); sfree(alias->value); sfree(alias);
 					return (0);
 				}
 				prev = alias;
@@ -244,9 +232,9 @@
 					t_alias *alias = alias_table[index];
 					while (alias) {
 						t_alias *next = alias->next;
-						safe_free(alias->name);
-						safe_free(alias->value);
-						safe_free(alias);
+						sfree(alias->name);
+						sfree(alias->value);
+						sfree(alias);
 						alias = next;
 					}
 					alias_table[index] = NULL;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:13:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:44:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,9 @@ int shell_time() { return (time(NULL) - shell.started); }
 		shell.subshell_level = 0;
 		shell.started = time(NULL);
 		srand(shell.started);
-		terminal.bk_stdin = safe_dup(STDIN_FILENO);
-		terminal.bk_stdout = safe_dup(STDOUT_FILENO);
-		terminal.bk_stderr = safe_dup(STDERR_FILENO);
+		terminal.bk_stdin = sdup(STDIN_FILENO);
+		terminal.bk_stdout = sdup(STDOUT_FILENO);
+		terminal.bk_stderr = sdup(STDERR_FILENO);
 
 		return (0);
 	}

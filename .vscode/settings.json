@@ -8,6 +8,7 @@
 		"cstdio": "c",
 		"errno.h": "c",
 		"typeinfo": "c",
-		"history.h": "c"
+		"history.h": "c",
+		"libft.h": "c"
 	}
 }

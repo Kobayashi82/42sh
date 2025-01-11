@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,20 @@
 		int	result = 0;
 
 		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && terminal.msg[fd]) {
-			safe_free(terminal.msg[fd]);
+			sfree(terminal.msg[fd]);
 			terminal.msg[fd] = NULL;
 		}
 
-		if (str && !terminal.msg[fd])		terminal.msg[fd] = safe_strdup(str);
+		if (str && !terminal.msg[fd])		terminal.msg[fd] = ft_strdup(str);
 		else if (str && terminal.msg[fd])	terminal.msg[fd] = ft_strjoin(terminal.msg[fd], str, 1);
 
 		if (mode % 2 && terminal.msg[fd] && fd > 0) {
 			result = write(fd, terminal.msg[fd], ft_strlen(terminal.msg[fd]));
-			safe_free(terminal.msg[fd]);
+			sfree(terminal.msg[fd]);
 			terminal.msg[fd] = NULL;
 		}
 		
-		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) safe_free(str);
+		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) sfree(str);
 		return (result == -1);
 	}
 

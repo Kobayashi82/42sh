@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:02:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 			}
 
 			unsigned int index = hash_index(name);
-			new_builtin = safe_calloc(1, sizeof(t_builtin));
-			new_builtin->name = safe_strdup(name);
+			new_builtin = ft_calloc(1, sizeof(t_builtin));
+			new_builtin->name = ft_strdup(name);
 			if (disabled != -1) new_builtin->disabled = disabled;
 			if (special != -1) new_builtin->special = special;
 			if (execute) new_builtin->execute = execute;
@@ -97,7 +97,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
@@ -105,10 +105,6 @@
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
 						array[i] = ft_strdup(builtin->name);
-						if (!array[i]) {
-							array_free(array);
-							exit_error(NO_MEMORY, 1, NULL, true);
-						}
 						i++;
 					}
 					builtin = builtin->next;
@@ -135,7 +131,7 @@
 			}
 
 			if (i == 0) return (1);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
@@ -147,10 +143,6 @@
 							array[i] = ft_strjoin("disable ", builtin->name, 0);
 						if (!builtin->disabled && (disabled == 0 || disabled == 2))
 							array[i] = ft_strjoin("enable  ", builtin->name, 0);
-						if (!array[i]) {
-							array_free(array);
-							exit_error(NO_MEMORY, 1, NULL, true);
-						}
 						i++;
 					}
 					builtin = builtin->next;
@@ -209,7 +201,7 @@
 				if (!ft_strcmp(builtin->name, name)) {
 					if (prev)	prev->next = builtin->next;
 					else		builtin_table[index] = builtin->next;
-					safe_free(builtin->name); safe_free(builtin);
+					sfree(builtin->name); sfree(builtin);
 					return (0);
 				}
 				prev = builtin;
@@ -229,8 +221,8 @@
 					t_builtin *builtin = builtin_table[index];
 					while (builtin) {
 						t_builtin *next = builtin->next;
-						safe_free(builtin->name);
-						safe_free(builtin);
+						sfree(builtin->name);
+						sfree(builtin);
 						builtin = next;
 					}
 					builtin_table[index] = NULL;

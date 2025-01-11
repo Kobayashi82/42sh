@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@
 		char *str_PS1 = BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC;
 		char *tmp_prompt = NULL;
 
-		if (type == PS1 && prompt_PS1) { safe_free(prompt_PS1); prompt_PS1 = NULL; }
-		if (type == PS2 && prompt_PS2) { safe_free(prompt_PS2); prompt_PS2 = NULL; }
+		if (type == PS1 && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
+		if (type == PS2 && prompt_PS2) { sfree(prompt_PS2); prompt_PS2 = NULL; }
 
 		if (new_prompt) {
 			//	Procesa barras, variables ($var & \u)
-			tmp_prompt = safe_strdup(new_prompt);
+			tmp_prompt = ft_strdup(new_prompt);
 		} else {
-			tmp_prompt = backslashes(safe_strdup(str_PS1));	//	"\\$USER-\u"
+			tmp_prompt = backslashes(ft_strdup(str_PS1));	//	"\\$USER-\u"
 			//	Procesa barras, variables ($var & \u)
 		}
 

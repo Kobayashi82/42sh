@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:04:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,17 @@
 
 			t_cmdp *new_cmdp = cmdp_find(name, true);
 			if (new_cmdp) {
-				safe_free(new_cmdp->path);
-				new_cmdp->path = safe_strdup(path);
+				sfree(new_cmdp->path);
+				new_cmdp->path = ft_strdup(path);
 
 				return (0);
 			}
 
 			unsigned int index = hash_index(name);
-			new_cmdp = safe_calloc(1, sizeof(t_cmdp));
+			new_cmdp = ft_calloc(1, sizeof(t_cmdp));
 
 			new_cmdp->name = ft_strdup(name);
 			new_cmdp->path = ft_strdup(path);
-			if (!new_cmdp->name || (path && !new_cmdp->path)) {
-				safe_free(new_cmdp->name); safe_free(new_cmdp->path);
-				exit_error(NO_MEMORY, 1, NULL, true);
-			}
 
 			new_cmdp->next = cmdp_table[index];
 			cmdp_table[index] = new_cmdp;
@@ -113,7 +109,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = safe_malloc((i + 1) * sizeof(char *));
+			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
@@ -121,10 +117,6 @@
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) {
 						array[i] = ft_strdup(cmdp->path);
-						if (!array[i]) {
-							array_free(array);
-							exit_error(NO_MEMORY, 1, NULL, true);
-						}
 						i++;
 					}
 					cmdp = cmdp->next;
@@ -192,7 +184,7 @@
 				if (!ft_strcmp(cmdp->name, name)) {
 					if (prev)	prev->next = cmdp->next;
 					else		cmdp_table[index] = cmdp->next;
-					safe_free(cmdp->name); safe_free(cmdp->path); safe_free(cmdp);
+					sfree(cmdp->name); sfree(cmdp->path); sfree(cmdp);
 					return (0);
 				}
 				prev = cmdp;
@@ -212,9 +204,9 @@
 					t_cmdp *cmdp = cmdp_table[index];
 					while (cmdp) {
 						t_cmdp *next = cmdp->next;
-						safe_free(cmdp->name);
-						safe_free(cmdp->path);
-						safe_free(cmdp);
+						sfree(cmdp->name);
+						sfree(cmdp->path);
+						sfree(cmdp);
 						cmdp = next;
 					}
 					cmdp_table[index] = NULL;

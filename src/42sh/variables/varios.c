@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:28:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 		char *delimiter = ft_strchr(key, '=');
 		if (!delimiter) return (NULL);
 
-		return (safe_strdup(delimiter + 1));
+		return (ft_strdup(delimiter + 1));
 	}
 
 #pragma endregion
@@ -28,23 +28,23 @@
 #pragma region Key / Value
 
 	int get_key_value(const char *line, char **key, char **value, char sep) {
-		if (*key)	{ safe_free(*key); *key = NULL; }
-		if (*value) { safe_free(*value); *value = NULL; }
+		if (*key)	{ sfree(*key); *key = NULL; }
+		if (*value) { sfree(*value); *value = NULL; }
 		if (!line) 	{ return (2); }
 
 		char *delimiter = ft_strchr(line, sep);
 		if (!delimiter) {
-			*key = safe_strdup(line);
+			*key = ft_strdup(line);
 			return (1);
 		}
 
 		size_t key_length = delimiter - line;
-		*key = safe_malloc(key_length + 1);
+		*key = smalloc(key_length + 1);
 
 		ft_strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
 
-		*value = safe_strdup(delimiter + 1);
+		*value = ft_strdup(delimiter + 1);
 
 		size_t value_len = ft_strlen(*value);
 		while (value_len > 0 && ((*value)[value_len - 1] == '\n' || (*value)[value_len - 1] == '\r')) {
@@ -64,14 +64,14 @@
 	// int options_write() {
 	// 	char *filename = ft_strjoin(get_home_path(), "/opciones", 0);
 
-	// 	int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); safe_free(filename);
+	// 	int fd = sopen(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); sfree(filename);
 	// 	if (fd == -1) return (1);
 
 	// 	print(fd, ft_strjoin_sep("input_mode=", ft_itoa(options.input_mode), "\n", 2), FREE_RESET);
 	// 	print(fd, ft_strjoin_sep("hist_on=", ft_itoa(options.hist_on), "\n", 2), FREE_JOIN);
 	// 	print(fd, ft_strjoin_sep("hist_local=", ft_itoa(options.hist_local), "\n", 2), FREE_PRINT);
 
-	// 	close(fd);
+	// 	sclose(fd);
 	// 	return (0);
 	// }
 
@@ -80,17 +80,17 @@
 	// 	char *filename = ft_strjoin(get_home_path(), "/.42sh", 0);
 
 	// 	options_default();
-	// 	int fd = open(filename, O_RDONLY); safe_free(filename);
+	// 	int fd = sopen(filename, O_RDONLY, -1); sfree(filename);
 	// 	if (fd == -1) { options_write(); return (1); }
 
 	// 	char *line = NULL, *key = NULL, *value = NULL;
 	// 	while ((line = ft_get_next_line(fd))) {
 	// 		get_key_value(line, &key, &value, '=');
 	// 		if (key && key[0] && value && value[0]) options_set(key, value);
-	// 		safe_free(line);
-	// 	} safe_free(key); safe_free(value);
+	// 		sfree(line);
+	// 	} sfree(key); sfree(value);
 
-	// 	close(fd); options_write();
+	// 	sclose(fd); options_write();
 
 	// 	return (0);
 	// }

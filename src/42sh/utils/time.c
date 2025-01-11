@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 13:58:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 			int year, month, day, hour, minute, second, i = 0;
 			epoch_to_local(timestamp, &year, &month, &day, &hour, &minute, &second);
 
-			char *formatted_time = safe_malloc(20);
+			char *formatted_time = smalloc(20);
 
 			// Day (dd)
 			formatted_time[i++] = '0' + (day / 10);
@@ -143,4 +143,4 @@
 		//const char *date = "01/2/2024 14:16:33";
 		// char *current_date = format_timestamp(get_timestamp(NULL));
 		// if (current_date) printf("%s\n", current_date);
-		// return (safe_free(current_date), 0);
+		// return (sfree(current_date), 0);

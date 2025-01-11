@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ static char *extract_word(char *line, int *index) {
     int start = *index;
     while (line[*index] && !ft_isspace(line[*index]) && !is_quote(line[*index]))
         (*index)++;
-    return (strndup(&line[start], *index - start));
+    return (ft_strndup(&line[start], *index - start));
 }
 
 static t_arg *add_arg(t_arg **head, char *value) {
-    t_arg *new_arg = malloc(sizeof(t_arg));
+    t_arg *new_arg = smalloc(sizeof(t_arg));
     if (!new_arg) return (NULL);
 
     new_arg->value = value;
@@ -74,19 +74,19 @@ t_arg *test_create_args(char *line) {
             while (args) {
                 t_arg *tmp = args;
                 args = args->next;
-                safe_free(tmp->value);
-                safe_free(tmp);
+                sfree(tmp->value);
+                sfree(tmp);
             }
             return (NULL);
         }
 
         if (!add_arg(&args, arg)) {
-            safe_free(arg);
+            sfree(arg);
             while (args) {
                 t_arg *tmp = args;
                 args = args->next;
-                safe_free(tmp->value);
-                safe_free(tmp);
+                sfree(tmp->value);
+                sfree(tmp);
             }
             return (NULL);
         }
@@ -101,8 +101,8 @@ void test_free_args(t_arg *args) {
 
     while (current) {
         next = current->next; // Guardar el siguiente nodo
-        safe_free(current->value); // Liberar el valor del argumento
-        safe_free(current);        // Liberar el nodo actual
+        sfree(current->value); // Liberar el valor del argumento
+        sfree(current);        // Liberar el nodo actual
         current = next;       // Avanzar al siguiente nodo
     }
 }

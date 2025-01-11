@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 13:52:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:31:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #pragma region Includes
 
 	#include <stdbool.h>
-
-	#define MEM_HASH_SIZE 1031
 
 #pragma endregion
 
@@ -80,38 +78,11 @@
 
 	#pragma endregion
 
-	#pragma region Structures
-
-		typedef struct s_mem t_mem;
-
-		typedef struct s_mem {
-			void	*ptr;
-			t_mem	*next;
-		}	t_mem;
-
-	#pragma endregion
-
 #pragma endregion
 
 #pragma region Methods
 
-	//	--------- MEM_HASH ---------
-	void	*safe_malloc(long bytes);
-	void	*safe_calloc(int count, long bytes);
-	void	*safe_realloc(void *ptr, int old_size, int size);
-	void	safe_free(void *ptr);
-	void	safe_free_all();
-
-	//	----------- SAFE -----------
-	char	*safe_strdup(const char *str);
-	int		safe_dup(int fd);
-	int		safe_dup2(int *fd1, int fd2, bool closeFD);
-
-	//	----------- FREE -----------
-	void	data_free();
-
 	//	----------- ERROR ----------
 	int		exit_error(int error, int code, char *value, bool fatal);
-	void	exit(int code);
 
 #pragma endregion

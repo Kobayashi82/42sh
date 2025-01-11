@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:04:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-				safe_free(buffer.value); buffer.value = NULL;
+				sfree(buffer.value); buffer.value = NULL;
 				write(STDOUT_FILENO, "\r\n", 2);
 				return (1);
 			}
@@ -159,7 +159,7 @@
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
 				buffer.position = 0; buffer.length = 0;
-				if (tmp_line) { safe_free(tmp_line); tmp_line = NULL; }
+				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 				history_set_pos_end();
 				if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 				else					write(STDOUT_FILENO, "\r\n", 2);
@@ -179,7 +179,7 @@
 				history_set_pos_end();
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
-				if (tmp_line) { safe_free(tmp_line); tmp_line = NULL; }
+				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 				return (1);
 			}
 			return (0);
@@ -352,13 +352,11 @@
 
 				if (!new_line) return;
 				if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
-				if (!tmp_line) exit_error(NO_MEMORY, 1, NULL, true);
 
 				end(); backspace_start();
 				while (ft_strlen(new_line) >= (int)buffer.size) {
-					buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 					buffer.size *= 2;
-					if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
 				}
 				ft_strcpy(buffer.value, new_line);
 				buffer.length = ft_strlen(buffer.value);
@@ -385,16 +383,15 @@
 
 				end(); backspace_start();
 				while (ft_strlen(new_line) >= (int)buffer.size) {
-					buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 					buffer.size *= 2;
-					if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
 				}
 				ft_strcpy(buffer.value, new_line);
 				buffer.length = ft_strlen(buffer.value);
 				buffer.position = buffer.length;
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 
-				if (free_line && new_line) safe_free(new_line);
+				if (free_line && new_line) sfree(new_line);
 			}
 
 		#pragma endregion
@@ -520,9 +517,8 @@
 
 			// Expand buffer if necessary
 			if (buffer.position + char_size >= buffer.size) {
-				buffer.value = safe_realloc(buffer.value, buffer.size, buffer.size * 2);
+				buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 				buffer.size *= 2;
-				if (!buffer.value) { disable_raw_mode(); exit_error(NO_MEMORY, 1, NULL, true); }
 			}
 
 			if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);

@@ -75,7 +75,7 @@
 		if (n == 0) return (ft_strdup("0"));
 		if (n < 0) { sign = -1; len++; }
 		while (tmp != 0) { tmp /= 10; len++; }
-		str = malloc((len + 1));
+		str = smalloc((len + 1));
 		if (!str) return (NULL);
 		str[len] = '\0';
 		while (n != 0) {

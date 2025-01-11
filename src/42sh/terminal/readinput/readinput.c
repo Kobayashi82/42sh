@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 18:20:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:50:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 			tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
 		}
 	}
+
 	static void enable_raw_mode() {
 		raw_mode = true;
 		tcgetattr(STDIN_FILENO, &terminal.term);

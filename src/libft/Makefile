@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 16:40:56 by vzurera-          #+#    #+#              #
-#    Updated: 2024/12/08 16:01:39 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/11 12:29:16 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -54,7 +54,7 @@ NAME		= libft.a
 # ── FILES ── #
 # ─────────── #
 
-SRCS		= ft_mem.c ft_str.c ft_num.c ft_array.c ft_gnl.c ft_printf.c
+SRCS		= mem.c str.c num.c array.c gnl.c printf.c
 
 # ────────────────────────────────────────────────────────── #
 # ───────────────────────── NORMAL ───────────────────────── #
@@ -91,7 +91,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	@mkdir -p $(@D)
 #	Compile objects
 	@filename=$$(basename $<); filename=$${filename%.*}; \
-	BAR=$$(printf "/ ─ \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
+	BAR=$$(printf "/ — \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
 	@gcc $(FLAGS) -I$(INC_DIR) -MMD -o $@ -c $<
@@ -173,7 +173,7 @@ _delete_objects:
 	@printf "\n\t$(WHITE)────────────────────────$(NC)\033[1A\r"
 	@COUNTER=0; \
 	for file in $(OBJ_DIR)/*.o; do \
-		BAR=$$(printf "/ ─ \\ |" | cut -d" " -f$$((COUNTER % 4 + 1))); \
+		BAR=$$(printf "/ — \\ |" | cut -d" " -f$$((COUNTER % 4 + 1))); \
 		filename=$$(basename $$file); \
 		for src in $(SRCS); do \
 			srcname=$$(basename $$src .c); \

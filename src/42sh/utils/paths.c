@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/10 14:09:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 
 				if (ft_strlen(home) + ft_strlen(path) >= PATH_MAX) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
-					safe_free(home);
+					sfree(home);
 					return (NULL);
 				}
 
@@ -65,7 +65,7 @@
 					ft_strcpy(abs_path, home);
 					ft_strcat(abs_path, path);
 					path = abs_path;
-					safe_free(home);
+					sfree(home);
 				}
 			}
 
@@ -138,13 +138,13 @@
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
-				safe_free(fullpath);
+				sfree(fullpath);
 				if (!resolved_path) break;
 
 				fullpath = resolved_path;
 
 				if (access(fullpath, F_OK) != -1) { final_path = fullpath; break; }
-				safe_free(fullpath);
+				sfree(fullpath);
 			}
 
 			array_free(search_paths);
@@ -174,13 +174,13 @@
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
-				safe_free(fullpath);
+				sfree(fullpath);
 				if (!resolved_path) break;
 
 				fullpath = resolved_path;
 
 				if (access(fullpath, F_OK) != -1) final_paths[j++] = fullpath;
-				else safe_free(fullpath);
+				else sfree(fullpath);
 			} final_paths[j] = NULL;
 
 			array_free(search_paths);

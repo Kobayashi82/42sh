@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 13:31:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/11 13:35:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,19 +58,9 @@
 		// execution_msg(error, value);
 
 		if (code) shell.exit_code = code;
-		if (fatal) { exit(shell.exit_code % 256); }
+		if (fatal) { sexit(shell.exit_code % 256); }
 
 		return (shell.exit_code);
 	}
-
-#pragma endregion
-
-#pragma region Exit
-
-void exit(int code) {
-	disable_raw_mode();
-	data_free();
-	_exit(code);
-}
 
 #pragma endregion
