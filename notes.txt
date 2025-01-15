@@ -1,0 +1,22 @@
+SIGHUP, SIGTERM para guardar historial
+leaks si history file no existe
+
+fc builtin
+history builtin
+CTRL + R
+!!
+
+Casos de comillas sin cerrar o terminacion en token
+
+En set o unset, si son variables del historial, actualizar variables internas
+
+Vi input
+
+recordar que - (guion) suele indicar stdin o stdout para algunos comandos, como cat, por ejemplo. en mi caso,
+creo que se trata normal y corriente. No creo que tenga que hacer nada
+
+!!				substitute for the last command
+!«-n»			substitute for command «n» from the end of history
+!«n»			substitute for command event «n» from history
+!«prefix»		substitute for the last command beginning with “«prefix»”
+!?«substr»?		substitute for the last command containing “«substr»”.
