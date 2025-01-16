@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:32:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:01:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,11 +163,10 @@
 			char *action = tgetstr("le", NULL);
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
+			cursor_get();
 			while (action && moves--) {
-				// cursor_get();
-				// if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row - 1, buffer.cols);
-				// else											write(STDIN_FILENO, action, ft_strlen(action));
-				write(STDIN_FILENO, action, ft_strlen(action));
+				if (!buffer.col)	{ cursor_set(--buffer.row, terminal.columns);		buffer.col = terminal.columns - 1; }
+				else				{ write(STDIN_FILENO, action, ft_strlen(action));	buffer.col--; }
 			}
 		}
 
@@ -179,11 +178,10 @@
 			char *action = tgetstr("nd", NULL);
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
+			cursor_get();
 			while (action && moves--) {
-				// cursor_get();
-				// if (!(buffer.cols % (cursor_logical() + 1)))	cursor_set(buffer.row + 1, 0);
-				// else											write(STDIN_FILENO, action, ft_strlen(action));
-				write(STDIN_FILENO, action, ft_strlen(action));
+				if (buffer.col == (int)terminal.columns - 1)	{ cursor_set(++buffer.row, 0);						buffer.col = 0; }
+				else											{ write(STDIN_FILENO, action, ft_strlen(action));	buffer.col++; }
 			}
 		}
 

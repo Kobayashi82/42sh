@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 14:02:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:00:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,22 @@
 
 #pragma endregion
 
+#pragma region SIG_WINCH
+
+	//	Handle SIGWINCH signal
+	void sigwinch_handler(int sig) {
+		terminal.signal = sig;
+		terminal_initialize();
+	}
+
+#pragma endregion
+
 #pragma region Set
 
 	void signals_set() {
 		signal(SIGINT, sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
+		signal(SIGWINCH, sigwinch_handler);
 		terminal.signal = 0;
 	}
 
