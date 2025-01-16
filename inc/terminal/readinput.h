@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/14 18:02:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 			char			*value;
 			size_t			size, position, length;
 			bool			SHIFT, ALT, CTRL;
-			int				row, col, start_row, start_col;
+			int				row, col;
 		}	t_buffer;
 
 		typedef struct s_word {
@@ -57,8 +57,6 @@
 #pragma region Methods
 
 	//	--------- TERMCAP ----------
-	void	terminal_size();
-	void	terminal_start();
 	int		char_width(size_t position, char *value);
 	
 	void	cursor_left(int moves);

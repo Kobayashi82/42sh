@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:04:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 21:48:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
-#pragma region Functions
+//	Optimizar Delete y BackSpace
+
+#pragma region Input
 
 	#pragma region Swap
 
@@ -137,10 +139,6 @@
 
 	#pragma endregion
 
-#pragma endregion
-
-#pragma region Input
-
 	#pragma region EOF
 
 		static int ctrl_d(const int n) {
@@ -251,7 +249,7 @@
 
 		#pragma region Char
 
-			void delete_char() {
+			static void delete_char() {
 				if (buffer.position < buffer.length) {
 					size_t back_pos = 1;
 					while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
@@ -448,14 +446,14 @@
 				if (buffer.c == '\033') {
 					if (read(STDIN_FILENO, seq, sizeof(seq) - 1) > 0) {
 						if (seq[0] == 't') { swap_word(); return (1); }				// ALT + T			- Swap word
-						if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
+						//if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
 						if (seq[0] == '[') { seq[1] = modifiers(seq);
 							if (seq[1] == 'A') 						arrow_up();		// Up				- History next
 							if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
 							if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
 							if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
-							if (seq[1] == 'H') 						home();			// Home				- Cursor to the start of the line
-							if (seq[1] == 'F')						end();			// End				- Cursor to the end of the line
+							if (seq[1] == 'H') 						home();			// Home				- Cursor to the start
+							if (seq[1] == 'F')						end();			// End				- Cursor to the end
 							if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Delete			- Delete
 							if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Delete	- Delete current word
 						}
@@ -481,21 +479,21 @@
 	#pragma region Specials
 
 		static int specials() {
-			if		(buffer.c == 19)	fake_segfault = true;	// CTRL + S - Fake SegFault
-			else if (buffer.c == 31)	undo();					// CTRL + _ - Undo last action								(todo)
-			else if (buffer.c == 1)		home();					// CTRL + A - Cursor to the start of the line
-			else if (buffer.c == 5)		end();					// CTRL + E - Cursor to the end of the line
+			if 		(buffer.c == 1)		home();					// CTRL + A - Cursor to the start
 			else if (buffer.c == 2)		arrow_left();			// CTRL + B - Cursor right
-			else if (buffer.c == 6)		arrow_right();			// CTRL + F - Cursor left
-			else if (buffer.c == 16)	arrow_up();				// CTRL + P - History prev
-			else if (buffer.c == 14)	arrow_down();			// CTRL + N - History next
-			else if (buffer.c == 20)	swap_char();			// CTRL + T - Swap char										(Not working right with multibytes 漢字)
-			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
 			else if (buffer.c == 4)		delete_char();			// CTRL + D - Delete
-			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end of line
+			else if (buffer.c == 5)		end();					// CTRL + E - Cursor to the end
+			else if (buffer.c == 6)		arrow_right();			// CTRL + F - Cursor left
 			else if (buffer.c == 8)		backspace();			// CTRL + H - Backspace
-			else if (buffer.c == 21)	backspace_start();		// CTRL + U - Backspace from cursor to start of line
+			else if (buffer.c == 11)	delete_end();			// CTRL + K - Delete from cursor to end
+			else if (buffer.c == 12)	clear_screen();			// CTRL + L - Clear screen
+			else if (buffer.c == 14)	arrow_down();			// CTRL + N - History next
+			else if (buffer.c == 16)	arrow_up();				// CTRL + P - History prev
+			else if	(buffer.c == 19)	fake_segfault = true;	// CTRL + S - Fake SegFault
+			else if (buffer.c == 20)	swap_char();			// CTRL + T - Swap char										(Not working right with multibytes 漢字)
+			else if (buffer.c == 21)	backspace_start();		// CTRL + U - Backspace from cursor to start
 			else if (buffer.c == 23)	backspace_word();		// CTRL + W	- Backspace current word 
+			else if (buffer.c == 31)	undo();					// CTRL + _ - Undo last action								(todo)
 			else if (buffer.c == 127)	backspace();			// BackSpace
 			else if (buffer.c >= 1 && buffer.c <= 26) ;			// Ignore rest of the specials
 			else return (0);
@@ -560,5 +558,37 @@
 		else if (print_char())		return (0);
 		return (0);
 	}
+
+#pragma endregion
+
+#pragma region Info
+
+	// set -o emacs
+
+	//	Up				(History Prev)
+	//	Down			(History Next)
+	//	Left			(Cursor Left)
+	//	Right			(Cursor Right)
+	//	Home			(Cursor Home)
+	//	End				(Cursor End)
+	//	CTRL + F		(Cursor Left)
+	//	CTRL + B		(Cursor Right)
+	//	CTRL + A		(Cursor to the start)
+	//	CTRL + E		(Cursor to the end)
+	//	CTRL + P		(History Prev)
+	//	CTRL + N		(History Next)
+	//	CTRL + H		(BackSpace)
+	//	CTRL + U		(Backspace from cursor to start)
+	//	CTRL + W		(Backspace current word)
+	//	CTRL + Delete	(Delete current word)
+	//	CTRL + D		(Delete)
+	//	CTRL + K		(Delete from cursor to end)
+	//	CTRL + L		(Clear Screen)
+	//	CTRL + _		(Undo)
+	//	CTRL + T		(Swap Char)
+	//	ALT  + T		(Swap Word)
+	//	CTRL + S		(Fake SegFault)
+
+	// https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sh.html#tag_20_117_13_04
 
 #pragma endregion

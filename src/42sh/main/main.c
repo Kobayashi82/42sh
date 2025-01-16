@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:59:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 19:07:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,12 @@
 
 	int read_input() {
 		signals_set();
+
 		if (!(terminal.input = readinput(NULL))) return (1);
-		if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; }
-		else if (terminal.input) {
-			history_add(terminal.input, false);
-			printf("%s\n", terminal.input);
-		}
+		if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; return (0); }
+
+		history_add(terminal.input, false);
+		printf("%s\n", terminal.input);
 		first_step();
 		sfree(terminal.input);
 

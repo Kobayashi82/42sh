@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:20:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 21:48:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,8 @@
 
 	//	Set all options to their defaults values
 	int options_initialize() {
-		options.emacs = true;
-		options.vi = false;
+		options.emacs = false;
+		options.vi = true;
 		options.hist_local = true;
 		options.hist_on = true;
 

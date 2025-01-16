@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:50:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:35:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 		vi_mode = INSERT;
 
 		set_prompt(PS1, prompt);
-		enable_raw_mode(); terminal_size(); terminal_start();
+		enable_raw_mode();
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 
 		while (!result) {

@@ -6,11 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 18:01:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/16 18:38:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
+
+//	Si hay un emoticono por ejemplo en la columna primera o ultima, se puede desajustar la posicion
 
 #pragma region Variables
 
@@ -20,22 +22,13 @@
 
 #pragma region Utils
 
-	#pragma region Size
+	#pragma region Start Position (BORRAR)
 
-		void terminal_size() {
-			terminal.rows = tgetnum("li");
-			terminal.columns = tgetnum("co");
-		}
-
-	#pragma endregion
-
-	#pragma region Start Position
-
-		void terminal_start() {
-			cursor_get();
-			buffer.start_row = buffer.row;
-			buffer.start_col = buffer.col;
-		}
+		// void terminal_start() {
+		// 	cursor_get();
+		// 	buffer.start_row = buffer.row;
+		// 	buffer.start_col = buffer.col;
+		// }
 
 	#pragma endregion
 
@@ -95,45 +88,45 @@
 
 #pragma region Cursor
 
-	#pragma region Logical
+	#pragma region Logical (BORRAR)
 
-		int cursor_logical() {
-			size_t position = buffer.start_col;
-			size_t length;
+		// int cursor_logical() {
+		// 	size_t position = buffer.start_col;
+		// 	size_t length;
 
-			if (prompt_PS1) {
-				length = ft_strlen(prompt_PS1);
-				for (size_t i = 0; i < length;) {
-					int width = char_width(i, prompt_PS1);
-					if (width == 0) {
-						while (i < length && prompt_PS1[i] != 'm') ++i;
-						++i;
-					} else { position += width;
-						if ((unsigned char)prompt_PS1[i] >= 0xC0) {
-							if ((unsigned char)prompt_PS1[i] >= 0xF0)		i += 4; // 4 bytes
-							else if ((unsigned char)prompt_PS1[i] >= 0xE0)	i += 3; // 3 bytes
-							else											i += 2; // 2 bytes
-						} else 												i += 1;	// 1 byte
-					}
-				}
-			}
+		// 	if (prompt_PS1) {
+		// 		length = ft_strlen(prompt_PS1);
+		// 		for (size_t i = 0; i < length;) {
+		// 			int width = char_width(i, prompt_PS1);
+		// 			if (width == 0) {
+		// 				while (i < length && prompt_PS1[i] != 'm') ++i;
+		// 				++i;
+		// 			} else { position += width;
+		// 				if ((unsigned char)prompt_PS1[i] >= 0xC0) {
+		// 					if ((unsigned char)prompt_PS1[i] >= 0xF0)		i += 4; // 4 bytes
+		// 					else if ((unsigned char)prompt_PS1[i] >= 0xE0)	i += 3; // 3 bytes
+		// 					else											i += 2; // 2 bytes
+		// 				} else 												i += 1;	// 1 byte
+		// 			}
+		// 		}
+		// 	}
 
-			length = buffer.position;
-			for (size_t i = 0; i < length;) {
-				int width = char_width(i, buffer.value);
-				if (width == 0) {
-					while (i < length && buffer.value[i] != 'm') ++i;
-					++i;
-				} else { position += width;
-					if ((unsigned char)buffer.value[i] >= 0xC0) {
-						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4; // 4 bytes
-						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3; // 3 bytes
-						else												i += 2; // 2 bytes
-					} else 													i += 1;	// 1 byte
-				}
-			}
-			return (position);
-		}
+		// 	length = buffer.position;
+		// 	for (size_t i = 0; i < length;) {
+		// 		int width = char_width(i, buffer.value);
+		// 		if (width == 0) {
+		// 			while (i < length && buffer.value[i] != 'm') ++i;
+		// 			++i;
+		// 		} else { position += width;
+		// 			if ((unsigned char)buffer.value[i] >= 0xC0) {
+		// 				if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4; // 4 bytes
+		// 				else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3; // 3 bytes
+		// 				else												i += 2; // 2 bytes
+		// 			} else 													i += 1;	// 1 byte
+		// 		}
+		// 	}
+		// 	return (position);
+		// }
 
 	#pragma endregion
 
@@ -283,7 +276,8 @@
 		if (success < 0)	{ write(2, "Could not access the termcap data base.\n", 41);	return (1); }
 		if (success == 0)	{ write(2, "Terminal type is not defined.\n", 31);				return (1); }
 
-		terminal_size();
+		terminal.rows = tgetnum("li");
+		terminal.columns = tgetnum("co");
 		return (0);
 	}
 
