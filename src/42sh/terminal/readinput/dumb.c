@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:03:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:18:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,21 +56,15 @@
 
 	#pragma endregion
 
-	#pragma region BackSpace
+	#pragma region Cursor
 
-		static void backspace() {
-			if (buffer.position > 0) {
-				size_t back_pos = 1;
-				while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
-				buffer.position -= back_pos; buffer.length -= back_pos;
-
-				cursor_left(0);
-				write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-				write(STDOUT_FILENO, "  ", 2); cursor_left(2);
-
-				cursor_move(buffer.length, buffer.position);
+		static int cursor() {
+			char seq[8];
+			if (buffer.c == '\033') {
+				read(STDIN_FILENO, seq, sizeof(seq) - 1);
+				return (1);
 			}
+			return (0);
 		}
 
 	#pragma endregion
@@ -78,7 +72,7 @@
 	#pragma region Specials
 
 		static int specials() {
-			if (buffer.c == 127) backspace();
+			if (buffer.c >= 1 && buffer.c <= 26) ;
 			else return (0);
 
 			return (1);
@@ -102,8 +96,6 @@
 				buffer.size *= 2;
 			}
 
-			if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
-
 			// Insert all bytes of the character into the buffer
 			buffer.value[(buffer.position)++] = buffer.c;
 			for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
@@ -111,18 +103,6 @@
 
 			write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
 
-			// Adjust the cursor position in the terminal
-			size_t move_back = 0;
-			for (size_t i = buffer.position; i < buffer.length; ) {
-				if (char_width(i, buffer.value) == 2) move_back++;
-				if ((unsigned char)buffer.value[i] >= 0xC0) {
-					if ((unsigned char)buffer.value[i] >= 0xF0)		i += 4;	// 4 bytes
-					else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-					else										i += 2;	// 2 bytes
-				} else											i++;	// 1 byte
-				move_back++;
-			}
-			while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
 			return (0);
 		}
 
@@ -137,6 +117,7 @@
 		else if	(ctrl_c())			return (0);
 		else if	(enter())			return (1);
 		else if (specials())		return (0);
+		else if (cursor())			return (0);
 		else if (print_char())		return (0);
 		return (0);
 	}

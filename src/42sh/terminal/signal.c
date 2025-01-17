@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 18:26:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:40:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 	void sigwinch_handler(int sig) {
 		terminal.signal = sig;
 		terminal_initialize();
+		cursor_get();			// Esto solo cuando se esté en modo interactivo
 	}
 
 #pragma endregion

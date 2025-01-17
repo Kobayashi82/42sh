@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 18:35:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 11:54:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@
 		enable_raw_mode();
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 
+		cursor_get();
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);

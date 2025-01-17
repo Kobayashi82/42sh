@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 18:38:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 12:19:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
 //	Si hay un emoticono por ejemplo en la columna primera o ultima, se puede desajustar la posicion
+//	Actualizar la posicion del cursor en todo momento
 
 #pragma region Variables
 
@@ -22,19 +23,9 @@
 
 #pragma region Utils
 
-	#pragma region Start Position (BORRAR)
-
-		// void terminal_start() {
-		// 	cursor_get();
-		// 	buffer.start_row = buffer.row;
-		// 	buffer.start_col = buffer.col;
-		// }
-
-	#pragma endregion
-
 	#pragma region Char Width
 
-		#pragma region Char Length
+		#pragma region Length
 
 			static int char_length(unsigned char c) {
 				if (c >= 0xF0) return (4);  // 4-byte
@@ -46,7 +37,7 @@
 
 		#pragma endregion
 
-		#pragma region Char Codepoint
+		#pragma region Codepoint
 
 			static unsigned int char_codepoint(const char *value, size_t length) {
 				unsigned char c = value[0];
@@ -59,76 +50,38 @@
 
 		#pragma endregion
 
-		int char_width(size_t position, char *value) {
-			unsigned char c = value[position];
-			if (c == '\033') { size_t i = position + 1;
-				if (value[i] == '[') {
-					while (value[++i]) {
-						if ((value[i] >= 'A' && value[i] <= 'Z') || (value[i] >= 'a' && value[i] <= 'z'))	return (0);
-						if (!(value[i] >= '0' && value[i] <= '9') && value[i] != ';' && value[i] != '[')	break;
-					}
-				} return (0);
+		#pragma region Width
+
+			int char_width(size_t position, char *value) {
+				unsigned char c = value[position];
+				if (c == '\033') { size_t i = position + 1;
+					if (value[i] == '[') {
+						while (value[++i]) {
+							if ((value[i] >= 'A' && value[i] <= 'Z') || (value[i] >= 'a' && value[i] <= 'z'))	return (0);
+							if (!(value[i] >= '0' && value[i] <= '9') && value[i] != ';' && value[i] != '[')	break;
+						}
+					} return (0);
+				}
+
+				unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
+				if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
+					(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
+					(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
+					(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
+					(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
+					(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
+					(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
+					(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
+				return (1);
 			}
 
-			unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
-			if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
-				(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
-				(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
-				(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
-				(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
-				(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
-				(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
-				(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
-			return (1);
-		}
+		#pragma endregion
 
 	#pragma endregion
 
 #pragma endregion
 
 #pragma region Cursor
-
-	#pragma region Logical (BORRAR)
-
-		// int cursor_logical() {
-		// 	size_t position = buffer.start_col;
-		// 	size_t length;
-
-		// 	if (prompt_PS1) {
-		// 		length = ft_strlen(prompt_PS1);
-		// 		for (size_t i = 0; i < length;) {
-		// 			int width = char_width(i, prompt_PS1);
-		// 			if (width == 0) {
-		// 				while (i < length && prompt_PS1[i] != 'm') ++i;
-		// 				++i;
-		// 			} else { position += width;
-		// 				if ((unsigned char)prompt_PS1[i] >= 0xC0) {
-		// 					if ((unsigned char)prompt_PS1[i] >= 0xF0)		i += 4; // 4 bytes
-		// 					else if ((unsigned char)prompt_PS1[i] >= 0xE0)	i += 3; // 3 bytes
-		// 					else											i += 2; // 2 bytes
-		// 				} else 												i += 1;	// 1 byte
-		// 			}
-		// 		}
-		// 	}
-
-		// 	length = buffer.position;
-		// 	for (size_t i = 0; i < length;) {
-		// 		int width = char_width(i, buffer.value);
-		// 		if (width == 0) {
-		// 			while (i < length && buffer.value[i] != 'm') ++i;
-		// 			++i;
-		// 		} else { position += width;
-		// 			if ((unsigned char)buffer.value[i] >= 0xC0) {
-		// 				if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4; // 4 bytes
-		// 				else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3; // 3 bytes
-		// 				else												i += 2; // 2 bytes
-		// 			} else 													i += 1;	// 1 byte
-		// 		}
-		// 	}
-		// 	return (position);
-		// }
-
-	#pragma endregion
 
 	#pragma region Up
 
@@ -270,7 +223,7 @@
 
 	int terminal_initialize() {
 		char *termtype = getenv("TERM");
-		if (!termtype) termtype = "dumb";
+		if (!termtype) { termtype = "dumb"; options.emacs = false; options.vi = false; }
 
 		int success = tgetent(NULL, termtype);
 		if (success < 0)	{ write(2, "Could not access the termcap data base.\n", 41);	return (1); }
@@ -278,6 +231,7 @@
 
 		terminal.rows = tgetnum("li");
 		terminal.columns = tgetnum("co");
+
 		return (0);
 	}
 
