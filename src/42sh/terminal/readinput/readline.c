@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 21:48:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 13:15:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -565,29 +565,29 @@
 
 	// set -o emacs
 
-	//	Up				(History Prev)
-	//	Down			(History Next)
-	//	Left			(Cursor Left)
-	//	Right			(Cursor Right)
-	//	Home			(Cursor Home)
-	//	End				(Cursor End)
-	//	CTRL + F		(Cursor Left)
-	//	CTRL + B		(Cursor Right)
-	//	CTRL + A		(Cursor to the start)
-	//	CTRL + E		(Cursor to the end)
-	//	CTRL + P		(History Prev)
-	//	CTRL + N		(History Next)
-	//	CTRL + H		(BackSpace)
-	//	CTRL + U		(Backspace from cursor to start)
-	//	CTRL + W		(Backspace current word)
-	//	CTRL + Delete	(Delete current word)
-	//	CTRL + D		(Delete)
-	//	CTRL + K		(Delete from cursor to end)
-	//	CTRL + L		(Clear Screen)
-	//	CTRL + _		(Undo)
-	//	CTRL + T		(Swap Char)
-	//	ALT  + T		(Swap Word)
-	//	CTRL + S		(Fake SegFault)
+	// ✓	Up				(History Prev)
+	// ✓	Down			(History Next)
+	// ✓	Left			(Cursor Left)
+	// ✓	Right			(Cursor Right)
+	// ✓	Home			(Cursor Home)
+	// ✓	End				(Cursor End)
+	// ✓	CTRL + F		(Cursor Left)
+	// ✓	CTRL + B		(Cursor Right)
+	// ✓	CTRL + A		(Cursor to the start)
+	// ✓	CTRL + E		(Cursor to the end)
+	// ✓	CTRL + P		(History Prev)
+	// ✓	CTRL + N		(History Next)
+	// ✓	CTRL + H		(BackSpace)
+	// ✓	CTRL + U		(Backspace from cursor to start)
+	// ✓	CTRL + W		(Backspace current word)
+	// ✓	CTRL + Delete	(Delete current word)
+	// ✓	CTRL + D		(Delete)
+	// ✓	CTRL + K		(Delete from cursor to end)
+	// ✓	CTRL + L		(Clear Screen)
+	// ✓	CTRL + _		(Undo)
+	// ✓	CTRL + T		(Swap Char)
+	// ✓	ALT  + T		(Swap Word)
+	// ✓	CTRL + S		(Fake SegFault)
 
 	// https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sh.html#tag_20_117_13_04
 
