@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 12:18:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 17:12:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,12 @@
 
 		static int cursor() {
 			char seq[8];
-			if (buffer.c == '\033') {
+			if (buffer.c == 27) {
+
+				fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
 				read(STDIN_FILENO, seq, sizeof(seq) - 1);
+				fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
+
 				return (1);
 			}
 			return (0);

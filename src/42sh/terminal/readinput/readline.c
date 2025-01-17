@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 13:15:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/17 20:17:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,8 +324,8 @@
 
 			static void home() {
 				while (buffer.position > 0) {
-					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 					cursor_left(0);
+					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 				}
 			}
 
@@ -400,15 +400,15 @@
 				if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 					if (buffer.CTRL) {
 						while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
-							(buffer.position)--; cursor_left(0);
+							cursor_left(0); (buffer.position)--;
 						}
 						while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
-							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							cursor_left(0);
+							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						}
 					} else {
-						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						cursor_left(0);
+						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 					}
 				}
 			}
@@ -443,8 +443,13 @@
 			static int cursor() {
 				char seq[8];
 				ft_memset(&seq, 0, sizeof(seq));
-				if (buffer.c == '\033') {
-					if (read(STDIN_FILENO, seq, sizeof(seq) - 1) > 0) {
+				if (buffer.c == 27) {
+
+					fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
+					int result = read(STDIN_FILENO, seq, sizeof(seq) - 1);
+					fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
+
+					if (result > 0) {
 						if (seq[0] == 't') { swap_word(); return (1); }				// ALT + T			- Swap word
 						//if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
 						if (seq[0] == '[') { seq[1] = modifiers(seq);
