@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 21:29:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 19:53:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #pragma region Includes
 
 	#include <time.h>
+	#include <sys/time.h>
 
 #pragma endregion
 
@@ -41,6 +42,8 @@
 	char		*resolve_path(const char *path);
 	char		*path_find_first(char *cmd, char *paths);
 	char		**path_find_all(char *cmd, char *paths);
+	char		*get_fullpath(char *path);
+	int			create_temp_file(char *template);
 
 	//	----------- USER -----------
 	t_userinfo	*get_userinfo();

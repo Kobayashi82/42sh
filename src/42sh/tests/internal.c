@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:08:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 18:55:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 		printf(C"\tVariables   ");
 
 		int result = 0, envp_count = 0, vars_count = 0;
+		variables_clear(vars_table);
 		variables_from_array(vars_table, envp);
 		char **vars = variables_to_array(vars_table, EXPORTED, true);
 		for (int i = 0; envp[i]; ++i) ++envp_count;

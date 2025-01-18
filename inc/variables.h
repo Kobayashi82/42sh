@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 20:16:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 18:57:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@
 	int				variables_delete(t_var **table, const char *key);
 	void			variables_clear(t_var **table);
 	//	-------- INITIALIZE --------
-	int				variables_initialize(t_var **table);
+	int				variables_initialize(t_var **table, const char **envp);
 	//	---------- OTROS -----------
 	int				get_key_value(const char *line, char **key, char **value, char sep);
 

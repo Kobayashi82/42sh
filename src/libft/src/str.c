@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 19:30:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -591,21 +591,23 @@
 
 #pragma region STR_TOK
 
-	char *ft_strtok(char *str, const char *delim) {
-		static char *static_str = NULL;
+	char *ft_strtok(char *str, const char *delim, int id) {
+		static char *static_str[100];
 		char *token = NULL;
 
-		if (str != NULL) static_str = str;
-		if (static_str == NULL) return (NULL);
+		if (id < 0) id = 0;
+		if (id > 99) id = 99;
 
-		while (*static_str && ft_strchr(delim, *static_str)) static_str++;
-		if (!*static_str) { static_str = NULL; return (NULL); }
+		if (str) static_str[id] = str;
+		if (!static_str[id]) return (NULL);
 
-		token = static_str;
-		while (*static_str && !ft_strchr(delim, *static_str)) static_str++;
+		while (*static_str[id] && ft_strchr(delim, *static_str[id])) static_str[id]++;
+		if (!*static_str[id]) { static_str[id] = NULL; return (NULL); }
 
-		if (*static_str) { *static_str = '\0'; static_str++; }
-		else static_str = NULL;
+		token = static_str[id];
+		while (*static_str[id] && !ft_strchr(delim, *static_str[id])) static_str[id]++;
+
+		if (*static_str[id]) { *static_str[id] = '\0'; static_str[id]++; }
 
 		return (token);
 	}

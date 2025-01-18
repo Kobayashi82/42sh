@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 19:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,12 +96,12 @@
 			char *components[PATH_MAX / 2];
 			int index = 0;
 
-			char *token = ft_strtok(abs_path, "/");
+			char *token = ft_strtok(abs_path, "/", 1);
 			while (token) {
 				if (!ft_strcmp(token, "."))			{ ; } // Ignore '.'
 				else if (!ft_strcmp(token, ".."))	{ if (index > 0) index--; }
 				else								{ components[index++] = token; }
-				token = ft_strtok(NULL, "/");
+				token = ft_strtok(NULL, "/", 1);
 			}
 
 			char final_path[PATH_MAX] = "/";
@@ -115,6 +115,33 @@
 			}
 
 			return (ft_strdup(final_path));
+		}
+
+	#pragma endregion
+
+	#pragma region FullPath
+
+		char *get_fullpath(char *path) {
+			if (ft_strchr(path, '/')) return (resolve_path(path));
+
+			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
+			if (!path_list) return (ft_strdup(path));
+
+			char *dir = ft_strtok(path_list, ":", 2);
+			while (dir) {
+				if (*dir || (dir = getcwd(NULL, 0))) {
+					char *fullpath = ft_strjoin_sep(dir, "/", path, 0);
+					char *resolved_path = resolve_path(fullpath);
+					sfree(fullpath); fullpath = resolved_path;
+
+					if (!access(fullpath, X_OK)) {
+						sfree(path_list);
+						return (fullpath);
+					} sfree(fullpath);
+				} dir = ft_strtok(NULL, ":", 2);
+			} sfree(path_list);
+
+			return (ft_strdup(path));
 		}
 
 	#pragma endregion
@@ -186,6 +213,33 @@
 			array_free(search_paths);
 
 			return (final_paths);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Temporal File
+
+	#pragma region Create
+
+		int create_temp_file(char *template) {
+			if (!template || ft_strlen(template) < 6 || ft_strcmp(&template[ft_strlen(template) - 6], "XXXXXX")) return (-1);
+
+			struct timeval tv; gettimeofday(&tv, NULL);
+			unsigned int seed = (unsigned int)(tv.tv_sec ^ tv.tv_usec);
+
+			for (int i = 0; i < 100; ++i) {
+				unsigned int r = seed + i;
+				for (int j = 0; j < 6; ++j, r /= 36)
+					template[ft_strlen(template) - 6 + j] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[r % 62];
+
+				int fd = sopen(template, O_RDWR | O_CREAT | O_EXCL, 0600);
+				if (fd == -1) continue;
+				return (fd);
+			}
+
+			return (-1);
 		}
 
 	#pragma endregion

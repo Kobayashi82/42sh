@@ -9,6 +9,7 @@
 		"errno.h": "c",
 		"typeinfo": "c",
 		"history.h": "c",
-		"libft.h": "c"
+		"libft.h": "c",
+		"stdlib.h": "c"
 	}
 }

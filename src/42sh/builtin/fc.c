@@ -6,16 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/17 17:28:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 16:43:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
 
 const char *default_editor() {
-	const char	*editor = getenv("FCEDIT");
-	if (!editor || !*editor) editor = getenv("EDITOR");
-	if (!editor || !*editor) editor = getenv("VISUAL");
+	const char	*editor = variables_find_value(vars_table, "FCEDIT");
+	if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
+	if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
 	if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
 	if (!editor || !*editor) editor = "nano";
     return (editor);

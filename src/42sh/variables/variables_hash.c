@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:05:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 18:56:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -401,7 +401,9 @@
 		if (value && free_value) sfree(value);
 	}
 
-	int variables_initialize(t_var **table) {
+	int variables_initialize(t_var **table, const char **envp) {
+		variables_from_array(vars_table, envp);
+
 		char *home = get_home();
 		if (home && (home = ft_strjoin(home, "/.42sh_history", 1))) {
 			history_file_set(home);
@@ -427,6 +429,7 @@
 		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
 	
+
 		return (0);
 	}
 

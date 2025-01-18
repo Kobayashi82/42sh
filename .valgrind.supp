@@ -1,7 +1,243 @@
 {
    ignore_libtinfo
    Memcheck:Leak
-   match-leak-kinds: reachable
    ...
    obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
+   ...
+}
+
+{
+   ignore_regcomp
+   Memcheck:Leak
+   ...
+   obj:/lib/x86_64-linux-gnu/libc.so.*
+   ...
+}
+
+{
+   <ignore_nano>
+   Memcheck:Leak
+   ...
+   obj:/usr/bin/nano
+   ...
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:re_node_set_merge
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:re_node_set_merge
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure
+   fun:analyze
+   fun:re_compile_internal
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:re_node_set_merge
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure
+   fun:analyze
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:re_node_set_alloc
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure
+   fun:analyze
+   fun:re_compile_internal
+   fun:regcomp
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:re_node_set_alloc
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+   fun:calc_eclosure_iter
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:build_charclass
+   fun:parse_bracket_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse_sub_exp
+   fun:parse_expression
+   fun:parse_branch
+   fun:parse_reg_exp
+   fun:parse
+   fun:re_compile_internal
 }
