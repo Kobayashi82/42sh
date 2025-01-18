@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:28:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 13:47:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,7 +496,7 @@
 
 		//	Change the position in the history
 		void history_set_pos(size_t pos) {
-			position = ft_min(pos, ft_max(ft_min(mem_max, HIST_MAXSIZE - 1), 0));
+			position = ft_min(ft_max(pos, 0), length - 1);
 		}
 
 		//	Set the position in the history to the last entry

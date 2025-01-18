@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 23:00:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 14:02:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@
 	static char	n[7];
 	static char	*clipboard;
 	static char	last_cmd, last_char[7];
+	static void	insert_mode(int mode);
+	static int	get_n();
+	static void beep() { write(STDOUT_FILENO, "\a", 1); }
 
 #pragma endregion
 
@@ -83,6 +86,7 @@
 					sfree(buffer.value); buffer.value = NULL;
 					write(STDOUT_FILENO, "\r\n", 2);
 				} else {
+					insert_mode(CURSOR);
 					history_set_pos_end();
 					buffer.value[buffer.length] = '\0';
 					write(STDOUT_FILENO, "\r\n", 2);
@@ -98,6 +102,7 @@
 
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
+				insert_mode(CURSOR);
 				buffer.position = 0; buffer.length = 0;
 				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 				history_set_pos_end();
@@ -116,6 +121,7 @@
 
 		static int enter() {
 			if (buffer.c == '\r' || buffer.c == '\n') {
+				insert_mode(CURSOR);
 				history_set_pos_end();
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, "\r\n", 2);
@@ -298,6 +304,12 @@
 		#pragma region Arrow Up
 
 			static void arrow_up() {
+				int number = get_n();
+				if (!vi_mode) number = 1;
+
+				int hist_pos = history_get_pos() - (number - 1);
+				if (hist_pos < 0) hist_pos = 0;
+				if (number > 1) history_set_pos(hist_pos);
 				if (!options.hist_on || !history_length()) return;
 				char *new_line = history_prev();
 
@@ -325,6 +337,11 @@
 		#pragma region Arrow Down
 
 			static void arrow_down() {
+				int number = get_n();
+				if (!vi_mode) number = 1;
+
+				int hist_pos = history_get_pos() + (number - 1);
+				if (number > 1) history_set_pos(hist_pos);
 				if (!options.hist_on || !history_length()) return;
 
 				char *new_line = history_next();
@@ -360,18 +377,23 @@
 		#pragma region Arrow Left
 
 			static void arrow_left() {
-				if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
-					if (buffer.CTRL) {
-						while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
-							cursor_left(0); (buffer.position)--;
-						}
-						while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
+				int number = get_n();
+				if (!vi_mode) number = 1;
+
+				while (number--) {
+					if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
+						if (buffer.CTRL) {
+							while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
+								cursor_left(0); (buffer.position)--;
+							}
+							while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
+								cursor_left(0);
+								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							}
+						} else if (buffer.position) {
 							cursor_left(0);
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						}
-					} else if (buffer.position) {
-						cursor_left(0);
-						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 					}
 				}
 			}
@@ -383,19 +405,24 @@
 			static void arrow_right() {
 				int extra = (vi_mode == EDIT);
 
-				if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length - extra) {
-					if (buffer.CTRL) {
-						while (buffer.position < buffer.length - extra && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
-							cursor_right(0); (buffer.position)++;
-						}
-						while (buffer.position < buffer.length - extra && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
-							cursor_right(0);
-							do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
-						}
-					} else {
-						if (buffer.position < buffer.length - extra) {
-							cursor_right(0);
-							do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+				int number = get_n();
+				if (!vi_mode) number = 1;
+
+				while (number--) {
+					if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length - extra) {
+						if (buffer.CTRL) {
+							while (buffer.position < buffer.length - extra && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
+								cursor_right(0); (buffer.position)++;
+							}
+							while (buffer.position < buffer.length - extra && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
+								cursor_right(0);
+								do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							}
+						} else {
+							if (buffer.position < buffer.length - extra) {
+								cursor_right(0);
+								do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							}
 						}
 					}
 				}
@@ -440,47 +467,28 @@
 
 	#pragma region Edit
 
-		#pragma region Comment
+		#pragma region Number
 
-			static int comment() {
-				if (buffer.length + 1 >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				home();
-				ft_memmove(&buffer.value[1], &buffer.value[0], buffer.length);
-				buffer.value[0] = '#';
-				buffer.length++;
-
-				history_set_pos_end();
-				buffer.value[buffer.length] = '\0';
-				write(STDOUT_FILENO, buffer.value, buffer.length);
-				write(STDOUT_FILENO, "\r\n", 2);
-				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
-				return (2);
+			static int get_n() {
+				return (ft_max(1, ft_atoi(n)));
 			}
 
-		#pragma endregion
-
-		#pragma region Set_N
-
 			static void set_n() {
-				if (!number_mode && buffer.c == 48) { home(); return; }				// ✓	0			- mueve al principio de la línea
+				if (!number_mode && buffer.c == 48) { home(); return; }					// Move to the start of the line
 				if (!number_mode) {
 					number_mode = true;
 					ft_memset(n, 0, 7);
 				}
 				int pos = ft_max(ft_strlen(n), 0);
 				if (pos > 6) {
-					// error
 					number_mode = false;
 					ft_memset(n, 0, 7);
 					return;
 				}
 				n[pos] = buffer.c;
 			}
+
+			#pragma endregion
 
 		#pragma endregion
 
@@ -522,31 +530,41 @@
 
 				#pragma region Char
 
-					static void goto_char(bool reverse) {
+					static void goto_char(char cmd) {
 						char c[7];
 						ft_memset(c, 0, 7);
-						if (read(STDIN_FILENO, c, 7) < 1) return;
 
-						ft_memcpy(last_char, c, 7);
-						last_cmd = buffer.c;
+						if (!cmd) {
+							if (read(STDIN_FILENO, c, 7) < 1) return;
+							ft_memcpy(last_char, c, 7);
+							last_cmd = cmd = buffer.c;
+						} else ft_memcpy(c, last_char, 7);
 
-						if (reverse) {
+						int number = get_n();
+						size_t last_match = buffer.position;
+
+						if (cmd == 'F' || cmd == 'T') {
 							for (size_t i = buffer.position - 1; i != (size_t)-1; --i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
 									while (buffer.position > i) arrow_left(0);
-									if (buffer.c == 't' || buffer.c == 'T') arrow_right();
-									return;
+									if (cmd == 'T') arrow_right();
+									last_match = buffer.position;
+									if (!--number) return;
 								}
 							}
 						} else {
-							for (size_t i = buffer.position; i < buffer.length - 1; ++i) {
+							for (size_t i = buffer.position; i < buffer.length; ++i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
 									while (buffer.position < i) arrow_right(0);
-									if (buffer.c == 't' || buffer.c == 'T') arrow_right();
-									return;
+									if (cmd == 't') arrow_left();
+									last_match = buffer.position;
+									if (--number == 0) return;
 								}
 							}
 						}
+
+						while (buffer.position > last_match) arrow_left(0);
+						while (buffer.position < last_match) arrow_right(0);
 					}
 
 				#pragma endregion
@@ -554,21 +572,17 @@
 				#pragma region Position
 
 					static void goto_position() {
-						if (!*n) { home(); return; }
-						else {
-							int number = ft_atoi(n);
-							if (number == 0) return;
-							
-							home();
-							while (--number) arrow_right();
-						}
+						int number = get_n();
+						
+						home();
+						while (--number) arrow_right();
 					}
 
 				#pragma endregion
 
-				#pragma region First No IsSpace
+				#pragma region No IsSpace
 
-					static void first_no_isspace() {
+					static void goto_no_isspace() {
 						
 					}
 
@@ -582,6 +596,9 @@
 
 			static void insert_mode(int mode) {
 				vi_mode = INSERT;
+				last_cmd = 0;
+				ft_memset(last_char, 0, 7);
+
 				switch (mode) {
 					case CURSOR: break;
 					case AFTER_CURSOR: {
@@ -592,6 +609,26 @@
 					case FIRST:	{ home();	break; }
 					case LAST:	{ end();	break; }
 				}
+			}
+
+		#pragma endregion
+
+		#pragma region Delete
+
+			static void n_backspace() {
+				int number = get_n();
+
+				while (number--) backspace();
+			}
+
+			static void n_delete_char() {
+				int number = get_n();
+
+				while (number--) delete_char();
+			}
+
+			static void n_delete_to() {
+
 			}
 
 		#pragma endregion
@@ -653,36 +690,41 @@
 
 		#pragma endregion
 
-		#pragma region Delete To
+		#pragma region Repeat CMD
 
-			static void delete_to() {
-
+			static void repeat_cmd(bool reverse) {
+				if (!last_cmd || !last_char[0]) return;
+				
+				if (reverse) {
+					if (last_cmd == 'f')	goto_char('F');
+					if (last_cmd == 'F')	goto_char('f');
+					if (last_cmd == 't')	goto_char('T');
+					if (last_cmd == 'T')	goto_char('t');					
+				} else						goto_char(last_cmd);
 			}
 
 		#pragma endregion
 
-		#pragma region Repeat CMD
+		#pragma region Comment
 
-			static void repeat_cmd() {
-				if (!last_cmd || !last_char[0]) return;
-
-				if ((last_cmd == 'F' || last_cmd == 'T')) {
-					for (size_t i = buffer.position - 1; i != (size_t)-1; --i) {
-						if (!ft_strncmp(&buffer.value[i], last_char, ft_strlen(last_char))) {
-							while (buffer.position > i) arrow_left(0);
-							if (last_cmd == 'T') arrow_right();
-							return;
-						}
-					}
-				} else {
-					for (size_t i = buffer.position; i < buffer.length - 1; ++i) {
-						if (!ft_strncmp(&buffer.value[i], last_char, ft_strlen(last_char))) {
-							while (buffer.position < i) arrow_right(0);
-							if (last_cmd == 't') arrow_right();
-							return;
-						}
-					}
+			static int comment() {
+				if (buffer.length + 1 >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
 				}
+
+				home();
+				ft_memmove(&buffer.value[1], &buffer.value[0], buffer.length);
+				buffer.value[0] = '#';
+				buffer.length++;
+
+				history_set_pos_end();
+				buffer.value[buffer.length] = '\0';
+				write(STDOUT_FILENO, buffer.value, buffer.length);
+				write(STDOUT_FILENO, "\r\n", 2);
+				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
+				return (2);
 			}
 
 		#pragma endregion
@@ -690,65 +732,66 @@
 	#pragma endregion
 
 	#pragma region Specials
+		//	[n]:	jkhl, BEW, bew, fFtT, ,;|, yxusrpdcXRP, SPACE, Cursors
 
 		static int specials() {
-			if (buffer.c == 8 && !vi_mode)			backspace();					// ✓	CTRL + H	- Backspace										(Only in insertion mode)
-			else if (buffer.c == 8 && vi_mode)		arrow_left();					// ✓	CTRL + H	- Cursor left									(Only in edit mode)
-			else if	(buffer.c == 19 && !vi_mode)	fake_segfault = true;			// ✓	CTRL + S	- Fake SegFault									(Only in insertion mode)
-			else if (buffer.c == 20)				swap_char();					// ✓	CTRL + T	- Swap char										(Not working right with multibytes 漢字)
-			else if (buffer.c == 21)				backspace_start();				// ✓	CTRL + U	- Backspace from cursor to start of line
-			else if (buffer.c == 23)				backspace_word();				// ✓	CTRL + W	- Backspace current word 
-			else if (buffer.c == 31)				undo();							// ✗	CTRL + _	- Undo last change
-			else if (buffer.c == 127)				backspace();					// ✓	BackSpace	- Backspace char
-			else if (buffer.c >= 1 && buffer.c <= 26) ;								// ✓	Ignore rest of the specials
+			if (buffer.c == 8 && !vi_mode)			backspace();						// ✓	CTRL + H	- Backspace										(Only in insertion mode)
+			else if	(buffer.c == 19 && !vi_mode)	fake_segfault = true;				// ✓	CTRL + S	- Fake SegFault									(Only in insertion mode)
+			else if (buffer.c == 20)				swap_char();						// ✓	CTRL + T	- Swap char										(Not working right with multibytes 漢字)
+			else if (buffer.c == 21)				backspace_start();					// ✓	CTRL + U	- Backspace from cursor to start of line
+			else if (buffer.c == 23)				backspace_word();					// ✓	CTRL + W	- Backspace current word 
+			else if (buffer.c == 31)				undo();								// ✗	CTRL + _	- Undo last change
+			else if (buffer.c == 127 && !vi_mode)	backspace();						// ✓	BackSpace	- Backspace char								(Only in insertion mode)
+			else if (buffer.c >= 1 && buffer.c <= 26) ;									// ✓	Ignore rest of the specials
 			else if (vi_mode) {
-				if (buffer.c == ' ')		arrow_right();							// ✓	SPACE		- Cursor right
-				else if	(buffer.c == '#')	return (comment());						// ✓	#			- Comment and done
-				else if (buffer.c == '$')	end();									// ✓	$			- mueve al final de la línea
-				else if (buffer.c == ',')	;										// ✗	,			- repite el comando mas reciente (f, F, t T) en modo reverse
-				else if (buffer.c >= '0' && buffer.c <= '9')	set_n();			// -	0-9			- introduce el numero [n]
-				else if (buffer.c == ';')	repeat_cmd();							// ✓	;			- repite el comando mas reciente (f, F, t T)
+				if (buffer.c >= '0' && buffer.c <= '9')	set_n();						// -	0-9			- introduce el numero [n]
 
-				else if (buffer.c == 'A')	insert_mode(LAST);						// ✓	A			- modo inserción al final de la linea
-				else if (buffer.c == 'B')	left_start_bigword();					// -	B			- Cursor left start bigword
-				else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end(); }	// ✓	C			- delete from cursor to end of line and enter insertion mode
-				else if (buffer.c == 'D')	delete_end();							// ✓	D			- delete from cursor to end of line
-				else if (buffer.c == 'E')	right_end_bigword();					// -	E			- Cursor right end bigword
-				else if (buffer.c == 'F')	goto_char(true);						// -	F			- mueve al primer carácter antes del cursor		(pulsar F y despues el caracter al que ir)
-				else if (buffer.c == 'I')	insert_mode(FIRST);						// ✓	I			- modo inserción al principio de la linea
-				else if (buffer.c == 'P')	paste(true);							// ✓	P			- pega lo copiado antes del cursor
-				else if (buffer.c == 'R')	;										// ✗	R			- modo reemplazo (insertar, vamos)
-				else if (buffer.c == 'S')	{ insert_mode(FIRST); delete_end(); }	// ✓	S			- elimina la linea y entra en modo insercion
-				else if (buffer.c == 'T')	goto_char(true);						// -	T			- mueve al carácter posterior al primer carácter antes del cursor (pulsar T y despues el caracter al que ir)
-				else if (buffer.c == 'U')	undo(); //All							// -	U			- Undo all changes
-				else if (buffer.c == 'W')	right_start_bigword();					// -	W			- Cursor right start bigword
-				else if (buffer.c == 'X')	backspace();							// ✓	X			- Delete previous char
-				else if (buffer.c == 'Y')	copy(true);								// ✓	Y			- Copy to the end  of line
+				else if (buffer.c == 'i')	insert_mode(CURSOR);						// ✓	modo inserción donde el cursor
+				else if (buffer.c == 'I')	insert_mode(FIRST);							// ✓	modo inserción al principio de la linea
+				else if (buffer.c == 'a')	insert_mode(AFTER_CURSOR);					// ✓	modo inserción después del cursor
+				else if (buffer.c == 'A')	insert_mode(LAST);							// ✓	modo inserción al final de la linea
+				else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();   }	// -	elimina hasta donde se indique (0, ^, $, c) and enter insertion mode	(Mirar manual para mas info)
+				else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end();    }	// ✓	delete from cursor to end of line and enter insertion mode
+				else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char(); }	// ✓	elimina el carácter actual y entra en modo insercción
+				else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end();    }	// ✓	elimina la linea y entra en modo insercion
+				else if (buffer.c == 'd')	n_delete_to();								// -	elimina hasta donde se indique (0, ^, $, d)	(Mirar manual para mas info)
+				else if (buffer.c == 'D')	delete_end();								// ✓	delete from cursor to end of line
+				else if (buffer.c == 'x')	n_delete_char();							// ✓	n delete char
+				else if (buffer.c == 'X')	n_backspace();								// ✓	n Delete previous char
 
-				else if (buffer.c == '^')	first_no_isspace();						// -	^			- mueve al primer carácter de la linea que no sea un isspace
+				else if (buffer.c == 'R')	;											// ✗	modo reemplazo (insertar, vamos)
+				else if (buffer.c == 'y')	copy(false);								// -	copia hasta donde se indique (0, ^, $, c)		(Mirar manual para mas info)
+				else if (buffer.c == 'Y')	copy(true);									// ✓	Copy to the end  of line
+				else if (buffer.c == 'p')	paste(false);								// ✓	pega lo copiado después del cursor
+				else if (buffer.c == 'P')	paste(true);								// ✓	pega lo copiado antes del cursor
 
-				else if (buffer.c == 'a')	insert_mode(AFTER_CURSOR);				// ✓	a			- modo inserción después del cursor
-				else if (buffer.c == 'b')	left_start_word();						// -	b			- Cursor left start word
-				else if (buffer.c == 'c')	{ insert_mode(CURSOR); delete_to(); }	// -	c			- elimina hasta donde se indique (0, ^, $, c) and enter insertion mode	(Mirar manual para mas info)
-				else if (buffer.c == 'd')	delete_to();							// -	d			- elimina hasta donde se indique (0, ^, $, d)	(Mirar manual para mas info)
-				else if (buffer.c == 'e')	right_end_word();						// -	e			- Cursor right end word
-				else if (buffer.c == 'f')	goto_char(false);						// -	f			- mueve al primer carácter después del cursor	(pulsar f y despues el caracter al que ir)
-				else if (buffer.c == 'h')	arrow_left();							// ✓	h			- Cursor left
-				else if (buffer.c == 'i')	insert_mode(CURSOR);					// ✓	i			- modo inserción donde el cursor
-				else if (buffer.c == 'j')	;										// ✗	j			- algo que ver con comandos y el historial
-				else if (buffer.c == 'k')	;										// ✗	k			- establece la linea por el comando del historial indicado
-				else if (buffer.c == 'l')	arrow_right();							// ✓	l			- Cursor right
-				else if (buffer.c == 'p')	paste(false);							// ✓	p			- pega lo copiado después del cursor
-				else if (buffer.c == 'r')	;										// ✗	r			- reemplaza el carácter actual por el indicado
-				else if (buffer.c == 's')	{ insert_mode(CURSOR); delete_char(); }	// ✓	s			- elimina el carácter actual y entra en modo insercción
-				else if (buffer.c == 't')	goto_char(false);						// -	t			- mueve al carácter anterior al primer carácter después del cursor (pulsar t y despues el caracter al que ir)
-				else if (buffer.c == 'u')	undo();									// -	u			- Undo last change
-				else if (buffer.c == 'v')	;										// ✗	v			- abre vi... y mas polleces
-				else if (buffer.c == 'w')	right_start_word();						// -	w			- Cursor right start word
-				else if (buffer.c == 'x')	delete_char();							// ✓	x			- delete char
-				else if (buffer.c == 'y')	copy(false);							// -	y			- copia hasta donde se indique (0, ^, $, c)		(Mirar manual para mas info)
+				else if (buffer.c == 'b')	left_start_word();							// -	n Cursor left start word
+				else if (buffer.c == 'B')	left_start_bigword();						// -	n Cursor left start bigword
+				else if (buffer.c == 'w')	right_start_word();							// -	n Cursor right start word
+				else if (buffer.c == 'W')	right_start_bigword();						// -	n Cursor right start bigword
+				else if (buffer.c == 'e')	right_end_word();							// -	n Cursor right end word
+				else if (buffer.c == 'E')	right_end_bigword();						// -	n Cursor right end bigword
 
-				else if (buffer.c == '|')	goto_position();						// -	|			- mueve al carácter (1 por defecto)
+				else if (buffer.c == '^')	goto_no_isspace();							// -	mueve al primer carácter de la linea que no sea un isspace
+				else if (buffer.c == 't')	goto_char(0);								// ✓	n mueve al carácter anterior al primer carácter después del cursor (pulsar t y despues el caracter al que ir)
+				else if (buffer.c == 'T')	goto_char(0);								// ✓	n mueve al carácter posterior al primer carácter antes del cursor (pulsar T y despues el caracter al que ir)
+				else if (buffer.c == 'f')	goto_char(0);								// ✓	n mueve al primer carácter después del cursor	(pulsar f y despues el caracter al que ir)
+				else if (buffer.c == 'F')	goto_char(0);								// ✓	n mueve al primer carácter antes del cursor		(pulsar F y despues el caracter al que ir)
+				else if (buffer.c == ';')	repeat_cmd(false);							// ✓	n repite el comando mas reciente (f, F, t T)
+				else if (buffer.c == ',')	repeat_cmd(true);							// ✓	n repite el comando mas reciente (f, F, t T) en modo reverse
+				else if (buffer.c == '|')	goto_position();							// -	n mueve al carácter (1 por defecto)
+
+				else if (buffer.c == 'k')	arrow_up();									// ✓	n Cursor up
+				else if (buffer.c == 'j')	arrow_down();								// ✓	n Cursor down
+				else if (buffer.c == 'h')	arrow_left();								// ✓	n Cursor left
+				else if (buffer.c == 'l')	arrow_right();								// ✓	n Cursor right
+				else if (buffer.c == ' ')	arrow_right();								// ✓	n Cursor right
+				else if (buffer.c == '$')	end();										// ✓	mueve al final de la línea
+				else if (buffer.c == 'r')	;											// ✗	reemplaza el carácter actual por el indicado
+				else if (buffer.c == 'v')	;											// ✗	abre vi... y mas polleces
+				else if (buffer.c == 'u')	undo();										// -	n Undo last change
+				else if (buffer.c == 'U')	undo(); //All								// -	Undo all changes
+				else if	(buffer.c == '#')	return (comment());							// ✓	Comment and done
 
 				else return (0);
 			} else return (0);
