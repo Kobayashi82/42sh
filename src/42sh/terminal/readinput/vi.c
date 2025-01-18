@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 18:46:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 22:23:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -771,30 +771,30 @@
 
 			static int edit_input() {
 				char *raw_editor = "nano";//default_editor();
-				char tmp_file[] = "/tmp/input_XXXXXX";
-				int fd = create_temp_file(tmp_file);
+				int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "input"));
 				if (fd == -1) { beep(); return (1); }
 
 				if (write(fd, buffer.value, buffer.length) == -1) {
-					sclose(fd);
-					unlink(tmp_file);
+					tmp_delete_fd(fd);
 					return (1);
 				} sclose(fd);
 
 				char *editor = get_fullpath(raw_editor);
 				if (access(editor, X_OK) == -1) {
-					unlink(tmp_file);
+					tmp_delete_fd(fd);
 					beep();
 					return (1);
 				}
 
+				char *tmp_file = tmp_find_path_fd(fd);
+
 				pid_t pid = fork();
 				if (pid < 0) {
-					unlink(tmp_file);
+					tmp_delete_fd(fd);
 					beep();
 					return (1);
 				} else if (pid == 0) {
-					char *const args[] = { (char *)editor, tmp_file, NULL };
+					char *const args[] = { (char *)editor, tmp_find_path_fd(fd), NULL };
 					char **env = variables_to_array(vars_table, EXPORTED, true);
 					sclose_all();
 					execve(editor, args, env);
@@ -805,7 +805,7 @@
 
 					fd = sopen(tmp_file, O_RDONLY, -1);
 					if (fd == -1) {
-						unlink(tmp_file);
+						tmp_delete_path(tmp_file);
 						beep();
 						return (1);
 					}
@@ -842,8 +842,7 @@
 						print(STDOUT_FILENO, buffer.value, PRINT);
 					}
 
-					sclose(fd);
-					unlink(tmp_file);
+					tmp_delete_path(tmp_file);
 
 					insert_mode(CURSOR);
 					history_set_pos_end();

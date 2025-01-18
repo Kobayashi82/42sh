@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 19:28:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 21:57:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,3 +111,33 @@ void	array_free_ptr(char ***array);
 int		ft_printf(int fd, char const *format, ...);
 //	FT_GET_NEXT_LINE
 char	*ft_get_next_line(int fd);
+
+//	USERS
+typedef struct {
+	char	*username;
+	char	*home;
+	char	*shell;
+	int		uid;
+	int		gid;
+}	t_userinfo;
+
+t_userinfo	*get_userinfo();
+t_userinfo	*get_userinfo_by_id(int uid);
+t_userinfo	*get_userinfo_by_name(const char *name);
+char		*get_home();
+char		*get_home_by_id(int uid);
+char		*get_home_by_name(const char *name);
+void		free_user(t_userinfo *user);
+
+//	FT_TEMP
+char	*tmp_find_path(char *path);
+char	*tmp_find_path_fd(int fd);
+int		tmp_find_fd_path(char *path);
+int		tmp_find_fd(int fd);
+void	tmp_add(char *path, int fd);
+void	tmp_close_path(char *path);
+void	tmp_close_fd(int fd);
+void	tmp_delete_path(char *path);
+void	tmp_delete_fd(int fd);
+void	tmp_clear();
+char	*ft_mkdtemp(char *path, char *name);

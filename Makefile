@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/11 13:31:42 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/18 21:47:01 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,7 +73,7 @@ SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																
 			builtin/export.c builtin/fc.c builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c 		\
 			builtin/set.c builtin/test.c builtin/type.c builtin/unalias.c builtin/unset.c builtin/wait.c builtin/let.c builtin/builtin.c builtin/help.c		\
 			clean/error.c																						\
-			utils/paths.c utils/users.c utils/time.c																										\
+			utils/paths.c utils/time.c																										\
 			tests/tests.c tests/untests.c tests/internal.c tests/builtin.c tests/create_args.c
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))

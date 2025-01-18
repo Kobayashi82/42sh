@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 19:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/18 22:22:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -213,33 +213,6 @@
 			array_free(search_paths);
 
 			return (final_paths);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region Temporal File
-
-	#pragma region Create
-
-		int create_temp_file(char *template) {
-			if (!template || ft_strlen(template) < 6 || ft_strcmp(&template[ft_strlen(template) - 6], "XXXXXX")) return (-1);
-
-			struct timeval tv; gettimeofday(&tv, NULL);
-			unsigned int seed = (unsigned int)(tv.tv_sec ^ tv.tv_usec);
-
-			for (int i = 0; i < 100; ++i) {
-				unsigned int r = seed + i;
-				for (int j = 0; j < 6; ++j, r /= 36)
-					template[ft_strlen(template) - 6 + j] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"[r % 62];
-
-				int fd = sopen(template, O_RDWR | O_CREAT | O_EXCL, 0600);
-				if (fd == -1) continue;
-				return (fd);
-			}
-
-			return (-1);
 		}
 
 	#pragma endregion

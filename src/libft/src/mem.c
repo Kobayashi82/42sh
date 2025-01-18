@@ -44,6 +44,7 @@
 			sclose(STDERR_FILENO);
 			sclose_all();
 			sfree_all();
+			tmp_clear();
 			exit(code);
 		}
 

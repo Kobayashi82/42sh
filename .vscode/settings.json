@@ -10,6 +10,8 @@
 		"typeinfo": "c",
 		"history.h": "c",
 		"libft.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"stat.h": "c",
+		"time.h": "c"
 	}
 }
