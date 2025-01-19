@@ -11,5 +11,5 @@
 !.valgrind.supp
 !leaks
 !.gitignore
-!notes.txt
+!Notes.c
 !README.md
