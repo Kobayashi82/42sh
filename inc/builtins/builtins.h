@@ -6,14 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:27:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:00:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "terminal.h"
-#include "builtins/options.h"
+#pragma region Includes
+
+	#include "parser/args.h"
+
+#pragma endregion
 
 #pragma region Methods
 

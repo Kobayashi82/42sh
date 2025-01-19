@@ -6,17 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:38:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:57:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "readinput.h"
-#include "prompt.h"
-#include "options.h"
-#include "history.h"
-#include "variables.h"
-#include "utils.h"
+#include "terminal/terminal.h"
+#include "terminal/readinput.h"
+#include "terminal/prompt.h"
+#include "terminal/history.h"
+#include "hashes/variables.h"
+#include "main/options.h"
+#include "utils/utils.h"
 
 #include <sys/wait.h>
 

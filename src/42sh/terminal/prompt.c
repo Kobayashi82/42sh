@@ -6,13 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:49:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:03:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "colors.h"
-#include "prompt.h"
+#include "terminal/prompt.h"
 
 #pragma region Variables
 

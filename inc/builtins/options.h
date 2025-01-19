@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:22:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:40:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,5 @@
 	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid);
 	int			invalid_option(char *name, char *opts, char *usage);
 	int			print_version(char *name, char *version);
-	char		*format_for_shell(const char *value, char quote_type);
 
 #pragma endregion

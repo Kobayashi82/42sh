@@ -6,18 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:43:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 21:19:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "options.h"
-#include "history.h"
-
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdbool.h>
-#include <limits.h>
+#include "terminal/terminal.h"
+#include "terminal/history.h"
+#include "main/options.h"
 	
 #pragma region Variables
 
@@ -139,8 +134,8 @@
 
 		//	Read entries from a history file into a temporary array
 		static int read_history_file(const char *filename) {
-			if (!filename) filename = history_file;
-			if (!filename) return (1);
+			if (!filename || access(filename, R_OK)) filename = history_file;
+			if (!filename || access(filename, R_OK)) return (1);
 			if (!mem_max && !mem_unlimited)  return (0);
 
 			int fd = sopen(filename, O_RDONLY, -1);
@@ -170,7 +165,7 @@
 
 		//	Add the entries to the history
 		int history_read(const char *filename) {
-			if (read_history_file(filename)) {		 		history_resize(true); return (1); }
+			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
 			if (tmp_length < 1) { sfree(tmp_history);	history_resize(true); return (0); }
 
 			//	Adjust capacity to the required size
@@ -371,7 +366,7 @@
 
 		//	Clear all entries
 		void history_clear() {
-			if (!history || length == 0) return;
+			if (!history) return;
 
 			for (size_t i = 0; i < length; ++i) {
 				if (!history || !history[i]) break;
@@ -549,7 +544,9 @@
 
 	//	Initialize the history
 	int history_initialize() {
-		history_read("history");
+		char *hist_file = ft_strjoin_sep(get_home(), "/", ".42sh_history", 1);
+		history_file_set(hist_file); sfree(hist_file);
+		history_read(NULL);
 
 		return (0);
 	}

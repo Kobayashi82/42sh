@@ -6,15 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 17:08:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:36:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region Includes
-
-	#include "libft.h"
 
 	#define ALIAS_HASH_SIZE 101
 

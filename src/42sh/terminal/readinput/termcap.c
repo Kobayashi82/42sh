@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:50:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:55:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "readinput.h"
-#include "options.h"
+#include "terminal/terminal.h"
+#include "terminal/readinput.h"
+#include "main/options.h"
 
 //	Si hay un emoticono por ejemplo en la columna primera o ultima, se puede desajustar la posicion
 //	Actualizar la posicion del cursor en todo momento

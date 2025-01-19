@@ -6,12 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:49:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:24:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "termcap.h"
+#include "terminal/terminal.h"
 
 #pragma region SIG_INT
 

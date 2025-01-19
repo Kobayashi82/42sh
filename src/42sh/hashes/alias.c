@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 17:54:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:51:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "builtins/options.h"
-#include "alias.h"
+#include "terminal/terminal.h"
+#include "hashes/alias.h"
+#include "hashes/key_value.h"
 
 #pragma region Variables
 

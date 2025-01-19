@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:09:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "libft.h"
+#include "parser/args.h"
 
 #include <string.h>
 #include <stdio.h>

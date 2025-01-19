@@ -6,12 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 17:06:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:52:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "cmdp.h"
+#include "terminal/terminal.h"
+#include "hashes/cmdp.h"
 
 #pragma region Variables
 

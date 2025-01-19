@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 15:01:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:03:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #pragma region Includes
 
 	#include "libft.h"
-	#include "colors.h"
 
 	#include <termcap.h>
 	#include <termios.h>

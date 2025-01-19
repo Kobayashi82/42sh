@@ -6,11 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:44:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:07:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
+#include "terminal/terminal.h"
 
 #pragma region Print
 

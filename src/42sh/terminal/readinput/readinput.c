@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:35:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:56:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "readinput.h"
-#include "prompt.h"
-#include "options.h"
+#include "terminal/terminal.h"
+#include "terminal/readinput.h"
+#include "terminal/prompt.h"
+#include "main/options.h"
 
 #pragma region Variables
 

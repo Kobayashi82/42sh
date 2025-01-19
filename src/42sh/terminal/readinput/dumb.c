@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:25:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:08:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal.h"
-#include "readinput.h"
-#include "prompt.h"
+#include "terminal/terminal.h"
+#include "terminal/readinput.h"
+#include "terminal/prompt.h"
 
 #pragma region Input
 

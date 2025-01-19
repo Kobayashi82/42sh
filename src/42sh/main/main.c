@@ -6,19 +6,24 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:02:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 20:49:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal/terminal.h"
+#include "terminal/readinput.h"
+#include "terminal/history.h"
+#include "hashes/alias.h"
+#include "hashes/variables.h"
+#include "hashes/builtin.h"
+#include "parser/parser.h"
+#include "main/options.h"
+#include "main/shell.h"
+#include "main/clean.h"
+#include "tests.h"
 
 //	Caracteres octal y hexadecimal
-
-#pragma region Variables
-
-	t_token	tokens;
-
-#pragma endregion
+//	libft array.c usa printf
 
 #pragma region Varios
 
@@ -30,9 +35,30 @@
 		// check syntax
 		history_add(terminal.input, false);
 
-		printf("%s\n", terminal.input);
+		ft_printf(1, "%s\n", terminal.input);
 		first_step();
 
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region Initialize
+
+	static int initialize(int argc, const char **argv, const char **envp) {
+		(void) argc; (void) argv;
+
+		//	uid, euid
+		//	PS1, PS2
+		//	column, row
+		terminal_initialize();
+		builtin_initialize();
+		options_initialize();
+		alias_initialize();
+		variables_initialize(vars_table, envp);
+		shell_initialize();
+		//	Execute ~/.42shrc
+		history_initialize();
 		return (0);
 	}
 
@@ -52,7 +78,7 @@
 			signals_set();
 			shell._inline = true;
 			terminal.input = ft_strdup(argv[2]);
-			if (ft_strlen(terminal.input)) printf("inline\n");
+			if (ft_strlen(terminal.input)) ft_printf(1, "inline\n");
 		} else {
 			banner();
 			while (!shell.exit && !read_input()) ;

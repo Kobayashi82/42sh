@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:33:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:36:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "libft.h"
+#include "terminal/terminal.h"
 #include "hashes/builtin.h"
 #include "builtins/builtins.h"
-#include "terminal.h"
 
 #pragma region Variables
 

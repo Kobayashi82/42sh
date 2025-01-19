@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 17:10:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:42:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #pragma region Includes
 
-	#include "libft.h"
+	#include <stddef.h>
+	#include <stdbool.h>
 
 	#define VARS_HASH_SIZE 101
 

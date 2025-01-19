@@ -9,7 +9,9 @@
 				"${workspaceFolder}/inc/terminal",
 				"${workspaceFolder}/inc/hashes",
 				"${workspaceFolder}/inc/parser",
-				"${workspaceFolder}/inc/builtins"
+				"${workspaceFolder}/inc/builtins",
+				"${workspaceFolder}/inc/main",
+				"${workspaceFolder}/inc/utils"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

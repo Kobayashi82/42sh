@@ -6,19 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:22:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 19:28:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdbool.h>
+#pragma region Includes
+
+	#include <stdbool.h>
+
+#pragma endregion
 
 #pragma region Variables
 
 	#pragma region Enumerators
 
-		typedef enum {
+		typedef enum e_arg_type {
 			STRING,				// Literal string
 			CMD_SHELL,			// Executed in a subshell			()
 			CMD_SUB,			// Modern command substitution		$()

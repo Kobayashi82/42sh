@@ -11,8 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include <limits.h>
-#include <errno.h>
 
 #pragma region MAX
 
