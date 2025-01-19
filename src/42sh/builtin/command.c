@@ -6,11 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:39:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
+#include "hashes/builtin.h"
+#include "terminal.h"
+#include "alias.h"
+#include "utils.h"
 
 #pragma region Help
 
@@ -163,7 +167,7 @@
 		//	Ejecutar comando indicando la ruta default dependiendo de '-p'
 		char *path = path_find_first(opts->args->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
 		if (path) {
-			printf("Se ejecuta el comando '%s' con la ruta '%s'\n", args->value, path);
+			ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", args->value, path);
 			return (sfree(opts), sfree(path), 1);
 		}
 

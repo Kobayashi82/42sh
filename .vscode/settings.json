@@ -21,6 +21,11 @@
 		"signal.h": "c",
 		"termcap.h": "c",
 		"unistd.h": "c",
-		"colors.h": "c"
+		"colors.h": "c",
+		"tests.h": "c",
+		"builtins.h": "c",
+		"project.h": "c",
+		"alias.h": "c",
+		"options.h": "c"
 	}
 }

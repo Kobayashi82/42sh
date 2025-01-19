@@ -6,11 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/15 19:52:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:29:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
 
 //  history [-c] [-d offset] [n]
 //	history [-rw] [filename]

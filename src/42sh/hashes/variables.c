@@ -1,36 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   variables_hash.c                                   :+:      :+:    :+:   */
+/*   variables.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 18:56:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:19:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "history.h"
+#include "variables.h"
+#include "key_value.h"
+#include "builtins/options.h"
+#include "shell.h"
+#include "project.h"
 
 #pragma region Variables
 
-	t_var *vars_table[HASH_SIZE];
+	t_var *vars_table[VARS_HASH_SIZE];
 
 #pragma endregion
 
-#pragma region Hash
+#pragma region Index
 
-	#pragma region Index
+	static unsigned int hash_index(const char *key) {
+		unsigned int hash = 0;
 
-		unsigned int hash_index(const char *key) {
-			unsigned int hash = 0;
-
-			//	31 is a commonly used prime number
-			while (*key) hash = (hash * 31) + *key++;
-			return (hash % HASH_SIZE);
-		}
-
-	#pragma endregion
+		while (*key) hash = (hash * 31) + *key++;
+		return (hash % VARS_HASH_SIZE);
+	}
 
 #pragma endregion
 
@@ -127,7 +128,7 @@
 		void variables_join(t_var **dst_table, t_var **src_table) {
 			if (dst_table == src_table) return;
 
-			for (int index = 0; index < HASH_SIZE; index++) {
+			for (int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = src_table[index];
 				while (var) {
 					variables_add(dst_table, var->name, var->value, var->exported, var->readonly, var->integer, 0);
@@ -205,7 +206,7 @@
 		char **variables_to_array(t_var **table, int type, bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->name) {
@@ -221,7 +222,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->value || (!var->value && type == EXPORTED_LIST)) {
@@ -280,7 +281,7 @@
 			int variables_print(t_var **table, int type, bool sort) {
 				size_t i = 0;
 
-				for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
 						if (var->name) i++;
@@ -292,7 +293,7 @@
 				char **array = smalloc((i + 1) * sizeof(char *));
 
 				i = 0;
-				for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
 						i += array_value(type, array, i, var);
@@ -324,7 +325,7 @@
 		size_t variables_length(t_var **table, int type) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->name) {
@@ -374,7 +375,7 @@
 	#pragma region Clear
 
 		void variables_clear(t_var **table) {
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				if (table[index]) {
 					t_var *var = table[index];
 					while (var) {

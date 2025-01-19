@@ -6,11 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:15:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:35:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "builtins/options.h"
+#include "project.h"
 
 #pragma region Parse
 

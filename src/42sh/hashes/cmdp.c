@@ -1,20 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmdp_hash.c                                        :+:      :+:    :+:   */
+/*   cmdp.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:04:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 17:06:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "cmdp.h"
 
 #pragma region Variables
 
-	t_cmdp *cmdp_table[HASH_SIZE];
+	t_cmdp *cmdp_table[CMDP_HASH_SIZE];
+
+#pragma endregion
+
+#pragma region Index
+
+	static unsigned int hash_index(const char *key) {
+		unsigned int hash = 0;
+
+		while (*key) hash = (hash * 31) + *key++;
+		return (hash % CMDP_HASH_SIZE);
+	}
 
 #pragma endregion
 
@@ -100,7 +112,7 @@
 		char **cmdp_to_array(bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
@@ -112,7 +124,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) {
@@ -154,7 +166,7 @@
 		size_t cmdp_length() {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
@@ -199,7 +211,7 @@
 	#pragma region Clear
 
 		void cmdp_clear() {
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 				if (cmdp_table[index]) {
 					t_cmdp *cmdp = cmdp_table[index];
 					while (cmdp) {

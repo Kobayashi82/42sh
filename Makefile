@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/18 21:47:01 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/19 18:02:56 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ EXTRA_FLAGS_OBJ		=
 # ── DIRECTORIES ── #
 # ───────────────── #
 
-INC_DIR				= -I./inc/ -I./inc/terminal
+INC_DIR				= -I./inc/ -I./inc/terminal -I./inc/hashes -I./inc/parser -I./inc/builtins
 OBJ_DIR				= build/obj/
 LIB_DIR				= build/lib/
 LIBFT_INC			= src/libft/inc/
@@ -67,8 +67,8 @@ SRCS	=	main/main.c main/initialize.c main/options.c main/shell.c																
 			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/dumb.c		\
 			terminal/readinput/undo.c terminal/prompt.c terminal/readinput/auto.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c	\
 			parser/tokenizer.c parser/lexer.c parser/parser.c																								\
-			variables/alias_hash.c variables/cmdp_hash.c variables/variables_hash.c variables/varios.c														\
-			builtin/utils/builtin_hash.c builtin/utils/builtin_exec.c builtin/utils/options.c																\
+			hashes/alias.c hashes/cmdp.c hashes/variables.c hashes/key_value.c hashes/builtin.c														\
+			builtin/utils/builtin_exec.c builtin/utils/options.c																\
 			builtin/alias.c builtin/bg.c builtin/cd.c builtin/command.c builtin/declare.c builtin/echo.c builtin/enable.c builtin/exec.c builtin/exit.c		\
 			builtin/export.c builtin/fc.c builtin/fg.c builtin/hash.c builtin/history.c builtin/jobs.c builtin/kill.c builtin/pwd.c builtin/readonly.c 		\
 			builtin/set.c builtin/test.c builtin/type.c builtin/unalias.c builtin/unset.c builtin/wait.c builtin/let.c builtin/builtin.c builtin/help.c		\

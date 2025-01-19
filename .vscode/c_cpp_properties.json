@@ -6,7 +6,10 @@
                 "${workspaceFolder}/**",
 				"${workspaceFolder}/src/libft/inc",
 				"${workspaceFolder}/inc",
-				"${workspaceFolder}/inc/terminal"
+				"${workspaceFolder}/inc/terminal",
+				"${workspaceFolder}/inc/hashes",
+				"${workspaceFolder}/inc/parser",
+				"${workspaceFolder}/inc/builtins"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

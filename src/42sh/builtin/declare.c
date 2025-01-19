@@ -6,11 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:40:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
+#include "hashes/variables.h"
+#include "hashes/key_value.h"
+#include "project.h"
 
 //	if -i atoi to de operands
 // declare patata		crea la variable sin atributos (si ya existe, no le hace cambios)

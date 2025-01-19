@@ -6,11 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 13:58:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:49:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal/terminal.h"
+#include "terminal/prompt.h"
+#include "terminal/history.h"
+#include "clean.h"
+#include "hashes/alias.h"
+#include "hashes/variables.h"
+#include "hashes/builtin.h"
+#include "hashes/cmdp.h"
+#include "shell.h"
 
 #pragma region Messages
 

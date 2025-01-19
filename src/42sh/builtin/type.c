@@ -6,11 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:44:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
+#include "hashes/alias.h"
+#include "hashes/cmdp.h"
+#include "hashes/builtin.h"
+#include "utils.h"
 
 #pragma region Help
 

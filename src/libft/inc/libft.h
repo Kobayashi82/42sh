@@ -6,16 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 15:04:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 16:30:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdlib.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <limits.h>
+#include <stdbool.h>
 
 //	FT_MEM
 int		ft_memcmp(const void *s1, const void *s2, int n);

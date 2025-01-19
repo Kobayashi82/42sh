@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/26 17:47:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:09:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #pragma region Includes
 
 	#define HASH_SIZE 101
+
+	#include "args.h"
 
 #pragma endregion
 
@@ -28,24 +30,6 @@
 			// BLOCK,				// Execute in the current shell		{}
 			// ARITH				// Arithmetic						(())
 		} e_cmd;
-
-		typedef enum {
-			STRING,				// Literal string
-			CMD_SHELL,			// Executed in a subshell			()
-			CMD_SUB,			// Modern command substitution		$()
-			CMD_SUB_LGCY,		// Legacy command substitution		``
-			BLOCK,				// Execute in the current shell		{}
-			ARITH,				// Arithmetic						(())
-			ARITH_SUB,			// Arithmetic substitution			$(())
-			PROCESS_SUB_IN,		// Process substitution (input)		<()
-			PROCESS_SUB_OUT,	// Process substitution (output)	>()
-			VAR_EXP,			// Variable expansion				$VAR
-			PARAM_EXP,			// Parameter expansion				${VAR:-VAL}
-			TILDE_EXP,			// Tilde expansion					~
-			QUOTE_SGL,			// Single quote						'
-			QUOTE_DBL,			// Double quote						"
-			GLOB,				// Pattern matching					*, ?, [...]
-		}	e_arg;
 
 		// OPAR, CPAR, AND, OR, SMCOL, SMAND
 		typedef enum {
@@ -80,16 +64,6 @@
 				t_cmd	*next;
 				e_cmd	type;
 			}	t_cmd;
-
-			typedef struct s_arg {
-				char	*value;
-				int		extra;
-				t_cmd	*cmd;
-				t_arg	*subarg;
-				t_arg	*prev;
-				t_arg	*next;			
-				e_arg	type;
-			}	t_arg;
 
 			typedef struct s_redir {
 				char	*value;

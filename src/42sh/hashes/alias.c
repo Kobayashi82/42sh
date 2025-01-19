@@ -1,20 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alias_hash.c                                       :+:      :+:    :+:   */
+/*   alias.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:04:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 17:54:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "builtins/options.h"
+#include "alias.h"
 
 #pragma region Variables
 
-	t_alias *alias_table[HASH_SIZE];
+	t_alias *alias_table[ALIAS_HASH_SIZE];
+
+#pragma endregion
+
+#pragma region Index
+
+	static unsigned int hash_index(const char *key) {
+		unsigned int hash = 0;
+
+		while (*key) hash = (hash * 31) + *key++;
+		return (hash % ALIAS_HASH_SIZE);
+	}
 
 #pragma endregion
 
@@ -100,7 +113,7 @@
 		char **alias_to_array(bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
@@ -112,7 +125,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					
@@ -135,7 +148,7 @@
 		int alias_print(bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
@@ -147,7 +160,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					
@@ -182,7 +195,7 @@
 		size_t alias_length() {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				t_alias *alias = alias_table[index];
 				while (alias) {
 					if (alias->name) i++;
@@ -227,7 +240,7 @@
 	#pragma region Clear
 
 		void alias_clear() {
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
 				if (alias_table[index]) {
 					t_alias *alias = alias_table[index];
 					while (alias) {

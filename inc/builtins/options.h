@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils.h                                            :+:      :+:    :+:   */
+/*   options.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:38:58 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/19 18:22:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,9 @@
 
 #pragma region Includes
 
-	#include "libft.h"
+	#include "args.h"
 
-	#include <sys/time.h>
-
-	#define PATH	"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+	#define MAX_OPTIONS	128
 
 #pragma endregion
 
@@ -26,6 +24,13 @@
 
 	#pragma region Structures
 
+		typedef struct s_opt {
+			const char	*options;
+			char		valid[MAX_OPTIONS];
+			char		invalid[MAX_OPTIONS];
+			bool		too_many;
+			t_arg		*args;
+		}	t_opt;
 
 	#pragma endregion
 
@@ -33,17 +38,11 @@
 
 #pragma region Methods
 
-	//	----------- PATH -----------
-	char		*resolve_symlink(const char *path);
-	char		*resolve_path(const char *path);
-	char		*path_find_first(char *cmd, char *paths);
-	char		**path_find_all(char *cmd, char *paths);
-	char		*get_fullpath(char *path);
-	int			create_temp_file(char *template);
-	const char	*default_editor();
 
-	//	----------- TIME -----------
-	char		*format_timestamp(time_t timestamp);
-	time_t		get_timestamp(const char *date);
+	//	========== UTILS ===========
+	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid);
+	int			invalid_option(char *name, char *opts, char *usage);
+	int			print_version(char *name, char *version);
+	char		*format_for_shell(const char *value, char quote_type);
 
 #pragma endregion

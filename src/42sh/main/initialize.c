@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:47:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 18:54:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 16:35:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "42sh.h"
+#include "alias.h"
 
 int initialize(int argc, const char **argv, const char **envp) {
 	(void) argc; (void) argv;

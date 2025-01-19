@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:06:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:42:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
+#include "hashes/cmdp.h"
 
 #pragma region Help
 
@@ -48,7 +49,7 @@
 
 	static int print_hash(bool reuse) {
 		bool title = false; int total = 0;
-		for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+		for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 			t_cmdp *cmdp = cmdp_table[index];
 			while (cmdp) {
 				if (cmdp->name && cmdp->path) {

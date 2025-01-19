@@ -6,11 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 18:55:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:51:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal/terminal.h"
+#include "terminal/history.h"
+#include "options.h"
+#include "hashes/alias.h"
+#include "hashes/variables.h"
+
+#include <stdio.h>
 
 #pragma region Alias
 

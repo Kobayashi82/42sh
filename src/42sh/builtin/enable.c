@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:41:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "builtins/builtins.h"
+#include "hashes/builtin.h"
 
     //   -a        print a list of builtins showing whether or not each is enabled
     //   -n        disable each NAME or display a list of disabled builtins

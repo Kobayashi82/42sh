@@ -1,20 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_hash.c                                     :+:      :+:    :+:   */
+/*   builtin.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:02:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 18:33:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "hashes/builtin.h"
+#include "builtins/builtins.h"
+#include "terminal.h"
 
 #pragma region Variables
 
-	t_builtin *builtin_table[HASH_SIZE];
+	t_builtin *builtin_table[BUILTIN_HASH_SIZE];
+
+#pragma endregion
+
+#pragma region Index
+
+	static unsigned int hash_index(const char *key) {
+		unsigned int hash = 0;
+
+		while (*key) hash = (hash * 31) + *key++;
+		return (hash % BUILTIN_HASH_SIZE);
+	}
 
 #pragma endregion
 
@@ -88,7 +101,7 @@
 		char **builtin_to_array(int disabled, bool special, bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
@@ -100,7 +113,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
@@ -122,7 +135,7 @@
 		int builtin_print(int disabled, bool special, bool sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
@@ -134,7 +147,7 @@
 			char **array = smalloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 				
@@ -171,7 +184,7 @@
 		size_t builtin_length(int disabled, bool special) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || (!special || builtin->special == special))) i++;
@@ -216,7 +229,7 @@
 	#pragma region Clear
 
 		void builtin_clear() {
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
 				if (builtin_table[index]) {
 					t_builtin *builtin = builtin_table[index];
 					while (builtin) {
