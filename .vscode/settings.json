@@ -12,6 +12,15 @@
 		"libft.h": "c",
 		"stdlib.h": "c",
 		"stat.h": "c",
-		"time.h": "c"
+		"time.h": "c",
+		"fcntl.h": "c",
+		"terminal.h": "c",
+		"prompt.h": "c",
+		"variables.h": "c",
+		"termios.h": "c",
+		"signal.h": "c",
+		"termcap.h": "c",
+		"unistd.h": "c",
+		"colors.h": "c"
 	}
 }

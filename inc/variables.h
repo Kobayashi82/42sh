@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 18:57:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:08:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #pragma region Includes
 
 	#define HASH_SIZE 101
+
+	#include <stdbool.h>
 
 #pragma endregion
 

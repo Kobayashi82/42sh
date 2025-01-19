@@ -6,16 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:16:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:49:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "libft.h"
+#include "colors.h"
+#include "prompt.h"
 
 #pragma region Variables
 
-	char	*prompt_PS1 = NULL;			//	Prompt normal
-	char	*prompt_PS2 = NULL;			//	Prompt para heredoc y lineas extras
+	char	*prompt_PS1 = NULL;			//	Default prompt displayed for regular input
+	char	*prompt_PS2 = NULL;			//	Continuation prompt for heredocs or multiline input
 
 #pragma endregion
 
@@ -41,13 +43,12 @@
 
 #pragma region Set
 
-	void set_prompt(int type, char *new_prompt) {
+	void prompt_set(int type, char *new_prompt) {
 		// char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
 		char *str_PS1 = BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC;
 		char *tmp_prompt = NULL;
 
-		if (type == PS1 && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
-		if (type == PS2 && prompt_PS2) { sfree(prompt_PS2); prompt_PS2 = NULL; }
+		prompt_clear(type);
 
 		if (new_prompt) {
 			//	Procesa barras, variables ($var & \u)
@@ -59,6 +60,15 @@
 
 		if (type == PS1) prompt_PS1 = tmp_prompt;
 		if (type == PS2) prompt_PS2 = tmp_prompt;
+	}
+
+#pragma endregion
+
+#pragma region Clear
+
+	void prompt_clear(int type) {
+		if ((type == PS1 || type == BOTH) && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
+		if ((type == PS2 || type == BOTH) && prompt_PS2) { sfree(prompt_PS2); prompt_PS2 = NULL; }
 	}
 
 #pragma endregion

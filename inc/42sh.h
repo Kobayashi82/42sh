@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 14:18:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 19:52:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:07:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,13 @@
 	#include "builtin.h"
 	#include "utils.h"
 
+	#include <unistd.h>
 	#include <sys/wait.h>
 	#include <fcntl.h>
 	#include <stdio.h>
-	#include <unistd.h>
 	#include <errno.h>
 	#include <stdlib.h>
 	#include <string.h>
-	#include <limits.h>
 
 	#include "tests.h"
 
@@ -50,8 +49,5 @@
 
 	//	-------- INITIALIZE --------
 	int		initialize(int argc, const char **argv, const char **envp);
-
-	//	---------- VARIOS ----------
-	char	*home_path(const char *user);
 
 #pragma endregion

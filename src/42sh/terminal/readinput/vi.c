@@ -6,11 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 22:23:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:38:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "readinput.h"
+#include "prompt.h"
+#include "options.h"
+#include "history.h"
+#include "variables.h"
+#include "utils.h"
+
+#include <sys/wait.h>
 
 //	Optimizar Delete y BackSpace
 //	Arreglar multibytes con navegacion
@@ -770,7 +778,7 @@
 		#pragma region Edit Input
 
 			static int edit_input() {
-				char *raw_editor = "nano";//default_editor();
+				const char *raw_editor = default_editor();
 				int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "input"));
 				if (fd == -1) { beep(); return (1); }
 
@@ -779,8 +787,9 @@
 					return (1);
 				} sclose(fd);
 
-				char *editor = get_fullpath(raw_editor);
+				char *editor = get_fullpath((char *)raw_editor);
 				if (access(editor, X_OK) == -1) {
+					sfree(editor);
 					tmp_delete_fd(fd);
 					beep();
 					return (1);
@@ -790,21 +799,23 @@
 
 				pid_t pid = fork();
 				if (pid < 0) {
+					sfree(editor);
 					tmp_delete_fd(fd);
 					beep();
 					return (1);
 				} else if (pid == 0) {
-					char *const args[] = { (char *)editor, tmp_find_path_fd(fd), NULL };
+					char *const args[] = { editor, tmp_find_path_fd(fd), NULL };
 					char **env = variables_to_array(vars_table, EXPORTED, true);
 					sclose_all();
 					execve(editor, args, env);
-					beep(); sexit(EXIT_FAILURE);
+					beep(); sexit(1);
 				} else if (pid > 0) {
 					int status;
 					waitpid(pid, &status, 0);
 
 					fd = sopen(tmp_file, O_RDONLY, -1);
 					if (fd == -1) {
+						sfree(editor);
 						tmp_delete_path(tmp_file);
 						beep();
 						return (1);
@@ -842,6 +853,7 @@
 						print(STDOUT_FILENO, buffer.value, PRINT);
 					}
 
+					sfree(editor);
 					tmp_delete_path(tmp_file);
 
 					insert_mode(CURSOR);

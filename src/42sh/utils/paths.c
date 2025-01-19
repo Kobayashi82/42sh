@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 22:22:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:09:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "utils.h"
+#include "variables.h"
 
 #pragma region Resolve
 
@@ -218,3 +219,12 @@
 	#pragma endregion
 
 #pragma endregion
+
+const char *default_editor() {
+	const char	*editor = variables_find_value(vars_table, "FCEDIT");
+	if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
+	if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
+	if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
+	if (!editor || !*editor) editor = "nano";
+    return (editor);
+}

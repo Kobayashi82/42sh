@@ -6,11 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 20:17:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:36:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "readinput.h"
+#include "prompt.h"
+#include "options.h"
+#include "history.h"
 
 //	Optimizar Delete y BackSpace
 

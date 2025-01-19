@@ -6,12 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 13:47:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:43:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "options.h"
+#include "history.h"
 
+#include <unistd.h>
+#include <fcntl.h>
+#include <stdbool.h>
+#include <limits.h>
+	
 #pragma region Variables
 
 	//.42shrc

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/23 23:27:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:01:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,10 @@
 
 #pragma region Includes
 
+	#include "libft.h"
+	#include "colors.h"
+
+	#include <termcap.h>
 	#include <termios.h>
 	#include <signal.h>
 
@@ -78,5 +82,17 @@
 	void	signals_set();
 	void	sigint_handler(int sig);
 	void	sigquit_handler(int sig);
+
+	//	--------- TERMCAP ----------
+	int		char_width(size_t position, char *value);
+	
+	void	cursor_left(int moves);
+	void	cursor_right(int moves);
+	void	cursor_move(size_t from_pos, size_t to_pos);
+	void	cursor_get();
+	void	cursor_set(int row, int col);
+	void	cursor_hide();
+	void	cursor_show();
+	int		terminal_initialize();
 
 #pragma endregion

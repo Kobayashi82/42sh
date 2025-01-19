@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/24 19:55:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:38:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@
 	int			enable(t_arg *args);
 
 	//	============ FC ============
-	const char	*default_editor();
 
 	int			builtin_exec(t_arg *args);
 

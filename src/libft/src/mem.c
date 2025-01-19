@@ -42,9 +42,9 @@
 			sclose(STDIN_FILENO);
 			sclose(STDOUT_FILENO);
 			sclose(STDERR_FILENO);
-			sclose_all();
-			sfree_all();
-			tmp_clear();
+			// sclose_all();
+			// sfree_all();
+			// tmp_clear();
 			exit(code);
 		}
 

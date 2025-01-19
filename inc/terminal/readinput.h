@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 20:17:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:58:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #pragma region Includes
 
-	#include <termcap.h>
 	#include <stdbool.h>
 
 #pragma endregion
@@ -55,18 +54,6 @@
 #pragma endregion
 
 #pragma region Methods
-
-	//	--------- TERMCAP ----------
-	int		char_width(size_t position, char *value);
-	
-	void	cursor_left(int moves);
-	void	cursor_right(int moves);
-	void	cursor_move(size_t from_pos, size_t to_pos);
-	void	cursor_get();
-	void	cursor_set(int row, int col);
-	void	cursor_hide();
-	void	cursor_show();
-	int		terminal_initialize();
 
 	//	------- AUTOCOMPLETE -------
 

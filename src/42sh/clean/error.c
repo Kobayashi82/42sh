@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:35:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 13:58:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,31 @@
 
 #pragma region Exit_Error
 
+	static void free_and_exit() {
+		history_clear();
+		alias_clear();
+		variables_clear(vars_table);
+		builtin_clear();
+		cmdp_clear();
+		tmp_clear();
+		prompt_clear(BOTH);
+		sclose(terminal.bk_stdin);
+		sclose(terminal.bk_stdout);
+		sclose(terminal.bk_stderr);
+		sexit(shell.exit_code % 256);
+	}
+
 	//	Print the error message and exit if required
 	int	exit_error(int error, int code, char *value, bool fatal) {
 		if (!value) value = "";
-		print(2, "42sh: ", RESET);
+		if (error != NOTHING && error != END) print(2, "42sh: ", RESET);
 		catastrophic_msg(error, value);
 		redirection_msg(error, value);
 		// builtsin_msg(error, value);
 		// execution_msg(error, value);
 
-		if (code) shell.exit_code = code;
-		if (fatal) { sexit(shell.exit_code % 256); }
+		if (code)	shell.exit_code = code;
+		if (fatal)	free_and_exit();
 
 		return (shell.exit_code);
 	}

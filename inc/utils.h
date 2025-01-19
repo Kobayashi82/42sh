@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 21:50:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 15:09:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #pragma region Includes
 
-	#include <time.h>
+	#include "libft.h"
+
 	#include <sys/time.h>
 
 #pragma endregion
@@ -23,13 +24,6 @@
 
 	#pragma region Structures
 
-		// typedef struct {
-		// 	char	*username;
-		// 	char	*home;
-		// 	char	*shell;
-		// 	int		uid;
-		// 	int		gid;
-		// }	t_userinfo;
 
 	#pragma endregion
 
@@ -44,15 +38,7 @@
 	char		**path_find_all(char *cmd, char *paths);
 	char		*get_fullpath(char *path);
 	int			create_temp_file(char *template);
-
-	// //	----------- USER -----------
-	// t_userinfo	*get_userinfo();
-	// t_userinfo	*get_userinfo_by_id(int uid);
-	// t_userinfo	*get_userinfo_by_name(const char *name);
-	// char		*get_home();
-	// char		*get_home_by_id(int uid);
-	// char		*get_home_by_name(const char *name);
-	// void		free_user(t_userinfo *user);
+	const char	*default_editor();
 
 	//	----------- TIME -----------
 	char		*format_timestamp(time_t timestamp);

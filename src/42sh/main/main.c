@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/16 19:07:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:02:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@
 		signals_set();
 
 		if (!(terminal.input = readinput(NULL))) return (1);
-		if (fake_segfault) { write(2, "Segmentation fault (core dumped)\n", 34); fake_segfault = false; return (0); }
 
+		// check syntax
 		history_add(terminal.input, false);
+
 		printf("%s\n", terminal.input);
 		first_step();
-		sfree(terminal.input);
 
 		return (0);
 	}
@@ -41,8 +41,8 @@
 #pragma region Main
 
 	int main(int argc, const char **argv, const char **envp) {
-		if (initialize(argc, argv, envp)) sexit(1);
-		if (tests(argc, argv, envp)) sexit(shell.exit_code);
+		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);
+		if (tests(argc, argv, envp)) exit_error(NOTHING, 0, NULL, true);
 
 		if (argc == 2 && !ft_strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);
@@ -59,7 +59,7 @@
 		}
 
 		if (terminal.signal) shell.exit_code = 128 + terminal.signal;
-		sexit(shell.exit_code % 256);
+		exit_error(END, 0, NULL, true);
 	}
 
 #pragma endregion

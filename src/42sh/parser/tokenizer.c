@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:02:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:01:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,20 +179,33 @@ void first_step() {
 
 	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
 		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
+		if (!new_arg) {
+			perror("Memory allocation failed");
+			break;
+		}
 
 		new_arg->value = word;
 		t_arg *tmp = tokens.args;
 
 		if (!tmp) tokens.args = new_arg;
- 		else {
- 			while (tmp->next) tmp = tmp->next;
- 			tmp->next = new_arg;
- 		}
+		else {
+			while (tmp->next) tmp = tmp->next;
+			tmp->next = new_arg;
+		}
 
 		printf("Word: %s\n", word);
 	}
-}
 
+	t_arg *current = tokens.args;
+	while (current) {
+		t_arg *next = current->next;
+		sfree(current->value);
+		sfree(current);
+		current = next;
+	}
+	tokens.args = NULL;
+	sfree(terminal.input);
+}
 
 
 

@@ -6,22 +6,25 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/17 17:24:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/19 14:35:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "42sh.h"
+#include "terminal.h"
+#include "readinput.h"
+#include "prompt.h"
+#include "options.h"
 
 #pragma region Variables
 
 	t_buffer	buffer;
 
-	bool		show_control_chars	= true;
-	bool		fake_segfault		= false;
-	int			vi_mode				= INSERT;
-	char		*tmp_line			= NULL;
+	bool		show_control_chars	= true;			//	Displays ^C or hides it
+	bool		fake_segfault		= false;		//	Simulates a segmentation fault in the current command (does not execute or save it to history)
+	int			vi_mode				= INSERT;		//	Current 'vi' mode
+	char		*tmp_line			= NULL;			//	Store input while navigating through history
 
-	static bool	raw_mode			= false;
+	static bool	raw_mode			= false;		//	Indicates whether the terminal is in raw mode
 
 #pragma endregion
 
@@ -31,8 +34,9 @@
 		if (raw_mode) {
 			raw_mode = false;
 			cursor_show();
-			tgetent(NULL, "none");
+			//tgetent(NULL, "none");
 			tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
+			prompt_clear(BOTH);
 		}
 	}
 
@@ -42,11 +46,11 @@
 		terminal_initialize();
 
 		struct termios raw = terminal.term;
-		raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);			// Disable echo (ECHO), canonical mode (ICANON), signals (ISIG), and extended input processing (IEXTEN)
-		raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);	// Disable break interrupt (BRKINT), carriage return to newline conversion (ICRNL), parity check (INPCK), stripping of eighth bit (ISTRIP), and software flow control (IXON)
-		raw.c_oflag &= ~(OPOST);									// Disable post-processing of output (OPOST)
-		raw.c_cc[VMIN] = 1;											// Read at least 1 character before returning
-		raw.c_cc[VTIME] = 0;										// No timeout for read
+		raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);			//	Disable echo (ECHO), canonical mode (ICANON), signals (ISIG), and extended input processing (IEXTEN)
+		raw.c_iflag &= ~(BRKINT | ICRNL | INPCK | ISTRIP | IXON);	//	Disable break interrupt (BRKINT), carriage return to newline conversion (ICRNL), parity check (INPCK), stripping of eighth bit (ISTRIP), and software flow control (IXON)
+		raw.c_oflag &= ~(OPOST);									//	Disable post-processing of output (OPOST)
+		raw.c_cc[VMIN] = 1;											//	Read at least 1 character before returning
+		raw.c_cc[VTIME] = 0;										//	No timeout for read
 
 		tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
 	}
@@ -63,7 +67,7 @@
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
-		set_prompt(PS1, prompt);
+		prompt_set(PS1, prompt);
 		enable_raw_mode();
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 
@@ -79,6 +83,12 @@
 		}
 
 		disable_raw_mode();
+
+		if (fake_segfault) { fake_segfault = false;
+			write(2, "Segmentation fault (core dumped)\n", 34);
+			return (readinput(prompt));
+		}
+
 		return (buffer.value);
 	}
 
