@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 02:19:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 12:18:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:47:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,13 +59,21 @@
 			static char	buffer[GNL_BUFFER + 1];
 			char		*newline, *line = NULL;
 
-			if (fd < 0) return (NULL);
+			if (fd < 0) {
+				ft_memset(buffer, '\0', GNL_BUFFER + 1);
+				return (NULL);
+			}
+
 			while (1) {
 				if (!buffer[0]) {
 					ft_memset(buffer, '\0', GNL_BUFFER + 1);
 					int readed = read(fd, buffer, GNL_BUFFER);
 					if (readed == 0 && line)	return (line);
-					if (readed < 1)				return (sfree(line), NULL);
+					if (readed < 1) {
+						ft_memset(buffer, '\0', GNL_BUFFER + 1);
+						sfree(line);
+						return (NULL);
+					}
 				}
 				newline = ft_memchr(buffer, '\n', ft_strlen(buffer));
 				if (newline)					return (get_line(line, newline, buffer));

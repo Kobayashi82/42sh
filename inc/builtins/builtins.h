@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:00:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 12:04:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,37 +21,41 @@
 #pragma region Methods
 
 	//	========== ALIAS ===========
-	int			alias(t_arg *args);
+	int		alias(t_arg *args);
+
+	//	========== BANNER ==========
+	int		banner();
+	void	welcome();
 
 	//	=========== TYPE ===========
-	int			type(t_arg *args);
+	int		type(t_arg *args);
 
 	//	========= COMMAND ==========
-	int			command(t_arg *args);
+	int		command(t_arg *args);
 
 	//	========= UNALIAS ==========
-	int			unalias(t_arg *args);
+	int		unalias(t_arg *args);
 
 	//	========= DECLARE ==========
-	int			declare(t_arg *args);
+	int		declare(t_arg *args);
 
 	//	========= READONLY =========
-	int			readonly(t_arg *args);
+	int		readonly(t_arg *args);
 
 	//	========== EXPORT ==========
-	int			export(t_arg *args);
+	int		export(t_arg *args);
 
 	//	=========== HASH ===========
-	int			hash(t_arg *args);
+	int		hash(t_arg *args);
 
 	//	=========== UNSET ==========
-	int			unset(t_arg *args);
+	int		unset(t_arg *args);
 
 	//	========== ENABLE ==========
-	int			enable(t_arg *args);
+	int		enable(t_arg *args);
 
 	//	============ FC ============
 
-	int			builtin_exec(t_arg *args);
+	int		builtin_exec(t_arg *args);
 
 #pragma endregion

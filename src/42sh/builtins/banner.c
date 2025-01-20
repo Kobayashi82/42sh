@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:07:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 12:04:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region Banner
 
-	void banner() {                                            
+	int banner() {                                            
 		print(1, RED600"\n\t        ,--,                                   \n", RESET);
 		print(1, RED600"\t      ,--.'|      ,----,  "Y"           ,---,     \n", JOIN);
 		print(1, RED600"\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n", JOIN);
@@ -29,6 +29,8 @@
 		print(1, RED600"\t      |  : ;|   :    .' "Y"'--'.     /|  | ,'     \n", JOIN);
 		print(1, RED600"\t      '  ,/ ;   | .'     "Y" `--'---' `--''       \n", JOIN);
 		print(1, RED600"\t      '--'  `---'                              \n\n"NC, PRINT);
+
+		return (0);
 	}
 
 #pragma endregion

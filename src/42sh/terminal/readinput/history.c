@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 21:19:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 11:49:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@
 			char	*line = NULL;
 
 			//	Reserve space for the temporary history
-			tmp_history = smalloc(HIST_MAXSIZE * sizeof(char *));
+			tmp_history = ft_calloc(HIST_MAXSIZE, sizeof(char *));
 
 			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
 				if (ft_isspace_s(line)) continue;
@@ -160,6 +160,7 @@
 			} tmp_history[tmp_length] = NULL;
 
 			sclose(fd);
+
 			return (0);
 		}
 
@@ -253,7 +254,7 @@
 		//	Add an entry to the history
 		int history_add(char *line, bool force) {
 			if (!history || !line || ft_isspace_s(line) || !mem_max) return (1);
-			if (!force && ignoredups && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
+			if (!force && ignoredups && length && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
 			if (!force && ignorespace && ft_isspace(*line)) return (1);
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 

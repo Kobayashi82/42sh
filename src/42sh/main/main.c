@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:49:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 12:06:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "hashes/variables.h"
 #include "hashes/builtin.h"
 #include "parser/parser.h"
+#include "builtins/builtins.h"
 #include "main/options.h"
 #include "main/shell.h"
 #include "main/clean.h"
@@ -80,7 +81,7 @@
 			terminal.input = ft_strdup(argv[2]);
 			if (ft_strlen(terminal.input)) ft_printf(1, "inline\n");
 		} else {
-			banner();
+			t_arg arg = { .value = "banner" }; builtin_exec(&arg);
 			while (!shell.exit && !read_input()) ;
 		}
 

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/19 20:41:35 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/20 11:20:28 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,18 +63,73 @@ SRC_DIR				= src/$(NAME)/
 
 NAME	=	42sh
 
-SRCS	=	main/main.c main/options.c main/shell.c																						\
-			terminal/readinput/termcap.c terminal/readinput/readinput.c terminal/readinput/readline.c terminal/readinput/vi.c terminal/readinput/dumb.c		\
-			terminal/readinput/undo.c terminal/prompt.c terminal/readinput/auto.c terminal/history.c terminal/banner.c terminal/print.c terminal/signal.c	\
-			parser/tokenizer.c parser/lexer.c parser/parser.c																								\
-			hashes/alias.c hashes/cmdp.c hashes/variables.c hashes/key_value.c hashes/builtin.c														\
-			builtins/utils/executer.c builtins/utils/options.c																\
-			builtins/alias.c builtins/bg.c builtins/cd.c builtins/command.c builtins/declare.c builtins/echo.c builtins/enable.c builtins/exec.c builtins/exit.c		\
-			builtins/export.c builtins/fc.c builtins/fg.c builtins/hash.c builtins/history.c builtins/jobs.c builtins/kill.c builtins/pwd.c builtins/readonly.c 		\
-			builtins/set.c builtins/test.c builtins/type.c builtins/unalias.c builtins/unset.c builtins/wait.c builtins/let.c builtins/builtin.c builtins/help.c		\
-			clean/error.c																						\
-			utils/paths.c utils/time.c																										\
-			tests/tests.c tests/untests.c tests/internal.c tests/builtin.c tests/create_args.c
+SRCS	=	builtins/utils/executer.c		\
+			builtins/utils/options.c		\
+			builtins/alias.c				\
+			builtins/banner.c				\
+			builtins/bg.c					\
+			builtins/builtin.c				\
+			builtins/cd.c					\
+			builtins/command.c				\
+			builtins/declare.c				\
+			builtins/echo.c					\
+			builtins/enable.c				\
+			builtins/exec.c					\
+			builtins/exit.c					\
+			builtins/export.c				\
+			builtins/fc.c					\
+			builtins/fg.c					\
+			builtins/hash.c					\
+			builtins/help.c					\
+			builtins/history.c				\
+			builtins/jobs.c					\
+			builtins/kill.c					\
+			builtins/let.c					\
+			builtins/pwd.c					\
+			builtins/readonly.c				\
+			builtins/set.c					\
+			builtins/test.c					\
+			builtins/type.c					\
+			builtins/unalias.c				\
+			builtins/unset.c				\
+			builtins/wait.c					\
+											\
+			clean/error.c					\
+											\
+			hashes/alias.c					\
+			hashes/builtin.c				\
+			hashes/cmdp.c					\
+			hashes/key_value.c				\
+			hashes/variables.c				\
+											\
+			main/main.c						\
+			main/options.c					\
+			main/shell.c					\
+											\
+			parser/lexer.c					\
+			parser/parser.c					\
+			parser/tokenizer.c				\
+											\
+			terminal/print.c				\
+			terminal/readinput/auto.c		\
+			terminal/readinput/dumb.c		\
+			terminal/readinput/history.c	\
+			terminal/readinput/prompt.c		\
+			terminal/readinput/readinput.c	\
+			terminal/readinput/readline.c	\
+			terminal/readinput/termcap.c	\
+			terminal/readinput/undo.c		\
+			terminal/readinput/vi.c			\
+			terminal/signal.c				\
+											\
+			tests/builtin.c					\
+			tests/create_args.c				\
+			tests/internal.c				\
+			tests/tests.c					\
+			tests/untests.c					\
+											\
+			utils/paths.c					\
+			utils/time.c					\
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 
