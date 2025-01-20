@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:55:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 22:50:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,24 @@
 				return (1);
 			}
 
+			int chars_width(size_t from, size_t to, char *value) {
+				int total_chars = 0;
+
+				if (from < to) {
+					while (from < to) {
+						total_chars += char_width(from, value);
+						do { from++; } while (from < to && (value[from] & 0xC0) == 0x80);
+					}
+				} else if (to < from) {
+					while (to < from) {
+						total_chars += char_width(to, value);
+						do { to++; } while (to < from && (value[to] & 0xC0) == 0x80);
+					}
+				}
+
+				return (total_chars);
+			}
+
 		#pragma endregion
 
 	#pragma endregion
@@ -108,10 +126,8 @@
 	#pragma region Left
 
 		void cursor_left(int moves) {
-			if (!moves && !buffer.position) return;
-
 			char *action = tgetstr("le", NULL);
-			if (!moves) moves = char_width(buffer.position - 1, buffer.value);
+			if (!moves) moves = char_width(buffer.position, buffer.value);
 
 			cursor_get();
 			while (action && moves--) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:56:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 21:38:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,11 +196,13 @@
 			static void backspace() {
 				if (buffer.position > 0) {
 					size_t back_pos = 1;
+
 					while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
+					int c_width = char_width(buffer.position - back_pos, buffer.value);
 					if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
 					buffer.position -= back_pos; buffer.length -= back_pos;
 
-					cursor_left(0);
+					cursor_left(c_width);
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 					write(STDOUT_FILENO, "  ", 2); cursor_left(2);
 
@@ -328,8 +330,8 @@
 
 			static void home() {
 				while (buffer.position > 0) {
-					cursor_left(0);
 					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+					cursor_left(0);
 				}
 			}
 
@@ -407,12 +409,12 @@
 							cursor_left(0); (buffer.position)--;
 						}
 						while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
-							cursor_left(0);
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							cursor_left(0);
 						}
 					} else {
-						cursor_left(0);
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+						cursor_left(0);
 					}
 				}
 			}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 15:48:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 23:39:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 
 #include <sys/wait.h>
 
-//	Optimizar Delete y BackSpace
-//	Arreglar multibytes con navegacion
+//	Arreglar multibytes en columnas primera y ultima
+//	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
 
 #pragma region Variables
 
@@ -33,59 +33,13 @@
 	static void	insert_mode(int mode);
 	static int	get_n();
 	static void beep() { write(STDOUT_FILENO, "\a", 1); }
+	static void home();
 
 #pragma endregion
 
 #pragma region Input
 
 	#pragma region Insert
-
-		#pragma region Swap
-
-			#pragma region Char
-
-				static void swap_char() {
-					if (buffer.position > 0) {
-						char temp[8];
-						if (buffer.position < buffer.length) {
-							size_t back_pos1 = 1, back_pos2 = 1;
-							while (buffer.position - back_pos1 > 0 && (buffer.value[buffer.position - back_pos1] & 0xC0) == 0x80) back_pos1++;
-							while (buffer.position + back_pos2 < buffer.length && (buffer.value[buffer.position + back_pos2] & 0xC0) == 0x80) back_pos2++;
-
-							if (back_pos1 > 8 || back_pos2 > 8) return;
-
-							ft_memcpy(temp, &buffer.value[buffer.position - back_pos1], back_pos1);
-							ft_memmove(&buffer.value[buffer.position - back_pos1], &buffer.value[buffer.position], back_pos2);
-							buffer.position -= back_pos1; buffer.position += back_pos2;
-							ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
-
-							cursor_left(char_width(0, temp));
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
-							buffer.position += back_pos1;
-						} else {
-							size_t back_pos1 = 1, back_pos2 = 1;
-							while (buffer.position - back_pos1 > 0 && (buffer.value[buffer.position - back_pos1] & 0xC0) == 0x80) back_pos1++;
-							if (back_pos1 > 8) return;
-							buffer.position -= back_pos1;
-							while (buffer.position - back_pos2 > 0 && (buffer.value[buffer.position - back_pos2] & 0xC0) == 0x80) back_pos2++;
-
-							ft_memcpy(temp, &buffer.value[buffer.position - back_pos2], back_pos2);
-							ft_memmove(&buffer.value[buffer.position - back_pos2], &buffer.value[buffer.position], back_pos1);
-							buffer.position -= back_pos2; buffer.position += back_pos1;
-							ft_memmove(&buffer.value[buffer.position], temp, back_pos2);
-
-							cursor_left(char_width(0, temp));
-							cursor_left(char_width(buffer.position - back_pos1, buffer.value));
-
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
-							buffer.position += back_pos2;
-						}
-					}
-				}
-
-			#pragma endregion
-
-		#pragma endregion
 
 		#pragma region EOF
 
@@ -107,7 +61,7 @@
 
 		#pragma endregion
 
-		#pragma region SIGINT
+		#pragma region SIG_INT
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {	// Ctrl+C
@@ -141,18 +95,21 @@
 
 		#pragma endregion
 
-		#pragma region BackSpace
+		#pragma region BackSpace	// Optimizar
 
 			#pragma region Char
 
 				static void backspace() {
+					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
 					if (buffer.position > 0) {
 						size_t back_pos = 1;
+
 						while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
+						int c_width = char_width(buffer.position - back_pos, buffer.value);
 						if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
-						cursor_left(0);
 						buffer.position -= back_pos; buffer.length -= back_pos;
 
+						cursor_left(c_width);
 						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
 
@@ -162,7 +119,7 @@
 
 			#pragma endregion
 
-			#pragma region Word
+			#pragma region Word		//	Optimizar
 
 				static void backspace_word() {
 					size_t pos = buffer.position, back_pos;
@@ -187,13 +144,20 @@
 			#pragma region Start
 
 				static void backspace_start() {
-					size_t pos = buffer.position, back_pos;
+					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
 
-					if (buffer.position > 0) {
-						while (pos > 0) { back_pos = 1;
-							while (pos - back_pos > 0 && (buffer.value[pos - back_pos] & 0xC0) == 0x80) back_pos++;
-							pos -= back_pos;
-						} while (buffer.position > pos) backspace();
+					int total_chars = chars_width(buffer.position, 0, buffer.value);
+
+					ft_memmove(&buffer.value[0], &buffer.value[buffer.position], buffer.length - buffer.position);
+					buffer.length -= buffer.position; buffer.position = buffer.length;
+
+					cursor_left(total_chars);
+					write(STDOUT_FILENO, buffer.value, buffer.length);
+					if (total_chars) {
+						int tmp = total_chars;
+						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						cursor_left(total_chars);
+						home();
 					}
 				}
 
@@ -201,9 +165,9 @@
 
 		#pragma endregion
 
-		#pragma region Delete
+		#pragma region Delete		// Optimizar
 
-			#pragma region Char
+			#pragma region Char		//	Optimizar
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
@@ -218,15 +182,17 @@
 						cursor_move(buffer.length, buffer.position);
 
 						if (vi_mode == EDIT) {
-							cursor_left(0);
-							if (buffer.position) buffer.position--;
+							if (buffer.position) {
+								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+								cursor_left(0);
+							}
 						}
 					}
 				}
 
 			#pragma endregion
 
-			#pragma region Word
+			#pragma region Word		//	Optimizar
 
 				static void delete_word() {
 					if (buffer.position < buffer.length) {
@@ -236,8 +202,10 @@
 							delete_char();
 
 						if (vi_mode == EDIT) {
-							cursor_left(0);
-							if (buffer.position) buffer.position--;
+							if (buffer.position) {
+								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+								cursor_left(0);
+							}
 						}
 					}
 				}
@@ -247,8 +215,24 @@
 			#pragma region End
 
 				static void delete_end() {
-					if (buffer.position < buffer.length)
-						while (buffer.position < buffer.length) delete_char();
+					if (!buffer.length || buffer.position > buffer.length) return;
+
+					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
+
+					if (buffer.position < buffer.length) {
+						ft_memset(&buffer.value[buffer.position], 0, buffer.length - buffer.position);
+						buffer.length -= buffer.length - buffer.position;
+					}
+
+					if (total_chars) {
+						int tmp = total_chars;
+						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						cursor_left(total_chars);
+						if (buffer.position) {
+							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							cursor_left(0);
+						}
+					}
 				}
 
 			#pragma endregion
@@ -295,9 +279,11 @@
 			#pragma region Home
 
 				static void home() {
+					if (!buffer.length || buffer.position > buffer.length) return;
+
 					while (buffer.position > 0) {
-						cursor_left(0);
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+						cursor_left(0);
 					}
 				}
 
@@ -306,6 +292,7 @@
 			#pragma region End
 
 				static void end() {
+					if (!buffer.length || buffer.position > buffer.length) return;
 					int extra = (vi_mode == EDIT);
 
 					while (buffer.position < buffer.length - extra) {
@@ -331,7 +318,7 @@
 					if (!new_line) return;
 					if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
 
-					end(); backspace_start();
+					home(); delete_end();
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -369,7 +356,7 @@
 						free_line = true;
 					}
 
-					end(); backspace_start();
+					home(); delete_end();
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -402,12 +389,12 @@
 									cursor_left(0); (buffer.position)--;
 								}
 								while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
-									cursor_left(0);
 									do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+									cursor_left(0);
 								}
 							} else if (buffer.position) {
-								cursor_left(0);
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+								cursor_left(0);
 							}
 						}
 					}
@@ -470,8 +457,10 @@
 							}
 						} else if (!vi_mode) {
 							vi_mode = EDIT;												// Escape			- Edit mode
-							cursor_left(0);
-							if (buffer.position) buffer.position--;
+							if (buffer.position) {
+								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+								cursor_left(0);
+							}
 						} return (1);
 					} return (0);
 				}
@@ -482,7 +471,7 @@
 
 		#pragma region Print Char
 
-			static int print_char() {
+			static int print_char() {	//	USE TERMCAP, PLEASE
 				if (vi_mode) return (0);
 
 				size_t char_size = 1;
@@ -512,10 +501,10 @@
 				for (size_t i = buffer.position; i < buffer.length; ) {
 					if (char_width(i, buffer.value) == 2) move_back++;
 					if ((unsigned char)buffer.value[i] >= 0xC0) {
-						if ((unsigned char)buffer.value[i] >= 0xF0)		i += 4;	// 4 bytes
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
 						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-						else										i += 2;	// 2 bytes
-					} else											i++;	// 1 byte
+						else												i += 2;	// 2 bytes
+					} else													i++;	// 1 byte
 					move_back++;
 				}
 				while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
@@ -567,87 +556,6 @@
 					}
 					case FIRST:	{ home();	break; }
 					case LAST:	{ end();	break; }
-				}
-			}
-
-		#pragma endregion
-
-		#pragma region Delete
-
-			static void n_backspace() {
-				int number = get_n();
-
-				while (number--) backspace();
-			}
-
-			static void n_delete_char() {
-				int number = get_n();
-
-				while (number--) delete_char();
-			}
-
-			static void n_delete_to() {
-
-			}
-
-		#pragma endregion
-
-		#pragma region Copy
-
-			static void copy(bool to_end) {
-				if (to_end) {
-					if (clipboard) sfree(clipboard);
-					clipboard = ft_strdup(&buffer.value[buffer.position]);
-				}
-			}
-
-		#pragma endregion
-
-		#pragma region Paste
-
-			static void paste(bool reverse) {
-				if (!clipboard || !*clipboard) return;
-
-				int number = get_n();
-
-				while (number--) {
-					if (reverse)	arrow_left();
-					else			{ insert_mode(CURSOR); arrow_right(); }
-
-					// Expand buffer if necessary
-					while (buffer.length + ft_strlen(clipboard) >= buffer.size) {
-						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-						buffer.size *= 2;
-					}
-
-					if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + ft_strlen(clipboard)], &buffer.value[buffer.position], buffer.length - buffer.position);
-
-					// Insert all bytes of the character into the buffer
-					ft_memcpy(&buffer.value[buffer.position], clipboard, ft_strlen(clipboard));
-
-					buffer.length += ft_strlen(clipboard);
-
-					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-					buffer.position += ft_strlen(clipboard);
-
-					// Adjust the cursor position in the terminal
-					size_t move_back = 0;
-					for (size_t i = buffer.position; i < buffer.length; ) {
-						if (char_width(i, buffer.value) == 2) move_back++;
-						if ((unsigned char)buffer.value[i] >= 0xC0) {
-							if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-							else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-							else												i += 2;	// 2 bytes
-						} else													i++;	// 1 byte
-						move_back++;
-					}
-					while (move_back--) cursor_left(1);
-
-					if (!reverse) {
-						vi_mode = EDIT;
-						cursor_left(0);
-						if (buffer.position) buffer.position--;
-					}
 				}
 			}
 
@@ -781,6 +689,136 @@
 
 		#pragma endregion
 
+		#pragma region Swap
+
+			#pragma region Char
+
+				static void swap_char() {
+					if (buffer.position > 0) {
+						char temp[8];
+						if (buffer.position < buffer.length) {
+							size_t back_pos1 = 1, back_pos2 = 1;
+							while (buffer.position - back_pos1 > 0 && (buffer.value[buffer.position - back_pos1] & 0xC0) == 0x80) back_pos1++;
+							while (buffer.position + back_pos2 < buffer.length && (buffer.value[buffer.position + back_pos2] & 0xC0) == 0x80) back_pos2++;
+
+							if (back_pos1 > 8 || back_pos2 > 8) return;
+
+							ft_memcpy(temp, &buffer.value[buffer.position - back_pos1], back_pos1);
+							ft_memmove(&buffer.value[buffer.position - back_pos1], &buffer.value[buffer.position], back_pos2);
+							buffer.position -= back_pos1; buffer.position += back_pos2;
+							ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
+
+							cursor_left(char_width(0, temp));
+							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
+							buffer.position += back_pos1;
+						} else {
+							size_t back_pos1 = 1, back_pos2 = 1;
+							while (buffer.position - back_pos1 > 0 && (buffer.value[buffer.position - back_pos1] & 0xC0) == 0x80) back_pos1++;
+							if (back_pos1 > 8) return;
+							buffer.position -= back_pos1;
+							while (buffer.position - back_pos2 > 0 && (buffer.value[buffer.position - back_pos2] & 0xC0) == 0x80) back_pos2++;
+
+							ft_memcpy(temp, &buffer.value[buffer.position - back_pos2], back_pos2);
+							ft_memmove(&buffer.value[buffer.position - back_pos2], &buffer.value[buffer.position], back_pos1);
+							buffer.position -= back_pos2; buffer.position += back_pos1;
+							ft_memmove(&buffer.value[buffer.position], temp, back_pos2);
+
+							cursor_left(char_width(0, temp));
+							cursor_left(char_width(buffer.position - back_pos1, buffer.value));
+
+							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
+							buffer.position += back_pos2;
+						}
+					}
+				}
+
+			#pragma endregion
+
+		#pragma endregion
+
+		#pragma region Delete
+
+			static void n_backspace() {
+				int number = get_n();
+
+				while (number--) backspace();
+			}
+
+			static void n_delete_char() {
+				int number = get_n();
+
+				while (number--) delete_char();
+			}
+
+			static void n_delete_to() {
+
+			}
+
+		#pragma endregion
+
+		#pragma region Copy
+
+			static void copy(bool to_end) {
+				if (to_end) {
+					if (clipboard) sfree(clipboard);
+					clipboard = ft_strdup(&buffer.value[buffer.position]);
+				}
+			}
+
+		#pragma endregion
+
+		#pragma region Paste
+
+			static void paste(bool reverse) {
+				if (!clipboard || !*clipboard) return;
+
+				int number = get_n();
+
+				while (number--) {
+					if (reverse)	arrow_left();
+					else			{ insert_mode(CURSOR); arrow_right(); }
+
+					// Expand buffer if necessary
+					while (buffer.length + ft_strlen(clipboard) >= buffer.size) {
+						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+						buffer.size *= 2;
+					}
+
+					if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + ft_strlen(clipboard)], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+					// Insert all bytes of the character into the buffer
+					ft_memcpy(&buffer.value[buffer.position], clipboard, ft_strlen(clipboard));
+
+					buffer.length += ft_strlen(clipboard);
+
+					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+					buffer.position += ft_strlen(clipboard);
+
+					// Adjust the cursor position in the terminal
+					size_t move_back = 0;
+					for (size_t i = buffer.position; i < buffer.length; ) {
+						if (char_width(i, buffer.value) == 2) move_back++;
+						if ((unsigned char)buffer.value[i] >= 0xC0) {
+							if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
+							else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
+							else												i += 2;	// 2 bytes
+						} else													i++;	// 1 byte
+						move_back++;
+					}
+					while (move_back--) cursor_left(1);
+
+					if (!reverse) {
+						vi_mode = EDIT;
+						if (buffer.position) {
+							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							cursor_left(0);
+						}
+					}
+				}
+			}
+
+		#pragma endregion
+
 		#pragma region Undo
 
 			static void n_undo() {
@@ -789,6 +827,30 @@
 
 			static void n_undo_all() {
 				
+			}
+
+		#pragma endregion
+
+		#pragma region Comment
+
+			static int comment() {
+				if (buffer.length + 1 >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				home();
+				ft_memmove(&buffer.value[1], &buffer.value[0], buffer.length);
+				buffer.value[0] = '#';
+				buffer.length++;
+
+				history_set_pos_end();
+				buffer.value[buffer.length] = '\0';
+				write(STDOUT_FILENO, buffer.value, buffer.length);
+				write(STDOUT_FILENO, "\r\n", 2);
+				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
+				return (2);
 			}
 
 		#pragma endregion
@@ -884,30 +946,6 @@
 
 		#pragma endregion
 
-		#pragma region Comment
-
-			static int comment() {
-				if (buffer.length + 1 >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				home();
-				ft_memmove(&buffer.value[1], &buffer.value[0], buffer.length);
-				buffer.value[0] = '#';
-				buffer.length++;
-
-				history_set_pos_end();
-				buffer.value[buffer.length] = '\0';
-				write(STDOUT_FILENO, buffer.value, buffer.length);
-				write(STDOUT_FILENO, "\r\n", 2);
-				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
-				return (2);
-			}
-
-		#pragma endregion
-
 	#pragma endregion
 
 	#pragma region Specials
@@ -918,7 +956,7 @@
 			else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
 			else if (buffer.c == 20)					{ swap_char();					}	//-	[CTRL + T]	Swap the current character with the previous one				(Not working right with multibytes 漢字)
 			else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-			else if (buffer.c == 23)					{ backspace_word();				}	//	[CTRL + W]	Backspace the current word
+			else if (buffer.c == 23)					{ backspace_word();				}	//	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
 			else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
 			else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 			else if (vi_mode) {
