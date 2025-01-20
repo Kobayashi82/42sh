@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/18 19:30:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:32:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 
 			int	ft_ispunct(const char c) {
 				int			i = 0;
-				const char	*punct = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
+				const char	*punct = "!\"#$%&'()*+,-./:;<=>?@€[\\]^_`{|}~";
 				while (punct[i] != '\0') { if (c == punct[i++]) return (1); } return (0);
 			}
 

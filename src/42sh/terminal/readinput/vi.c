@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:57:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/20 15:48:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,12 @@
 		#pragma endregion
 
 		#pragma region Cursors
+
+			// CURSOR MOVEMENT (Ctrl + left/right)
+			//
+			// Consists of a sequence of alphanumeric characters.
+			// Any non-alphanumeric character is considered a delimiter or space.
+			// An empty line is also considered to be a word.
 
 			#pragma region Modifiers
 
@@ -651,6 +657,11 @@
 
 			#pragma region Word
 
+				// WORD
+				//
+				// Consists of a sequence of letters, digits and underscores, or a sequence of other non-blank characters, separated with white space.
+				// An empty line is also considered to be a word.
+
 				static void left_start_word() {
 
 				}
@@ -666,6 +677,11 @@
 			#pragma endregion
 
 			#pragma region BigWord
+
+				// BIGWORD
+				//
+				// Consists of a sequence of non-blank characters, separated with white space.
+				// An empty line is also considered to be a bigword.
 
 				static void left_start_bigword() {
 
@@ -739,7 +755,9 @@
 				#pragma region No IsSpace
 
 					static void goto_no_isspace() {
-						
+						home();
+						while (buffer.position < buffer.length - 1 && ft_isspace(buffer.value[buffer.position]))
+							arrow_right();
 					}
 
 				#pragma endregion
@@ -895,63 +913,63 @@
 	#pragma region Specials
 
 		static int specials() {
-			if (buffer.c == 127 && !vi_mode)			backspace();					//	[BackSpace]	Delete the previous character						(Only in insertion mode)
-			else if (buffer.c == 8 && !vi_mode)			backspace();					//	[CTRL + H]	Delete the previous character						(Only in insertion mode)
-			else if	(buffer.c == 19 && !vi_mode)		fake_segfault = true;			//	[CTRL + S]	Fake SegFault										(Only in insertion mode)
-			else if (buffer.c == 20)					swap_char();					//	[CTRL + T]	Swap the current character with the previous one	(Not working right with multibytes 漢字)
-			else if (buffer.c == 21)					backspace_start();				//	[CTRL + U]	Backspace from cursor to the start of the line
-			else if (buffer.c == 23)					backspace_word();				//	[CTRL + W]	Backspace the current word
-			else if (buffer.c == 31)					undo();							//	[CTRL + _]	Undo the last change
-			else if (buffer.c >= 1 && buffer.c <= 26)	;								//	Ignore other CTRL + X commands
+			if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
+			else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
+			else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
+			else if (buffer.c == 20)					{ swap_char();					}	//-	[CTRL + T]	Swap the current character with the previous one				(Not working right with multibytes 漢字)
+			else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
+			else if (buffer.c == 23)					{ backspace_word();				}	//	[CTRL + W]	Backspace the current word
+			else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
+			else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 			else if (vi_mode) {
-				if (buffer.c >= '0' && buffer.c <= '9')	set_n();						//	Set the repetition number for commands
+				if (buffer.c >= '0' && buffer.c <= '9')	{ set_n();						}	//	Set the repetition number for commands
 
-				else if (buffer.c == 'i')	insert_mode(CURSOR);						//	Enter insert mode at the cursor position
-				else if (buffer.c == 'I')	insert_mode(FIRST);							//	Enter insert mode at the beginning of the line
-				else if (buffer.c == 'a')	insert_mode(AFTER_CURSOR);					//	Enter insert mode after the cursor position
-				else if (buffer.c == 'A')	insert_mode(LAST);							//	Enter insert mode at the end of the line
-				else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();   }	//- [n]	Delete up to the specified position and enter insert mode (0, ^, $, c)
-				else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end();    }	//	Delete from cursor to the end of the line and enter insert mode
-				else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char(); }	//	[n] Delete the current character and enter insert mode
-				else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end();    }	//	Delete the entire line and enter insert mode
-				else if (buffer.c == 'd')	n_delete_to();								//- [n]	Delete up to the specified position (0, ^, $, d)
-				else if (buffer.c == 'D')	delete_end();								//	Delete from cursor to the end of the line
-				else if (buffer.c == 'x')	n_delete_char();							//	[n] Delete the current character
-				else if (buffer.c == 'X')	n_backspace();								//	[n] Delete the previous character (backspace)
+				else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
+				else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
+				else if (buffer.c == 'a')	{ insert_mode(AFTER_CURSOR);				}	//	Enter insert mode after the cursor position
+				else if (buffer.c == 'A')	{ insert_mode(LAST);						}	//	Enter insert mode at the end of the line
+				else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();		}	//- [n]	Delete up to the specified position and enter insert mode				(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
+				else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end();		}	//	Delete from cursor to the end of the line and enter insert mode
+				else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char();		}	//	[n] Delete the current character and enter insert mode
+				else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end();		}	//	Delete the entire line and enter insert mode
+				else if (buffer.c == 'd')	{ n_delete_to();							}	//- [n]	Delete up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, d)
+				else if (buffer.c == 'D')	{ delete_end();								}	//	Delete from cursor to the end of the line
+				else if (buffer.c == 'x')	{ n_delete_char();							}	//	[n] Delete the current character
+				else if (buffer.c == 'X')	{ n_backspace();							}	//	[n] Delete the previous character
 
-				else if (buffer.c == 'r')	;											//-	[n]	Replace the current character with the specified one
-				else if (buffer.c == 'R')	;											//-	[n]	Enter replace mode: allows replacing characters one by one
-				else if (buffer.c == 'y')	copy(false);								//-	Copy up to the specified position (0, ^, $, c)
-				else if (buffer.c == 'Y')	copy(true);									//	Copy from the current position to the end of the line
-				else if (buffer.c == 'p')	paste(false);								//	[n]	Paste copied text after the cursor
-				else if (buffer.c == 'P')	paste(true);								//	[n]	Paste copied text before the cursor
+				else if (buffer.c == 'r')	{ ;											}	//-	[n]	Replace the current character with the specified one
+				else if (buffer.c == 'R')	{ ;											}	//-	[n]	Enter replace mode: allows replacing characters one by one
+				else if (buffer.c == 'y')	{ copy(false);								}	//-	[n] Copy up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, y)
+				else if (buffer.c == 'Y')	{ copy(true);								}	//	Copy from the current position to the end of the line
+				else if (buffer.c == 'p')	{ paste(false);								}	//	[n]	Paste copied text after the cursor
+				else if (buffer.c == 'P')	{ paste(true);								}	//	[n]	Paste copied text before the cursor
 
-				else if (buffer.c == 'b')	left_start_word();							//-	[n] Move the cursor to the beginning of the previous word
-				else if (buffer.c == 'B')	left_start_bigword();						//-	[n] Move the cursor to the beginning of the previous big word
-				else if (buffer.c == 'w')	right_start_word();							//-	[n] Move the cursor to the beginning of the next word
-				else if (buffer.c == 'W')	right_start_bigword();						//-	[n] Move the cursor to the beginning of the next big word
-				else if (buffer.c == 'e')	right_end_word();							//-	[n] Move the cursor to the end of the current word
-				else if (buffer.c == 'E')	right_end_bigword();						//-	[n] Move the cursor to the end of the current big word
+				else if (buffer.c == 'b')	{ left_start_word();						}	//-	[n] Move the cursor to the beginning of the previous word
+				else if (buffer.c == 'B')	{ left_start_bigword();						}	//-	[n] Move the cursor to the beginning of the previous big word
+				else if (buffer.c == 'w')	{ right_start_word();						}	//-	[n] Move the cursor to the beginning of the next word
+				else if (buffer.c == 'W')	{ right_start_bigword();					}	//-	[n] Move the cursor to the beginning of the next big word
+				else if (buffer.c == 'e')	{ right_end_word();							}	//-	[n] Move the cursor to the end of the current word
+				else if (buffer.c == 'E')	{ right_end_bigword();						}	//-	[n] Move the cursor to the end of the current big word
 
-				else if (buffer.c == '^')	goto_no_isspace();							//-	Move the cursor to the first non-whitespace character in the line
-				else if (buffer.c == 'f')	goto_char(0);								//	[n] Move the cursor forward to the character specified
-				else if (buffer.c == 'F')	goto_char(0);								//	[n] Move the cursor backward to the character specified
-				else if (buffer.c == 't')	goto_char(0);								//	[n] Move the cursor forward one character before the character specified
-				else if (buffer.c == 'T')	goto_char(0);								//	[n] Move the cursor backward one character after the character specified
-				else if (buffer.c == ';')	repeat_cmd(false);							//	[n] Repeat the last character search command (f, F, t, T)
-				else if (buffer.c == ',')	repeat_cmd(true);							//	[n] Repeat the last character search command (f, F, t, T) in reverse direction
-				else if (buffer.c == '|')	goto_position();							//	[n] Move the cursor to a specific character position (default is 1)
+				else if (buffer.c == '^')	{ goto_no_isspace();						}	//	Move the cursor to the first non-whitespace character in the line
+				else if (buffer.c == 'f')	{ goto_char(0);								}	//	[n] Move the cursor forward to the character specified
+				else if (buffer.c == 'F')	{ goto_char(0);								}	//	[n] Move the cursor backward to the character specified
+				else if (buffer.c == 't')	{ goto_char(0);								}	//	[n] Move the cursor forward one character before the character specified
+				else if (buffer.c == 'T')	{ goto_char(0);								}	//	[n] Move the cursor backward one character after the character specified
+				else if (buffer.c == ';')	{ repeat_cmd(false);						}	//	[n] Repeat the last character search command								(f, F, t, T)
+				else if (buffer.c == ',')	{ repeat_cmd(true);							}	//	[n] Repeat the last character search command in reverse						(f, F, t, T)
+				else if (buffer.c == '|')	{ goto_position();							}	//	[n] Move the cursor to a specific character position						(default is 1)
 
-				else if (buffer.c == 'k')	arrow_up();									//	[n] Move the cursor up
-				else if (buffer.c == 'j')	arrow_down();								//	[n] Move the cursor down
-				else if (buffer.c == 'h')	arrow_left();								//	[n] Move the cursor left
-				else if (buffer.c == 'l')	arrow_right();								//	[n] Move the cursor right
-				else if (buffer.c == ' ')	arrow_right();								//	[n] Move the cursor right
-				else if (buffer.c == '$')	end();										//	Move the cursor to the end of the line
-				else if (buffer.c == 'u')	n_undo();									//-	[n] Undo the last change
-				else if (buffer.c == 'U')	n_undo_all();								//-	Undo all changes
-				else if (buffer.c == 'v')	return (edit_input());						//	Edit the input using the default editor, and terminate the input upon exiting the editor
-				else if	(buffer.c == '#')	return (comment());							//	Comment and terminate the input
+				else if (buffer.c == 'k')	{ arrow_up();								}	//	[n] Move the cursor up
+				else if (buffer.c == 'j')	{ arrow_down();								}	//	[n] Move the cursor down
+				else if (buffer.c == 'h')	{ arrow_left();								}	//	[n] Move the cursor left
+				else if (buffer.c == 'l')	{ arrow_right();							}	//	[n] Move the cursor right
+				else if (buffer.c == ' ')	{ arrow_right();							}	//	[n] Move the cursor right
+				else if (buffer.c == '$')	{ end();									}	//	Move the cursor to the end of the line
+				else if (buffer.c == 'u')	{ n_undo();									}	//-	[n] Undo the last change
+				else if (buffer.c == 'U')	{ n_undo_all();								}	//-	Undo all changes
+				else if (buffer.c == 'v')	{ return (edit_input());					}	//	Edit the input using the default editor and terminate the input
+				else if	(buffer.c == '#')	{ return (comment());						}	//	Comment and terminate the input
 
 				else return (0);
 			} else return (0);
@@ -981,130 +999,5 @@
 		if (result && clipboard) sfree(clipboard);
 		return (result);
 	}
-
-#pragma endregion
-
-#pragma region Info
-
-	// set -o vi
-
-	//	General Mode
-	//	---------------
-	// ✓	Up				(History Prev)
-	// ✓	Down			(History Next)
-	// ✓	Left			(Cursor Left)
-	// ✓	Right			(Cursor Right)
-	// ✓	Home			(Cursor Home)
-	// ✓	End				(Cursor End)
-	// ✓	CTRL + H		(BackSpace)							- only in insertion mode
-	// ✓	CTRL + U		(Backspace from cursor to start)
-	// ✓	CTRL + W		(Backspace current word)
-	// ✓	CTRL + Delete	(Delete current word)
-	// ✓	CTRL + _		(Undo)
-	// ✓	CTRL + T		(Swap Char)
-	// ✓	CTRL + S		(Fake SegFault)						- only in insertion mode
-
-	// ✓	#				(Comment and end input)
-	// ✓	h				cursor left
-	// ✓	l, space		cursor right
-	// ✗	w				cursor right start word
-	// ✗	W				cursor right start bigword
-	// ✗	e				cursor right end word
-	// ✗	E				cursor right end bigword
-	// ✗	b				cursor left  start word
-	// ✗	B				cursor left  start bigword
-	// ✗	x				delete char																	(cut line really)
-	// ✗	X				delete previous char														(cut line really)
-	// ✗	d				elimina hasta donde se indique (0, ^, $, d) mirar manual para mas info		(cut line really)
-	// ✗	D				elimina desde el carácter actual hasta el final de la linea					(cut line really)
-	// ✗	a				modo inserción después del cursor
-	// ✗	i				modo inserción donde el cursor
-	// ✗	A				modo inserción al final de la linea
-	// ✗	I				modo inserción al principio de la linea
-	// ✗	R				modo inserción pero hace algo raro
-	// ✗	^				mueve al primer carácter de la linea que no sea un isspace
-	// ✗	$				mueve al final de la línea
-	// ✗	0				mueve al principio de la línea
-	// ✗	[n] |			mueve al carácter (1 por defecto)
-	// ✗	f[c]			mueve al primer carácter después del cursor
-	// ✗	F[c]			mueve al primer carácter antes del cursor
-	// ✗	t				mueve al carácter anterior al primer carácter después del cursor
-	// ✗	T				mueve al carácter posterior al primer carácter antes del cursor
-	// ✗	;				repite el comando mas reciente (f, F, t T)
-	// ✗	,				repite el comando mas reciente (f, F, t T) en modo reverse
-	// ✗	C				delete from cursor to end of line
-	// ✗	S				elimina la linea y entra en modo insercion
-	// ✗	c				elimina hasta donde se indique (0, ^, $, c) mirar manual para mas info
-	// ✗	r[c]			reemplaza el carácter actual por el indicado
-	// ✗	y				copia hasta donde se indique (0, ^, $, c)
-	// ✗	Y				copia hasta el final de la linea
-	// ✗	p				pega lo copiado después del cursor
-	// ✗	P				pega lo copiado antes del cursor
-	// ✗	u				undo last change
-	// ✗	U				undo all changes
-	// ✗	[n] k			establece la linea por el comando del historial indicado
-	// ✗	j				algo que ver con comandos y el historial
-	// ✗	v				abre vi... y mas polleces
-
-	//	Insertion Mode
-	//	--------------
-	// ✓	Up				(History Prev)
-	// ✓	Down			(History Next)
-	// ✓	Left			(Cursor Left)
-	// ✓	Right			(Cursor Right)
-	// ✓	Home			(Cursor Home)
-	// ✓	End				(Cursor End)
-	// ✓	CTRL + H		(BackSpace)
-	// ✓	CTRL + U		(Backspace from cursor to start)
-	// ✓	CTRL + W		(Backspace current word)
-	// ✓	CTRL + Delete	(Delete current word)
-	// ✓	CTRL + _		(Undo)
-	// ✓	CTRL + T		(Swap Char)
-	// ✓	CTRL + S		(Fake SegFault)
-
-	// https://pubs.opengroup.org/onlinepubs/9699919799/utilities/sh.html#tag_20_117_13_04
-
-	// space	32
-	// #		35
-	// $		36
-	// ,		44
-	// 0-9		48-57
-	// ;		59
-	// A		65
-	// B		66
-	// C		67
-	// D		68
-	// E		69
-	// F		70
-	// I		73
-	// P		80
-	// R		82
-	// S		83
-	// T		84
-	// U		85
-	// W		87
-	// X		88
-	// Y		89
-	// ^		94
-	// a		97
-	// b		98
-	// c		99
-	// d		100
-	// e		101
-	// f		102
-	// h		104
-	// i		105
-	// j		106
-	// k		107
-	// l		108
-	// p		112
-	// r		114
-	// t		116
-	// u		117
-	// v		118
-	// w		119
-	// x		120
-	// y		121
-	// |		124
 
 #pragma endregion
