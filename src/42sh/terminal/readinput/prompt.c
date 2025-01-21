@@ -6,23 +6,27 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:03:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:47:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "terminal/prompt.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "libft.h"
+	#include "terminal/prompt.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	char	*prompt_PS1 = NULL;			//	Default prompt displayed for regular input
 	char	*prompt_PS2 = NULL;			//	Continuation prompt for heredocs or multiline input
 
 #pragma endregion
 
-#pragma region Utils
+#pragma region "Utils"
 
-	#pragma region Backslashes
+	#pragma region "Backslashes"
 
 		static char *backslashes(char *str) {
 			char *tmp = str;
@@ -40,7 +44,7 @@
 
 #pragma endregion
 
-#pragma region Set
+#pragma region "Set"
 
 	void prompt_set(int type, char *new_prompt) {
 		// char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
@@ -63,7 +67,7 @@
 
 #pragma endregion
 
-#pragma region Clear
+#pragma region "Clear"
 
 	void prompt_clear(int type) {
 		if ((type == PS1 || type == BOTH) && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
@@ -72,7 +76,7 @@
 
 #pragma endregion
 
-#pragma region Information
+#pragma region "Information"
 
 	//	PROMPT_COMMAND			Ejecuta antes de mostrar el prompt
 

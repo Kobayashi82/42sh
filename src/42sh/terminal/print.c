@@ -6,13 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:07:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:50:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
+#pragma region "Includes"
 
-#pragma region Print
+	#include "terminal/terminal.h"
+
+#pragma endregion
+
+#pragma region "Print"
 
 	//	Print text in the specified FD
 	int print(int fd, char *str, int mode) {

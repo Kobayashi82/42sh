@@ -11,9 +11,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+
+#pragma endregion
 
 // :
 // .

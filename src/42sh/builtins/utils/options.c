@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:47:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:05:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/options.h"
-#include "main/project.h"
+#pragma region "Includes"
 
-#pragma region Parse
+	#include "terminal/terminal.h"
+	#include "builtins/options.h"
+	#include "main/project.h"
+
+#pragma endregion
+
+#pragma region "Parse"
 
 	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid) {
 		t_opt *result = ft_calloc(1, sizeof(t_opt));
@@ -55,7 +59,7 @@
 
 #pragma endregion
 
-#pragma region Invalid
+#pragma region "Invalid"
 
 	int invalid_option(char *name, char *opts, char *usage) {
 		if (!name) return (0);
@@ -84,7 +88,7 @@
 
 #pragma endregion
 
-#pragma region Version
+#pragma region "Version"
 
 	int print_version(char *name, char *version) {
 		if (!name || !version) return (0);

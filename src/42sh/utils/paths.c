@@ -6,16 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 15:09:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:01:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
-#include "variables.h"
+#pragma region "Includes"
 
-#pragma region Resolve
+	#include "utils.h"
+	#include "variables.h"
 
-	#pragma region Symlink
+#pragma endregion
+
+#pragma region "Resolve"
+
+	#pragma region "Symlink"
 
 		char *resolve_symlink(const char *path) {
 			static char	resolved_path[PATH_MAX];
@@ -34,7 +38,7 @@
 
 	#pragma endregion
 
-	#pragma region Path
+	#pragma region "Path"
 
 		char *resolve_path(const char *path) {
 			if (!path) return (NULL);
@@ -120,7 +124,7 @@
 
 	#pragma endregion
 
-	#pragma region FullPath
+	#pragma region "FullPath"
 
 		char *get_fullpath(char *path) {
 			if (ft_strchr(path, '/')) return (resolve_path(path));
@@ -149,9 +153,9 @@
 
 #pragma endregion
 
-#pragma region Find
+#pragma region "Find"
 
-	#pragma region First
+	#pragma region "First"
 
 		char *path_find_first(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
@@ -181,7 +185,7 @@
 
 	#pragma endregion
 
-	#pragma region Path All
+	#pragma region "Path All"
 
 		char **path_find_all(char *cmd, char *paths) {
 			if (!cmd) return (NULL);

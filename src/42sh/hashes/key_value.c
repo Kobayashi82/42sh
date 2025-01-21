@@ -6,14 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:40:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:25:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "key_value.h"
+#pragma region "Includes"
 
-#pragma region Value
+	#include "libft.h"
+	#include "key_value.h"
+
+#pragma endregion
+
+#pragma region "Value"
 
 	const char *get_value(const char *key) {
 		if (!key) return (NULL);
@@ -26,7 +30,7 @@
 
 #pragma endregion
 
-#pragma region Key / Value
+#pragma region "Key / Value"
 
 	int get_key_value(const char *line, char **key, char **value, char sep) {
 		if (*key)	{ sfree(*key); *key = NULL; }
@@ -57,7 +61,7 @@
 
 #pragma endregion
 
-#pragma region Format for Shell
+#pragma region "Format for Shell"
 
 	char *format_for_shell(const char *value, char quote_type) {
 		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
@@ -92,7 +96,7 @@
 
 #pragma endregion
 
-#pragma region Rejected
+#pragma region "Rejected"
 
 	//	READ Y WRITE DE OPTIONS NO SE IMPLEMENTAN, PERO EL CODIGO PUEDE SER UTIL PARA LUEGO
 
@@ -120,7 +124,7 @@
 	// 	if (fd == -1) { options_write(); return (1); }
 
 	// 	char *line = NULL, *key = NULL, *value = NULL;
-	// 	while ((line = ft_get_next_line(fd))) {
+	// 	while ((line = get_next_line(fd))) {
 	// 		get_key_value(line, &key, &value, '=');
 	// 		if (key && key[0] && value && value[0]) options_set(key, value);
 	// 		sfree(line);

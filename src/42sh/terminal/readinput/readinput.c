@@ -6,16 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:56:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:46:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "terminal/prompt.h"
-#include "main/options.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "terminal/prompt.h"
+	#include "main/options.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_buffer	buffer;
 
@@ -28,7 +32,7 @@
 
 #pragma endregion
 
-#pragma region Raw Mode
+#pragma region "Raw Mode"
 
 	void disable_raw_mode() {
 		if (raw_mode) {
@@ -57,7 +61,7 @@
 
 #pragma endregion
 
-#pragma region ReadInput
+#pragma region "ReadInput"
 
 	char *readinput(char *prompt) {
 		int result = 0;

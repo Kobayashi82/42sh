@@ -6,17 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:52:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:14:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/variables.h"
-#include "project.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/variables.h"
+	#include "project.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -42,7 +46,7 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
 	static int delete_variable(char *arg, char **invalues) {
 		if (!arg) return (0);
@@ -60,7 +64,7 @@
 
 #pragma endregion
 
-#pragma region Unset
+#pragma region "Unset"
 
 	int unset(t_arg *args) {
 		t_opt *opts = parse_options(args, "v", '-', false);

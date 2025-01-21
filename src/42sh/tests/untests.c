@@ -6,16 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:51:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:04:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "tests.h"
+#pragma region "Includes"
 
-#include <stdio.h>
+	#include "libft.h"
+	#include "tests.h"
 
-#pragma region UserInfo
+	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "UserInfo"
 
 	void test_userinfo() {
 		t_userinfo *user = get_userinfo_by_name("root");

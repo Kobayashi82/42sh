@@ -6,21 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:09:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:19:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <stdbool.h>
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct {
 			bool	emacs;
@@ -35,7 +35,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	int		options_set(const char *option, bool value);
 	void	options_print();

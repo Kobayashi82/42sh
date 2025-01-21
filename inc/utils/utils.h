@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:38:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:21:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include "libft.h"
 
@@ -22,16 +22,15 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Structures
-
+	#pragma region "Structures"
 
 	#pragma endregion
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	----------- PATH -----------
 	char		*resolve_symlink(const char *path);

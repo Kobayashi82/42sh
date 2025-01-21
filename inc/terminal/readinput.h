@@ -6,28 +6,28 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 14:58:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:20:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <stdbool.h>
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		enum e_input_mode { READLINE, VI };
 		enum e_vi_mode { INSERT, EDIT };
 
 	#pragma endregion
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct s_buffer {
 			unsigned char	c;
@@ -53,7 +53,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	------- AUTOCOMPLETE -------
 

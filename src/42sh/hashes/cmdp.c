@@ -6,20 +6,24 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:52:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:56:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "hashes/cmdp.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "hashes/cmdp.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_cmdp *cmdp_table[CMDP_HASH_SIZE];
 
 #pragma endregion
 
-#pragma region Index
+#pragma region "Index"
 
 	static unsigned int hash_index(const char *key) {
 		unsigned int hash = 0;
@@ -30,9 +34,9 @@
 
 #pragma endregion
 
-#pragma region Import
+#pragma region "Import"
 
-	#pragma region CMDP
+	#pragma region "CMDP"
 
 		int cmdp_add(const char *path, bool check_file, bool check_exec) {
 			if (!path) return (1);
@@ -67,9 +71,9 @@
 
 #pragma endregion
 
-#pragma region Export
+#pragma region "Export"
 
-	#pragma region CMDP
+	#pragma region "CMDP"
 
 		t_cmdp *cmdp_find(const char *name, bool ninja) {
 			if (!name) return (NULL);
@@ -107,7 +111,7 @@
 
 	#pragma endregion
 
-	#pragma region Array
+	#pragma region "Array"
 
 		char **cmdp_to_array(bool sort) {
 			size_t i = 0;
@@ -141,7 +145,7 @@
 
 	#pragma endregion
 
-	#pragma region Print
+	#pragma region "Print"
 
 		int cmdp_print(bool sort) {
 			char **array = cmdp_to_array(sort);
@@ -161,7 +165,7 @@
 
 	#pragma endregion
 
-	#pragma region Length
+	#pragma region "Length"
 
 		size_t cmdp_length() {
 			size_t i = 0;
@@ -181,9 +185,9 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
-	#pragma region CMDP
+	#pragma region "CMDP"
 
 		int cmdp_delete(const char *name) {
 			if (!name) return (1);
@@ -208,7 +212,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		void cmdp_clear() {
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
@@ -230,7 +234,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	int cmdp_initialize() {
 		return (0);

@@ -6,21 +6,25 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:37:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:04:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "terminal/history.h"
-#include "hashes/alias.h"
-#include "hashes/variables.h"
-#include "hashes/builtin.h"
-#include "main/shell.h"
-#include "tests.h"
+#pragma region "Includes"
 
-#include <stdio.h>
+	#include "libft.h"
+	#include "terminal/history.h"
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "hashes/builtin.h"
+	#include "main/shell.h"
+	#include "tests.h"
 
-#pragma region Test
+	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "Test"
 
 	int tests(int argc, const char **argv, const char **envp) {
 		if (argc == 1 || (ft_strcmp(argv[1], "test") && ft_strcmp(argv[1], "tests"))) return (0);

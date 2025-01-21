@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:40:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:17:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include "args.h"
 
@@ -20,9 +20,9 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct s_opt {
 			const char	*options;
@@ -36,7 +36,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 
 	//	========== UTILS ===========

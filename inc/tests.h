@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:36:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:21:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "parser/args.h"
+#pragma region "Includes"
 
-#pragma region Methods
+	#include "parser/args.h"
+
+#pragma endregion
+
+#pragma region "Methods"
 
 	t_arg	*test_create_args(char *line);
 	void	test_free_args(t_arg *args);

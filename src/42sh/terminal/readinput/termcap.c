@@ -6,28 +6,32 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 22:50:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:42:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "main/options.h"
 
 //	Si hay un emoticono por ejemplo en la columna primera o ultima, se puede desajustar la posicion
 //	Actualizar la posicion del cursor en todo momento
 
-#pragma region Variables
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "main/options.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_terminal	terminal;
 
 #pragma endregion
 
-#pragma region Utils
+#pragma region "Utils"
 
-	#pragma region Char Width
+	#pragma region "Char Width"
 
-		#pragma region Length
+		#pragma region "Length"
 
 			static int char_length(unsigned char c) {
 				if (c >= 0xF0) return (4);  // 4-byte
@@ -39,7 +43,7 @@
 
 		#pragma endregion
 
-		#pragma region Codepoint
+		#pragma region "Codepoint"
 
 			static unsigned int char_codepoint(const char *value, size_t length) {
 				unsigned char c = value[0];
@@ -52,7 +56,7 @@
 
 		#pragma endregion
 
-		#pragma region Width
+		#pragma region "Width"
 
 			int char_width(size_t position, char *value) {
 				unsigned char c = value[position];
@@ -99,11 +103,21 @@
 
 	#pragma endregion
 
+	#pragma region "Char Prev"
+
+		size_t char_prev(size_t position, char *value) {
+			if (position > 0)
+				do { position--; } while (position > 0 && (value[position] & 0xC0) == 0x80);
+			return (position);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
-#pragma region Cursor
+#pragma region "Cursor"
 
-	#pragma region Up
+	#pragma region "Up"
 
 		void cursor_up() {
 			char *action = tgetstr("up", NULL);
@@ -113,7 +127,7 @@
 
 	#pragma endregion
 
-	#pragma region Down
+	#pragma region "Down"
 
 		void cursor_down() {
 			char *action = tgetstr("do", NULL);
@@ -123,7 +137,7 @@
 
 	#pragma endregion
 
-	#pragma region Left
+	#pragma region "Left"
 
 		void cursor_left(int moves) {
 			char *action = tgetstr("le", NULL);
@@ -138,7 +152,7 @@
 
 	#pragma endregion
 
-	#pragma region Right
+	#pragma region "Right"
 
 		void cursor_right(int moves) {
 			if (!moves && buffer.position == buffer.length) return;
@@ -155,7 +169,7 @@
 
 	#pragma endregion
 
-	#pragma region Move
+	#pragma region "Move"
 
 		void cursor_move(size_t from_pos, size_t to_pos) {
 			if (from_pos > to_pos) {
@@ -183,7 +197,7 @@
 
 	#pragma endregion
 
-	#pragma region Get
+	#pragma region "Get"
 
 		void cursor_get() {
 			char	buf[32]; ft_memset(buf, 0, sizeof(buf));
@@ -208,7 +222,7 @@
 
 	#pragma endregion
 
-	#pragma region Set
+	#pragma region "Set"
 
 		void cursor_set(int row, int col) {
 			char *action = tgetstr("cm", NULL);
@@ -219,7 +233,7 @@
 
 	#pragma endregion
 
-	#pragma region Hide
+	#pragma region "Hide"
 
 		void cursor_hide() {
 			char *action = tgetstr("vi", NULL);
@@ -229,7 +243,7 @@
 
 	#pragma endregion
 
-	#pragma region Show
+	#pragma region "Show"
 
 		void cursor_show() {
 			char *action = tgetstr("ve", NULL);
@@ -241,7 +255,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	int terminal_initialize() {
 		char *termtype = getenv("TERM");

@@ -6,27 +6,31 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 12:06:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:58:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "terminal/history.h"
-#include "hashes/alias.h"
-#include "hashes/variables.h"
-#include "hashes/builtin.h"
-#include "parser/parser.h"
-#include "builtins/builtins.h"
-#include "main/options.h"
-#include "main/shell.h"
-#include "main/clean.h"
-#include "tests.h"
 
 //	Caracteres octal y hexadecimal
 //	libft array.c usa printf
 
-#pragma region Varios
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "terminal/history.h"
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "hashes/builtin.h"
+	#include "parser/parser.h"
+	#include "builtins/builtins.h"
+	#include "main/options.h"
+	#include "main/shell.h"
+	#include "main/clean.h"
+	#include "tests.h"
+
+#pragma endregion
+
+#pragma region "Varios"
 
 	int read_input() {
 		signals_set();
@@ -44,7 +48,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	static int initialize(int argc, const char **argv, const char **envp) {
 		(void) argc; (void) argv;
@@ -65,7 +69,7 @@
 
 #pragma endregion
 
-#pragma region Main
+#pragma region "Main"
 
 	int main(int argc, const char **argv, const char **envp) {
 		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);

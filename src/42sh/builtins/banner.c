@@ -6,13 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 12:04:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:06:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
+#pragma region "Includes"
 
-#pragma region Banner
+	#include "terminal/terminal.h"
+
+#pragma endregion
+
+#pragma region "Banner"
 
 	int banner() {                                            
 		print(1, RED600"\n\t        ,--,                                   \n", RESET);
@@ -35,7 +39,7 @@
 
 #pragma endregion
 
-#pragma region Welcome
+#pragma region "Welcome"
 
 	void welcome() {
 		print(1, G"\n\t\t\tWELCOME TO "RED600"42"Y"sh"G" 1.0\n\n", RESET);

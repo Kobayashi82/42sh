@@ -6,23 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/16 23:39:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:20:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Variables
+#pragma region "Variables"
 
 	#define HIST_MAXSIZE 5000
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		enum e_hist_type { HIST_MEM, HIST_FILE };
 
 	#pragma endregion
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct {
 			char	*line;
@@ -39,7 +39,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	----------- FILE -----------
 	void		history_file_set(const char *filename);

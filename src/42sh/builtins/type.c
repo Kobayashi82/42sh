@@ -6,19 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:52:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:13:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/alias.h"
-#include "hashes/cmdp.h"
-#include "hashes/builtin.h"
-#include "utils.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/alias.h"
+	#include "hashes/cmdp.h"
+	#include "hashes/builtin.h"
+	#include "utils.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -56,9 +60,9 @@
 
 #pragma endregion
 
-#pragma region Check
+#pragma region "Check"
 
-	#pragma region Alias
+	#pragma region "Alias"
 
 		static int check_alias(char *arg, char *opts) {
 			if (!arg) return (0);
@@ -82,7 +86,7 @@
 
 	#pragma endregion
 
-	#pragma region Builtin
+	#pragma region "Builtin"
 
 		static int check_builtin(char *arg, char *opts) {
 			if (!arg) return (0);
@@ -108,7 +112,7 @@
 
 	#pragma endregion
 
-	#pragma region Function
+	#pragma region "Function"
 
 		static int check_function(char *arg, char *opts) {
 			if (!arg) return (0);
@@ -134,7 +138,7 @@
 
 	#pragma endregion
 
-	#pragma region Command
+	#pragma region "Command"
 
 		static int check_command(char *arg, char *opts, bool is_command) {
 			if (!arg) return (0);
@@ -190,7 +194,7 @@
 
 #pragma endregion
 
-#pragma region Type
+#pragma region "Type"
 
 	int type(t_arg *args) {
 		bool is_command = false;
@@ -233,7 +237,7 @@
 
 #pragma endregion
 
-#pragma region Information
+#pragma region "Information"
 
 	//	-P				No buscar alias, builtins ni funciones, solo en $PATH y devuelve solo la primera ocurrencia o nada
 

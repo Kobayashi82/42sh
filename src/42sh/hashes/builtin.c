@@ -6,22 +6,26 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 12:07:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:55:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "terminal/terminal.h"
-#include "hashes/builtin.h"
-#include "builtins/builtins.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "libft.h"
+	#include "terminal/terminal.h"
+	#include "hashes/builtin.h"
+	#include "builtins/builtins.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_builtin *builtin_table[BUILTIN_HASH_SIZE];
 
 #pragma endregion
 
-#pragma region Index
+#pragma region "Index"
 
 	static unsigned int hash_index(const char *key) {
 		unsigned int hash = 0;
@@ -32,9 +36,9 @@
 
 #pragma endregion
 
-#pragma region Import
+#pragma region "Import"
 
-	#pragma region Builtin
+	#pragma region "Builtin"
 
 		int builtin_add(const char *name, int disabled, int special, int (*execute)(t_arg *args)) {
 			if (!name) return (0);
@@ -63,9 +67,9 @@
 
 #pragma endregion
 
-#pragma region Export
+#pragma region "Export"
 
-	#pragma region Builtin
+	#pragma region "Builtin"
 
 		t_builtin *builtin_find(const char *name) {
 			if (!name) return (NULL);
@@ -97,7 +101,7 @@
 
 	#pragma endregion
 
-	#pragma region Array
+	#pragma region "Array"
 
 		char **builtin_to_array(int disabled, bool special, bool sort) {
 			size_t i = 0;
@@ -131,7 +135,7 @@
 
 	#pragma endregion
 
-	#pragma region Print
+	#pragma region "Print"
 
 		int builtin_print(int disabled, bool special, bool sort) {
 			size_t i = 0;
@@ -180,7 +184,7 @@
 
 	#pragma endregion
 
-	#pragma region Length
+	#pragma region "Length"
 
 		size_t builtin_length(int disabled, bool special) {
 			size_t i = 0;
@@ -200,9 +204,9 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
-	#pragma region Builtin
+	#pragma region "Builtin"
 
 		int builtin_delete(const char *name) {
 			if (!name) return (1);
@@ -227,7 +231,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		void builtin_clear() {
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
@@ -248,7 +252,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	int builtin_initialize() {
 		//	Specials

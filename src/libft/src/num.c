@@ -10,28 +10,32 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#pragma region MAX
+	#include "libft.h"
+
+#pragma endregion
+
+#pragma region "MAX"
 
 	int		ft_max(int n1, int n2) { if (n1 > n2) { return (n1); } return (n2); }
 	void	*ft_max_ptr(void *s1, void *s2) { if (s1 < s2) { return (s2); } return (s1); }
 
 #pragma endregion
 
-#pragma region MIN
+#pragma region "MIN"
 
 	int		ft_min(int n1, int n2) { if (n1 < n2) { return (n1); } return (n2); }
 
 #pragma endregion
 
-#pragma region ABS
+#pragma region "ABS"
 
 	int		ft_abs(int n) { if (n < 0) { n = -n; } return (n); }
 
 #pragma endregion
 
-#pragma region ATOI
+#pragma region "ATOI"
 
 	int		ft_atoi(const char *str) {
 		int sign = 1, num = 0;
@@ -45,7 +49,7 @@
 
 #pragma endregion
 
-#pragma region ATOL
+#pragma region "ATOL"
 
 	long	ft_atol(char *str) {
 		long result = 0;
@@ -64,7 +68,7 @@
 
 #pragma endregion
 
-#pragma region ITOA
+#pragma region "ITOA"
 
 	char	*ft_itoa(int n) {
 		char *str;

@@ -6,13 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 21:45:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:30:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:04:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "builtins/builtins.h"
-#include "hashes/builtin.h"
-#include "main/shell.h"
+#pragma region "Includes"
+
+	#include "builtins/builtins.h"
+	#include "hashes/builtin.h"
+	#include "main/shell.h"
+
+#pragma endregion
 
 // unalias y unalias -a
 // unset y unset -v

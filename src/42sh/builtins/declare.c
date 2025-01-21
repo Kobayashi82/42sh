@@ -6,16 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:51:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:07:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/variables.h"
-#include "hashes/key_value.h"
-#include "project.h"
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/variables.h"
+	#include "hashes/key_value.h"
+	#include "project.h"
+
+#pragma endregion
 
 //	if -i atoi to de operands
 // declare patata		crea la variable sin atributos (si ya existe, no le hace cambios)
@@ -26,7 +30,7 @@
 // declare -p			-p es opcional, muestra todas las variables
 // declare +irx patata	quita los atributos a patata
 
-#pragma region Help
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =

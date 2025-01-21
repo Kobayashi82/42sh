@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:42:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:18:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <stddef.h>
 	#include <stdbool.h>
@@ -21,15 +21,15 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		enum e_var_type { INTERNAL = 0, EXPORTED = 1, READONLY = 2, INTEGER = 3, EXPORTED_LIST = 4 };
 
 	#pragma endregion
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct s_var	t_var;
 		typedef struct s_var {
@@ -47,7 +47,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	---------- IMPORT ----------
 	int				variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);

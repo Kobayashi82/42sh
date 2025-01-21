@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:42:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/11 15:22:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:22:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Colors
+#pragma region "Colors"
 
-	#pragma region Personal
+	#pragma region "Personal"
 
 		#define NC   	"\033[0m"		 						//	Default
 
@@ -37,7 +37,7 @@
 
 	#pragma endregion
 
-	#pragma region Style
+	#pragma region "Style"
 
 		#define BD		"\033[1m"								//	Bold
 		#define UN 		"\033[4m"		 						//	Underline
@@ -45,7 +45,7 @@
 
 	#pragma endregion
 
-	#pragma region Cursor
+	#pragma region "Cursor"
 
 		#define CS		"\033[2J"		 						//	Clear Screen
 		#define CB		"\x1b[3J"								//	Clear Buffer
@@ -65,9 +65,9 @@
 
 	#pragma endregion
 
-	#pragma region Palette
+	#pragma region "Palette"
 
-		#pragma region Foreground
+		#pragma region "Foreground"
 
 			#define BLACK			"\033[30m"
 
@@ -282,7 +282,7 @@
 
 		#pragma endregion
 
-		#pragma region Background
+		#pragma region "Background"
 
 			// Background Neutral
 			#define BG_GRAY100		"\033[48;2;243;244;246m"

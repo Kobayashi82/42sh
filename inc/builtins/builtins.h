@@ -6,19 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 12:04:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:16:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include "parser/args.h"
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	========== ALIAS ===========
 	int		alias(t_arg *args);

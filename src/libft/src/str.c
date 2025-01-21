@@ -6,59 +6,63 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 15:32:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:30:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#pragma region STR_IS
+	#include "libft.h"
 
-	#pragma region Char
+#pragma endregion
 
-		#pragma region Is_Print
+#pragma region "STR_IS"
+
+	#pragma region "Char"
+
+		#pragma region "Is_Print"
 
 			int	ft_isprint(int c) { return (c >= 32 && c <= 126); }
 
 		#pragma endregion
 
-		#pragma region Is_ASCII
+		#pragma region "Is_ASCII"
 
 			int	ft_isascii(int c) { return (c >= 0 && c <= 127); }
 
 		#pragma endregion
 
-		#pragma region Is_Alpha
+		#pragma region "Is_Alpha"
 
 			int	ft_isalpha(int c) { return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')); }
 
 		#pragma endregion
 
-		#pragma region Is_AlphaNum
+		#pragma region "Is_AlphaNum"
 
 			int	ft_isalnum(int c) { return (ft_isdigit(c) || ft_isalpha(c)); }
 
 		#pragma endregion
 
-		#pragma region Is_Digit
+		#pragma region "Is_Digit"
 
 			int	ft_isdigit(int c) { return (c >= '0' && c <= '9'); }
 
 		#pragma endregion
 
-		#pragma region Is_Hex
+		#pragma region "Is_Hex"
 
 			int	ft_isxdigit(int c) { return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')); }
 
 		#pragma endregion
 
-		#pragma region Is_Space
+		#pragma region "Is_Space"
 
 			int	ft_isspace(int c) { return ((c >= 9 && c <= 13) || c == 32); }
 
 		#pragma endregion
 
-		#pragma region Is_Punct
+		#pragma region "Is_Punct"
 
 			int	ft_ispunct(const char c) {
 				int			i = 0;
@@ -70,15 +74,15 @@
 
 	#pragma endregion
 
-	#pragma region String
+	#pragma region "String"
 
-		#pragma region Is_AlphaNum STR
+		#pragma region "Is_AlphaNum STR"
 
 			int	ft_isalnum_s(char *str) { while (str && *str) { if (!ft_isalnum(*str)) return (0); } return (1); }
 
 		#pragma endregion
 
-		#pragma region Is_Digit STR
+		#pragma region "Is_Digit STR"
 
 			int	ft_isdigit_s(char *str) {
 				if (str && (*str == '+' || *str == '-')) str++;
@@ -88,7 +92,7 @@
 
 		#pragma endregion
 
-		#pragma region Is_Space STR
+		#pragma region "Is_Space STR"
 
 			int	ft_isspace_s(char *str) { while (str && *str) { if (!ft_isspace(*str++)) return (0); } return (1); }
 
@@ -98,17 +102,17 @@
 
 #pragma endregion
 
-#pragma region STR_TO
+#pragma region "STR_TO"
 
-	#pragma region Char
+	#pragma region "Char"
 
-		#pragma region To_Upper
+		#pragma region "To_Upper"
 
 			int		ft_toupper(int c) { if (c >= 'a' && c <= 'z') { c -= 32; } return (c); }
 
 		#pragma endregion
 
-		#pragma region To_Lower
+		#pragma region "To_Lower"
 
 			int		ft_tolower(int c) { if (c >= 'A' && c <= 'Z') { c += 32; } return (c); }
 
@@ -116,9 +120,9 @@
 
 	#pragma endregion
 
-	#pragma region String
+	#pragma region "String"
 
-		#pragma region To_Upper STR
+		#pragma region "To_Upper STR"
 
 			char	*ft_toupper_s(char *str) {
 				int i = -1;
@@ -129,7 +133,7 @@
 
 		#pragma endregion
 
-		#pragma region To_Lower STR
+		#pragma region "To_Lower STR"
 
 			char	*ft_tolower_s(char *str) {
 				int	i = -1;
@@ -144,9 +148,9 @@
 
 #pragma endregion
 
-#pragma region STR_CPY
+#pragma region "STR_CPY"
 
-	#pragma region StrCpy
+	#pragma region "StrCpy"
 
 		char	*ft_strcpy(char *dst, const char *src) {
 			int	i = -1;
@@ -159,7 +163,7 @@
 
 	#pragma endregion
 
-	#pragma region StrNCpy
+	#pragma region "StrNCpy"
 
 		char	*ft_strncpy(char *dest, const char *src, int n) {
 			int	i = -1;
@@ -171,7 +175,7 @@
 
 	#pragma endregion
 
-	#pragma region StrLCpy
+	#pragma region "StrLCpy"
 
 		int	ft_strlcpy(char *dst, const char *src, int dstsize) {
 			int		i = 0, srclen = 0;
@@ -189,9 +193,9 @@
 
 #pragma endregion
 
-#pragma region STR_CAT
+#pragma region "STR_CAT"
 
-	#pragma region StrCat
+	#pragma region "StrCat"
 
 		char	*ft_strcat(char *dest, const char *src) {
 			int dest_len = 0, i = -1;
@@ -204,7 +208,7 @@
 
 	#pragma endregion
 
-	#pragma region StrNCat
+	#pragma region "StrNCat"
 
 		char	*ft_strncat(char *dest, const char *src, int n) {
 			int dest_len = 0, i = -1;
@@ -217,7 +221,7 @@
 
 	#pragma endregion
 
-	#pragma region StrLCat
+	#pragma region "StrLCat"
 
 		int	ft_strlcat(char *dst, const char *src, int dstsize) {
 			int src_len = 0, dest_len = 0, i;
@@ -235,9 +239,9 @@
 
 #pragma endregion
 
-#pragma region STR_CMP
+#pragma region "STR_CMP"
 
-	#pragma region StrCmp
+	#pragma region "StrCmp"
 
 		int	ft_strcmp(const char *s1, const char *s2) {
 			if (!s1 || !s2) return (-1);
@@ -247,7 +251,7 @@
 
 	#pragma endregion
 
-	#pragma region StrNCmp
+	#pragma region "StrNCmp"
 
 		int	ft_strncmp(const char *s1, const char *s2, int n) {
 			unsigned char	*str1, *str2;
@@ -265,9 +269,9 @@
 
 #pragma endregion
 
-#pragma region STR_CHR
+#pragma region "STR_CHR"
 
-	#pragma region StrChr
+	#pragma region "StrChr"
 
 		char	*ft_strchr(const char *str, int c) {
 			if (!str) return (NULL);
@@ -279,7 +283,7 @@
 
 	#pragma endregion
 
-	#pragma region StrRChr
+	#pragma region "StrRChr"
 
 		char	*ft_strrchr(const char *str, int c) {
 			int len = ft_strlen(str);
@@ -295,9 +299,9 @@
 
 #pragma endregion
 
-#pragma region STR_STR
+#pragma region "STR_STR"
 
-	#pragma region StrStr
+	#pragma region "StrStr"
 
 		char	*ft_strstr(const char *haystack, const char *needle) {
 			int needle_len = ft_strlen(needle);
@@ -313,7 +317,7 @@
 
 	#pragma endregion
 
-	#pragma region StrNStr
+	#pragma region "StrNStr"
 
 		char	*ft_strnstr(const char *haystack, const char *needle, int len) {
 			int needle_len = ft_strlen(needle);;
@@ -331,9 +335,9 @@
 
 #pragma endregion
 
-#pragma region STR_DUP
+#pragma region "STR_DUP"
 
-	#pragma region StrDup
+	#pragma region "StrDup"
 
 		char	*ft_strdup(const char *s1) {
 			if (!s1) return (NULL);
@@ -347,7 +351,7 @@
 
 	#pragma endregion
 
-	#pragma region StrNDup
+	#pragma region "StrNDup"
 
 		char	*ft_strndup(const char *s1, int n) {
 			if (!s1) return (NULL);
@@ -366,9 +370,9 @@
 
 #pragma endregion
 
-#pragma region STR_TRIM
+#pragma region "STR_TRIM"
 
-	#pragma region StrTrim
+	#pragma region "StrTrim"
 
 		char	*ft_strtrim(const char *s1, const char *set) {
 			int i = 0, j = ft_strlen(s1) - 1;
@@ -382,7 +386,7 @@
 
 	#pragma endregion
 
-	#pragma region SubStrTrim
+	#pragma region "SubStrTrim"
 
 		char	*ft_substr(const char *str, int start, int len) {
 			int m_len = 0;
@@ -403,9 +407,9 @@
 
 #pragma endregion
 
-#pragma region STR_JOIN
+#pragma region "STR_JOIN"
 
-	#pragma region StrJoin
+	#pragma region "StrJoin"
 
 		char	*ft_strjoin(char *str1, char *str2, int frees) {
 			if (!str1 && !str2) return (NULL);
@@ -426,7 +430,7 @@
 
 	#pragma endregion
 
-	#pragma region StrJoinSep
+	#pragma region "StrJoinSep"
 
 		char	*ft_strjoin_sep(char *str1, char *sep, char *str2, int frees) {
 			int	len = ft_strlen(str1) + ft_strlen(sep) + ft_strlen(str2);;
@@ -456,9 +460,9 @@
 
 #pragma endregion
 
-#pragma region STR_LEN
+#pragma region "STR_LEN"
 
-	#pragma region StrLen
+	#pragma region "StrLen"
 
 		int	ft_strlen(const char *str) {
 			int	i = 0;
@@ -469,7 +473,7 @@
 
 	#pragma endregion
 
-	#pragma region StrLen (Lines)
+	#pragma region "StrLen (Lines)"
 
 		int	ft_strlenl(const char *str) {
 			int	lines = 0;
@@ -483,9 +487,9 @@
 
 #pragma endregion
 
-#pragma region STR_SPLIT
+#pragma region "STR_SPLIT"
 
-	#pragma region Free All
+	#pragma region "Free All"
 
 		static char	**free_all(char **result, int i) {
 			if (result) {
@@ -498,7 +502,7 @@
 
 	#pragma endregion
 
-	#pragma region Count Words
+	#pragma region "Count Words"
 
 		static int	count_words(char *str, char c) {
 			int		i = 0, trigger = 0;
@@ -515,7 +519,7 @@
 
 	#pragma endregion
 
-	#pragma region Word Dup
+	#pragma region "Word Dup"
 
 		static char	*word_dup(char *str, int start, int finish, char c) {
 			char	*word = smalloc((finish - start + 1));
@@ -531,7 +535,7 @@
 
 	#pragma endregion
 
-	#pragma region Split
+	#pragma region "Split"
 
 		char	**ft_split(char *s, char c) {
 			int		i = -1, j = 0, index = -1;
@@ -554,9 +558,9 @@
 
 #pragma endregion
 
-#pragma region STR_PUT
+#pragma region "STR_PUT"
 
-	#pragma region Put Char
+	#pragma region "Put Char"
 
 		void	ft_putchar_fd(int fd, char c) {
 			if (fd > 0) write (fd, &c, 1);
@@ -564,7 +568,7 @@
 
 	#pragma endregion
 
-	#pragma region Put String
+	#pragma region "Put String"
 
 		void	ft_putstr_fd(int fd, char *str, int add_nl) {
 			if (fd > 0 && str) {
@@ -575,7 +579,7 @@
 
 	#pragma endregion
 
-	#pragma region Put Number
+	#pragma region "Put Number"
 
 		void	ft_putnbr_fd(int fd, int n) {
 			if (fd > 0) { long nb = n;
@@ -589,7 +593,7 @@
 
 #pragma endregion
 
-#pragma region STR_TOK
+#pragma region "STR_TOK"
 
 	char *ft_strtok(char *str, const char *delim, int id) {
 		static char *static_str[100];

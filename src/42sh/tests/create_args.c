@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:09:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:03:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "parser/args.h"
+#pragma region "Includes"
 
-#include <string.h>
-#include <stdio.h>
+	#include "libft.h"
+	#include "parser/args.h"
+
+	#include <string.h>
+	#include <stdio.h>
+
+#pragma endregion
 
 static int is_quote(char c) { return c == '\'' || c == '"'; }
 

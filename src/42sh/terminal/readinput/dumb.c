@@ -6,17 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:08:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:50:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "terminal/prompt.h"
+#pragma region "Includes"
 
-#pragma region Input
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "terminal/prompt.h"
 
-	#pragma region EOF
+#pragma endregion
+
+#pragma region "Input"
+
+	#pragma region "EOF"
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
@@ -29,7 +33,7 @@
 
 	#pragma endregion
 
-	#pragma region SIGINT
+	#pragma region "SIG_INT"
 
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
@@ -45,7 +49,7 @@
 
 	#pragma endregion
 
-	#pragma region NewLine
+	#pragma region "NewLine"
 
 		static int enter() {
 			if (buffer.c == '\r' || buffer.c == '\n') {
@@ -58,7 +62,7 @@
 
 	#pragma endregion
 
-	#pragma region Cursor
+	#pragma region "Cursor"
 
 		static int cursor() {
 			char seq[8];
@@ -75,7 +79,7 @@
 
 	#pragma endregion
 
-	#pragma region Specials
+	#pragma region "Specials"
 
 		static int specials() {
 			if (buffer.c >= 1 && buffer.c <= 26) ;
@@ -86,7 +90,7 @@
 
 	#pragma endregion
 
-	#pragma region Print Char
+	#pragma region "Print"
 
 		static int print_char() {
 			size_t char_size = 1;
@@ -116,7 +120,7 @@
 
 #pragma endregion
 
-#pragma region Dumb
+#pragma region "Dumb"
 
 	int dumb(int readed) {
 		if		(ctrl_d(readed))	return (1);

@@ -6,15 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 11:49:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:25:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/history.h"
-#include "main/options.h"
-	
-#pragma region Variables
+// SIGHUP, SIGTERM para guardar historial
+
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "terminal/history.h"
+	#include "main/options.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	//.42shrc
 	bool				ignorespace			= true;
@@ -44,7 +50,7 @@
 
 #pragma endregion
 
-#pragma region File
+#pragma region "File"
 
 	void history_file_set(const char *filename) {
 		if (!filename) return;
@@ -53,9 +59,9 @@
 
 #pragma endregion
 
-#pragma region Size
+#pragma region "Size"
 
-	#pragma region Get Size
+	#pragma region "Get Size"
 
 		//	Get the maximum size for the history
 		size_t history_get_size(int type) {
@@ -66,7 +72,7 @@
 
 	#pragma endregion
 
-	#pragma region Set Size
+	#pragma region "Set Size"
 
 		//	Set a maximum size for the history
 		void history_set_size(size_t value, int type) {
@@ -94,7 +100,7 @@
 
 	#pragma endregion
 
-	#pragma region Unset Size
+	#pragma region "Unset Size"
 
 		//	Remove the size limitation for the history
 		void history_unset_size(int type) {
@@ -104,7 +110,7 @@
 
 	#pragma endregion
 
-	#pragma region Resize
+	#pragma region "Resize"
 
 		//	Initialize or resize the history
 		//	- If `initialize` is true or `history` is NULL, it sets up a new buffer with a default capacity
@@ -128,9 +134,9 @@
 
 #pragma endregion
 
-#pragma region Local
+#pragma region "Local"
 
-	#pragma region Read
+	#pragma region "Read"
 
 		//	Read entries from a history file into a temporary array
 		static int read_history_file(const char *filename) {
@@ -147,7 +153,7 @@
 			//	Reserve space for the temporary history
 			tmp_history = ft_calloc(HIST_MAXSIZE, sizeof(char *));
 
-			while ((line = ft_get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
+			while ((line = get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
 				if (ft_isspace_s(line)) continue;
 				//	Replace "\\n" with actual newlines
 				const char *src = line; char *dst = line;
@@ -202,7 +208,7 @@
 
 	#pragma endregion
 
-	#pragma region Write
+	#pragma region "Write"
 
 		//	Save the entry to a file
 		int history_write(const char *filename) {
@@ -238,7 +244,7 @@
 
 #pragma endregion
 
-#pragma region Add
+#pragma region "Add"
 
 		//	Remove copies of the same line in the history
 		static void erase_dups(const char *line, size_t pos) {
@@ -249,7 +255,7 @@
 				if (i != pos && !ft_strcmp(history[i]->line, line)) history_remove(i);
 		}
 
-	#pragma region Add
+	#pragma region "Add"
 
 		//	Add an entry to the history
 		int history_add(char *line, bool force) {
@@ -281,7 +287,7 @@
 
 	#pragma endregion
 
-	#pragma region Replace
+	#pragma region "Replace"
 
 		//	Replace the indicated entry
 		int history_replace(size_t pos, char *line, void *data) {
@@ -306,9 +312,9 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
-	#pragma region Remove
+	#pragma region "Remove"
 
 		//	Remove the indicate entry by an offset
 		void history_remove_offset(int offset) {
@@ -363,7 +369,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		//	Clear all entries
 		void history_clear() {
@@ -383,9 +389,9 @@
 
 #pragma endregion
 
-#pragma region Get
+#pragma region "Get"
 
-	#pragma region Clone
+	#pragma region "Clone"
 
 		//	Return a clone of the history
 		HIST_ENTRY **history_clone() {
@@ -402,7 +408,7 @@
 
 	#pragma endregion
 
-	#pragma region Length
+	#pragma region "Length"
 
 		//	Return the length of the history
 		size_t history_length() {
@@ -411,7 +417,7 @@
 
 	#pragma endregion
 
-	#pragma region Get
+	#pragma region "Get"
 
 		//	Return a pointer to the indicated entry
 		HIST_ENTRY *history_get(size_t pos) {
@@ -427,7 +433,7 @@
 
 	#pragma endregion
 
-	#pragma region Event
+	#pragma region "Event"
 
 		//	Return a pointer to the entry with the indicated event
 		HIST_ENTRY *history_event(size_t event) {
@@ -441,7 +447,7 @@
 
 	#pragma endregion
 
-	#pragma region Search
+	#pragma region "Search"
 
 		HIST_ENTRY *history_search(const char *term, bool reverse) {
 			(void) term;
@@ -453,9 +459,9 @@
 
 #pragma endregion
 
-#pragma region Navigate
+#pragma region "Navigate"
 
-	#pragma region Previous
+	#pragma region "Previous"
 
 		//	Return the previous entry line
 		char *history_prev() {
@@ -471,7 +477,7 @@
 
 	#pragma endregion
 
-	#pragma region Next
+	#pragma region "Next"
 
 		//	Return the next entry line
 		char *history_next() {
@@ -486,7 +492,7 @@
 
 	#pragma endregion
 
-	#pragma region Get Position
+	#pragma region "Get Position"
 
 		//	Return the current position in the history
 		size_t history_get_pos() {
@@ -495,7 +501,7 @@
 
 	#pragma endregion
 
-	#pragma region Set Position
+	#pragma region "Set Position"
 
 		//	Change the position in the history
 		void history_set_pos(size_t pos) {
@@ -513,7 +519,7 @@
 
 #pragma endregion
 
-#pragma region Print
+#pragma region "Print"
 
 	//	Print all entries
 	int history_print(size_t offset, bool hide_events) {
@@ -541,7 +547,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	//	Initialize the history
 	int history_initialize() {
@@ -554,4 +560,3 @@
 
 #pragma endregion
 
-// SIGHUP, SIGTERM para guardar historial

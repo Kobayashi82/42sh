@@ -6,14 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:53:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:01:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "parser/parser.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "parser/parser.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_token	tokens;
 

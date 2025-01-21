@@ -6,21 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:36:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:17:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#define ALIAS_HASH_SIZE 101
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct s_alias	t_alias;
 		typedef struct s_alias {
@@ -35,7 +35,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	---------- IMPORT ----------
 	int				alias_add(const char *key, const char *value);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 22:51:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 20:14:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@
 	//	--------- TERMCAP ----------
 	int		char_width(size_t position, char *value);
 	int		chars_width(size_t from, size_t to, char *value);
+	size_t	char_prev(size_t position, char *value);
 	
 	void	cursor_left(int moves);
 	void	cursor_right(int moves);

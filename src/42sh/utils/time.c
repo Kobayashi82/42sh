@@ -6,22 +6,26 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 15:08:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:02:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils.h"
+#pragma region "Includes"
 
-#pragma region Format TimeStamp
+	#include "utils.h"
 
-	#pragma region Is Leap Year
+#pragma endregion
+
+#pragma region "Format TimeStamp"
+
+	#pragma region "Is Leap Year"
 
 		//	Check if a year is leap year
 		static int is_leap_year(int year) { return ((year % 4 == 0 && year % 100 != 0) || (year % 400 == 0)); }
 
 	#pragma endregion
 
-	#pragma region Epoch to Local
+	#pragma region "Epoch to Local"
 
 		//	Decompose timestamp into local date and time
 		static void epoch_to_local(time_t timestamp, int *year, int *month, int *day, int *hour, int *minute, int *second) {
@@ -55,7 +59,7 @@
 
 	#pragma endregion
 
-	#pragma region Format TimeStamp
+	#pragma region "Format TimeStamp"
 
 		//	Format a timestamp to a string as ("dd/mm/yyy HH:MM:SS")
 		char *format_timestamp(time_t timestamp) {
@@ -105,7 +109,7 @@
 
 #pragma endregion
 
-#pragma region Get TimeStamp
+#pragma region "Get TimeStamp"
 
 	//	Get the timestamp from a date in format ("dd/mm/yyy HH:MM:SS") or from now if date is NULL
 	time_t get_timestamp(const char *date) {

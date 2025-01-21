@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:51:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:24:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#include <stdio.h>
+	#include "libft.h"
 
-#pragma region Sort
+	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "Sort"
 
 	void array_nsort(char **array, int skip) {
 		if (!array || !*array) return;
@@ -77,7 +81,7 @@
 
 #pragma endregion
 
-#pragma region Print
+#pragma region "Print"
 
 	void array_print(const char **array, int numbered) {
 		if (!array) return;
@@ -97,7 +101,7 @@
 
 #pragma endregion
 
-#pragma region Free
+#pragma region "Free"
 
 	void array_free(char **array) {
 		if (!array) return;

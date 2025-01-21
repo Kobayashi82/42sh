@@ -6,17 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:48:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:06:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/alias.h"
-#include "hashes/key_value.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/alias.h"
+	#include "hashes/key_value.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -43,7 +47,7 @@
 
 #pragma endregion
 
-#pragma region Add
+#pragma region "Add"
 
 	static int add_alias(char *arg) {
 		if (!arg) return (0);
@@ -57,7 +61,7 @@
 
 #pragma endregion
 
-#pragma region Print
+#pragma region "Print"
 
 	static int print_alias(char *arg, char **values, char **invalues) {
 		if (!arg) return (0);
@@ -79,7 +83,7 @@
 
 #pragma endregion
 
-#pragma region Alias
+#pragma region "Alias"
 
 	int alias(t_arg *args) {
 		t_opt *opts = parse_options(args, "p", '-', false);

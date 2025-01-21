@@ -6,22 +6,26 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:55:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:03:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "hashes/alias.h"
-#include "hashes/variables.h"
-#include "hashes/builtin.h"
-#include "hashes/cmdp.h"
-#include "parser/args.h"
-#include "builtins/builtins.h"
-#include "tests.h"
+#pragma region "Includes"
 
-#include <stdio.h>
+	#include "terminal/terminal.h"
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "hashes/builtin.h"
+	#include "hashes/cmdp.h"
+	#include "parser/args.h"
+	#include "builtins/builtins.h"
+	#include "tests.h"
 
-#pragma region Alias
+	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "Alias"
 
 	static int test_alias() {   
 		int result = 0;
@@ -41,7 +45,7 @@
 
 #pragma endregion
 
-#pragma region Unalias
+#pragma region "Unalias"
 
 	static int test_unalias() {   
 		int result = 0;
@@ -69,7 +73,7 @@
 
 #pragma endregion
 
-#pragma region Readonly
+#pragma region "Readonly"
 
 	static int test_readonly() {
 		int result = 0;
@@ -85,7 +89,7 @@
 
 #pragma endregion
 
-#pragma region Export
+#pragma region "Export"
 
 	static int test_export() {
 		int result = 0;
@@ -110,7 +114,7 @@
 
 #pragma endregion
 
-#pragma region Unset
+#pragma region "Unset"
 
 	static int test_unset() {
 		int result = 0;
@@ -137,7 +141,7 @@
 
 #pragma endregion
 
-#pragma region Enable
+#pragma region "Enable"
 
 	static int test_enable() {
 		int result = 0;
@@ -155,7 +159,7 @@
 
 #pragma endregion
 
-#pragma region Type
+#pragma region "Type"
 
 	static int test_type(const char **envp) {
 		int result = 0;
@@ -174,7 +178,7 @@
 
 #pragma endregion
 
-#pragma region Command
+#pragma region "Command"
 
 	static int test_command(const char **envp) {
 		int result = 0;
@@ -193,7 +197,7 @@
 
 #pragma endregion
 
-#pragma region Hash
+#pragma region "Hash"
 
 	static int test_hash(const char **envp) {
 		int result = 0;
@@ -213,7 +217,7 @@
 
 #pragma endregion
 
-#pragma region Builtin
+#pragma region "Builtin"
 
 	int test_builtin(const char **envp) {
 		printf(W"\t────────────────────────\n"NC);

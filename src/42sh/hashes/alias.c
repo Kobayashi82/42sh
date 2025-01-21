@@ -6,21 +6,25 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:51:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:54:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "hashes/alias.h"
-#include "hashes/key_value.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "hashes/alias.h"
+	#include "hashes/key_value.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_alias *alias_table[ALIAS_HASH_SIZE];
 
 #pragma endregion
 
-#pragma region Index
+#pragma region "Index"
 
 	static unsigned int hash_index(const char *key) {
 		unsigned int hash = 0;
@@ -31,9 +35,9 @@
 
 #pragma endregion
 
-#pragma region Import
+#pragma region "Import"
 
-	#pragma region Alias
+	#pragma region "Alias"
 
 		int alias_add(const char *key, const char *value) {
 			if (!key) return (0);
@@ -63,7 +67,7 @@
 
 	#pragma endregion
 
-	#pragma region Validate
+	#pragma region "Validate"
 
 		int alias_validate(char *key, bool show_msg) {
 			if (!key) return (0);
@@ -88,9 +92,9 @@
 
 #pragma endregion
 
-#pragma region Export
+#pragma region "Export"
 
-	#pragma region Alias
+	#pragma region "Alias"
 
 		t_alias *alias_find(const char *key) {
 			if (!key) return (NULL);
@@ -108,7 +112,7 @@
 
 	#pragma endregion
 
-	#pragma region Array
+	#pragma region "Array"
 
 		char **alias_to_array(bool sort) {
 			size_t i = 0;
@@ -143,7 +147,7 @@
 
 	#pragma endregion
 
-	#pragma region Print
+	#pragma region "Print"
 
 		int alias_print(bool sort) {
 			size_t i = 0;
@@ -190,7 +194,7 @@
 
 	#pragma endregion
 
-	#pragma region Length
+	#pragma region "Length"
 
 		size_t alias_length() {
 			size_t i = 0;
@@ -210,9 +214,9 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
-	#pragma region Alias
+	#pragma region "Alias"
 
 		int alias_delete(const char *key) {
 			if (!key) return (1);
@@ -237,7 +241,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		void alias_clear() {
 			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
@@ -259,7 +263,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	int alias_initialize() {
 		return (0);

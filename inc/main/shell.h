@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:44:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:18:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <sys/types.h>
 	#include <stdbool.h>
@@ -20,16 +20,16 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		enum { NOTHING = 0, FREE = 64, FORCE = 128, END = 256 };
 		typedef enum e_process { SHELL = 0, SUBSHELL = 1, CHILD = 2 } t_process;
 
 	#pragma endregion
 
-	#pragma region Structures
+	#pragma region "Structures"
 
 		typedef struct {
 			pid_t		pid;
@@ -48,11 +48,11 @@
 
 	#pragma endregion
 
-	extern t_shell		shell;
+	extern t_shell	shell;
 
 #pragma endregion
 	
-#pragma region Methods
+#pragma region "Methods"
 
 	//	----------- SHELL ----------
 	int		shell_initialize();

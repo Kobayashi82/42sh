@@ -6,13 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:24:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:50:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
+#pragma region "Includes"
 
-#pragma region SIG_INT
+	#include "terminal/terminal.h"
+
+#pragma endregion
+
+#pragma region "SIG_INT"
 
 	//	Handle SIGINT signal
 	void sigint_handler(int sig) {
@@ -22,7 +26,7 @@
 
 #pragma endregion
 
-#pragma region SIG_QUIT
+#pragma region "SIG_QUIT"
 
 	//	Handle SIGQUIT signal
 	void sigquit_handler(int sig) {
@@ -32,7 +36,7 @@
 
 #pragma endregion
 
-#pragma region SIG_WINCH
+#pragma region "SIG_WINCH"
 
 	//	Handle SIGWINCH signal
 	void sigwinch_handler(int sig) {
@@ -43,7 +47,7 @@
 
 #pragma endregion
 
-#pragma region Set
+#pragma region "Set"
 
 	void signals_set() {
 		signal(SIGINT, sigint_handler);

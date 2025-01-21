@@ -10,11 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#pragma region HASH
+	#include "libft.h"
 
-	#pragma region Variables
+#pragma endregion
+
+#pragma region "HASH"
+
+	#pragma region "Variables"
 		
 		#define MEM_HASH_SIZE 1031
 
@@ -35,7 +39,7 @@
 
 	#pragma endregion
 
-	#pragma region Utils
+	#pragma region "Utils"
 
 		void sexit(int code) {
 			sclose(STDIN_FILENO);
@@ -94,9 +98,9 @@
 
 	#pragma endregion
 
-	#pragma region Actions
+	#pragma region "Actions"
 
-		#pragma region Add
+		#pragma region "Add"
 
 			static void mem_add(void *ptr) {
 				if (!ptr) return;
@@ -118,7 +122,7 @@
 
 		#pragma endregion
 
-		#pragma region Delete
+		#pragma region "Delete"
 
 			static void mem_delete(void *ptr) {
 				if (!ptr) return;
@@ -142,7 +146,7 @@
 
 		#pragma endregion
 
-		#pragma region Clear
+		#pragma region "Clear"
 
 			static void mem_clear() {
 				for (unsigned int index = 0; index < MEM_HASH_SIZE; index++) {
@@ -165,9 +169,9 @@
 
 #pragma endregion
 
-#pragma region MEM
+#pragma region "MEM"
 
-	#pragma region MEMCMP
+	#pragma region "MEMCMP"
 
 		int	ft_memcmp(const void *s1, const void *s2, int n) {
 			unsigned char	*str1 = (unsigned char *)s1;
@@ -185,7 +189,7 @@
 
 	#pragma endregion
 
-	#pragma region MEMCPY
+	#pragma region "MEMCPY"
 
 		void	*ft_memcpy(void *dst, const void *src, int n) {
 			unsigned char		*d = (unsigned char *)dst;
@@ -199,7 +203,7 @@
 
 	#pragma endregion
 
-	#pragma region MEMMOVE
+	#pragma region "MEMMOVE"
 
 		void	*ft_memmove(void *dst, const void *src, int len) {
 			unsigned char		*d = (unsigned char *)dst;
@@ -219,7 +223,7 @@
 
 	#pragma endregion
 
-	#pragma region MEMCHR
+	#pragma region "MEMCHR"
 
 		void	*ft_memchr(const void *s, int c, int n) {
 			const unsigned char	*str = (const unsigned char *)s;
@@ -233,7 +237,7 @@
 
 	#pragma endregion
 
-	#pragma region MEMSET
+	#pragma region "MEMSET"
 
 		void	*ft_memset(void *b, int c, int len) {
 			unsigned char	*p = b;
@@ -247,7 +251,7 @@
 
 #pragma endregion
 
-#pragma region CALLOC
+#pragma region "CALLOC"
 
 	void	*ft_calloc(int count, int size) {
 		int n = count * size - 1;
@@ -261,7 +265,7 @@
 
 #pragma endregion
 
-#pragma region REALLOC
+#pragma region "REALLOC"
 
 	void	*ft_realloc(void *ptr, int old_size, int size) {
 		int min_size;
@@ -284,7 +288,7 @@
 
 #pragma endregion
 
-#pragma region SMALLOC
+#pragma region "SMALLOC"
 
 	void *smalloc(long bytes) {
 		void *ptr;
@@ -297,7 +301,7 @@
 
 #pragma endregion
 
-#pragma region SFREE
+#pragma region "SFREE"
 
 	void sfree(void *ptr)	{ mem_delete(ptr);	}
 	void sfree_all()		{ mem_clear();		}
@@ -305,7 +309,7 @@
 #pragma endregion
 
 
-#pragma region SOPEN
+#pragma region "SOPEN"
 
 	int sopen(const char *file, int oflag, int perm) {
 		int fd = -1;
@@ -320,7 +324,7 @@
 
 #pragma endregion
 
-#pragma region SCLOSE
+#pragma region "SCLOSE"
 
 	int sclose(int fd) {
 		if (fd < 0 || fd > 1023) return (1);
@@ -337,7 +341,7 @@
 
 #pragma endregion
 
-#pragma region SDUP
+#pragma region "SDUP"
 
 	int sdup(int fd) {
 		int	new_fd = -1;
@@ -350,7 +354,7 @@
 
 #pragma endregion
 
-#pragma region SDUP2
+#pragma region "SDUP2"
 
 	int sdup2(int *fd1, int fd2, int closeFD) {
 		int	new_fd = -1;
@@ -368,7 +372,7 @@
 
 #pragma endregion
 
-#pragma region SPIPE
+#pragma region "SPIPE"
 
 	int spipe(int *fd) {
 		if (pipe(fd) == -1) alloc_fail(PIPE_FAIL);

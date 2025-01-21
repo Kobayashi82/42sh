@@ -6,16 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:51:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:12:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/cmdp.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/cmdp.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -47,7 +51,7 @@
 
 #pragma endregion
 
-#pragma region Print
+#pragma region "Print"
 
 	static int print_hash(bool reuse) {
 		bool title = false; int total = 0;
@@ -85,7 +89,7 @@
 
 #pragma endregion
 
-#pragma region Hash
+#pragma region "Hash"
 
 	int hash(t_arg *args) {
 		t_opt *opts = parse_options(args, "dlprt", '-', false);

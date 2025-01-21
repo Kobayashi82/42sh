@@ -6,18 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:51:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:12:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/variables.h"
-#include "hashes/key_value.h"
-#include "project.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/variables.h"
+	#include "hashes/key_value.h"
+	#include "project.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -41,7 +45,7 @@
 
 #pragma endregion
 
-#pragma region Add
+#pragma region "Add"
 
 	static int add_readonly(char *arg) {
 		if (!arg) return (0);
@@ -76,7 +80,7 @@
 
 #pragma endregion
 
-#pragma region Readonly
+#pragma region "Readonly"
 
 	int readonly(t_arg *args) {
 		t_opt *opts = parse_options(args, "p", '-', false);

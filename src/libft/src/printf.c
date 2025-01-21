@@ -6,17 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 23:43:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:50:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:26:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#include <stdarg.h>
+	#include "libft.h"
 
-#pragma region Printf
+	#include <stdarg.h>
 
-	#pragma region Char
+#pragma endregion
+
+#pragma region "Printf"
+
+	#pragma region "Char"
 
 		static void	print_c(int c, int *total, int fd) {
 			int	result;
@@ -28,7 +32,7 @@
 
 	#pragma endregion
 
-	#pragma region String
+	#pragma region "String"
 
 		static void	print_s(char *s, int *total, int fd) {
 			if (!s) s = "(null)";
@@ -37,7 +41,7 @@
 
 	#pragma endregion
 
-	#pragma region Number
+	#pragma region "Number"
 
 		static void	print_n(unsigned long n, unsigned int base, int *total, int fd) {
 			char	*strbase = "0123456789abcdef";
@@ -54,7 +58,7 @@
 
 	#pragma endregion
 
-	#pragma region Chooser
+	#pragma region "Chooser"
 
 		static void	chooser(int c, va_list args, int *total, int fd) {
 			if (c == '%')	print_c('%', total, fd);
@@ -72,7 +76,7 @@
 
 	#pragma endregion
 
-	#pragma region Printf
+	#pragma region "Printf"
 
 		int	ft_printf(int fd, char const *format, ...) {
 			va_list	args; va_start(args, format);

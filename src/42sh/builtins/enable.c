@@ -6,21 +6,25 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 19:51:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:08:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/builtin.h"
 
     //   -a        print a list of builtins showing whether or not each is enabled
     //   -n        disable each NAME or display a list of disabled builtins
     //   -p        print the list of builtins in a reusable format
     //   -s        print only the names of Posix `special' builtins
 
-#pragma region Help
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/builtin.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -49,7 +53,7 @@
 
 #pragma endregion
 
-#pragma region Enable
+#pragma region "Enable"
 
 	int enable(t_arg *args) {
 		t_opt *opts = parse_options(args, "anps", '-', false);

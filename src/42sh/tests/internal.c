@@ -6,19 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:01:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:03:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/history.h"
-#include "hashes/alias.h"
-#include "hashes/variables.h"
-#include "main/options.h"
+#pragma region "Includes"
 
-#include <stdio.h>
+	#include "terminal/terminal.h"
+	#include "terminal/history.h"
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "main/options.h"
 
-#pragma region Alias
+	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "Alias"
 
 	int test_aliases() {
 		printf(W"\t────────────────────────\n"NC);
@@ -47,7 +51,7 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
 	int test_variables(const char **envp) {
 		printf(W"\t────────────────────────\n"NC);
@@ -84,7 +88,7 @@
 
 #pragma endregion
 
-#pragma region Options
+#pragma region "Options"
 
 	int test_options() {
 		printf(W"\t────────────────────────\n"NC);
@@ -102,7 +106,7 @@
 
 #pragma endregion
 
-#pragma region History
+#pragma region "History"
 
 	int test_history() {
 		printf(W"\t────────────────────────\n"NC);

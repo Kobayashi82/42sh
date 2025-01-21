@@ -6,24 +6,28 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 13:51:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:39:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "terminal/prompt.h"
-#include "terminal/history.h"
-#include "hashes/variables.h"
-#include "main/options.h"
-#include "utils/utils.h"
-
-#include <sys/wait.h>
 
 //	Arreglar multibytes en columnas primera y ultima
 //	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
 
-#pragma region Variables
+#pragma region "Includes"
+
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "terminal/prompt.h"
+	#include "terminal/history.h"
+	#include "hashes/variables.h"
+	#include "main/options.h"
+	#include "utils/utils.h"
+
+	#include <sys/wait.h>
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	enum e_mode { CURSOR, AFTER_CURSOR, FIRST, LAST };
 
@@ -37,11 +41,11 @@
 
 #pragma endregion
 
-#pragma region Input
+#pragma region "Input"
 
-	#pragma region Insert
+	#pragma region "Insert"
 
-		#pragma region EOF
+		#pragma region "EOF"							("CTRL + D")
 
 			static int ctrl_d(const int n) {
 				if (n <= 0 || buffer.c == 4) {
@@ -61,10 +65,10 @@
 
 		#pragma endregion
 
-		#pragma region SIG_INT
+		#pragma region "SIG_INT"						("CTRL + C")
 
 			static int ctrl_c() {
-				if (buffer.c == 3) {	// Ctrl+C
+				if (buffer.c == 3) {
 					insert_mode(CURSOR);
 					buffer.position = 0; buffer.length = 0;
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
@@ -80,7 +84,7 @@
 
 		#pragma endregion
 
-		#pragma region NewLine
+		#pragma region "NewLine"						("CTRL + J, Enter")
 
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
@@ -95,9 +99,9 @@
 
 		#pragma endregion
 
-		#pragma region BackSpace	// Optimizar
+		#pragma region "BackSpace"						("BackSpace, CTRL + W, CTRL + U")									//	Optimizar
 
-			#pragma region Char
+			#pragma region "Char"						("BackSpace")
 
 				static void backspace() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
@@ -119,7 +123,7 @@
 
 			#pragma endregion
 
-			#pragma region Word		//	Optimizar
+			#pragma region "Word"						("CTRL + W")														//	Optimizar
 
 				static void backspace_word() {
 					size_t pos = buffer.position, back_pos;
@@ -141,7 +145,7 @@
 
 			#pragma endregion
 
-			#pragma region Start
+			#pragma region "Start"						("CTRL + U")
 
 				static void backspace_start() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
@@ -165,9 +169,9 @@
 
 		#pragma endregion
 
-		#pragma region Delete		// Optimizar
+		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")										//	Optimizar
 
-			#pragma region Char		//	Optimizar
+			#pragma region "Char"						("Del")																//	Optimizar
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
@@ -192,7 +196,7 @@
 
 			#pragma endregion
 
-			#pragma region Word		//	Optimizar
+			#pragma region "Word"						("CTRL + Del")														//	Optimizar
 
 				static void delete_word() {
 					if (buffer.position < buffer.length) {
@@ -212,7 +216,7 @@
 
 			#pragma endregion
 
-			#pragma region End
+			#pragma region "End"						("C, S, D")
 
 				static void delete_end() {
 					if (!buffer.length || buffer.position > buffer.length) return;
@@ -239,44 +243,9 @@
 
 		#pragma endregion
 
-		#pragma region Cursors
+		#pragma region "Navigation"						("Home, End, Up, Down, Left, CTRL + Left, Right, CTRL + Right")
 
-			// CURSOR MOVEMENT (Ctrl + left/right)
-			//
-			// Consists of a sequence of alphanumeric characters.
-			// Any non-alphanumeric character is considered a delimiter or space.
-			// An empty line is also considered to be a word.
-
-			#pragma region Modifiers
-
-				static char modifiers(char *seq) {
-					int		modifier = 0;
-					char	key = seq[1];
-					size_t	i = 0;
-
-					buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
-					if (seq[1] == '3') return (seq[1]);
-					if (seq[0] == '[') { while (seq[i] && seq[i] != ';') i++;
-						if (seq[i] == ';') { i++;
-							while (seq[i] >= '0' && seq[i] <= '9')
-								modifier = modifier * 10 + (seq[i++] - '0');
-							if (seq[i]) key = seq[i];
-						}
-					}
-					if (modifier && key) {
-						if (modifier == 2)		buffer.SHIFT = true;
-						if (modifier == 3)		buffer.ALT   = true;
-						if (modifier == 5)		buffer.CTRL  = true;
-						if (modifier == 6) {	buffer.SHIFT = true; buffer.CTRL = true; }
-						if (modifier == 7) {	buffer.ALT   = true; buffer.CTRL = true; }
-						if (modifier == 8) {	buffer.SHIFT = true; buffer.ALT  = true; buffer.CTRL = true; }
-					}
-					return (key);
-				}
-
-			#pragma endregion
-
-			#pragma region Home
+			#pragma region "Home"						("Home")
 
 				static void home() {
 					if (!buffer.length || buffer.position > buffer.length) return;
@@ -289,21 +258,22 @@
 
 			#pragma endregion
 
-			#pragma region End
+			#pragma region "End"						("End")
 
 				static void end() {
 					if (!buffer.length || buffer.position > buffer.length) return;
-					int extra = (vi_mode == EDIT);
+					size_t length = buffer.length;
+					if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
 
-					while (buffer.position < buffer.length - extra) {
+					while (buffer.position < length) {
 						cursor_right(0);
-						do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+						do { (buffer.position)++; } while (buffer.position < length && (buffer.value[buffer.position] & 0xC0) == 0x80);
 					}
 				}
 
 			#pragma endregion
 
-			#pragma region Arrow Up
+			#pragma region "Arrow Up"					("Up")
 
 				static void arrow_up() {
 					int number = get_n();
@@ -336,7 +306,7 @@
 
 			#pragma endregion
 
-			#pragma region Arrow Down
+			#pragma region "Arrow Down"					("Down")
 
 				static void arrow_down() {
 					int number = get_n();
@@ -376,7 +346,13 @@
 
 			#pragma endregion
 
-			#pragma region Arrow Left
+			#pragma region "Arrow Left"					("Left, CTRL + Left")
+
+				// CURSOR MOVEMENT (CTRL + Left)
+				//
+				// Consists of a sequence of alphanumeric characters.
+				// Any non-alphanumeric character is considered a delimiter or space.
+				// An empty line is also considered to be a word.
 
 				static void arrow_left() {
 					int number = get_n();
@@ -402,28 +378,35 @@
 
 			#pragma endregion
 
-			#pragma region Arrow Right
+			#pragma region "Arrow Right"				("Right, CTRL + Right")
+
+				// CURSOR MOVEMENT (CTRL + Right)
+				//
+				// Consists of a sequence of alphanumeric characters.
+				// Any non-alphanumeric character is considered a delimiter or space.
+				// An empty line is also considered to be a word.
 
 				static void arrow_right() {
-					int extra = (vi_mode == EDIT);
+					size_t length = buffer.length;
+					if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
 
 					int number = get_n();
 					if (!vi_mode) number = 1;
 
 					while (number--) {
-						if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length - extra) {
+						if (!buffer.ALT && !buffer.SHIFT && buffer.position < length) {
 							if (buffer.CTRL) {
-								while (buffer.position < buffer.length - extra && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
+								while (buffer.position < length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
 									cursor_right(0); (buffer.position)++;
 								}
-								while (buffer.position < buffer.length - extra && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
+								while (buffer.position < length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
 									cursor_right(0);
-									do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+									do { (buffer.position)++; } while (buffer.position < length && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								}
 							} else {
-								if (buffer.position < buffer.length - extra) {
+								if (buffer.position < length) {
 									cursor_right(0);
-									do { (buffer.position)++; } while (buffer.position < buffer.length - extra && (buffer.value[buffer.position] & 0xC0) == 0x80);
+									do { (buffer.position)++; } while (buffer.position < length && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								}
 							}
 						}
@@ -432,82 +415,13 @@
 
 			#pragma endregion
 
-			#pragma region Cursor
-
-				static int cursor() {
-					char seq[8];
-					ft_memset(&seq, 0, sizeof(seq));
-					if (buffer.c == 27) {
-
-						fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
-						int result = read(STDIN_FILENO, seq, sizeof(seq) - 1);
-						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
-
-						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
-							if (seq[0] == '[') { seq[1] = modifiers(seq);
-								if (seq[1] == 'A') 						arrow_up();		// Up				- History next
-								if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
-								if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
-								if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
-								if (seq[1] == 'H') 						home();			// Home				- Cursor to the start
-								if (seq[1] == 'F')						end();			// End				- Cursor to the end
-								if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Delete			- Delete
-								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Delete	- Delete current word
-							}
-						} else if (!vi_mode) {
-							vi_mode = EDIT;												// Escape			- Edit mode
-							if (buffer.position) {
-								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-								cursor_left(0);
-							}
-						} return (1);
-					} return (0);
-				}
-
-			#pragma endregion
-
-		#pragma endregion
-
-		#pragma region Print Char
-
-			static int print_char() {	//	USE TERMCAP, PLEASE
-				if (vi_mode) return (0);
-
-				size_t char_size = 1;
-				if		(buffer.c >= 0xF0)	char_size = 4;
-				else if (buffer.c >= 0xE0)	char_size = 3;
-				else if (buffer.c >= 0xC0)	char_size = 2;
-
-				if (buffer.position >= buffer.size - 1) return (0);
-
-				// Expand buffer if necessary
-				if (buffer.position + char_size >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
-
-				// Insert all bytes of the character into the buffer
-				buffer.value[(buffer.position)++] = buffer.c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
-				buffer.length += char_size;
-
-				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
-
-				cursor_move(buffer.length, buffer.position);
-
-				return (0);
-			}
-
 		#pragma endregion
 
 	#pragma endregion
 
-	#pragma region Edit
+	#pragma region "Edit"
 
-		#pragma region Number
+		#pragma region "Number"							("-+, 0-9")
 
 			static int get_n() {
 				int number = ft_max(1, ft_atoi(n));
@@ -534,7 +448,7 @@
 
 		#pragma endregion
 
-		#pragma region Insert Mode
+		#pragma region "Insert Mode"					("i, I, a, A, c, s, S")
 
 			static void insert_mode(int mode) {
 				vi_mode = INSERT;
@@ -544,8 +458,7 @@
 				switch (mode) {
 					case CURSOR: break;
 					case AFTER_CURSOR: {
-						cursor_right(0);
-						if (buffer.position < buffer.length) buffer.position++;
+						arrow_right();
 						break;
 					}
 					case FIRST:	{ home();	break; }
@@ -555,18 +468,18 @@
 
 		#pragma endregion
 
-		#pragma region Navigation
+		#pragma region "Navigation"						("b, w, e, B, W, E, f, F, t, T, |, ^, ;, ,")
 
-			#pragma region Word
+			#pragma region "Word"						("b, w, e")
 
 				// WORD
 				//
 				// Consists of a sequence of letters, digits and underscores, or a sequence of other non-blank characters, separated with white space.
 				// An empty line is also considered to be a word.
 
-				#pragma region Left Start Word
+				#pragma region "Left Start Word"		("b")
 
-					static void left_start_word() { // b
+					static void left_start_word() {
 						int number = get_n();
 						if (!vi_mode) number = 1;
 
@@ -578,7 +491,7 @@
 							while (ft_isspace(buffer.value[pos])) {
 								cursor_left(1);
 								buffer.position = pos;
-								if (pos == 0) break;
+								if (pos == 0) return;
 								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 							}
 
@@ -587,14 +500,14 @@
 								while ((ft_isalnum(buffer.value[pos]) || buffer.value[pos] == '_') && !ft_isspace(buffer.value[pos])) {
 									cursor_left(char_width(pos, buffer.value));
 									buffer.position = pos;
-									if (pos == 0) break;
+									if (pos == 0) return;
 									do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 								}
 							} else {
 								while (!ft_isalnum(buffer.value[pos]) && buffer.value[pos] != '_' && !ft_isspace(buffer.value[pos])) {
 									cursor_left(char_width(pos, buffer.value));
 									buffer.position = pos;
-									if (pos == 0) break;
+									if (pos == 0) return;
 									do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 								}
 							}
@@ -603,27 +516,37 @@
 
 				#pragma endregion
 
-				#pragma region Right Start Word
+				#pragma region "Right Start Word"		("w")
 
-					static void right_start_word() { // w
+					static void right_start_word() {
 						int number = get_n();
 						if (!vi_mode) number = 1;
 
-						if (buffer.position >= buffer.length - 1) { beep(); return; }
-						while (number-- && buffer.position < buffer.length - 1) {
+						size_t length = buffer.length;
+						if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
+
+						if (buffer.position >= length) { beep(); return; }
+						while (number-- && buffer.position < length) {
 							while (ft_isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
 
+							size_t pos;
 							bool isalpha = (ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
 							if (isalpha) {
 								while ((ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !ft_isspace(buffer.value[buffer.position])) {
 									arrow_right();
+									pos = buffer.position;
+									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+									if (pos == buffer.length) break;
 								}
 							} else {
 								while (!ft_isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !ft_isspace(buffer.value[buffer.position])) {
 									arrow_right();
+									pos = buffer.position;
+									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+									if (pos == buffer.length) break;
 								}
 							}
 
@@ -631,19 +554,23 @@
 								cursor_right(1);
 								buffer.position++;
 							}
+							if (pos == buffer.length) break;
 						}
 					}
 
 				#pragma endregion
 
-				#pragma region Left End Word
+				#pragma region "Left End Word"			("e")
 
-					static void right_end_word() { // e
+					static void right_end_word() {
 						int number = get_n();
 						if (!vi_mode) number = 1;
 
-						if (buffer.position >= buffer.length - 1) { beep(); return; }
-						while (number-- && buffer.position < buffer.length - 1) {
+						size_t length = buffer.length;
+						if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
+
+						if (buffer.position >= length) { beep(); return; }
+						while (number-- && buffer.position < length) {
 							arrow_right();
 							while (ft_isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
@@ -676,30 +603,112 @@
 
 			#pragma endregion
 
-			#pragma region BigWord
+			#pragma region "BigWord"					("B, W, E")
 
 				// BIGWORD
 				//
 				// Consists of a sequence of non-blank characters, separated with white space.
 				// An empty line is also considered to be a bigword.
 
-				static void left_start_bigword() {
+				#pragma region "Left Start BigWord"		("B")
 
-				}
+					static void left_start_bigword() {
+						int number = get_n();
+						if (!vi_mode) number = 1;
 
-				static void right_start_bigword() {
+						if (buffer.position == 0) { beep(); return; }
+						while (number-- && buffer.position > 0) {
+							size_t pos = buffer.position;
+							do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 
-				}
+							while (ft_isspace(buffer.value[pos])) {
+								cursor_left(1);
+								buffer.position = pos;
+								if (pos == 0) return;
+								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+							}
 
-				static void right_end_bigword() {
-					
-				}
+							while (!ft_isspace(buffer.value[pos])) {
+								cursor_left(char_width(pos, buffer.value));
+								buffer.position = pos;
+								if (pos == 0) return;
+								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+							}
+						}
+					}
+
+				#pragma endregion
+
+				#pragma region "Right Start BigWord"	("W")
+
+					static void right_start_bigword() {
+						int number = get_n();
+						if (!vi_mode) number = 1;
+
+						size_t length = buffer.length;
+						if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
+
+						if (buffer.position >= length) { beep(); return; }
+						while (number-- && buffer.position < length) {
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+
+							size_t pos;
+							while (!ft_isspace(buffer.value[buffer.position])) {
+								arrow_right();
+								pos = buffer.position;
+								do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+								if (pos == buffer.length) break;
+							}
+
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+							if (pos == buffer.length) break;
+						}
+					}
+
+				#pragma endregion
+
+				#pragma region "Right End BigWord"		("E")
+
+					static void right_end_bigword() {
+						int number = get_n();
+						if (!vi_mode) number = 1;
+
+						size_t length = buffer.length;
+						if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
+
+						if (buffer.position >= length) { beep(); return; }
+						while (number-- && buffer.position < length) {
+							arrow_right();
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+
+							size_t pos;
+							while (!ft_isspace(buffer.value[buffer.position])) {
+								arrow_right();
+								pos = buffer.position;
+								do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+								if (pos == buffer.length) break;
+							}
+							if (pos == buffer.length) break;
+							arrow_left();
+						}
+					}
+
+				#pragma endregion
 
 			#pragma endregion
 
-			#pragma region GoTo
+			#pragma region "Go To"						("f, F, t, T, |, ^")
 
-				#pragma region Char
+				#pragma region "Char"					("f, F, t, T")
 
 					static void goto_char(char cmd) {
 						char c[7];
@@ -741,7 +750,7 @@
 
 				#pragma endregion
 
-				#pragma region Position
+				#pragma region "Position"				("|")
 
 					static void goto_position() {
 						int number = get_n();
@@ -752,11 +761,11 @@
 
 				#pragma endregion
 
-				#pragma region No IsSpace
+				#pragma region "No IsSpace"				("^")
 
 					static void goto_no_isspace() {
 						home();
-						while (buffer.position < buffer.length - 1 && ft_isspace(buffer.value[buffer.position]))
+						while (buffer.position < char_prev(buffer.length, buffer.value) && ft_isspace(buffer.value[buffer.position]))
 							arrow_right();
 					}
 
@@ -764,7 +773,7 @@
 
 	#pragma endregion
 
-			#pragma region Repeat CMD
+			#pragma region "Repeat CMD"					(";, ,")
 
 				static void repeat_cmd(bool reverse) {
 					if (!last_cmd || !last_char[0]) return;
@@ -781,11 +790,12 @@
 
 		#pragma endregion
 
-		#pragma region Swap
+		#pragma region "Swap"							("CTRL + T")
 
-			#pragma region Char
+			#pragma region "Char"						("CTRL + T")
 
 				static void swap_char() {
+					if (buffer.position == 0) { beep(); return; }
 					if (buffer.position > 0) {
 						char temp[8];
 						if (buffer.position < buffer.length) {
@@ -821,6 +831,7 @@
 							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 							buffer.position += back_pos2;
 						}
+						if (vi_mode == EDIT && buffer.position > char_prev(buffer.length, buffer.value)) arrow_left();
 					}
 				}
 
@@ -828,27 +839,39 @@
 
 		#pragma endregion
 
-		#pragma region Delete
+		#pragma region "Delete"							("X, s, x, c, d")
 
-			static void n_backspace() {
-				int number = get_n();
+			#pragma region "[N] BackSpace"				("X")
 
-				while (number--) backspace();
-			}
+				static void n_backspace() {
+					int number = get_n();
 
-			static void n_delete_char() {
-				int number = get_n();
+					while (number--) backspace();
+				}
 
-				while (number--) delete_char();
-			}
+			#pragma endregion
 
-			static void n_delete_to() {
+			#pragma region "[N] Delete Char"			("s, x")
 
-			}
+				static void n_delete_char() {
+					int number = get_n();
+
+					while (number--) delete_char();
+				}
+
+			#pragma endregion
+
+			#pragma region "[N] Delete To"				("c, d")
+
+				static void n_delete_to() {
+
+				}
+
+			#pragma endregion
 
 		#pragma endregion
 
-		#pragma region Copy
+		#pragma region "Copy"							("y, Y")
 
 			static void copy(bool to_end) {
 				if (to_end) {
@@ -859,7 +882,7 @@
 
 		#pragma endregion
 
-		#pragma region Paste
+		#pragma region "Paste"							("p, P")
 
 			static void paste(bool reverse) {
 				if (!clipboard || !*clipboard) return;
@@ -911,7 +934,7 @@
 
 		#pragma endregion
 
-		#pragma region Undo
+		#pragma region "Undo"							("u, U")
 
 			static void n_undo() {
 
@@ -923,7 +946,7 @@
 
 		#pragma endregion
 
-		#pragma region Comment
+		#pragma region "Comment"						("#")
 
 			static int comment() {
 				if (buffer.length + 1 >= buffer.size) {
@@ -947,7 +970,7 @@
 
 		#pragma endregion
 
-		#pragma region Edit Input
+		#pragma region "Edit Input"						("v")
 
 			static int edit_input() {
 				const char *raw_editor = default_editor();
@@ -1040,78 +1063,184 @@
 
 	#pragma endregion
 
-	#pragma region Specials
+	#pragma region "Handle"
 
-		static int specials() {
-			if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
-			else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
-			else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
-			else if (buffer.c == 20)					{ swap_char();					}	//-	[CTRL + T]	Swap the current character with the previous one				(Not working right with multibytes 漢字)
-			else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-			else if (buffer.c == 23)					{ backspace_word();				}	//	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
-			else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
-			else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
-			else if (vi_mode) {
-				if (buffer.c >= '0' && buffer.c <= '9')	{ set_n();						}	//	Set the repetition number for commands
+		#pragma region "Navigation"
 
-				else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
-				else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
-				else if (buffer.c == 'a')	{ insert_mode(AFTER_CURSOR);				}	//	Enter insert mode after the cursor position
-				else if (buffer.c == 'A')	{ insert_mode(LAST);						}	//	Enter insert mode at the end of the line
-				else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();		}	//- [n]	Delete up to the specified position and enter insert mode				(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
-				else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end();		}	//	Delete from cursor to the end of the line and enter insert mode
-				else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char();		}	//	[n] Delete the current character and enter insert mode
-				else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end();		}	//	Delete the entire line and enter insert mode
-				else if (buffer.c == 'd')	{ n_delete_to();							}	//- [n]	Delete up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, d)
-				else if (buffer.c == 'D')	{ delete_end();								}	//	Delete from cursor to the end of the line
-				else if (buffer.c == 'x')	{ n_delete_char();							}	//	[n] Delete the current character
-				else if (buffer.c == 'X')	{ n_backspace();							}	//	[n] Delete the previous character
+			#pragma region "Modifiers"
 
-				else if (buffer.c == 'r')	{ ;											}	//-	[n]	Replace the current character with the specified one
-				else if (buffer.c == 'R')	{ ;											}	//-	[n]	Enter replace mode: allows replacing characters one by one
-				else if (buffer.c == 'y')	{ copy(false);								}	//-	[n] Copy up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, y)
-				else if (buffer.c == 'Y')	{ copy(true);								}	//	Copy from the current position to the end of the line
-				else if (buffer.c == 'p')	{ paste(false);								}	//	[n]	Paste copied text after the cursor
-				else if (buffer.c == 'P')	{ paste(true);								}	//	[n]	Paste copied text before the cursor
+				static char modifiers(char *seq) {
+					int		modifier = 0;
+					char	key = seq[1];
+					size_t	i = 0;
 
-				else if (buffer.c == 'b')	{ left_start_word();						}	//-	[n] Move the cursor to the beginning of the previous word
-				else if (buffer.c == 'B')	{ left_start_bigword();						}	//-	[n] Move the cursor to the beginning of the previous big word
-				else if (buffer.c == 'w')	{ right_start_word();						}	//-	[n] Move the cursor to the beginning of the next word
-				else if (buffer.c == 'W')	{ right_start_bigword();					}	//-	[n] Move the cursor to the beginning of the next big word
-				else if (buffer.c == 'e')	{ right_end_word();							}	//-	[n] Move the cursor to the end of the current word
-				else if (buffer.c == 'E')	{ right_end_bigword();						}	//-	[n] Move the cursor to the end of the current big word
+					buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
+					if (seq[1] == '3') return (seq[1]);
+					if (seq[0] == '[') { while (seq[i] && seq[i] != ';') i++;
+						if (seq[i] == ';') { i++;
+							while (seq[i] >= '0' && seq[i] <= '9')
+								modifier = modifier * 10 + (seq[i++] - '0');
+							if (seq[i]) key = seq[i];
+						}
+					}
+					if (modifier && key) {
+						if (modifier == 2)		buffer.SHIFT = true;
+						if (modifier == 3)		buffer.ALT   = true;
+						if (modifier == 5)		buffer.CTRL  = true;
+						if (modifier == 6) {	buffer.SHIFT = true; buffer.CTRL = true; }
+						if (modifier == 7) {	buffer.ALT   = true; buffer.CTRL = true; }
+						if (modifier == 8) {	buffer.SHIFT = true; buffer.ALT  = true; buffer.CTRL = true; }
+					}
+					return (key);
+				}
 
-				else if (buffer.c == '^')	{ goto_no_isspace();						}	//	Move the cursor to the first non-whitespace character in the line
-				else if (buffer.c == 'f')	{ goto_char(0);								}	//	[n] Move the cursor forward to the character specified
-				else if (buffer.c == 'F')	{ goto_char(0);								}	//	[n] Move the cursor backward to the character specified
-				else if (buffer.c == 't')	{ goto_char(0);								}	//	[n] Move the cursor forward one character before the character specified
-				else if (buffer.c == 'T')	{ goto_char(0);								}	//	[n] Move the cursor backward one character after the character specified
-				else if (buffer.c == ';')	{ repeat_cmd(false);						}	//	[n] Repeat the last character search command								(f, F, t, T)
-				else if (buffer.c == ',')	{ repeat_cmd(true);							}	//	[n] Repeat the last character search command in reverse						(f, F, t, T)
-				else if (buffer.c == '|')	{ goto_position();							}	//	[n] Move the cursor to a specific character position						(default is 1)
+			#pragma endregion
 
-				else if (buffer.c == 'k')	{ arrow_up();								}	//	[n] Move the cursor up
-				else if (buffer.c == 'j')	{ arrow_down();								}	//	[n] Move the cursor down
-				else if (buffer.c == 'h')	{ arrow_left();								}	//	[n] Move the cursor left
-				else if (buffer.c == 'l')	{ arrow_right();							}	//	[n] Move the cursor right
-				else if (buffer.c == ' ')	{ arrow_right();							}	//	[n] Move the cursor right
-				else if (buffer.c == '$')	{ end();									}	//	Move the cursor to the end of the line
-				else if (buffer.c == 'u')	{ n_undo();									}	//-	[n] Undo the last change
-				else if (buffer.c == 'U')	{ n_undo_all();								}	//-	Undo all changes
-				else if (buffer.c == 'v')	{ return (edit_input());					}	//	Edit the input using the default editor and terminate the input
-				else if	(buffer.c == '#')	{ return (comment());						}	//	Comment and terminate the input
+			#pragma region "Cursor"
 
-				else return (0);
-			} else return (0);
+				static int cursor() {
+					char seq[8];
+					ft_memset(&seq, 0, sizeof(seq));
+					if (buffer.c == 27) {
 
-			return (1);
-		}
+						fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
+						int result = read(STDIN_FILENO, seq, sizeof(seq) - 1);
+						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
+
+						if (result > 0) {
+							if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
+							if (seq[0] == '[') { seq[1] = modifiers(seq);
+								if (seq[1] == 'A') 						arrow_up();		// Up				- History next
+								if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
+								if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
+								if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
+								if (seq[1] == 'H') 						home();			// Home				- Cursor to the start
+								if (seq[1] == 'F')						end();			// End				- Cursor to the end
+								if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Del				- Delete
+								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Del		- Delete current word
+							}
+						} else if (!vi_mode) {
+							vi_mode = EDIT;												// Esc				- Edit mode
+							if (buffer.position) {
+								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+								cursor_left(0);
+							}
+						} return (1);
+					} return (0);
+				}
+
+			#pragma endregion
+
+		#pragma endregion
+
+		#pragma region "Specials"
+
+			static int specials() {
+				if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
+				else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
+				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
+				else if (buffer.c == 20)					{ swap_char();					}	//-	[CTRL + T]	Swap the current character with the previous one				(Not working right with multibytes 漢字)
+				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
+				else if (buffer.c == 23)					{ backspace_word();				}	//-	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
+				else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
+				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
+				else if (vi_mode) {
+					if (buffer.c >= '0' && buffer.c <= '9')	{ set_n();						}	//	Set the repetition number for commands
+
+					else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
+					else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
+					else if (buffer.c == 'a')	{ insert_mode(AFTER_CURSOR);				}	//	Enter insert mode after the cursor position
+					else if (buffer.c == 'A')	{ insert_mode(LAST);						}	//	Enter insert mode at the end of the line
+					else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();		}	//- [n]	Delete up to the specified position and enter insert mode				(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
+					else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end();		}	//	Delete from cursor to the end of the line and enter insert mode
+					else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char();		}	//	[n] Delete the current character and enter insert mode
+					else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end();		}	//	Delete the entire line and enter insert mode
+					else if (buffer.c == 'd')	{ n_delete_to();							}	//- [n]	Delete up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, d)
+					else if (buffer.c == 'D')	{ delete_end();								}	//	Delete from cursor to the end of the line
+					else if (buffer.c == 'x')	{ n_delete_char();							}	//	[n] Delete the current character
+					else if (buffer.c == 'X')	{ n_backspace();							}	//	[n] Delete the previous character
+
+					else if (buffer.c == 'r')	{ ;											}	//-	[n]	Replace the current character with the specified one
+					else if (buffer.c == 'R')	{ ;											}	//-	[n]	Enter replace mode: allows replacing characters one by one
+					else if (buffer.c == 'y')	{ copy(false);								}	//-	[n] Copy up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, y)
+					else if (buffer.c == 'Y')	{ copy(true);								}	//	Copy from the current position to the end of the line
+					else if (buffer.c == 'p')	{ paste(false);								}	//	[n]	Paste copied text after the cursor
+					else if (buffer.c == 'P')	{ paste(true);								}	//	[n]	Paste copied text before the cursor
+
+					else if (buffer.c == 'b')	{ left_start_word();						}	//	[n] Move the cursor to the beginning of the previous word
+					else if (buffer.c == 'B')	{ left_start_bigword();						}	//	[n] Move the cursor to the beginning of the previous big word
+					else if (buffer.c == 'w')	{ right_start_word();						}	//	[n] Move the cursor to the beginning of the next word
+					else if (buffer.c == 'W')	{ right_start_bigword();					}	//	[n] Move the cursor to the beginning of the next big word
+					else if (buffer.c == 'e')	{ right_end_word();							}	//	[n] Move the cursor to the end of the current word
+					else if (buffer.c == 'E')	{ right_end_bigword();						}	//	[n] Move the cursor to the end of the current big word
+
+					else if (buffer.c == '^')	{ goto_no_isspace();						}	//	Move the cursor to the first non-whitespace character in the line
+					else if (buffer.c == 'f')	{ goto_char(0);								}	//	[n] Move the cursor forward to the character specified
+					else if (buffer.c == 'F')	{ goto_char(0);								}	//	[n] Move the cursor backward to the character specified
+					else if (buffer.c == 't')	{ goto_char(0);								}	//	[n] Move the cursor forward one character before the character specified
+					else if (buffer.c == 'T')	{ goto_char(0);								}	//	[n] Move the cursor backward one character after the character specified
+					else if (buffer.c == ';')	{ repeat_cmd(false);						}	//	[n] Repeat the last character search command								(f, F, t, T)
+					else if (buffer.c == ',')	{ repeat_cmd(true);							}	//	[n] Repeat the last character search command in reverse						(f, F, t, T)
+					else if (buffer.c == '|')	{ goto_position();							}	//	[n] Move the cursor to a specific character position						(default is 1)
+
+					else if (buffer.c == 'k')	{ arrow_up();								}	//	[n] Move the cursor up
+					else if (buffer.c == 'j')	{ arrow_down();								}	//	[n] Move the cursor down
+					else if (buffer.c == 'h')	{ arrow_left();								}	//	[n] Move the cursor left
+					else if (buffer.c == 'l')	{ arrow_right();							}	//	[n] Move the cursor right
+					else if (buffer.c == ' ')	{ arrow_right();							}	//	[n] Move the cursor right
+					else if (buffer.c == '$')	{ end();									}	//	Move the cursor to the end of the line
+					else if (buffer.c == 'u')	{ n_undo();									}	//-	[n] Undo the last change
+					else if (buffer.c == 'U')	{ n_undo_all();								}	//-	Undo all changes
+					else if (buffer.c == 'v')	{ return (edit_input());					}	//	Edit the input using the default editor and terminate the input
+					else if	(buffer.c == '#')	{ return (comment());						}	//	Comment and terminate the input
+
+					else return (0);
+				} else return (0);
+
+				return (1);
+			}
+
+		#pragma endregion
+
+		#pragma region "Print"
+
+			static int print_char() {
+				if (vi_mode) return (0);
+
+				size_t char_size = 1;
+				if		(buffer.c >= 0xF0)	char_size = 4;
+				else if (buffer.c >= 0xE0)	char_size = 3;
+				else if (buffer.c >= 0xC0)	char_size = 2;
+
+				if (buffer.position >= buffer.size - 1) return (0);
+
+				// Expand buffer if necessary
+				if (buffer.position + char_size >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+				// Insert all bytes of the character into the buffer
+				buffer.value[(buffer.position)++] = buffer.c;
+				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
+				buffer.length += char_size;
+
+				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
+
+				cursor_move(buffer.length, buffer.position);
+
+				return (0);
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
 #pragma endregion
 
-#pragma region Vi
+#pragma region "Vi"
 
 	int vi(int readed) {
 		int result = 0;
@@ -1131,5 +1260,3 @@
 	}
 
 #pragma endregion
-
-// if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;

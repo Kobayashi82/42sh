@@ -6,21 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/11 13:31:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:19:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <stdbool.h>
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		enum e_syntax_error {
 			NL,
@@ -80,7 +80,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	----------- ERROR ----------
 	int		exit_error(int error, int code, char *value, bool fatal);

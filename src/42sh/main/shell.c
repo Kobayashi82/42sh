@@ -6,18 +6,26 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:06:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:01:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "main/shell.h"
+#pragma region "Includes"
 
-t_shell	shell;
+	#include "terminal/terminal.h"
+	#include "main/shell.h"
+
+#pragma endregion
+
+#pragma region "Variables"
+
+	t_shell	shell;
+
+#pragma endregion
 
 int shell_time() { return (time(NULL) - shell.started); }
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	int shell_initialize() {
 		shell.pid = getpid();

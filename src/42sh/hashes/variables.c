@@ -6,24 +6,28 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:52:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:58:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/history.h"
-#include "hashes/variables.h"
-#include "hashes/key_value.h"
-#include "main/shell.h"
-#include "main/project.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "terminal/history.h"
+	#include "hashes/variables.h"
+	#include "hashes/key_value.h"
+	#include "main/shell.h"
+	#include "main/project.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_var *vars_table[VARS_HASH_SIZE];
 
 #pragma endregion
 
-#pragma region Index
+#pragma region "Index"
 
 	static unsigned int hash_index(const char *key) {
 		unsigned int hash = 0;
@@ -34,9 +38,9 @@
 
 #pragma endregion
 
-#pragma region Import
+#pragma region "Import"
 
-	#pragma region Variable
+	#pragma region "Variable"
 
 		int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
 			if (!key) return (0);
@@ -71,7 +75,7 @@
 
 	#pragma endregion
 
-	#pragma region Concatenate
+	#pragma region "Concatenate"
 
 		int variables_concatenate(t_var **table, const char *key, char *value, int exported, int readonly, int integer, int force) {
 			if (!key) return (0);
@@ -106,7 +110,7 @@
 
 	#pragma endregion
 
-	#pragma region Array
+	#pragma region "Array"
 
 		void variables_from_array(t_var **table, const char **array) {
 			if (!array) return;
@@ -122,7 +126,7 @@
 
 #pragma endregion
 
-	#pragma region Join
+	#pragma region "Join"
 
 		void variables_join(t_var **dst_table, t_var **src_table) {
 			if (dst_table == src_table) return;
@@ -139,7 +143,7 @@
 
 	#pragma endregion
 
-	#pragma region Validate
+	#pragma region "Validate"
 
 		int variables_validate(char *key, char *value, char *name, bool is_asign, bool show_msg) {
 			if (!key) return (0);
@@ -166,9 +170,9 @@
 
 #pragma endregion
 
-#pragma region Export
+#pragma region "Export"
 
-	#pragma region Variable
+	#pragma region "Variable"
 
 		t_var *variables_find(t_var **table, const char *key) {
 			if (!key) return (NULL);
@@ -200,7 +204,7 @@
 
 	#pragma endregion
 
-	#pragma region Array
+	#pragma region "Array"
 
 		char **variables_to_array(t_var **table, int type, bool sort) {
 			size_t i = 0;
@@ -244,9 +248,9 @@
 
 	#pragma endregion
 
-	#pragma region Print
+	#pragma region "Print"
 
-		#pragma region Array Value
+		#pragma region "Array Value"
 
 			static int array_value(int type, char **array, size_t i, t_var *var) {
 				if (type < 0 || type > 4) 									return (0);
@@ -275,7 +279,7 @@
 
 		#pragma endregion
 
-		#pragma region Print
+		#pragma region "Print"
 
 			int variables_print(t_var **table, int type, bool sort) {
 				size_t i = 0;
@@ -319,7 +323,7 @@
 
 	#pragma endregion
 
-	#pragma region Length
+	#pragma region "Length"
 
 		size_t variables_length(t_var **table, int type) {
 			size_t i = 0;
@@ -344,9 +348,9 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
-	#pragma region Variable
+	#pragma region "Variable"
 
 		int variables_delete(t_var **table, const char *key) {
 			if (!key) return (1);
@@ -371,7 +375,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		void variables_clear(t_var **table) {
 			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
@@ -393,7 +397,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
 		if (!value) return;
@@ -435,7 +439,7 @@
 
 #pragma endregion
 
-#pragma region Information
+#pragma region "Information"
 
 	//	VARIABLES
 	//

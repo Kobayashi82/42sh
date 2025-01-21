@@ -6,23 +6,27 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 21:38:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:45:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/readinput.h"
-#include "terminal/prompt.h"
-#include "terminal/history.h"
-#include "main/options.h"
-
 //	Optimizar Delete y BackSpace
 
-#pragma region Input
+#pragma region "Includes"
 
-	#pragma region Swap
+	#include "terminal/terminal.h"
+	#include "terminal/readinput.h"
+	#include "terminal/prompt.h"
+	#include "terminal/history.h"
+	#include "main/options.h"
 
-		#pragma region Char
+#pragma endregion
+
+#pragma region "Input"
+
+	#pragma region "Swap"
+
+		#pragma region "Char"
 
 			static void swap_char() {
 				if (buffer.position > 0) {
@@ -65,7 +69,7 @@
 
 		#pragma endregion
 
-		#pragma region Word
+		#pragma region "Word"
 
 			// Not perfect, and multibyte characters are not handled consistently
 			static t_word get_word(size_t position, size_t len, bool prev_word) {
@@ -143,7 +147,7 @@
 
 	#pragma endregion
 
-	#pragma region EOF
+	#pragma region "EOF"
 
 		static int ctrl_d(const int n) {
 			if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
@@ -156,7 +160,7 @@
 
 	#pragma endregion
 
-	#pragma region SIGINT
+	#pragma region "SIG_INT"
 
 		static int ctrl_c() {
 			if (buffer.c == 3) {	// Ctrl+C
@@ -174,7 +178,7 @@
 
 	#pragma endregion
 
-	#pragma region NewLine
+	#pragma region "NewLine"
 
 		static int enter() {
 			if (buffer.c == '\r' || buffer.c == '\n') {
@@ -189,9 +193,9 @@
 
 	#pragma endregion
 
-	#pragma region BackSpace
+	#pragma region "BackSpace"
 
-		#pragma region Char
+		#pragma region "Char"
 
 			static void backspace() {
 				if (buffer.position > 0) {
@@ -212,7 +216,7 @@
 
 		#pragma endregion
 
-		#pragma region Word
+		#pragma region "Word"
 
 			static void backspace_word() {
 				size_t pos = buffer.position, back_pos;
@@ -234,7 +238,7 @@
 
 		#pragma endregion
 
-		#pragma region Start
+		#pragma region "Start"
 
 			static void backspace_start() {
 				size_t pos = buffer.position, back_pos;
@@ -251,9 +255,9 @@
 
 	#pragma endregion
 
-	#pragma region Delete
+	#pragma region "Delete"
 
-		#pragma region Char
+		#pragma region "Char"
 
 			static void delete_char() {
 				if (buffer.position < buffer.length) {
@@ -271,7 +275,7 @@
 
 		#pragma endregion
 
-		#pragma region Word
+		#pragma region "Word"
 
 			static void delete_word() {
 				if (buffer.position < buffer.length) {
@@ -284,7 +288,7 @@
 
 		#pragma endregion
 
-		#pragma region End
+		#pragma region "End"
 
 			static void delete_end() {
 				if (buffer.position < buffer.length)
@@ -295,9 +299,9 @@
 
 	#pragma endregion
 
-	#pragma region Cursors
+	#pragma region "Cursors"
 
-		#pragma region Modifiers
+		#pragma region "Modifiers"
 
 			static char modifiers(char *seq) {
 				int		modifier = 0;
@@ -326,7 +330,7 @@
 
 		#pragma endregion
 
-		#pragma region Home
+		#pragma region "Home"
 
 			static void home() {
 				while (buffer.position > 0) {
@@ -337,7 +341,7 @@
 
 		#pragma endregion
 
-		#pragma region End
+		#pragma region "End"
 
 			static void end() {
 				while (buffer.position < buffer.length) {
@@ -348,7 +352,7 @@
 
 		#pragma endregion
 
-		#pragma region Arrow Up
+		#pragma region "Arrow Up"
 
 			static void arrow_up() {
 				if (!options.hist_on || !history_length()) return;
@@ -370,7 +374,7 @@
 
 		#pragma endregion
 
-		#pragma region Arrow Down
+		#pragma region "Arrow Down"
 
 			static void arrow_down() {
 				if (!options.hist_on || !history_length()) return;
@@ -400,7 +404,7 @@
 
 		#pragma endregion
 
-		#pragma region Arrow Left
+		#pragma region "Arrow Left"
 
 			static void arrow_left() {
 				if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
@@ -421,7 +425,7 @@
 
 		#pragma endregion
 
-		#pragma region Arrow Right
+		#pragma region "Arrow Right"
 
 			static void arrow_right() {
 				if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length) {
@@ -444,7 +448,7 @@
 
 		#pragma endregion
 
-		#pragma region Cursor
+		#pragma region "Cursor"
 
 			static int cursor() {
 				char seq[8];
@@ -476,7 +480,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear Screen
+	#pragma region "Clear Screen"
 
 		static void clear_screen() {
 			write(STDOUT_FILENO, "\033[H\033[2J", 7);
@@ -487,7 +491,7 @@
 
 	#pragma endregion
 
-	#pragma region Specials
+	#pragma region "Specials"
 
 		static int specials() {
 			if 		(buffer.c == 1)		home();					// CTRL + A - Cursor to the start
@@ -514,7 +518,7 @@
 
 	#pragma endregion
 
-	#pragma region Print Char
+	#pragma region "Print"
 
 		static int print_char() {
 			size_t char_size = 1;
@@ -558,7 +562,7 @@
 
 #pragma endregion
 
-#pragma region ReadLine
+#pragma region "ReadLine"
 
 	int readline(int readed) {
 		if		(ctrl_d(readed))	return (1);
@@ -572,7 +576,7 @@
 
 #pragma endregion
 
-#pragma region Info
+#pragma region "Info"
 
 	// set -o emacs
 

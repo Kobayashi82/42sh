@@ -6,20 +6,24 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 21:19:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:59:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "main/options.h"
+#pragma region "Includes"
 
-#pragma region Variables
+	#include "terminal/terminal.h"
+	#include "main/options.h"
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	t_options	options;
 
 #pragma endregion
 
-#pragma region Set
+#pragma region "Set"
 
 	//	Set an option
 	int options_set(const char *option, bool value) {
@@ -39,7 +43,7 @@
 
 #pragma endregion
 
-#pragma region Print
+#pragma region "Print"
 
 	//	Print the option value
 	static void print_value(int value, int mode) {
@@ -57,7 +61,7 @@
 
 #pragma endregion
 
-#pragma region Initialize
+#pragma region "Initialize"
 
 	//	Set all options to their defaults values
 	int options_initialize() {

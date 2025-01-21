@@ -6,18 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:07:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:07:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "builtins/builtins.h"
-#include "builtins/options.h"
-#include "hashes/alias.h"
-#include "hashes/builtin.h"
-#include "utils/utils.h"
+#pragma region "Includes"
 
-#pragma region Help
+	#include "terminal/terminal.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
+	#include "hashes/alias.h"
+	#include "hashes/builtin.h"
+	#include "utils/utils.h"
+
+#pragma endregion
+
+#pragma region "Help"
 
 	static int print_help() {
 		char *msg =
@@ -44,9 +48,9 @@
 
 #pragma endregion
 
-#pragma region Check
+#pragma region "Check"
 
-	#pragma region Alias
+	#pragma region "Alias"
 
 		static int check_alias(char *arg) {
 			if (!arg) return (0);
@@ -63,7 +67,7 @@
 
 	#pragma endregion
 
-	#pragma region Builtin
+	#pragma region "Builtin"
 
 		static int check_builtin(char *arg) {
 			if (!arg) return (0);
@@ -81,7 +85,7 @@
 
 	#pragma endregion
 
-	#pragma region Function
+	#pragma region "Function"
 
 		static int check_function(char *arg) {
 			if (!arg) return (0);
@@ -99,7 +103,7 @@
 
 	#pragma endregion
 
-	#pragma region Command
+	#pragma region "Command"
 
 		static int check_command(char *arg, char *opts) {
 			if (!arg) return (0);
@@ -119,7 +123,7 @@
 
 #pragma endregion
 
-#pragma region Type
+#pragma region "Type"
 
 	int command(t_arg *args) {
 		t_opt *opts = parse_options(args, "pVv", '-', false);
@@ -177,7 +181,7 @@
 
 #pragma endregion
 
-#pragma region Information
+#pragma region "Information"
 
 	//	-v				Muestra la primera ocurrencia solo
 	//		alias		alias [alias]='[value]'

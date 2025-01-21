@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 11:48:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:34:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#pragma region Info
+	#include "libft.h"
 
-	#pragma region Extract
+#pragma endregion
+
+#pragma region "Info"
+
+	#pragma region "Extract"
 
 		static char *extract_field(const char *line, int field) {
 			const char	*start = line;
@@ -36,13 +40,13 @@
 
 	#pragma endregion
 
-	#pragma region Current
+	#pragma region "Current"
 
 		t_userinfo *get_userinfo() { return (get_userinfo_by_id(getuid())); }
 
 	#pragma endregion
 
-	#pragma region By ID
+	#pragma region "By ID"
 
 		t_userinfo *get_userinfo_by_id(int uid) {
 			int fd = sopen("/etc/passwd", O_RDONLY, -1);
@@ -51,7 +55,7 @@
 			char *id = ft_itoa(uid);
 
 			char *line = NULL;
-			while ((line = ft_get_next_line(fd))) {
+			while ((line = get_next_line(fd))) {
 				char *username	= extract_field(line, 0);
 				char *uid_str	= extract_field(line, 2);
 				char *gid_str	= extract_field(line, 3);
@@ -71,7 +75,7 @@
 					sfree(uid_str);
 					sfree(gid_str);
 					sclose(fd);
-					ft_get_next_line(-1);
+					get_next_line(-1);
 					return (info);
 				}
 
@@ -90,7 +94,7 @@
 
 	#pragma endregion
 
-	#pragma region By Name
+	#pragma region "By Name"
 
 		t_userinfo *get_userinfo_by_name(const char *name) {
 			if (!name) return (NULL);
@@ -98,7 +102,7 @@
 			if (fd == -1) return (NULL);
 
 			char *line = NULL;
-			while ((line = ft_get_next_line(fd))) {
+			while ((line = get_next_line(fd))) {
 				char *username	= extract_field(line, 0);
 				char *uid_str	= extract_field(line, 2);
 				char *gid_str	= extract_field(line, 3);
@@ -117,7 +121,7 @@
 					sfree(uid_str);
 					sfree(gid_str);
 					sclose(fd);
-					ft_get_next_line(-1);
+					get_next_line(-1);
 					return (info);
 				}
 
@@ -135,7 +139,7 @@
 
 	#pragma endregion
 
-	#pragma region Free
+	#pragma region "Free"
 
 		void free_user(t_userinfo *userinfo) {
 			if (userinfo) {
@@ -150,15 +154,15 @@
 
 #pragma endregion
 
-#pragma region Home
+#pragma region "Home"
 
-	#pragma region Current
+	#pragma region "Current"
 
 		char *get_home() { return get_home_by_id(getuid()); }
 
 	#pragma endregion
 
-	#pragma region By ID
+	#pragma region "By ID"
 
 		char *get_home_by_id(int uid) {
 			t_userinfo *user = get_userinfo_by_id(uid);
@@ -173,7 +177,7 @@
 
 	#pragma endregion
 
-	#pragma region By Name
+	#pragma region "By Name"
 
 		char *get_home_by_name(const char *name) {
 			t_userinfo *user = get_userinfo_by_name(name);

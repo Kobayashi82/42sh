@@ -6,23 +6,27 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 20:50:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:33:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#include <sys/time.h>
-#include <sys/stat.h>
+	#include "libft.h"
 
-#pragma region HASH
+	#include <sys/time.h>
+	#include <sys/stat.h>
 
-	#define TMP_HASH_SIZE	1031
-	#define TEMPLATE_SIZE	6		//	Número de 'X' para generar un nombre aleatorio
-	#define TEMPLATE_TRIES	100		//	Numero de intentos de crear el nombre aleatorio
-	#define TEMPLATE_CHARS	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+#pragma endregion
 
-	#pragma region Variables
+#pragma region "HASH"
+
+	#pragma region "Variables"
+
+		#define TMP_HASH_SIZE	1031
+		#define TEMPLATE_SIZE	6		//	Número de 'X' para generar un nombre aleatorio
+		#define TEMPLATE_TRIES	100		//	Numero de intentos de crear el nombre aleatorio
+		#define TEMPLATE_CHARS	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 		typedef struct s_tmp {
 			char			*path;
@@ -34,7 +38,7 @@
 
 	#pragma endregion
 
-	#pragma region Index
+	#pragma region "Index"
 
 		static unsigned int hash_index(const char *key) {
 			unsigned int hash = 0;
@@ -45,9 +49,9 @@
 
 	#pragma endregion
 
-	#pragma region Find
+	#pragma region "Find"
 
-		#pragma region Path
+		#pragma region "Path"
 
 			static t_tmp *tmp_find_path_node(char *path) {
 				if (!path) return (NULL);
@@ -93,7 +97,7 @@
 
 		#pragma endregion
 
-		#pragma region FD
+		#pragma region "FD"
 
 			// static t_tmp *tmp_find_fd_node(int fd) {
 			// 	if (fd < 0) return (NULL);
@@ -144,7 +148,7 @@
 
 	#pragma endregion
 
-	#pragma region Close
+	#pragma region "Close"
 
 		void tmp_close_path(char *path) {
 			if (!path) return;
@@ -184,7 +188,7 @@
 
 	#pragma endregion
 
-	#pragma region Add
+	#pragma region "Add"
 
 		void tmp_add(char *path, int fd) {
 			if (!path) return;
@@ -208,7 +212,7 @@
 
 	#pragma endregion
 
-	#pragma region Delete
+	#pragma region "Delete"
 
 		void tmp_delete_path(char *path) {
 			if (!path) return;
@@ -259,7 +263,7 @@
 
 	#pragma endregion
 
-	#pragma region Clear
+	#pragma region "Clear"
 
 		void tmp_clear() {
 			for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
@@ -282,9 +286,9 @@
 
 #pragma endregion
 
-#pragma region Temp
+#pragma region "Temp"
 
-	#pragma region Template
+	#pragma region "Template"
 
 		static char *random_template() {
 			struct timeval tv; gettimeofday(&tv, NULL);
@@ -301,7 +305,7 @@
 
 	#pragma endregion
 
-	#pragma region Path
+	#pragma region "Path"
 
 		int is_writable_dir(const char *dir) {
 			struct stat st;
@@ -324,7 +328,7 @@
 
 	#pragma endregion
 
-	#pragma region MKDTEMP
+	#pragma region "MKDTEMP"
 
 		char *ft_mkdtemp(char *path, char *name) {
 			if (!path || !is_writable_dir(path)) {

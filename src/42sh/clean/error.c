@@ -6,23 +6,27 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:49:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 21:53:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "terminal/terminal.h"
-#include "terminal/prompt.h"
-#include "terminal/history.h"
-#include "clean.h"
-#include "hashes/alias.h"
-#include "hashes/variables.h"
-#include "hashes/builtin.h"
-#include "hashes/cmdp.h"
-#include "shell.h"
+#pragma region "Includes"
 
-#pragma region Messages
+	#include "terminal/terminal.h"
+	#include "terminal/prompt.h"
+	#include "terminal/history.h"
+	#include "clean.h"
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "hashes/builtin.h"
+	#include "hashes/cmdp.h"
+	#include "shell.h"
 
-	#pragma region Redirection
+#pragma endregion
+
+#pragma region "Messages"
+
+	#pragma region "Redirection"
 
 		//	Print redirections error messages
 		static void redirection_msg(int error, char *val) {
@@ -38,7 +42,7 @@
 
 	#pragma endregion
 
-	#pragma region Catastrophic
+	#pragma region "Catastrophic"
 
 		//	Print main process error messages
 		static void catastrophic_msg(int error, char *value) {
@@ -54,7 +58,7 @@
 
 #pragma endregion
 
-#pragma region Exit_Error
+#pragma region "Exit_Error"
 
 	static void free_and_exit() {
 		history_clear();

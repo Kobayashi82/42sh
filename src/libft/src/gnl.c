@@ -6,17 +6,25 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 02:19:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 11:47:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:34:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#pragma region "Includes"
 
-#pragma region Get Next Line
+	#include "libft.h"
 
-	#define GNL_BUFFER 256
+#pragma endregion
 
-	#pragma region Get Line
+#pragma region "Get Next Line"
+
+	#pragma region "Variables"
+
+		#define GNL_BUFFER 256
+
+	#pragma endregion
+
+	#pragma region "Get Line"
 
 		static char	*get_line(char *line, char *newline, char *buffer) {
 			int	len = ft_strlen(line);
@@ -35,7 +43,7 @@
 
 	#pragma endregion
 
-	#pragma region Get Buffer
+	#pragma region "Get Buffer"
 
 		static char	*get_buffer(char *line, char *buffer) {
 			int	len = ft_strlen(line);
@@ -53,9 +61,9 @@
 
 	#pragma endregion
 
-	#pragma region Get Next Line
+	#pragma region "Get Next Line"
 
-		char	*ft_get_next_line(int fd) {
+		char	*get_next_line(int fd) {
 			static char	buffer[GNL_BUFFER + 1];
 			char		*newline, *line = NULL;
 

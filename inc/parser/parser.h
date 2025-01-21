@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/19 18:09:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 22:19:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#define HASH_SIZE 101
 
@@ -20,9 +20,9 @@
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		typedef enum {
 			CMD,				// Normal command
@@ -43,9 +43,9 @@
 
 	#pragma endregion
 
-	#pragma region Structures
+	#pragma region "Structures"
 
-		#pragma region Tokens
+		#pragma region "Tokens"
 
 			typedef struct s_token	t_token;
 			typedef struct s_cmd	t_cmd;
@@ -88,7 +88,7 @@
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	char	*get_next_word(const char *input, size_t *pos, bool only_space);
 	void	first_step();
