@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/20 23:39:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/21 13:51:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -496,18 +496,8 @@
 
 				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
 
-				// Adjust the cursor position in the terminal
-				size_t move_back = 0;
-				for (size_t i = buffer.position; i < buffer.length; ) {
-					if (char_width(i, buffer.value) == 2) move_back++;
-					if ((unsigned char)buffer.value[i] >= 0xC0) {
-						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-						else												i += 2;	// 2 bytes
-					} else													i++;	// 1 byte
-					move_back++;
-				}
-				while (move_back--) write(STDOUT_FILENO, "\033[D", 3);
+				cursor_move(buffer.length, buffer.position);
+
 				return (0);
 			}
 
@@ -520,7 +510,11 @@
 		#pragma region Number
 
 			static int get_n() {
-				return (ft_max(1, ft_atoi(n)));
+				int number = ft_max(1, ft_atoi(n));
+				number_mode = false;
+				ft_memset(n, 0, 7);
+
+				return (number);
 			}
 
 			static void set_n() {
@@ -570,17 +564,115 @@
 				// Consists of a sequence of letters, digits and underscores, or a sequence of other non-blank characters, separated with white space.
 				// An empty line is also considered to be a word.
 
-				static void left_start_word() {
+				#pragma region Left Start Word
 
-				}
+					static void left_start_word() { // b
+						int number = get_n();
+						if (!vi_mode) number = 1;
 
-				static void right_start_word() {
+						if (buffer.position == 0) { beep(); return; }
+						while (number-- && buffer.position > 0) {
+							size_t pos = buffer.position;
+							do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 
-				}
+							while (ft_isspace(buffer.value[pos])) {
+								cursor_left(1);
+								buffer.position = pos;
+								if (pos == 0) break;
+								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+							}
 
-				static void right_end_word() {
-					
-				}
+							bool isalpha = (ft_isalnum(buffer.value[pos]) || buffer.value[pos] == '_');
+							if (isalpha) {
+								while ((ft_isalnum(buffer.value[pos]) || buffer.value[pos] == '_') && !ft_isspace(buffer.value[pos])) {
+									cursor_left(char_width(pos, buffer.value));
+									buffer.position = pos;
+									if (pos == 0) break;
+									do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+								}
+							} else {
+								while (!ft_isalnum(buffer.value[pos]) && buffer.value[pos] != '_' && !ft_isspace(buffer.value[pos])) {
+									cursor_left(char_width(pos, buffer.value));
+									buffer.position = pos;
+									if (pos == 0) break;
+									do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+								}
+							}
+						}
+					}
+
+				#pragma endregion
+
+				#pragma region Right Start Word
+
+					static void right_start_word() { // w
+						int number = get_n();
+						if (!vi_mode) number = 1;
+
+						if (buffer.position >= buffer.length - 1) { beep(); return; }
+						while (number-- && buffer.position < buffer.length - 1) {
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+
+							bool isalpha = (ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
+							if (isalpha) {
+								while ((ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !ft_isspace(buffer.value[buffer.position])) {
+									arrow_right();
+								}
+							} else {
+								while (!ft_isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !ft_isspace(buffer.value[buffer.position])) {
+									arrow_right();
+								}
+							}
+
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+						}
+					}
+
+				#pragma endregion
+
+				#pragma region Left End Word
+
+					static void right_end_word() { // e
+						int number = get_n();
+						if (!vi_mode) number = 1;
+
+						if (buffer.position >= buffer.length - 1) { beep(); return; }
+						while (number-- && buffer.position < buffer.length - 1) {
+							arrow_right();
+							while (ft_isspace(buffer.value[buffer.position])) {
+								cursor_right(1);
+								buffer.position++;
+							}
+
+							size_t pos;
+							bool isalpha = (ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
+							if (isalpha) {
+								while ((ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !ft_isspace(buffer.value[buffer.position])) {
+									arrow_right();
+									pos = buffer.position;
+									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+									if (pos == buffer.length) break;
+								}
+							} else {
+								while (!ft_isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !ft_isspace(buffer.value[buffer.position])) {
+									arrow_right();
+									pos = buffer.position;
+									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
+									if (pos == buffer.length) break;
+								}
+							}
+							if (pos == buffer.length) break;
+							arrow_left();
+						}
+					}
+
+				#pragma endregion
 
 			#pragma endregion
 
@@ -1039,3 +1131,5 @@
 	}
 
 #pragma endregion
+
+// if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
