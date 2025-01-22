@@ -6,12 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:39:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/22 21:21:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Arreglar multibytes en columnas primera y ultima
-//	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
+//	Optimizar Delete World
 
 #pragma region "Includes"
 
@@ -41,9 +41,9 @@
 
 #pragma endregion
 
-#pragma region "Input"
+#pragma region "Input"																										//	Optimizar
 
-	#pragma region "Insert"
+	#pragma region "Insert"																									//	Optimizar
 
 		#pragma region "EOF"							("CTRL + D")
 
@@ -52,6 +52,7 @@
 					if (!buffer.length) {
 						sfree(buffer.value); buffer.value = NULL;
 						write(STDOUT_FILENO, "\r\n", 2);
+						history_set_pos_end();
 					} else {
 						insert_mode(CURSOR);
 						history_set_pos_end();
@@ -89,9 +90,9 @@
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
 					insert_mode(CURSOR);
-					history_set_pos_end();
 					buffer.value[buffer.length] = '\0';
 					write(STDOUT_FILENO, "\r\n", 2);
+					history_set_pos_end();
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					return (1);
 				} return (0);
@@ -99,12 +100,13 @@
 
 		#pragma endregion
 
-		#pragma region "BackSpace"						("BackSpace, CTRL + W, CTRL + U")									//	Optimizar
+		#pragma region "BackSpace"						("BackSpace, CTRL + U")
 
 			#pragma region "Char"						("BackSpace")
 
 				static void backspace() {
-					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
+					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
+
 					if (buffer.position > 0) {
 						size_t back_pos = 1;
 
@@ -118,28 +120,6 @@
 						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
 
 						cursor_move(buffer.length, buffer.position);
-					}
-				}
-
-			#pragma endregion
-
-			#pragma region "Word"						("CTRL + W")														//	Optimizar
-
-				static void backspace_word() {
-					size_t pos = buffer.position, back_pos;
-
-					if (buffer.position > 0) {
-						while (pos > 0) { back_pos = 1;
-							while (pos - back_pos > 0 && (buffer.value[pos - back_pos] & 0xC0) == 0x80) back_pos++;
-							pos -= back_pos;
-							if (!ft_isspace(buffer.value[pos]) && !ft_ispunct(buffer.value[pos])) break;
-						} while (buffer.position > pos) backspace();
-
-						while (pos > 0) { back_pos = 1;
-							while (pos - back_pos > 0 && (buffer.value[pos - back_pos] & 0xC0) == 0x80) back_pos++;
-							pos -= back_pos;
-							if (ft_isspace(buffer.value[pos]) || ft_ispunct(buffer.value[pos])) { pos += back_pos; break; }
-						} while (buffer.position > pos) backspace();
 					}
 				}
 
@@ -171,7 +151,7 @@
 
 		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")										//	Optimizar
 
-			#pragma region "Char"						("Del")																//	Optimizar
+			#pragma region "Char"						("Del")
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
@@ -232,7 +212,7 @@
 						int tmp = total_chars;
 						while (tmp--) write(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
-						if (buffer.position) {
+						if (vi_mode == EDIT && buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							cursor_left(0);
 						}
@@ -262,6 +242,7 @@
 
 				static void end() {
 					if (!buffer.length || buffer.position > buffer.length) return;
+
 					size_t length = buffer.length;
 					if (vi_mode == EDIT) length = char_prev(buffer.length, buffer.value);
 
@@ -1108,19 +1089,19 @@
 						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
 
 						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }					// ALT + -			- Redo last action
+							if (seq[0] == '-') { redo(); return (1); }					//-	ALT + -			Redo last action
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
-								if (seq[1] == 'A') 						arrow_up();		// Up				- History next
-								if (seq[1] == 'B') 						arrow_down();	// Down				- History prev
-								if (seq[1] == 'D') 						arrow_left();	// Left				- Cursor left
-								if (seq[1] == 'C') 						arrow_right();	// Right			- Cursor right
-								if (seq[1] == 'H') 						home();			// Home				- Cursor to the start
-								if (seq[1] == 'F')						end();			// End				- Cursor to the end
-								if (seq[1] == '3' && seq[2] == '~')		delete_char();	// Del				- Delete
-								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	// CTRL + Del		- Delete current word
+								if (seq[1] == 'A') 						arrow_up();		//	Up				History next
+								if (seq[1] == 'B') 						arrow_down();	//	Down			History prev
+								if (seq[1] == 'D') 						arrow_left();	//	Left			Cursor left
+								if (seq[1] == 'C') 						arrow_right();	//	Right			Cursor right
+								if (seq[1] == 'H') 						home();			//	Home			Cursor to the start
+								if (seq[1] == 'F')						end();			//	End				Cursor to the end
+								if (seq[1] == '3' && seq[2] == '~')		delete_char();	//	Del				Delete
+								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	//	CTRL + Del		Delete current word
 							}
 						} else if (!vi_mode) {
-							vi_mode = EDIT;												// Esc				- Edit mode
+							vi_mode = EDIT;												//	Esc				Edit mode
 							if (buffer.position) {
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								cursor_left(0);
@@ -1138,10 +1119,10 @@
 			static int specials() {
 				if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
 				else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
+				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
 				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
-				else if (buffer.c == 20)					{ swap_char();					}	//-	[CTRL + T]	Swap the current character with the previous one				(Not working right with multibytes 漢字)
+				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-				else if (buffer.c == 23)					{ backspace_word();				}	//-	[CTRL + W]	Backspace the current word										(No es válido para vi ni readline, que se comportan diferente)
 				else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
