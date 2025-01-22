@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:19:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/22 21:45:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,18 @@
 
 	#pragma endregion
 
+	#pragma region "Edit"
+
+		#pragma region "Search History"					("CTRL + R")														//	Hacer
+
+			static void search_history() {
+
+			}
+
+		#pragma endregion
+
+	#pragma endregion
+
 	#pragma region "Handle"
 
 		#pragma region "Navigation"
@@ -95,7 +107,8 @@
 		#pragma region "Specials"
 
 			static int specials() {
-				if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
+				if (buffer.c == 18)							{ search_history();				}	//-	[CTRL + R]	History incremental search
+				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else return (0);
 
 				return (1);

@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:21:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/22 21:50:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Arreglar multibytes en columnas primera y ultima
 //	Optimizar Delete World
+//	Hacer Search History & AutoComplete
 
 #pragma region "Includes"
 
@@ -41,7 +42,7 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar
+#pragma region "Input"																										//	Optimizar / Hacer
 
 	#pragma region "Insert"																									//	Optimizar
 
@@ -400,7 +401,7 @@
 
 	#pragma endregion
 
-	#pragma region "Edit"
+	#pragma region "Edit"																									//	Hacer
 
 		#pragma region "Number"							("-+, 0-9")
 
@@ -1042,6 +1043,22 @@
 
 		#pragma endregion
 
+		#pragma region "Search History"					("CTRL + R")														//	Hacer
+
+			static void search_history() {
+
+			}
+
+		#pragma endregion
+
+		#pragma region "AutoComplete"					("Tab")																//	Hacer
+
+			static void autocomplete() {
+
+			}
+
+		#pragma endregion
+
 	#pragma endregion
 
 	#pragma region "Handle"
@@ -1119,7 +1136,9 @@
 			static int specials() {
 				if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
 				else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
+				else if (buffer.c == 9)						{ autocomplete();				}	//-	[Tab]		Autocomplete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
+				else if (buffer.c == 18)					{ search_history();				}	//-	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line

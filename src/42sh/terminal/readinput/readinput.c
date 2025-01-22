@@ -6,9 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:46:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/22 21:55:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+//	Expand history commands
 
 #pragma region "Includes"
 
@@ -91,6 +93,10 @@
 		if (fake_segfault) { fake_segfault = false;
 			write(2, "Segmentation fault (core dumped)\n", 34);
 			return (readinput(prompt));
+		}
+
+		if ((options.emacs || options.vi) && options.hist_on) {
+			// Expand history commands
 		}
 
 		return (buffer.value);

@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:21:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/22 21:50:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 //	Arreglar multibytes en columnas primera y ultima
-//	Optimizar Delete World & Swap Word
+//	Optimizar Delete World, Swap Word & Clear Screen
+//	Hacer Search History & AutoComplete
 
 #pragma region "Includes"
 
@@ -32,7 +33,7 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar
+#pragma region "Input"																										//	Optimizar / Hacer
 
 	#pragma region "Insert"																									//	Optimizar
 
@@ -325,11 +326,11 @@
 
 	#pragma endregion
 
-	#pragma region "Edit"																									//	Optimizar
+	#pragma region "Edit"																									//	Optimizar / Hacer
 
-		#pragma region "Swap"																								//	Optimizar
+		#pragma region "Swap"							("CTRL + T, ALT + T")												//	Optimizar
 
-			#pragma region "Char"
+			#pragma region "Char"						("CTRL + T")
 
 				static void swap_char() {
 					if (buffer.position > 0) {
@@ -372,7 +373,7 @@
 
 			#pragma endregion
 
-			#pragma region "Word"																							//	Optimizar
+			#pragma region "Word"						("ALT + T")															//	Optimizar
 
 				//	(Not working right with multibytes 漢字)
 				static t_word get_word(size_t position, size_t len, bool prev_word) {
@@ -450,13 +451,29 @@
 
 		#pragma endregion
 
-		#pragma region "Clear Screen"
+		#pragma region "Clear Screen"					("CTRL + L")														//	Optimizar
 
 			static void clear_screen() {
 				write(STDOUT_FILENO, "\033[H\033[2J", 7);
 				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 				buffer.position = buffer.length;
+			}
+
+		#pragma endregion
+
+		#pragma region "Search History"					("CTRL + R")														//	Hacer
+
+			static void search_history() {
+
+			}
+
+		#pragma endregion
+
+		#pragma region "AutoComplete"					("Tab")																//	Hacer
+
+			static void autocomplete() {
+
 			}
 
 		#pragma endregion
@@ -538,11 +555,13 @@
 				else if (buffer.c == 5)						{ end();						}	//	[CTRL + E]	Cursor to the end
 				else if (buffer.c == 6)						{ arrow_right();				}	//	[CTRL + F]	Cursor left
 				else if (buffer.c == 8)						{ backspace();					}	//	[CTRL + H]	Delete the previous character
+				else if (buffer.c == 9)						{ autocomplete();				}	//-	[Tab]		Autocomplete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
 				else if (buffer.c == 11)					{ delete_end();					}	//	[CTRL + K]	Delete from cursor to end
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
+				else if (buffer.c == 18)					{ search_history();				}	//-	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19)					{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
