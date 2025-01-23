@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/23 12:40:59 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/23 13:11:04 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -49,7 +49,7 @@ EXTRA_FLAGS_OBJ		=
 # ── DIRECTORIES ── #
 # ───────────────── #
 
-INC_DIR				= -I./inc/ -I./inc/terminal -I./inc/hashes -I./inc/parser -I./inc/builtins -I./inc/main -I./inc/utils -I./inc/test
+INC_DIR				= -I./inc/ -I./inc/terminal -I./inc/hashes -I./inc/parser -I./inc/builtins -I./inc/main -I./inc/utils -I./inc/tests
 OBJ_DIR				= build/obj/
 LIB_DIR				= build/lib/
 LIBFT_INC			= src/libft/inc/
@@ -107,7 +107,7 @@ SRCS	=	builtins/utils/executer.c		\
 			main/options.c					\
 			main/shell.c					\
 											\
-			parser/globbing.c				\
+			parser/globbing/globbing.c		\
 			parser/lexer.c					\
 			parser/parser.c					\
 			parser/tokenizer.c				\

@@ -3,15 +3,7 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-				"${workspaceFolder}/src/libft/inc",
-				"${workspaceFolder}/inc",
-				"${workspaceFolder}/inc/terminal",
-				"${workspaceFolder}/inc/hashes",
-				"${workspaceFolder}/inc/parser",
-				"${workspaceFolder}/inc/builtins",
-				"${workspaceFolder}/inc/main",
-				"${workspaceFolder}/inc/utils"
+                "${workspaceFolder}/**/"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/clang",

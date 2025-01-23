@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:04:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:10:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
 	#include "main/shell.h"
-	#include "tests.h"
+	#include "tests/tests.h"
 
 	#include <stdio.h>
 

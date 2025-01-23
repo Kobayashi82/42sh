@@ -5,6 +5,10 @@
 		"utility": "c",
 		"options.h": "c",
 		"libft.h": "c",
-		"prompt.h": "c"
+		"prompt.h": "c",
+		"globbing.h": "c",
+		"stdio.h": "c",
+		"shell.h": "c",
+		"clean.h": "c"
 	}
 }

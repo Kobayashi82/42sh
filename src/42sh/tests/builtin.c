@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:03:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:10:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 	#include "hashes/cmdp.h"
 	#include "parser/args.h"
 	#include "builtins/builtins.h"
-	#include "tests.h"
+	#include "tests/tests.h"
 
 	#include <stdio.h>
 
