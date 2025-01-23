@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 12:40:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 13:23:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,7 +260,7 @@
 		// builtin_add(":", 0, 1, &bt_dots);
 		// builtin_add("break", 0, 1, &bt_break);
 		// builtin_add("continue", 0, 1, &bt_continue);
-		// builtin_add(\"eval", 0, 1, &eval);
+		// builtin_add("eval", 0, 1, &eval);
 		// builtin_add("exec", 0, 1, &exec);
 		// builtin_add("exit", 0, 1, &bt_exit);
 		builtin_add("export", 0, 1, &export);
@@ -268,10 +268,17 @@
 		// builtin_add("return", 0, 1, &bt_return);
 		// builtin_add("set", 0, 1, &set);
 		// builtin_add("shift", 0, 1, &shift);
-		// builtin_add("source", 0, 1, &source);
-		// builtin_add("times", 0, 1, &times);
 		// builtin_add("trap", 0, 1, &trap);
 		builtin_add("unset", 0, 1, &unset);
+		// builtin_add("source", 0, 1, &source);
+		// builtin_add("times", 0, 1, &times);
+
+		// When Bash is executing in POSIX mode, the special builtins differ from other builtin commands in three respects:
+
+		// Special builtins are found before shell functions during command lookup.
+		// If a special builtin returns an error status, a non-interactive shell exits.
+		// Assignment statements preceding the command stay in effect in the shell environment after the command completes.
+		// When Bash is not executing in POSIX mode, these builtins behave no differently than the rest of the Bash builtin commands. The Bash POSIX mode is described in Bash POSIX Mode.
 
 		//	Normal
 		builtin_add("alias", 0, 0, &alias);

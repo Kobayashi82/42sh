@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 13:10:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 18:49:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,6 +217,33 @@
 
 #pragma endregion
 
+	#include "globbing.h"
+
+	static int test_globbing() {
+		int result = 0;
+
+		char *pattern = "M?*************k[a-z]?***********?l[!a-df-z]***************";
+		t_arg *args = test_create_args(pattern);
+		expand_wildcards(args);
+
+		if (!ft_strcmp(args->value, pattern)) { test_free_args(args); return (1); }
+	
+		print(1, G"✓"GREEN500" passed "Y"\t("NC, RESET);
+
+		t_arg *tmp = args;
+		while (tmp) {
+			print(1, " ", JOIN);
+			print(1, tmp->value, JOIN);
+			tmp = tmp->next;
+		}
+
+		print(1, Y" )\n"NC, PRINT);
+
+		test_free_args(args);
+
+		return (result);
+	}
+
 #pragma region "Builtin"
 
 	int test_builtin(const char **envp) {
@@ -233,8 +260,9 @@
 		if (!result && test_type(envp))		{ result = 1; printf(RD"X"RED500" type\n"NC); }
 		if (!result && test_command(envp))	{ result = 1; printf(RD"X"RED500" command\n"NC); }
 		if (!result && test_hash(envp))		{ result = 1; printf(RD"X"RED500" hash\n"NC); }
+		if (!result && test_globbing())		{ result = 1; printf(RD"X"RED500" globbing\n"NC); }
 
-		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+		//if (!result) printf(G"✓"GREEN500" passed\n"NC);
 
 		return (result);
 	}

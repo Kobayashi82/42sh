@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 13:01:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 17:44:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region Includes
 
+	#include "globbing.h"
 
 #pragma endregion
 
