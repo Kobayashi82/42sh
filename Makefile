@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/20 11:20:28 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/23 12:40:59 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,6 +88,7 @@ SRCS	=	builtins/utils/executer.c		\
 			builtins/pwd.c					\
 			builtins/readonly.c				\
 			builtins/set.c					\
+			builtins/shopt.c				\
 			builtins/test.c					\
 			builtins/type.c					\
 			builtins/unalias.c				\
@@ -106,6 +107,7 @@ SRCS	=	builtins/utils/executer.c		\
 			main/options.c					\
 			main/shell.c					\
 											\
+			parser/globbing.c				\
 			parser/lexer.c					\
 			parser/parser.c					\
 			parser/tokenizer.c				\

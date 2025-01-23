@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:14 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:31:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/23 11:49:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 	#include "builtins/options.h"
 
 #pragma endregion
+
+// [] es un alias de test, por decirlo de alguna manera
 
 // El builtin test evalúa condiciones relacionadas con archivos, cadenas y números.
 // Aquí tienes una descripción de los operadores que necesitas implementar:
