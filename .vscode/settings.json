@@ -9,6 +9,9 @@
 		"globbing.h": "c",
 		"stdio.h": "c",
 		"shell.h": "c",
-		"clean.h": "c"
+		"clean.h": "c",
+		"stat.h": "c",
+		"dirent.h": "c",
+		"stdlib.h": "c"
 	}
 }

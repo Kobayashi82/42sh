@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 15:42:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 18:36:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:20:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,13 +103,18 @@ void	args_list_merge(t_arg *args, t_arg **new_args)
 
 
 
+//	Delete duplicates of *
+static char	*optimize_pattern(char *pattern) {
+	int i = 0;
 
+	char *new_pattern = ft_strdup(pattern);
+	while (new_pattern && new_pattern[i]) {
+		if (new_pattern[i] == '*' && new_pattern[i + 1] == '*')
+			ft_memmove(&new_pattern[i], &new_pattern[i + 1], ft_strlen(&new_pattern[i]));
+		else i++;
+	}
 
-//	Check if path is a directory
-bool	is_directory(char *path) {
-	struct stat	statbuf;
-
-	return (!stat(path, &statbuf) && S_ISDIR(statbuf.st_mode));
+	return (new_pattern);
 }
 
 //	Sort the files lists in alphabetical order
@@ -133,16 +138,15 @@ static void	files_sort(t_arg **files) {
 }
 
 // change ~ home only at the start of a file
-void	tilde(char **cpattern) {
-	char	*home;
-	int		start;
+// void	tilde(char **cpattern) {
+// 	char *home;
 
-	start = 0;
-	home = get_home();
-	if (!ft_strncmp(*cpattern, "~", 1) && home)
-		*cpattern = ft_replace(*cpattern, &start, 1, home);
-	sfree(home);
-}
+// 	if (!ft_strncmp(*cpattern, "~", 1) && (home = get_home())) {
+// 		int start = 0;
+// 		*cpattern = ft_replace(*cpattern, &start, 1, home);
+// 		sfree(home);
+// 	}
+// }
 
 //	Check if there is a match for every file and directory using cpattern
 void	wildcards(char **cpattern) {
@@ -152,7 +156,7 @@ void	wildcards(char **cpattern) {
 	char	*last_slash;
 
 	args_list_clear(&files);
-	tilde(cpattern);
+	//tilde(cpattern);
 	last_slash = ft_strrchr(*cpattern, '/');
 	if (last_slash) {
 		pattern = last_slash + 1;
@@ -165,8 +169,12 @@ void	wildcards(char **cpattern) {
 	}
 
 	extra = !ft_memchr(*cpattern, '/', ft_strlen(*cpattern));
+
+	pattern = optimize_pattern(pattern);
+
 	dir_get(pattern, dir);
 	extra = 0;
+	sfree(pattern);
 	files_sort(&files);
 }
 

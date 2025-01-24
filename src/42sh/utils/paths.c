@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:01:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/24 15:00:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 	#include "utils.h"
 	#include "variables.h"
+
+	#include <sys/stat.h>
 
 #pragma endregion
 
@@ -231,4 +233,11 @@ const char *default_editor() {
 	if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
 	if (!editor || !*editor) editor = "nano";
     return (editor);
+}
+
+//	Check if path is a directory
+bool is_directory(char *path) {
+	struct stat	statbuf;
+
+	return (!stat(path, &statbuf) && S_ISDIR(statbuf.st_mode));
 }
