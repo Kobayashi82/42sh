@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:19:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 13:03:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 			bool	vi;
 			bool	hist_local;		//	1 = Guardar historial en disco, 0 = No guardar
 			bool	hist_on;		//	1 = ON, 0 = OFF
+			bool	globstar;		//	1 = ON, 0 = OFF
 		}	t_options;
 
 	#pragma endregion

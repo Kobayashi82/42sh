@@ -6,87 +6,110 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/24 13:19:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 14:49:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//	] puede ir despues de ! o ^ o escapado
+#pragma region "Includes"
 
-#include "libft.h"
-#include "globbing.h"
+	#include "libft.h"
+	#include "globbing.h"
 
-#define MAX_NEW_PATTERN_SIZE 512
+	#define MAX_NEW_PATTERN_SIZE 512
 
-//	Adds a character to the new pattern
-static void add_char(char *new_pattern, char c) {
-	if (ft_strlen(new_pattern) >= MAX_NEW_PATTERN_SIZE) return;
+#pragma endregion
 
-	int	i;
-	for (i = 0; new_pattern[i]; ++i)
-		if (new_pattern[i] == c) return;
+#pragma region "Pattern"
 
-	new_pattern[i++] = c;
-	new_pattern[i] = '\0';
-}
+	#pragma region "Add"
 
-//	Generates a string of characters to form a new pattern
-static char *brackets_chars(const char *pattern, int end, int i) {
-	char	c, *new_pattern = ft_calloc(MAX_NEW_PATTERN_SIZE + 1, sizeof(char));
-	bool	escaped = false;
+		//	Adds a character to the new pattern
+		static void bracket_pattern_add(char *new_pattern, char c) {
+			if (ft_strlen(new_pattern) >= MAX_NEW_PATTERN_SIZE) return;
 
-	for (++i; i < end; ++i) {
-		if (ft_strlen(new_pattern) >= MAX_NEW_PATTERN_SIZE) break;
-		if (escaped) { add_char(new_pattern, pattern[i]);	escaped = false; }
-		else if (pattern[i] == '\\') escaped = true;
-		else if (i + 2 < end && pattern[i + 1] == '-') {
-			if (pattern[i] > pattern[i + 2]) return (sfree(new_pattern), NULL);
-			c = pattern[i];
-			while (c <= pattern[i + 2]) add_char(new_pattern, c++);
-			i += 2;
-		} else add_char(new_pattern, pattern[i]);
-	}
+			int	i;
+			for (i = 0; new_pattern[i]; ++i)
+				if (new_pattern[i] == c) return;
 
-	if (!*new_pattern) { sfree(new_pattern), new_pattern = NULL; }
-	return (new_pattern);
-}
-
-//	Checks if input is present in the pattern
-//	If ! or ^ then return true if input is not present in the pattern
-static bool brackets_check(const char input, char *pattern, bool inv) {
-	bool match = ft_memchr(pattern, input, ft_strlen(pattern));
-
-	if ((match && !inv) || (!match && inv))
-		return (sfree(pattern), true);
-
-	return (sfree(pattern), false);
-}
-
-//	Create a pattern based on [] and check if input matches it
-bool brackets(char *input, char *pattern, int i, int *j) {
-	int		end = *j;
-
-	if (pattern[end] == '[') { end++;
-		// Check for inversion (! or ^)
-		bool inv = (pattern[end] == '!' || pattern[end] == '^');
-		if (inv && pattern[++end] && pattern[end] != '\\') end++;
-
-
-		// Find the closing bracket
-		while (pattern[end] && pattern[end] != ']') {
-			if (pattern[end] == '\\' && pattern[end + 1] == ']') end++;
-			end++;
+			new_pattern[i++] = c;
+			new_pattern[i] = '\0';
 		}
-		// If no closing bracket, return false
-		if (pattern[end] != ']' || end == *j + 1 + inv) return (false);
 
-		// Generate the pattern characters
-		char *new_pattern = brackets_chars(pattern, end, *j + (inv ? 1 : 0));
-		if (!new_pattern) return (false);
-		*j = end;
+	#pragma endregion
 
-		// Check if input matches the generated pattern
-		return (brackets_check(input[i], new_pattern, inv));
+	#pragma region "Create"
+
+		//	Generates a string of characters to form a new pattern
+		static char *bracket_pattern_create(const char *pattern, int end, int i) {
+			char c, *new_pattern = ft_calloc(MAX_NEW_PATTERN_SIZE + 1, sizeof(char));
+			bool escaped = false;
+
+			for (++i; i < end; ++i) {
+				if (ft_strlen(new_pattern) >= MAX_NEW_PATTERN_SIZE) break;
+				if (escaped) { bracket_pattern_add(new_pattern, pattern[i]);	escaped = false; }
+				else if (pattern[i] == '\\') escaped = true;
+				else if (i + 2 < end && pattern[i + 1] == '-') {
+					if (pattern[i] > pattern[i + 2]) return (sfree(new_pattern), NULL);
+					c = pattern[i];
+					while (c <= pattern[i + 2]) bracket_pattern_add(new_pattern, c++);
+					i += 2;
+				} else bracket_pattern_add(new_pattern, pattern[i]);
+			}
+
+			if (!*new_pattern) { sfree(new_pattern), new_pattern = NULL; }
+			return (new_pattern);
+		}
+
+	#pragma endregion
+
+	#pragma region "Match"
+
+		//	Checks if input is present in the pattern
+		//	If ! or ^ then return true if input is not present in the pattern
+		static bool bracket_pattern_match(const char input, char *pattern, bool inv) {
+			bool match = ft_memchr(pattern, input, ft_strlen(pattern));
+
+			if ((match && !inv) || (!match && inv))
+				return (sfree(pattern), true);
+
+			return (sfree(pattern), false);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Brackets"
+
+	//	Create a pattern based on [] and check if input matches it
+	bool brackets(char *input, char *pattern, int i, int *j) {
+		int end = *j;
+
+		if (pattern[end] == '[') { end++;
+			if(pattern[end] == ']') end++;
+
+			// Check for inversion (! or ^)
+			bool inv = (pattern[end] == '!' || pattern[end] == '^');
+			if (inv && pattern[++end] && pattern[end] != '\\') end++;
+
+			// Find the closing bracket
+			while (pattern[end] && pattern[end] != ']') {
+				if (pattern[end] == '\\' && pattern[end + 1]) end++;
+				end++;
+			}
+			// If no closing bracket, return false
+			if (pattern[end] != ']' || end == *j + 1 + inv) return (false);
+
+			// Generate the pattern characters
+			char *new_pattern = bracket_pattern_create(pattern, end, *j + (inv ? 1 : 0));
+			if (!new_pattern) return (false);
+			*j = end;
+
+			// Check if input matches the generated pattern
+			return (bracket_pattern_match(input[i], new_pattern, inv));
+		}
+
+		return (false);
 	}
 
-	return (false);
-}
+#pragma endregion

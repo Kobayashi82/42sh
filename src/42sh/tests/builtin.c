@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/24 15:58:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 12:42:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,8 @@
 	static int test_globbing() {
 		int result = 0;
 
-		char *pattern = "M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+		// char *pattern = "M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+		char *pattern = "///..\\/.//**/**/***/file****.txt////a/**/**/**b**";
 
 		t_arg *args = test_create_args(pattern);
 		expand_wildcards(args);

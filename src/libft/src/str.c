@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:30:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 12:22:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -614,6 +614,28 @@
 		if (*static_str[id]) { *static_str[id] = '\0'; static_str[id]++; }
 
 		return (token);
+	}
+
+#pragma endregion
+
+#pragma region "REPLACE"
+
+	//	Replace a string inside a string with another string XD
+	char *replace(char *str, int *start, int len, char *replace) {
+		int i = (start) ? *start : 0;
+		int str_len = ft_strlen(str);
+		int replace_len = ft_strlen(replace);
+		int new_len = str_len - len + replace_len;
+		char *new_str = smalloc(new_len + 1);
+		
+		ft_memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement
+		ft_memcpy(new_str + i, replace, replace_len);									//	Copy the replacement string
+		ft_memcpy(new_str + i + replace_len, str + i + len, str_len - (i + len));		//	Copy the part of the original string after the replacement
+		new_str[new_len] = '\0';														//	Add the null terminator at the end of the new string
+
+		if (start) *start = i + replace_len;											//	Update the start index if needed
+
+		return (sfree(str), new_str);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:20:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 14:51:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 #pragma region "Includes"
 
-	#include <stdbool.h>
 
 #pragma endregion
 
@@ -44,22 +43,26 @@
 
 	#pragma region "Structures"
 
-		#pragma region "Tokens"
-
-			typedef struct s_cmd	t_cmd;
-			typedef struct s_arg	t_arg;
-			typedef struct s_arg {
-				char	*value;
-				int		extra;
-				t_cmd	*cmd;
-				t_arg	*subarg;
-				t_arg	*prev;
-				t_arg	*next;			
-				e_arg	type;
-			}	t_arg;
-
-		#pragma endregion
+		typedef struct s_cmd	t_cmd;
+		typedef struct s_arg	t_arg;
+		typedef struct s_arg {
+			char	*value;
+			int		extra;
+			t_cmd	*cmd;
+			t_arg	*subarg;
+			t_arg	*prev;
+			t_arg	*next;			
+			e_arg	type;
+		}	t_arg;
 
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Methods"
+
+	void	args_merge(t_arg **args, t_arg **new_args);
+	void	args_sort(t_arg **files);
+	void	args_clear(t_arg **args);
 
 #pragma endregion

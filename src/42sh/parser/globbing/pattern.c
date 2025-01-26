@@ -5,80 +5,115 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/24 15:57:39 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/26 14:06:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include "globbing.h"
-#include "args.h"
+#pragma region "Includes"
 
-#include <dirent.h>
-#include <sys/stat.h>
+	#include "libft.h"
+	#include "main/options.h"
+	#include "parser/globbing.h"
 
-//	Check if input match a pattern. Support ? * and []
-static bool	match_pattern(char * input, char *pattern) {
-	int i = 0, j = 0, start = -1, match = 0;
-	int input_len = ft_strlen(input);
-	int pattern_len = ft_strlen(pattern);
+#pragma endregion
 
-	while (i < input_len) {
-		if (j < pattern_len && (pattern[j] == '?' || (pattern[j] == '[' && brackets(input, pattern, i, &j)) || pattern[j] == input[i])) { i++; j++; }
-		else if (j < pattern_len && pattern[j] == '*') { match = i; start = j++; }
-		else if (start != -1) { j = start + 1; i = match++; }
-		else return (false);
-	}
+#pragma region "Pattern"
 
-	while (j < pattern_len && pattern[j] == '*') j++;
+	#pragma region "Optimize"
 
-	return (j == pattern_len);
-}
+		//	Delete duplicates of *
+		static void pattern_optimize(char *pattern) {
+			int i = 0;
 
-//	Add the matched input to a list of filenames
-static void	files_add(char *filename, char *dir) {
-	t_arg	*new_node;
-
-	new_node = smalloc(sizeof(t_arg));
-	if (dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", 0);
-	else		new_node->value = ft_strdup(filename);
-
-	new_node->next = files;
-	files = new_node;
-}
-
-//	Check if is a valid file or directory and add it to the list if matched
-static int	files_get(struct dirent *de, char *pattern, char *dir) {
-	struct stat		stbuf;
-	char			path[1024];
-
-	ft_strncpy(path, dir, 1024);
-	ft_strncat(path, "/", 1024);
-	ft_strncat(path, de->d_name, 1024);
-	if (stat(path, &stbuf) == -1) return (1);
-	if ((S_ISREG(stbuf.st_mode) || S_ISDIR(stbuf.st_mode)) && match_pattern(de->d_name, pattern)) {
-		if (!extra)	files_add(de->d_name, dir);
-		else		files_add(de->d_name, NULL);
-	}
-
-	return (0);
-}
-
-//	Open the directory and check every file and directory for a match
-void	dir_get(char *cpattern, char *dir) {
-	DIR				*dr;
-	struct dirent	*de;
-	char			*pattern;
-
-	pattern = ft_strdup(cpattern);
-	dr = opendir(dir);
-	if (dr && pattern) {
-		de = readdir(dr);
-		while (de) {
-			if (((de->d_name[0] == '.' && *cpattern == '.') || de->d_name[0] != '.') && files_get(de, pattern, dir)) break ;
-			de = readdir(dr);
+			if (pattern && options.globstar && (!ft_strcmp(pattern, "**") || !ft_strcmp(pattern, "**/"))) return;
+			while (pattern && pattern[i]) {
+				if (pattern[i] == '*' && pattern[i + 1] == '*')
+					ft_memmove(&pattern[i], &pattern[i + 1], ft_strlen(&pattern[i]));
+				else i++;
+			}
 		}
-	}
-	if (dr) closedir(dr);
-	sfree(pattern);
-}
+
+	#pragma endregion
+
+	#pragma region "Is Escaped"
+
+		static bool pattern_isescaped(char *str, int i, char c) {
+			int		j = 0;
+
+			while (str && str[j] && j < i && i >= 0) {
+				if (str[j] == '\\' && (!c || str[j + 1] == c)) {
+					ft_memmove(&str[j], &str[j + 1], ft_strlen(&str[j + 1]) + 1);
+					if (j == --i) return (true);
+				} j++;
+			}
+
+			return (false);
+		}
+
+	#pragma endregion
+
+	#pragma region "Create"
+		
+		t_pattern *pattern_create(char *pattern) {
+			if (!pattern) return (NULL);
+			pattern = ft_strdup(pattern);
+
+			char *value, *start = pattern, *tmp_pattern = pattern;
+			t_pattern *patterns = NULL, *tmp_list = NULL;
+
+			while (tmp_pattern && *tmp_pattern) {
+				if ((value = ft_strchr(tmp_pattern, '/'))) {
+
+					if (pattern_isescaped(tmp_pattern, value - tmp_pattern, '/')) {
+						tmp_pattern = value;
+						continue;
+					}
+
+					value = ft_substr(start, 0, (value - start) + 1);
+					tmp_pattern = start + ft_strlen(value);
+					start = tmp_pattern;
+
+					if (!ft_strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { sfree(value); continue; }
+					if (!ft_strcmp(value, "**/") && tmp_list && tmp_list->value && !ft_strcmp(tmp_list->value, "**/")) { sfree(value); continue; }
+				} else if (*tmp_pattern) {
+					value = ft_strdup(tmp_pattern);
+					tmp_pattern = NULL;
+				}
+
+				pattern_optimize(value);
+				if (value) {
+					t_pattern *new_pattern = ft_calloc(1, sizeof(t_pattern));
+					new_pattern->value = value;
+
+					if (!patterns) {
+						patterns = new_pattern;
+						tmp_list = patterns;
+					} else {
+						tmp_list->next = new_pattern;
+						tmp_list = new_pattern;
+					}
+				}
+			}
+
+			return (sfree(pattern), patterns);
+		}
+
+	#pragma endregion
+
+	#pragma region "Clear"
+
+		void pattern_clear(t_pattern **patterns) {
+			t_pattern *next, *current = *patterns;
+
+			while (current) {
+				next = current->next;
+				sfree(current->value);
+				sfree(current);
+				current = next;
+			} *patterns = NULL;
+		}
+
+	 #pragma endregion
+
+ #pragma endregion

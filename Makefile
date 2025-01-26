@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/23 17:26:34 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/26 13:37:00 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,6 +109,7 @@ SRCS	=	builtins/utils/executer.c		\
 											\
 			parser/globbing/brackets.c		\
 			parser/globbing/globbing.c		\
+			parser/globbing/match.c			\
 			parser/globbing/pattern.c		\
 			parser/globbing/wildcards.c		\
 			parser/lexer.c					\

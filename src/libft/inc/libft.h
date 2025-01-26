@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:44:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 12:26:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,12 @@
 		#pragma region "TOK"
 
 			char	*ft_strtok(char *str, const char *delim, int id);
+
+		#pragma endregion
+
+		#pragma region "REPLACE"
+
+			char	*replace(char *str, int *start, int len, char *replace);
 
 		#pragma endregion
 

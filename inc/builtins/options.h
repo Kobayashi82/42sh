@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:17:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 14:56:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region "Includes"
 
-	#include "args.h"
+	#include <stdbool.h>
 
 	#define MAX_OPTIONS	128
 
@@ -24,6 +24,7 @@
 
 	#pragma region "Structures"
 
+		typedef struct s_arg	t_arg;
 		typedef struct s_opt {
 			const char	*options;
 			char		valid[MAX_OPTIONS];

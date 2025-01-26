@@ -159,3 +159,127 @@
 // $0	Expands to the name of the shell or shell script. This is set at shell initialization. If Bash is invoked with a file of
 //		commands (see Shell Scripts), $0 is set to the name of that file. If Bash is started with the -c option (see Invoking Bash),
 //		then $0 is set to the first argument after the string to be executed, if one is present. Otherwise, it is set to the filename used to invoke Bash, as given by argument zero.
+
+
+
+// Readline
+// -------------
+// Undo
+// Switch word
+// Fix navigation and switch char/word
+
+// Dumb
+// ---------
+// Backspace, enter (tab or delete?)
+
+// Vi
+// ---
+// Undo
+// Fix navigation and switch char
+// Todas las cosas de vi
+
+
+// Partes importantes:
+
+// Fix navigation
+// Tab
+// Undo/Redo
+
+// Opciones relacionadas:
+// Historial
+// Emacs/vi
+// AutoComplete
+
+
+// Fix Navigation:
+
+// Al mover el cursor, determinar si el caracter es ampliado.
+
+// Esto es importante al cambiar de fila.
+
+// Hay que cambiar:
+
+// Backspace (todos)
+// Delete (todos)
+// Home y End
+
+// Left y right no afectan en el sentido de que se calcula el carácter en base a la posición actual en el buffer.
+
+// Ademas, optimizar delete word.
+// Puede ser que necesite hacer get_cursor solo al principio y al redimensionar.
+
+// Por supuesto switch char y word debe de funcionar cuando está entre filas. Lo mismo que borra palabras
+
+
+// AutoComplete necesita
+// Alias
+// Variables
+// Builtins
+// Options
+
+// History, readinput necesita
+// Options
+
+// Los history expansión se hacen antes de devolver el readinput?
+
+
+// Builtins como builtin que dice los builtins que existen?
+
+// Help?
+
+
+// Help
+
+// Here are the sections available:
+
+// 1. Input
+// 2. History
+// 3. Variables
+// 4. Wildcards
+// 5. Builtins
+// 6. Redirections
+
+
+// Input
+//     History
+//     AutoComplete
+// Parser
+//     Alias
+//     Variables
+//     Expansion
+//     Wildcards
+// Executer
+//     Fork
+//     Redirections
+//     Builtins
+
+
+// y - Copy
+// d - Delete
+// c - Delete & Insertion
+// r - Replace char
+// R - Replace mode
+// u - Undo last change
+// U - Undo all
+// CTRL + W - Backspace word
+// CTRL + _ - Undo last change
+
+// +- numeric & printed
+
+// int has_more_bytes(int fd) {
+//  int bytes_pending;
+//  if (ioctl(fd, FIONREAD, &bytes_pending) == -1) {
+//   return 0; // Devuelve false si hay error
+//  }
+//  return bytes_pending > 0; // Devuelve true si hay más bytes
+// }
+
+// Divido pattern en una lista.
+// Optimizar cada value en cada nodo
+
+// Que pasa si hay varios nodos con **/?
+
+// Obtener base dir (directorio inicial)
+// Por cada nodo genero un files. Si no es el último nodo, llamo a la misma función con el siguiente nodo y con files como base dir. Tiene que devolver un puntero de tipo files la función.
+// Si llega al último nodo y no hay coincidencias, devuelve null, si no, devuelve un puntero a la coincidencia.
+// Pero es importante que se hagan merge de los files devueltos.

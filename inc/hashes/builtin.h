@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:17:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 14:54:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,9 @@
 #pragma region "Includes"
 
 	#include "parser/args.h"
+
 	#include <stddef.h>
+	#include <stdbool.h>
 
 	#define BUILTIN_HASH_SIZE	101
 
