@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:51:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 20:58:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,12 @@
 
 #pragma region "Methods"
 
+	int		args_insert(t_arg *args, t_arg **new_args);
 	void	args_merge(t_arg **args, t_arg **new_args);
-	void	args_sort(t_arg **files);
+	int		args_copy(t_arg *dst, t_arg *src);
+	int		args_swap(t_arg *arg1, t_arg *arg2);
+	t_arg	*args_sort(t_arg *args);
 	void	args_clear(t_arg **args);
+	void	args_print(t_arg *args);
 
 #pragma endregion

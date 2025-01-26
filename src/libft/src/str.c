@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 12:22:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 21:49:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,21 +433,19 @@
 	#pragma region "StrJoinSep"
 
 		char	*ft_strjoin_sep(char *str1, char *sep, char *str2, int frees) {
-			int	len = ft_strlen(str1) + ft_strlen(sep) + ft_strlen(str2);;
+			int	len = ft_strlen(str1) + ft_strlen(sep) + ft_strlen(str2);
 
 			if (!str1 && !sep && !str2) return (NULL);
 
 			char *new_str = smalloc(len + 1);
-			if (new_str && str1) {
+			if (str1) {
 				ft_strlcpy(new_str, str1, len + 1);
 				if (sep)  ft_strlcat(new_str, sep, len + 1);
 				if (str2) ft_strlcat(new_str, str2, len + 1);
-			}
-			else if (new_str && sep) {
+			} else if (sep) {
 				ft_strlcpy(new_str, sep, len + 1);
 				if (str2) ft_strlcat(new_str, str2, len + 1);
-			}
-			else if (new_str && str2) ft_strlcpy(new_str, str2, len + 1);
+			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
 
 			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) sfree(str1);
 			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) sfree(sep);

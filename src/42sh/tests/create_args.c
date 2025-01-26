@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:03:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 20:26:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static char *extract_word(char *line, int *index) {
 }
 
 static t_arg *add_arg(t_arg **head, char *value) {
-    t_arg *new_arg = smalloc(sizeof(t_arg));
+    t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
     if (!new_arg) return (NULL);
 
     new_arg->value = value;

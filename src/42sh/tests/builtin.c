@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 12:42:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 00:01:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,26 +223,19 @@
 		int result = 0;
 
 		// char *pattern = "M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
-		char *pattern = "///..\\/.//**/**/***/file****.txt////a/**/**/**b**";
+		// char *pattern = "///..\\/.//**/**/***/file****.txt////a/**/**/**b**";
+		char *pattern = "../*/s*/";
 
 		t_arg *args = test_create_args(pattern);
 		expand_wildcards(args);
 
 		if (!ft_strcmp(args->value, pattern)) {
-			print(1, RD"X"RED500" globbing "Y"\t("NC, RESET);
+			print(1, RD"X"RED500" globbing "Y"\t(\n"NC, RESET_PRINT);
 			result = 1;
 		} else
-			print(1, G"✓"GREEN500" passed "Y"\t("NC, RESET);
-
-		t_arg *tmp = args;
-		while (tmp) {
-			print(1, " ", JOIN);
-			print(1, tmp->value, JOIN);
-			tmp = tmp->next;
-		}
-
-		print(1, Y" )\n"NC, PRINT);
-		test_free_args(args);
+			print(1, G"✓"GREEN500" passed "Y"\t(\n"NC, RESET_PRINT);
+		args_print(args);
+		args_clear(&args);
 
 		return (result);
 	}

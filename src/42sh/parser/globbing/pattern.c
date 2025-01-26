@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:06:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 21:53:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,14 @@
 			if (!pattern) return (NULL);
 			pattern = ft_strdup(pattern);
 
-			char *value, *start = pattern, *tmp_pattern = pattern;
+			char *start = pattern, *tmp_pattern = pattern;
+
 			t_pattern *patterns = NULL, *tmp_list = NULL;
 
 			while (tmp_pattern && *tmp_pattern) {
+				char *value = NULL;
+				bool is_dir = false;
+
 				if ((value = ft_strchr(tmp_pattern, '/'))) {
 
 					if (pattern_isescaped(tmp_pattern, value - tmp_pattern, '/')) {
@@ -70,9 +74,15 @@
 						continue;
 					}
 
-					value = ft_substr(start, 0, (value - start) + 1);
-					tmp_pattern = start + ft_strlen(value);
+					if (value - start == 0) {
+						tmp_pattern = start + 1;
+						start = tmp_pattern;
+						continue;
+					}
+					value = ft_substr(start, 0, value - start);
+					tmp_pattern = start + ft_strlen(value) + 1;
 					start = tmp_pattern;
+					is_dir = true;
 
 					if (!ft_strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { sfree(value); continue; }
 					if (!ft_strcmp(value, "**/") && tmp_list && tmp_list->value && !ft_strcmp(tmp_list->value, "**/")) { sfree(value); continue; }
@@ -85,6 +95,7 @@
 				if (value) {
 					t_pattern *new_pattern = ft_calloc(1, sizeof(t_pattern));
 					new_pattern->value = value;
+					new_pattern->is_dir = is_dir;
 
 					if (!patterns) {
 						patterns = new_pattern;

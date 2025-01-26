@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:53:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:35:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@
 #pragma region "Exit_Error"
 
 	static void free_and_exit() {
+		print_reset();
 		history_clear();
 		alias_clear();
 		variables_clear(vars_table);

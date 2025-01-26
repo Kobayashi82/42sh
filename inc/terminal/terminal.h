@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:55:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:35:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@
 
 	//	---------- PRINT -----------
 	int		print(int fd, char *str, int mode);
+	void	print_reset();
 
 	//	---------- SIGNAL ----------
 	void	signals_set();

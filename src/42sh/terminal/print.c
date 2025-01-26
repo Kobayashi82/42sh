@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:50:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/26 23:37:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@
 		
 		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) sfree(str);
 		return (result == -1);
+	}
+
+	void print_reset() {
+		for (int i = 0; i < 1024; ++i)
+			sfree(terminal.msg[i]);
 	}
 
 #pragma endregion
