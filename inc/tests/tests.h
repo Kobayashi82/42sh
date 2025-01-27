@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 13:56:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 15:54:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:28:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@
 
 	//	---------- UNTEST ----------
 	void	test_userinfo();
-	void	test_globbing();
 
 	//	--------- BUILTIN ----------
 	int		test_builtins(const char **envp);
@@ -40,6 +39,7 @@
 	int		test_variables(const char **envp);
 	int		test_options();
 	int		test_history();
+	int		test_globbing();
 
 	//	----------- TEST -----------
 	int		tests(int argc, const char **argv, const char **envp);

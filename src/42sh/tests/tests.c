@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 15:58:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:29:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,10 @@
 		if (test_aliases())			failed = 1;
 		if (test_variables(envp))	failed = 1;
 		if (test_history())			failed = 1;
+		if (test_globbing())		failed = 1;
 		if (test_builtins(envp))	failed = 1;
 
 		printf(W"\t────────────────────────\n"NC); fflush(stdout);
-
-		test_globbing();
 
 		//echo $"Hello" $var $$ ${path} $(command) 'text literal' > output
 		//echo "Hello\\\" World" \\\$var 'Single\\'quote' > output

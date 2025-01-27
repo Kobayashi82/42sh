@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:29:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@
 	#include "terminal/colors.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
+	#include "parser/args.h"
+	#include "parser/globbing.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "main/options.h"
-
+	#include "tests/tests.h"
+	
 	#include <stdio.h>
 
 #pragma endregion
@@ -136,6 +139,30 @@
 		}
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+		return (result);
+	}
+
+#pragma endregion
+
+#pragma region "Globbing"
+
+	int test_globbing() {
+		printf(W"\t────────────────────────\n"NC);
+		printf(C"\tGlobbing    ");
+
+		int result = 0;
+
+		char *pattern = "./M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+
+		t_arg *args = test_create_args(pattern);
+		globbing(args);
+
+		if (!ft_strcmp(args->value, pattern)) { result = 1; printf(RD"X"RED500" pattern\n"NC); }
+		
+		if (!result) printf(G"✓"GREEN500" passed\n"NC);
+
+		args_clear(&args);
 
 		return (result);
 	}

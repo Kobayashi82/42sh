@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 21:12:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:27:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,27 +42,6 @@
 		if (path) { printf("%s\n", path); sfree(path); }
 		path = get_home_by_id(getuid());
 		if (path) { printf("%s\n", path); sfree(path); }
-	}
-
-#pragma endregion
-
-#pragma region "Globbing"
-
-	void test_globbing() {
-		char *pattern = "./M?*************k[aaaa,,,,,b,C-Z]?***********?l[!]\\]a-df-z]***************";
-		//char *pattern = "../*/***s?[a-m]**s/";
-		// char *pattern = "*";
-		//char *pattern = "../*/*";
-
-		t_arg *args = test_create_args(pattern);
-		globbing(args);
-
-		if (args->failglob)
-			printf("Error, chiquitin\n");
-		printf("\n");
-
-		args_print(args);
-		args_clear(&args);
 	}
 
 #pragma endregion
