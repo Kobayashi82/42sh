@@ -283,3 +283,284 @@
 // Por cada nodo genero un files. Si no es el último nodo, llamo a la misma función con el siguiente nodo y con files como base dir. Tiene que devolver un puntero de tipo files la función.
 // Si llega al último nodo y no hay coincidencias, devuelve null, si no, devuelve un puntero a la coincidencia.
 // Pero es importante que se hagan merge de los files devueltos.
+
+
+// SINTAXIS
+
+// 1. Inicio del análisis de sintaxis
+// Lo primero es tener un punto de entrada claro para tu análisis: recorrer los tokens, asegurándote de validar la secuencia correcta según las reglas de la shell.
+
+// 2. Validación de tokens en el contexto adecuado
+// Recuerda que cada tipo de token (comando, argumento, operador, redirección, etc.) tiene un contexto válido. Por ejemplo, un operador lógico no puede ir al principio, pero sí puede ir después de un comando. Aquí te doy una lista de validaciones comunes:
+
+// a. El primer token:
+// No puede ser un operador lógico (&&, ||, ;).
+// No puede ser un pipe (|), a menos que sea el único token y se trate de una construcción vacía.
+// No puede ser una redirección (<, >, >>).
+// Si el primer token es cualquiera de estos, es un error de sintaxis.
+
+// b. Después de un comando o argumento:
+// Puede ir un operador lógico (&&, ||, ;).
+// Puede ir una redirección (<, >, >>).
+// Puede ir un pipe (|).
+// Puede ir un paréntesis (( o )), pero debes tener cuidado con los paréntesis desbalanceados.
+// c. Después de un operador lógico (&&, ||, ;):
+// El siguiente token debe ser un comando o un paréntesis para subcomando.
+// No puede ser una redirección, un pipe o un operador lógico.
+// Si el siguiente token es un paréntesis (, debes verificar que los paréntesis estén balanceados.
+// d. Después de un pipe (|):
+// El siguiente token debe ser un comando o un paréntesis.
+// No puede ser una redirección, un operador lógico, ni otro pipe.
+// e. Después de una redirección (<, >, >>):
+// El siguiente token debe ser un archivo (una cadena que represente una ruta).
+// Si el siguiente token es un pipe o un operador lógico, es un error de sintaxis.
+// f. Después de un paréntesis de apertura (():
+// El siguiente token debe ser un comando o un paréntesis de apertura para un subcomando.
+// No puede ser una redirección, un operador lógico o un pipe.
+// g. Después de un paréntesis de cierre ()):
+// El siguiente token debe ser un operador lógico, un pipe, o el final de la línea.
+// No puede ser una redirección o un comando.
+// 3. Verificación de paréntesis balanceados
+// Durante el análisis, debes mantener un contador para verificar que los paréntesis estén balanceados. Si encuentras un (, incrementas el contador, y si encuentras un ), lo decrements. Si en algún momento el contador es negativo, significa que has encontrado un paréntesis de cierre sin su correspondiente apertura, lo que es un error de sintaxis.
+
+// 4. Final del análisis de sintaxis
+// Asegúrate de que no haya tokens sobrantes o no válidos al final. Por ejemplo:
+// No puede haber un operador lógico, un pipe o una redirección al final de la línea.
+// No puede haber un comando vacío (por ejemplo, después de un pipe sin comando).
+// 5. Flujo de validación:
+// Aquí tienes el flujo general que seguirías para validar cada token:
+
+// Si es el primer token: asegúrate de que no sea un operador lógico, pipe o redirección.
+// Si es un comando: permite que vengan operadores lógicos, redirecciones, pipes, o paréntesis.
+// Si es un operador lógico: asegúrate de que el siguiente token sea un comando o paréntesis.
+// Si es un pipe: asegúrate de que el siguiente token sea un comando o paréntesis.
+// Si es una redirección: asegúrate de que el siguiente token sea una ruta de archivo.
+// Si es un paréntesis de apertura: asegúrate de que el siguiente token sea un comando o un paréntesis.
+// Si es un paréntesis de cierre: asegúrate de que el siguiente token sea un operador lógico, pipe, o el final de la línea.
+// 6. Errores específicos
+// Si encuentras un error en alguna de las validaciones, puedes usar perror() o mensajes personalizados para describir qué salió mal. Algunos ejemplos:
+
+// "Error de sintaxis: operador lógico inesperado" si un operador lógico está mal ubicado.
+// "Error de sintaxis: redirección mal ubicada" si una redirección está en un lugar no válido.
+// "Error de sintaxis: paréntesis desbalanceados" si los paréntesis no están correctamente emparejados.
+// 7. Ejemplo de flujo de análisis:
+// c
+// Copiar
+// Editar
+// void validate_syntax(char **tokens) {
+//     int i = 0;
+//     int parentheses_count = 0;
+
+//     while (tokens[i]) {
+//         if (i == 0) {
+//             // El primer token no puede ser un operador lógico, pipe, o redirección
+//             if (is_operator(tokens[i]) || is_pipe(tokens[i]) || is_redirection(tokens[i])) {
+//                 perror("Error: Operador lógico, pipe o redirección al inicio");
+//                 return;
+//             }
+//         } else {
+//             if (is_operator(tokens[i - 1])) {
+//                 // Si el token anterior es un operador lógico, el actual debe ser un comando
+//                 if (!is_command(tokens[i]) && !is_open_parenthesis(tokens[i])) {
+//                     perror("Error: Comando esperado después de operador lógico");
+//                     return;
+//                 }
+//             } else if (is_pipe(tokens[i - 1])) {
+//                 // Si el token anterior es un pipe, el actual debe ser un comando
+//                 if (!is_command(tokens[i]) && !is_open_parenthesis(tokens[i])) {
+//                     perror("Error: Comando esperado después de pipe");
+//                     return;
+//                 }
+//             } else if (is_redirection(tokens[i - 1])) {
+//                 // Si el token anterior es una redirección, el actual debe ser un archivo
+//                 if (!is_filename(tokens[i])) {
+//                     perror("Error: Se espera un archivo después de redirección");
+//                     return;
+//                 }
+//             }
+//         }
+
+//         // Manejo de paréntesis balanceados
+//         if (is_open_parenthesis(tokens[i])) parentheses_count++;
+//         if (is_close_parenthesis(tokens[i])) parentheses_count--;
+
+//         if (parentheses_count < 0) {
+//             perror("Error: Paréntesis desbalanceados");
+//             return;
+//         }
+
+//         i++;
+//     }
+
+//     if (parentheses_count != 0) {
+//         perror("Error: Paréntesis desbalanceados");
+//         return;
+//     }
+// }
+
+// BRACES
+
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <string.h>
+// #include <ctype.h>
+
+// typedef struct s_arg {
+//     char *value;
+// } t_arg;
+
+// typedef struct s_list {
+//     void *data;
+//     struct s_list *next;
+// } t_list;
+
+// t_list *new_list(void *data) {
+//     t_list *node = malloc(sizeof(t_list));
+//     if (!node)
+//         return NULL;
+//     node->data = data;
+//     node->next = NULL;
+//     return node;
+// }
+
+// void append_to_list(t_list **list, void *data) {
+//     t_list *node = new_list(data);
+//     if (!*list) {
+//         *list = node;
+//     } else {
+//         t_list *tmp = *list;
+//         while (tmp->next)
+//             tmp = tmp->next;
+//         tmp->next = node;
+//     }
+// }
+
+// // Función para dividir una cadena por comas (como {a,b,c})
+// char **split_by_comma(const char *str) {
+//     int count = 1;
+//     for (const char *p = str; *p; p++) {
+//         if (*p == ',') count++;
+//     }
+
+//     char **result = malloc((count + 1) * sizeof(char *));
+//     if (!result) return NULL;
+
+//     int i = 0;
+//     const char *start = str;
+//     for (const char *p = str; ; p++) {
+//         if (*p == ',' || *p == '\0') {
+//             int len = p - start;
+//             result[i] = malloc(len + 1);
+//             strncpy(result[i], start, len);
+//             result[i][len] = '\0';
+//             i++;
+//             if (*p == '\0') break;
+//             start = p + 1;
+//         }
+//     }
+//     result[i] = NULL;
+//     return result;
+// }
+
+// // Función para expandir secuencias como {a..z} o {0..9}
+// t_list *expand_sequence(const char *start, const char *end, int step) {
+//     t_list *result = NULL;
+//     if (isalpha(start[0]) && isalpha(end[0])) {  // Expansión de letras
+//         for (char c = start[0]; c <= end[0]; c += step) {
+//             char *s = malloc(2);
+//             s[0] = c;
+//             s[1] = '\0';
+//             append_to_list(&result, s);
+//         }
+//     } else if (isdigit(start[0]) && isdigit(end[0])) {  // Expansión de números
+//         for (int i = atoi(start); i <= atoi(end); i += step) {
+//             char *s = malloc(20);
+//             sprintf(s, "%d", i);
+//             append_to_list(&result, s);
+//         }
+//     }
+//     return result;
+// }
+
+// // Función que maneja la expansión de una sección entre llaves
+// t_list *expand_brace_segment(char *segment) {
+//     t_list *result = NULL;
+//     if (strchr(segment, '..')) {  // Expansión de secuencia {a..z} o {0..9}
+//         char *start = strtok(segment, "..");
+//         char *end = strtok(NULL, "..");
+//         int step = 1;
+//         if (strtok(NULL, "..")) {  // Si hay un tercer argumento es el paso
+//             step = atoi(strtok(NULL, ".."));
+//         }
+//         result = expand_sequence(start, end, step);
+//     } else {  // Expansión de comas {a,b,c}
+//         char **expanded = split_by_comma(segment);
+//         for (int i = 0; expanded[i] != NULL; i++) {
+//             append_to_list(&result, expanded[i]);
+//             free(expanded[i]);
+//         }
+//         free(expanded);
+//     }
+//     return result;
+// }
+
+// // Función que maneja el globo general de los braces
+// t_list *expand_braces(t_arg *arg) {
+//     t_list *expansions = NULL;
+//     char *pattern = arg->value;
+//     char *start = pattern;
+//     while (*start) {
+//         if (*start == '{') {
+//             char *end = strchr(start, '}');
+//             if (!end) break;
+
+//             char *brace_content = strndup(start + 1, end - start - 1);
+//             t_list *brace_expansion = expand_brace_segment(brace_content);
+//             free(brace_content);
+
+//             // Expandir el patrón anterior y posterior
+//             char *pre = strndup(pattern, start - pattern);
+//             append_to_list(&expansions, pre);
+//             for (t_list *node = brace_expansion; node; node = node->next) {
+//                 append_to_list(&expansions, node->data);
+//             }
+
+//             char *post = strdup(end + 1);
+//             if (*post) {
+//                 t_arg post_arg = { post };
+//                 t_list *post_expansion = expand_braces(&post_arg);
+//                 for (t_list *node = post_expansion; node; node = node->next) {
+//                     append_to_list(&expansions, node->data);
+//                 }
+//                 free(post);
+//             }
+//             free(pre);
+//             start = end + 1;
+//         } else {
+//             char *end = strchr(start, '{');
+//             if (!end) {
+//                 append_to_list(&expansions, strdup(start));
+//                 break;
+//             } else {
+//                 int len = end - start;
+//                 char *no_braces = strndup(start, len);
+//                 append_to_list(&expansions, no_braces);
+//                 start = end;
+//             }
+//         }
+//     }
+//     return expansions;
+// }
+
+// // Función principal de prueba
+// int main() {
+//     t_arg arg = { "{a..z..2}popo{a,{0..9},c}" };
+//     t_list *expansions = expand_braces(&arg);
+
+//     // Imprimir todas las expansiones generadas
+//     for (t_list *node = expansions; node; node = node->next) {
+//         printf("%s\n", (char *)node->data);
+//     }
+
+//     return 0;
+// }
