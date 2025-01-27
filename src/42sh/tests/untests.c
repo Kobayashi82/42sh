@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 15:56:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:26:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,11 +51,14 @@
 	void test_globbing() {
 		//char *pattern = "./M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
 		//char *pattern = "../*/***s?[a-m]**s/";
-		char *pattern = "*/";
+		 char *pattern = "popo*/";
+		//char *pattern = "../*/*";
 
 		t_arg *args = test_create_args(pattern);
 		expand_wildcards(args);
 
+		if (args->failglob)
+			printf("Error, chiquitin\n");
 		printf("\n");
 
 		args_print(args);

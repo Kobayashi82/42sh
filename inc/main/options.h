@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 13:03:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 16:51:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,19 @@
 	#pragma region "Structures"
 
 		typedef struct {
-			bool	emacs;
-			bool	vi;
-			bool	hist_local;		//	1 = Guardar historial en disco, 0 = No guardar
-			bool	hist_on;		//	1 = ON, 0 = OFF
-			bool	globstar;		//	1 = ON, 0 = OFF
+			bool	emacs;			//	1 = Emacs mode ON											0 = OFF
+			bool	vi;				//	1 = Vi mode ON												0 = OFF
+
+			bool	hist_on;		//	1 = History enabled											0 = Disabled
+			bool	hist_local;		//	1 = Save history to disk									0 = Do not save
+
+			bool	noglob;			//	1 = Globbing disabled										0 = Enabled
+			bool	dotglob;		//	1 = Include hidden files (starting with .)					0 = Exclude
+			bool	globstar;		//	1 = Enable recursive matching (**)							0 = Disable
+			bool	nullglob;		//	1 = Patterns that do not match expand to an empty string	0 = Keep pattern
+			bool	failglob;		//	1 = Patterns that do not match cause an error				0 = No error
+			bool	nocaseglob;		//	1 = Case-insensitive globbing								0 = Case-sensitive
+			bool	extglob;		//	Extended globbing (not implemented)
 		}	t_options;
 
 	#pragma endregion

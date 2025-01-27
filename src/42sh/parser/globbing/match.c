@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 23:54:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:24:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 	#include "libft.h"
 	#include "parser/args.h"
 	#include "parser/globbing.h"
+	#include "main/options.h"
 	#include "utils/utils.h"
 
 	#include <dirent.h>
@@ -47,8 +48,10 @@
 #pragma region "File Add"
 
 	//	Add the matched input to a list of filenames
-	static void files_add(char *filename, char *dir, t_arg **files, bool is_dir) {
+	static void files_add(char *filename, t_pattern *pattern, char *dir, t_arg **files, bool is_dir) {
 		t_arg *new_node;
+
+		if ((!ft_strcmp(filename, ".") || !ft_strcmp(filename, "..")) && ft_strcmp(filename, pattern->value)) return;
 
 		new_node = ft_calloc(1, sizeof(t_arg));
 		if (is_dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", 0);
@@ -74,10 +77,10 @@
 
 		if (pattern->is_dir && S_ISDIR(stbuf.st_mode)) {
 			if (match_pattern(de->d_name, pattern->value))
-				files_add(de->d_name, dir, files, true);
+				files_add(de->d_name, pattern, dir, files, true);
 		} else if (!pattern->is_dir) {
 			if (match_pattern(de->d_name, pattern->value))
-				files_add(de->d_name, dir, files, S_ISDIR(stbuf.st_mode) && pattern->is_dir);
+				files_add(de->d_name, pattern, dir, files, S_ISDIR(stbuf.st_mode));
 		}
 
 		return (sfree(fulldir), 0);
@@ -95,7 +98,6 @@
 		struct dirent	*de;
 		t_arg			*files = NULL;
 
-
 		char *tmp = ft_strjoin_sep(basedir, "/", dir, 0);
 		char *fulldir = resolve_path(tmp); sfree(tmp);
 		if (!fulldir) return (NULL);
@@ -104,8 +106,8 @@
 		if (dr && pattern && pattern->value) {
 			de = readdir(dr);
 			while (de) {
-				if (((de->d_name[0] == '.' && *pattern->value == '.') || de->d_name[0] != '.')
-					&& files_get(de, pattern, fulldir, dir, &files)) break ;
+				bool valid = (de->d_name[0] != '.' || options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
+				if (valid && files_get(de, pattern, fulldir, dir, &files)) break ;
 				de = readdir(dr);
 			}
 		}

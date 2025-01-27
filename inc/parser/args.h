@@ -6,11 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:43:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 17:27:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#pragma region "Includes"
+
+	#include <stdbool.h>
+
+#pragma endregion
 
 #pragma region "Variables"
 
@@ -43,6 +49,8 @@
 		typedef struct s_arg {
 			char	*value;
 			int		extra;
+			bool	failglob;
+			bool	nullglob;
 			t_cmd	*cmd;
 			t_arg	*subarg;
 			t_arg	*prev;

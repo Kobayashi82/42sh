@@ -19,6 +19,7 @@
 		"history.h": "c",
 		"termios.h": "c",
 		"termcap.h": "c",
-		"builtin.h": "c"
+		"builtin.h": "c",
+		"utils.h": "c"
 	}
 }
