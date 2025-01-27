@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 19:45:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:03:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,11 +74,9 @@
 
 		options.noglob		= false;
 		options.dotglob		= false;
-		options.globstar	= false;	//
 		options.nullglob	= false;
 		options.failglob	= false;
-		options.nocaseglob	= true;
-		options.extglob		= false;
+		options.nocaseglob	= false;
 		return (0);
 	}
 

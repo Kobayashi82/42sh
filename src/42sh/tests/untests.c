@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 19:45:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:12:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@
 		//char *pattern = "../*/*";
 
 		t_arg *args = test_create_args(pattern);
-		expand_wildcards(args);
+		globbing(args);
 
 		if (args->failglob)
 			printf("Error, chiquitin\n");

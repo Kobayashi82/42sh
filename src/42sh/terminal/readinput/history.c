@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:05:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 	static HIST_ENTRY	**history			= NULL;		//	History array
 
-	static char			history_file[PATH_MAX];			//	Path to the physical history file
+	static char			history_file[4096];			//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entry
 	static bool			file_unlimited		= false;	//	Indicates if it is limited by a maximum size
 

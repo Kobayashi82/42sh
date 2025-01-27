@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 19:41:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:11:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 #pragma endregion
 
-#pragma region "Match"
+#pragma region "Match Pattern"
 
 	//	Check if input match a pattern. Support ? * and []
 	static bool	match_pattern(char * input, char *pattern) {
@@ -73,10 +73,10 @@
 
 #pragma endregion
 
-#pragma region "File Get"
+#pragma region "Match File"
 
 	//	Check if is a valid file or directory and add it to the list if matched
-	static int	files_get(struct dirent *de, t_pattern *pattern, char *fulldir, char *dir, t_arg **files) {
+	static int	match_files(struct dirent *de, t_pattern *pattern, char *fulldir, char *dir, t_arg **files) {
 		struct stat		stbuf;
 
 		char *tmp = ft_strjoin_sep(fulldir, "/", de->d_name, 0);
@@ -97,10 +97,10 @@
 
 #pragma endregion
 
-#pragma region "Dir Get"
+#pragma region "Match Dir"
 
 	//	Open the directory and check every file and directory for a match
-	t_arg *dir_get(t_pattern *pattern, char *basedir, char *dir) {
+	t_arg *match_dir(t_pattern *pattern, char *basedir, char *dir) {
 		if (!pattern || !pattern->value) return (NULL);
 
 		DIR				*dr;
@@ -116,7 +116,7 @@
 			de = readdir(dr);
 			while (de) {
 				bool valid = (de->d_name[0] != '.' || options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
-				if (valid && files_get(de, pattern, fulldir, dir, &files)) break ;
+				if (valid && match_files(de, pattern, fulldir, dir, &files)) break ;
 				de = readdir(dr);
 			}
 		}

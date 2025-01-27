@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:47:53 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 21:39:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:12:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,6 @@
 #pragma endregion
 
 #pragma region "Variables"
-
-	#pragma region "Enumerators"
-
-
-	#pragma endregion
 
 	#pragma region "Structures"
 
@@ -41,16 +36,15 @@
 
 #pragma region "Methods"
 
-	//	--------- WILDCARDS --------
-	//void	wildcards(char *pattern);
-	void	expand_wildcards(t_arg *args);
+	//	--------- GLOBBING ---------
+	void	globbing(t_arg *args);
 
 	//	--------- PATTERN ----------
 	t_pattern	*pattern_create(char *pattern);
 	void		pattern_clear(t_pattern **patterns);
 
 	//	---------- MATCH -----------
-	t_arg	*dir_get(t_pattern *pattern, char *basedir, char *dir);
+	t_arg	*match_dir(t_pattern *pattern, char *basedir, char *dir);
 
 	//	--------- BRACKETS ---------
 	bool	brackets(char * input, char *pattern, int i, int *j);

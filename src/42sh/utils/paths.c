@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/24 15:00:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 21:05:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 	#pragma region "Symlink"
 
 		char *resolve_symlink(const char *path) {
-			static char	resolved_path[PATH_MAX];
-			char 		temp_path[PATH_MAX];
+			static char	resolved_path[4096];
+			char 		temp_path[4096];
 			ssize_t		len;
 
 			ft_strcpy(temp_path, path);
@@ -44,7 +44,7 @@
 
 		char *resolve_path(const char *path) {
 			if (!path) return (NULL);
-			char abs_path[PATH_MAX], cwd[PATH_MAX];
+			char abs_path[4096], cwd[4096];
 
 			if (path[0] == '~') {
 				char *home = NULL;
@@ -62,7 +62,7 @@
 					if (home) path += i;
 				}
 
-				if (ft_strlen(home) + ft_strlen(path) >= PATH_MAX) {
+				if (ft_strlen(home) + ft_strlen(path) >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					sfree(home);
 					return (NULL);
@@ -85,7 +85,7 @@
 					}
 					ft_strcpy(cwd, pwd);
 				}
-				if (ft_strlen(cwd) + ft_strlen(path) + 1 >= PATH_MAX) {
+				if (ft_strlen(cwd) + ft_strlen(path) + 1 >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}
@@ -93,14 +93,14 @@
 				ft_strcat(abs_path, "/");
 				ft_strcat(abs_path, path);
 			} else {
-				if (ft_strlen(path) >= PATH_MAX) {
+				if (ft_strlen(path) >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}
 				ft_strcpy(abs_path, path);
 			}
 
-			char *components[PATH_MAX / 2];
+			char *components[4096 / 2];
 			int index = 0;
 
 			char *token = ft_strtok(abs_path, "/", 1);
@@ -111,9 +111,9 @@
 				token = ft_strtok(NULL, "/", 1);
 			}
 
-			char final_path[PATH_MAX] = "/";
+			char final_path[4096] = "/";
 			for (int i = 0; i < index; ++i) {
-				if (ft_strlen(final_path) + ft_strlen(components[i]) + 1 >= PATH_MAX) {
+				if (ft_strlen(final_path) + ft_strlen(components[i]) + 1 >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}

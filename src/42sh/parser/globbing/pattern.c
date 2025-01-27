@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 21:53:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 20:42:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 		static void pattern_optimize(char *pattern) {
 			int i = 0;
 
-			if (pattern && options.globstar && (!ft_strcmp(pattern, "**") || !ft_strcmp(pattern, "**/"))) return;
 			while (pattern && pattern[i]) {
 				if (pattern[i] == '*' && pattern[i + 1] == '*')
 					ft_memmove(&pattern[i], &pattern[i + 1], ft_strlen(&pattern[i]));
