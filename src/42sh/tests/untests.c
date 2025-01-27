@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 13:10:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:56:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include "parser/args.h"
+	#include "parser/globbing.h"
 	#include "tests/tests.h"
 
 	#include <stdio.h>
@@ -40,6 +42,24 @@
 		if (path) { printf("%s\n", path); sfree(path); }
 		path = get_home_by_id(getuid());
 		if (path) { printf("%s\n", path); sfree(path); }
+	}
+
+#pragma endregion
+
+#pragma region "Globbing"
+
+	void test_globbing() {
+		//char *pattern = "./M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+		//char *pattern = "../*/***s?[a-m]**s/";
+		char *pattern = "*/";
+
+		t_arg *args = test_create_args(pattern);
+		expand_wildcards(args);
+
+		printf("\n");
+
+		args_print(args);
+		args_clear(&args);
 	}
 
 #pragma endregion

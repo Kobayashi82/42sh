@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 15:53:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
 	#include "parser/parser.h"
+	#include "parser/args.h"
 	#include "builtins/builtins.h"
 	#include "main/options.h"
 	#include "main/shell.h"
