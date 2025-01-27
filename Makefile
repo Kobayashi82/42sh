@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/27 21:06:50 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/27 22:33:03 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -218,8 +218,26 @@ re:
 	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
-#	FClean
-	@$(MAKE) -s fclean
+#	Title
+	@clear; $(MAKE) -s _title
+#	Delete LIBFT
+	@if [ -d "$(LIBFT_DIR)" ]; then \
+		(make -s -C $(LIBFT_DIR) fclean; exit 0); \
+	else \
+		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
+	fi
+#	Delete objects
+	@$(MAKE) -s _delete_objects
+#	Delete $(NAME)
+	@if [ -f $(NAME) ]; then \
+		printf "\t$(CYAN)Deleting... $(YELLOW)$(NAME)$(NC)"; \
+		rm -f $(NAME); \
+	fi
+	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
+	@$(MAKE) -s _progress; printf "\n"
+#	Delete folder and files
+	@-find build/$(LIB_DIR) -type d -empty -delete >/dev/null 2>&1 || true
+	@-find build -type d -empty -delete >/dev/null 2>&1 || true
 #	Create files
 	@touch .is_re; printf "\033[1A\033[1A\r"
 #	Execute $(NAME)
