@@ -6,14 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:49:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:44:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "globbing.h"
+	#include "parser/globbing.h"
+	#include "main/options.h"
 
 	#define MAX_NEW_PATTERN_SIZE 512
 
@@ -67,7 +68,14 @@
 		//	Checks if input is present in the pattern
 		//	If ! or ^ then return true if input is not present in the pattern
 		static bool bracket_pattern_match(const char input, char *pattern, bool inv) {
-			bool match = ft_memchr(pattern, input, ft_strlen(pattern));
+			char input_char = input;
+			char *pattern_chars = pattern;
+			if (options.nocaseglob) {
+				input_char = ft_tolower(input_char);
+				pattern_chars = ft_tolower_s(pattern);
+			}
+
+			bool match = ft_memchr(pattern_chars, input_char, ft_strlen(pattern_chars));
 
 			if ((match && !inv) || (!match && inv))
 				return (sfree(pattern), true);

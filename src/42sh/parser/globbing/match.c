@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 19:24:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 19:41:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,16 @@
 		int pattern_len = ft_strlen(pattern);
 
 		while (i < input_len) {
-			if (j < pattern_len && (pattern[j] == '?' || (pattern[j] == '[' && brackets(input, pattern, i, &j)) || pattern[j] == input[i])) { i++; j++; }
-			else if (j < pattern_len && pattern[j] == '*') { match = i; start = j++; }
+			char input_char = input[i];
+			char pattern_char = pattern[j];
+
+			if (options.nocaseglob) {
+				input_char = ft_tolower(input_char);
+				pattern_char = ft_tolower(pattern_char);
+			}
+
+			if (j < pattern_len && (pattern_char == '?' || (pattern_char == '[' && brackets(input, pattern, i, &j)) || pattern_char == input_char)) { i++; j++; }
+			else if (j < pattern_len && pattern_char == '*') { match = i; start = j++; }
 			else if (start != -1) { j = start + 1; i = match++; }
 			else return (false);
 		}
@@ -42,6 +50,7 @@
 
 		return (j == pattern_len);
 	}
+
 
 #pragma endregion
 
