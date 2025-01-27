@@ -12,6 +12,12 @@
 		"clean.h": "c",
 		"stat.h": "c",
 		"dirent.h": "c",
-		"stdlib.h": "c"
+		"stdlib.h": "c",
+		"print.h": "c",
+		"builtins.h": "c",
+		"limits": "c",
+		"history.h": "c",
+		"termios.h": "c",
+		"termcap.h": "c"
 	}
 }

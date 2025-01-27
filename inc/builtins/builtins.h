@@ -6,15 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:16:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:40:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region "Includes"
+#pragma region "Variables"
 
-	#include "parser/args.h"
+	#pragma region "Structures"
+
+		typedef struct s_arg	t_arg;
+
+	#pragma endregion
 
 #pragma endregion
 

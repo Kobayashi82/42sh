@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:00:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 23:44:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:07:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "libft.h"
 	#include "terminal/terminal.h"
+	#include "terminal/print.h"
 	#include "parser/args.h"
 
 	#include <stdio.h>
@@ -181,15 +182,29 @@ t_arg *args_sort(t_arg *args) {
 #pragma region "Print"
 
 	//	Clears all the args in an args list
+	// void args_print(t_arg *args) {
+	// 	if (!args) return;
+	// 	t_arg *current = args;
+
+	// 	while (current) {
+	// 		printf("%s", current->value);
+	// 		current = current->next;
+	// 		if (current)	printf(" ");
+	// 		else			printf("\n");
+	// 	}
+	// }
+
+	//	Clears all the args in an args list
 	void args_print(t_arg *args) {
 		if (!args) return;
 		t_arg *current = args;
 
+		print(STDOUT_FILENO, NULL, RESET);
 		while (current) {
-			printf("%s", current->value);
+			print(STDOUT_FILENO, current->value, JOIN);
 			current = current->next;
-			if (current)	printf(" ");
-			else			printf("\n");
+			if (current)	print(STDOUT_FILENO, " ", JOIN);
+			else			print(STDOUT_FILENO, "\n", PRINT);
 		}
 	}
 

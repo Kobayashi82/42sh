@@ -6,15 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:54:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:41:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region "Includes"
-
-	#include "parser/args.h"
 
 	#include <stddef.h>
 	#include <stdbool.h>
@@ -27,7 +25,8 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_builtin t_builtin;
+		typedef struct s_arg		t_arg;
+		typedef struct s_builtin	t_builtin;
 		typedef struct s_builtin{
 			char		*name;
 			bool		disabled;

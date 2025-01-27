@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 00:01:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:22:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "terminal/terminal.h"
+	#include "libft.h"
+	#include "terminal/print.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
@@ -222,9 +223,9 @@
 	static int test_globbing() {
 		int result = 0;
 
-		// char *pattern = "M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
-		// char *pattern = "///..\\/.//**/**/***/file****.txt////a/**/**/**b**";
-		char *pattern = "../*/s*/";
+		//char *pattern = "./M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+		//char *pattern = "../*/***s?[a-m]**s/";
+		char *pattern = "*/";
 
 		t_arg *args = test_create_args(pattern);
 		expand_wildcards(args);
@@ -234,6 +235,7 @@
 			result = 1;
 		} else
 			print(1, G"✓"GREEN500" passed "Y"\t(\n"NC, RESET_PRINT);
+
 		args_print(args);
 		args_clear(&args);
 

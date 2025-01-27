@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:25:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 #pragma region "Includes"
 
-	#include "terminal/terminal.h"
-	#include "terminal/history.h"
+	#include "libft.h"
+	#include "terminal/print.h"
+	#include "terminal/readinput/history.h"
 	#include "main/options.h"
 
 #pragma endregion

@@ -6,21 +6,28 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:50:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
+	#include "terminal/readinput/termcaps.h"
+	#include "terminal/signals.h"
+
+	#include <unistd.h>
+	#include <signal.h>
 
 #pragma endregion
+
+int	nsignal;
 
 #pragma region "SIG_INT"
 
 	//	Handle SIGINT signal
 	void sigint_handler(int sig) {
-		terminal.signal = sig;
+		nsignal = sig;
 		write(STDIN_FILENO, "\n", 1);
 	}
 
@@ -30,7 +37,7 @@
 
 	//	Handle SIGQUIT signal
 	void sigquit_handler(int sig) {
-		terminal.signal = sig;
+		nsignal = sig;
 		write(1, "Quit\n", 5);
 	}
 
@@ -40,7 +47,7 @@
 
 	//	Handle SIGWINCH signal
 	void sigwinch_handler(int sig) {
-		terminal.signal = sig;
+		nsignal = sig;
 		terminal_initialize();
 		cursor_get();			// Esto solo cuando se esté en modo interactivo
 	}
@@ -53,7 +60,7 @@
 		signal(SIGINT, sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGWINCH, sigwinch_handler);
-		terminal.signal = 0;
+		nsignal = 0;
 	}
 
 #pragma endregion

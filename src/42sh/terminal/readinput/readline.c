@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:50:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,13 @@
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput.h"
-	#include "terminal/prompt.h"
-	#include "terminal/history.h"
+	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/readinput.h"
+	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/history.h"
+	#include "terminal/signals.h"
 	#include "main/options.h"
 
 #pragma endregion
@@ -60,7 +63,7 @@
 					if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 					else					write(STDOUT_FILENO, "\r\n", 2);
 					if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
-					terminal.signal = 2;
+					nsignal = 2;
 					return (1);
 				} return (0);
 			}

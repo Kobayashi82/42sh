@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/22 21:55:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput.h"
-	#include "terminal/prompt.h"
+	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/readinput.h"
+	#include "terminal/readinput/prompt.h"
 	#include "main/options.h"
 
 #pragma endregion

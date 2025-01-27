@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 13:05:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:29:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "terminal/terminal.h"
+	#include "libft.h"
+	#include "terminal/print.h"
 	#include "main/options.h"
 
 #pragma endregion

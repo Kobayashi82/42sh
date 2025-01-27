@@ -6,14 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:58:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/history.h"
+	#include "terminal/print.h"
+	#include "terminal/readinput/history.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"
 	#include "main/shell.h"

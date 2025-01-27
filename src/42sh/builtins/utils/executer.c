@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 21:45:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:04:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:42:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "parser/args.h"
 	#include "builtins/builtins.h"
 	#include "hashes/builtin.h"
 	#include "main/shell.h"

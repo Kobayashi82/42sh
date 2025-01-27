@@ -6,13 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:17:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:21:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region "Includes"
+
+	#include <stddef.h>
+	#include <stdbool.h>
 
 	#define ALIAS_HASH_SIZE 101
 

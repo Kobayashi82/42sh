@@ -6,15 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 23:35:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/prompt.h"
-	#include "terminal/history.h"
+	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/history.h"
+	#include "terminal/print.h"
 	#include "clean.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
@@ -61,7 +63,7 @@
 #pragma region "Exit_Error"
 
 	static void free_and_exit() {
-		print_reset();
+		print(0, NULL, RESET_ALL);
 		history_clear();
 		alias_clear();
 		variables_clear(vars_table);

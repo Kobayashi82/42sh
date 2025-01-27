@@ -1,18 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin.c                                          :+:      :+:    :+:   */
+/*   signals.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:22:56 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/27 12:44:32 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/27 13:27:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma region "Includes"
+#pragma once
 
-	#include "builtins/builtins.h"
-	#include "builtins/options.h"
+#pragma region "Variables"
+
+	extern int nsignal;
+
+#pragma endregion
+
+#pragma region "Methods"
+
+	//	---------- SIGNAL ----------
+	void	signals_set();
+	void	sigint_handler(int sig);
+	void	sigquit_handler(int sig);
 
 #pragma endregion

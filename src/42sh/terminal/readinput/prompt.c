@@ -6,14 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 21:47:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "terminal/prompt.h"
+	#include "terminal/readinput/prompt.h"
+	#include "terminal/colors.h"
 
 #pragma endregion
 

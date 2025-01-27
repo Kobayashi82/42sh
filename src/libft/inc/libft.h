@@ -6,15 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 12:26:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:13:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region "Includes"
-
-	#include "colors.h"
 
 	#include <fcntl.h>
 	#include <unistd.h>

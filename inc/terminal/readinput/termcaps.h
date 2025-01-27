@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   terminal.h                                         :+:      :+:    :+:   */
+/*   termcaps.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:37:15 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/27 13:35:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,34 +15,23 @@
 #pragma region Includes
 
 	#include <stddef.h>
-	#include <termios.h>
 
 #pragma endregion
 
-#pragma region Variables
+#pragma region Methods
 
-	#pragma region Structures
-
-		typedef struct termios	t_termios;
-		typedef struct {
-			t_termios	term;
-			size_t		rows;
-			size_t		columns;
-			char		*input;
-
-			char 		*PS1;
-			char 		*PS2;
-			char		*prompt;
-
-			int			bk_stdin;
-			int			bk_stdout;
-			int			bk_stderr;
-
-			char		quoted;
-		} t_terminal;
-
-	#pragma endregion
-
-	extern t_terminal	terminal;
+	//	--------- TERMCAP ----------
+	int		char_width(size_t position, char *value);
+	int		chars_width(size_t from, size_t to, char *value);
+	size_t	char_prev(size_t position, char *value);
+	
+	void	cursor_left(int moves);
+	void	cursor_right(int moves);
+	void	cursor_move(size_t from_pos, size_t to_pos);
+	void	cursor_get();
+	void	cursor_set(int row, int col);
+	void	cursor_hide();
+	void	cursor_show();
+	int		terminal_initialize();
 
 #pragma endregion

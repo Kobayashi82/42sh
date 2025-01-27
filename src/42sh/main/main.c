@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 13:11:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,12 @@
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput.h"
-	#include "terminal/history.h"
+	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/readinput.h"
+	#include "terminal/readinput/history.h"
+	#include "terminal/signals.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
@@ -89,7 +92,7 @@
 			while (!shell.exit && !read_input()) ;
 		}
 
-		if (terminal.signal) shell.exit_code = 128 + terminal.signal;
+		if (nsignal) shell.exit_code = 128 + nsignal;
 		exit_error(END, 0, NULL, true);
 	}
 

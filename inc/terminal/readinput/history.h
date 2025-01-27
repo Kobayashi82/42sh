@@ -6,15 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:20:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:26:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region "Variables"
+#pragma region "Includes"
+
+	#include <stddef.h>
+	#include <stdbool.h>
 
 	#define HIST_MAXSIZE 5000
+
+#pragma endregion
+
+#pragma region "Variables"
 
 	#pragma region "Enumerators"
 

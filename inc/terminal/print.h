@@ -1,38 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt.h                                           :+:      :+:    :+:   */
+/*   print.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/10 20:53:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:20:40 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/27 12:02:57 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/27 12:13:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region "Variables"
+#pragma region "Includes"
 
-	#pragma region "Enumerators"
-
-		enum e_prompt_type { PS1, PS2, BOTH };
-
-	#pragma endregion
-
-	#pragma region "Structures"
-
-	#pragma endregion
-
-	extern char		*prompt_PS1;
-	extern char		*prompt_PS2;
+	#include "terminal/colors.h"
 
 #pragma endregion
 
-#pragma region "Methods"
+#pragma region Variables
 
-	//	---------- PROMPT ----------
-	void	prompt_set(int type, char *new_prompt);
-	void	prompt_clear(int type);
+	#pragma region Enumerators
+
+		enum e_print {
+			RESET,
+			RESET_PRINT,
+			FREE_RESET,
+			FREE_RESET_PRINT,
+			FREE_JOIN,
+			FREE_PRINT,
+			JOIN,
+			PRINT,
+			RESET_ALL
+		};
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region Methods
+
+	//	---------- PRINT -----------
+	int		print(int fd, char *str, int mode);
 
 #pragma endregion

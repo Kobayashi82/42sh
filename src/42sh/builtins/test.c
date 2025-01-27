@@ -6,13 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:14 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/23 11:49:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/27 12:23:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "terminal/terminal.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 
