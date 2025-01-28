@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 21:52:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:18:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,9 +153,10 @@
 
 		int result = 0;
 
-		char *pattern = "./M?*************k[aaaa,,,,,b,c-z]?***********?l[!]\\]a-df-z]***************";
+		char *pattern = "./\\M?*************'k'[aaaa,,,,,b,c-z]?***********?l[!]\\]a\\-df-z]***************";
 
-		t_arg *args = test_create_args(pattern);
+		t_arg *args = ft_calloc(1, sizeof(t_arg));
+		args->value = ft_strdup(pattern);
 		globbing(args);
 
 		if (!ft_strcmp(args->value, pattern)) { result = 1; printf(RD"X"RED500" pattern\n"NC); }

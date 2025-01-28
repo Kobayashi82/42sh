@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 21:52:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 12:26:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 	#include <dirent.h>
 	#include <sys/stat.h>
 
+	#include <stdio.h>
+
 #pragma endregion
 
 #pragma region "Match Pattern"
@@ -30,10 +32,15 @@
 		int i = 0, j = 0, start = -1, match = 0;
 		int input_len = ft_strlen(input);
 		int pattern_len = ft_strlen(pattern);
-		bool escaped = false;
+		int quoted = 0;
 
 		while (i < input_len) {
-			if (escaped == false && pattern[j] == '\\')	{ escaped = true; j++; }
+
+			if (!quoted && pattern[j] == '\\')			{ quoted = 1; j++; }
+			else if (!quoted && pattern[j] == '\'')  	{ quoted = 2; j++; }
+			else if (quoted == 2 && pattern[j] == '\'')	{ quoted = 0; j++; }
+			else if (!quoted && pattern[j] == '"')  	{ quoted = 3; j++; }
+			else if (quoted == 3 && pattern[j] == '\'')	{ quoted = 0; j++; }
 
 			char input_char = input[i];
 			char pattern_char = pattern[j];
@@ -43,19 +50,19 @@
 				pattern_char = ft_tolower(pattern_char);
 			}
 
-			if (escaped == true && j < pattern_len) { if (input_char == pattern_char) { i++; j++; } else return (false); }
+			if (quoted > 0 && j < pattern_len) { if (input_char == pattern_char) { i++; j++; } else return (false); }
 			else if (j < pattern_len && (pattern_char == '?' || (pattern_char == '[' && brackets(input, pattern, i, &j)) || pattern_char == input_char)) { i++; j++; }
 			else if (j < pattern_len && pattern_char == '*') { match = i; start = j++; }
 			else if (start != -1) { j = start + 1; i = match++; }
 			else return (false);
-			if (escaped) escaped = false;
+			if (quoted == 1) quoted = 0;
 		}
 
-		while (j < pattern_len && pattern[j] == '*') j++;
+		while (j < pattern_len && !quoted && pattern[j] == '*') j++;
+		if (j < pattern_len && quoted) j++;
 
 		return (j == pattern_len);
 	}
-
 
 #pragma endregion
 
