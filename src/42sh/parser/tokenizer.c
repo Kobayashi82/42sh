@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:31:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:45:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "parser/args.h"
-	#include "parser/parser.h"
+	#include "parser/token.h"
 
 #pragma endregion
 
@@ -192,15 +192,10 @@ void first_step() {
 
 	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
 		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
-		if (!new_arg) {
-			ft_printf(1, "Memory allocation failed\n");
-			break;
-		}
-
+		t_arg *tmp = tokens.arg;
 		new_arg->value = word;
-		t_arg *tmp = tokens.args;
 
-		if (!tmp) tokens.args = new_arg;
+		if (!tmp) tokens.arg = new_arg;
 		else {
 			while (tmp->next) tmp = tmp->next;
 			tmp->next = new_arg;
@@ -209,14 +204,14 @@ void first_step() {
 		ft_printf(1, "Word: %s\n", word);
 	}
 
-	t_arg *current = tokens.args;
+	t_arg *current = tokens.arg;
 	while (current) {
 		t_arg *next = current->next;
 		sfree(current->value);
 		sfree(current);
 		current = next;
 	}
-	tokens.args = NULL;
+	tokens.arg = NULL;
 	sfree(terminal.input);
 }
 

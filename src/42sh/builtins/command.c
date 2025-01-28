@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:39:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:51:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
 	#include "utils/utils.h"
+
+	#include "tests/tests.h"
 
 #pragma endregion
 
@@ -125,7 +127,7 @@
 
 #pragma endregion
 
-#pragma region "Type"
+#pragma region "Command"
 
 	int command(t_arg *args) {
 		t_opt *opts = parse_options(args, "pVv", '-', false);
@@ -171,12 +173,39 @@
 			return (sfree(opts), result);
 		}
 
-		//	Ejecutar comando indicando la ruta default dependiendo de '-p'
-		char *path = path_find_first(opts->args->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
-		if (path) {
-			ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", args->value, path);
-			return (sfree(opts), sfree(path), 1);
+		if (opts->args->value) {
+			t_alias *alias_cmd = alias_find(opts->args->value);
+			t_builtin *builtin_cmd = builtin_find(opts->args->value);
+			if (alias_cmd && alias_cmd->value) {
+				if (builtin_find(alias_cmd->value)) {
+					t_arg *cmd = test_create_args(alias_cmd->value);
+					builtin_exec(cmd);
+					args_clear(&cmd);
+				} else {
+					t_arg *cmd = test_create_args(alias_cmd->value);
+					//	Ejecutar comando indicando la ruta default dependiendo de '-p'
+					char *path = path_find_first(cmd->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
+					if (path) {
+						ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
+						args_clear(&cmd);
+						return (sfree(opts), sfree(path), 1);
+					} args_clear(&cmd);
+				}
+			} else if (builtin_cmd) {
+				builtin_exec(opts->args);
+			} else if (check_function(opts->args->value)) {
+				ft_printf(1, "Se ejecuta la función '%s()'\n", args->value);
+				//exec_func();
+			} else {
+				//	Ejecutar comando indicando la ruta default dependiendo de '-p'
+				char *path = path_find_first(opts->args->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
+				if (path) {
+					ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", opts->args->value, path);
+					return (sfree(opts), sfree(path), 1);
+				}
+			}
 		}
+
 
 		return (sfree(opts), -1);
 	}

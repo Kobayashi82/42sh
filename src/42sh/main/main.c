@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 15:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 13:54:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
-	#include "parser/parser.h"
+	#include "parser/token.h"
 	#include "parser/args.h"
 	#include "builtins/builtins.h"
 	#include "main/options.h"
@@ -44,8 +44,12 @@
 		// check syntax
 		history_add(terminal.input, false);
 
-		ft_printf(1, "%s\n", terminal.input);
-		first_step();
+		//ft_printf(1, "%s\n\n", terminal.input);
+		t_arg *args = test_create_args(terminal.input);
+		builtin_exec(args);
+		args_clear(&args);
+		sfree(terminal.input);
+		//first_step();
 
 		return (0);
 	}

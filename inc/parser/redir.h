@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shell.h                                            :+:      :+:    :+:   */
+/*   redir.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 13:29:35 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/01/28 13:31:33 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/01/28 13:36:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 #pragma region "Includes"
 
-	#include <time.h>
-	#include <stdbool.h>
-	#include <sys/types.h>
 
 #pragma endregion
 
@@ -24,37 +21,39 @@
 
 	#pragma region "Enumerators"
 
-		enum { NOTHING = 0, FREE = 64, FORCE = 128, END = 256 };
-		typedef enum e_process { SHELL = 0, SUBSHELL = 1, CHILD = 2 } t_process;
+		typedef enum {
+			PIPE,		//	|
+			GT,			//	>
+			DGT,		//	>>
+			LT,			//	<
+			DLT,		//	<<
+			TLT			//	<<<
+		} e_redir;
 
 	#pragma endregion
 
 	#pragma region "Structures"
 
-		typedef struct {
-			pid_t		pid;
-			pid_t		parent_pid;
-			int			subshell_level;
-			int			seconds;
-			int			epoch_seconds;
-			float		epoch_realtime;
-			int			uid, euid;
-			time_t		started;
-			t_process	process;
-			bool		_inline;
-			bool		exit;
-			int			exit_code;
-		} t_shell;
+		#pragma region "Tokens"
+
+			typedef struct s_token	t_token;
+			typedef struct s_redir	t_redir;
+
+			typedef struct s_redir {
+				char	*value;
+				t_token	*token;
+				e_redir	type;
+				t_redir	*prev;
+				t_redir	*next;
+			}	t_redir;
+
+		#pragma endregion
 
 	#pragma endregion
 
-	extern t_shell	shell;
-
 #pragma endregion
-	
+
 #pragma region "Methods"
 
-	//	----------- SHELL ----------
-	int		shell_initialize();
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 20:26:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 14:24:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,46 @@
 
 #pragma endregion
 
-static int is_quote(char c) { return c == '\'' || c == '"'; }
+// int is_quote(char c) { return c == '\'' || c == '"'; }
 
-static char *extract_quoted(char *line, char quote, int *index) {
-    int start = ++(*index);
+// char *extract_quoted(char *line, char quote, int *index) {
+//     int start = ++(*index);
 
-    while (line[*index] && line[*index] != quote) (*index)++;
+//     while (line[*index] && line[*index] != quote) (*index)++;
 
-    if (line[*index] == quote) {
-        int len = *index - start;
-        char *arg = strndup(&line[start], len);
-        (*index)++;
-        return (arg);
-    }
+//     if (line[*index] == quote) {
+//         int len = *index - start;
+//         char *arg = strndup(&line[start], len);
+//         (*index)++;
+//         return (arg);
+//     }
 
-    return (NULL);
-}
+//     return (NULL);
+// }
 
 static char *extract_word(char *line, int *index) {
     int start = *index;
-    while (line[*index] && !ft_isspace(line[*index]) && !is_quote(line[*index]))
-        (*index)++;
+	int quoted = 0, move = 0;
+
+	if (line[*index] == '\\')		{ quoted = 1; move = true; }
+	else if (line[*index] == '\'')	{ quoted = 2; move = true; }
+	else if (line[*index] == '"')	{ quoted = 3; move = true; }
+
+	if (move) { ft_memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
+
+    while (line[*index] && !(ft_isspace(line[*index]) && !quoted)) {
+		if (!quoted && line[*index] == '\\')			{ quoted = 1; move = true; }
+		else if (quoted == 1)							quoted = 0;
+		else if (!quoted && line[*index] == '\'')		{ quoted = 2; move = true; }
+		else if (quoted == 2 && line[*index] == '\'')	{ quoted = 0; move = true; }
+		else if (!quoted && line[*index] == '"')		{ quoted = 3; move = true; }
+		else if (quoted == 3 && line[*index] == '"')	{ quoted = 0; move = true; }
+		
+		if (move) { ft_memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
+		else (*index)++;
+	}
+
+	if (start == *index) return (NULL);
     return (ft_strndup(&line[start], *index - start));
 }
 
@@ -72,8 +91,9 @@ t_arg *test_create_args(char *line) {
 
         char *arg = NULL;
 
-        if (is_quote(line[i]))	arg = extract_quoted(line, line[i], &i);
-        else					arg = extract_word(line, &i);
+        //if (is_quote(line[i]))	arg = extract_quoted(line, line[i], &i);
+        //else					arg = extract_word(line, &i);
+		arg = extract_word(line, &i);
 
         if (!arg) {
             while (args) {
