@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 12:26:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 20:30:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 			}
 
 			if (quoted > 0 && j < pattern_len) { if (input_char == pattern_char) { i++; j++; } else return (false); }
-			else if (j < pattern_len && (pattern_char == '?' || (pattern_char == '[' && brackets(input, pattern, i, &j)) || pattern_char == input_char)) { i++; j++; }
+			else if (j < pattern_len && pattern_char != '*' && (pattern_char == '?' || (pattern_char == '[' && brackets(input, pattern, i, &j)) || pattern_char == input_char)) { i++; j++; }
 			else if (j < pattern_len && pattern_char == '*') { match = i; start = j++; }
 			else if (start != -1) { j = start + 1; i = match++; }
 			else return (false);
