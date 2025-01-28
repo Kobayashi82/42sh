@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:24:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 16:42:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@
 
 			char *arg = args->value;
 			if (!ft_strcmp(arg, "--")) { args = args->next; break; }
-			else if (opt_char == '-' && !ft_strcmp(arg, "--help"))		{ if (!ft_strchr(result->valid, '?')) result->valid[valid_index++] = 'H'; }
-			else if (opt_char == '-' && !ft_strcmp(arg, "--version"))	{ if (!ft_strchr(result->valid, '#')) result->valid[valid_index++] = 'V'; }
+			else if (opt_char == '-' && !ft_strcmp(arg, "--help"))		{ if (!ft_strchr(result->valid, '?')) result->valid[valid_index++] = '?'; }
+			else if (opt_char == '-' && !ft_strcmp(arg, "--version"))	{ if (!ft_strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
 			else {
 				for (int i = 1; arg[i]; ++i) {
 					if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1)	{ result->too_many = true; break; }

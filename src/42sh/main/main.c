@@ -6,12 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 13:54:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 19:04:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Caracteres octal y hexadecimal
 //	libft array.c usa printf
+//	Command -v no es identico a bash
+//	Hash no se como añadir manualmente
+//	Export readonly variable intentando cambiarla muestra mensaje, pero debe exportarla igual
+//	Realizar testeo completo de builtins (todos las opciones)
 
 #pragma region "Includes"
 
@@ -24,8 +28,9 @@
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
-	#include "parser/token.h"
 	#include "parser/args.h"
+	#include "parser/globbing.h"
+	#include "parser/token.h"
 	#include "builtins/builtins.h"
 	#include "main/options.h"
 	#include "main/shell.h"
@@ -46,6 +51,7 @@
 
 		//ft_printf(1, "%s\n\n", terminal.input);
 		t_arg *args = test_create_args(terminal.input);
+		globbing(args);
 		builtin_exec(args);
 		args_clear(&args);
 		sfree(terminal.input);

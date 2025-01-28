@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:38:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 18:40:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,6 +171,7 @@
 			if (!ft_strchr(opts, 'P') && !ft_strchr(opts, 'a') && (alias_find(arg) || builtin_isactive(arg))) return (0);
 
 			char **paths = path_find_all(arg, NULL);
+			if ((!paths || !*paths) && ft_strchr(opts, 'a')) return (array_free(paths), 0);
 			for (int i = 0; paths && paths[i]; ++i) {
 				if (!ft_strchr(opts, 'a') && i > 0) break;
 
@@ -184,7 +185,7 @@
 				}
 			}
 
-			if ((!paths || !*paths) && (!opts || !*opts || !ft_strcmp(opts, "a"))) {
+			if ((!paths || !*paths) && (!opts || !*opts)) {
 				print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
 				return (array_free(paths), 0);
 			}
@@ -226,10 +227,14 @@
 					if (!tmp_result && result == 0) result = 1;
 					if (tmp_result) result = 2;
 				} else if (!tmp_result) result = 1;
+
+				if (!tmp_result && ft_strchr(opts->valid, 'a'))
+					print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), FREE_JOIN);
 			}
 			opts->args = opts->args->next;
 		}
 		
+
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);
 

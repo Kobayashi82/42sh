@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 21:05:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 18:36:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,12 @@
 
 		char *path_find_first(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
+			if (ft_strchr(cmd, '/')) {
+				char *fullpath = resolve_path(resolve_symlink(cmd));
+				if (access(fullpath, F_OK) != -1) return (fullpath);
+				return (sfree(fullpath), NULL);
+			}
+
 			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
@@ -191,6 +197,15 @@
 
 		char **path_find_all(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
+			if (ft_strchr(cmd, '/')) {
+				char **final_paths = ft_calloc(2, sizeof (char *));
+				char *fullpath = resolve_path(resolve_symlink(cmd));
+				if (access(fullpath, F_OK) != -1) {
+					final_paths[0] = ft_strdup(fullpath);
+					return (final_paths);
+				} return (sfree(fullpath), NULL);
+			}
+
 			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);

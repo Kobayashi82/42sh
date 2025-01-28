@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 14:51:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/28 17:20:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@
 			"command: command [-pVv] command [arg ...]\n"
 			"    Execute a simple command or display information about commands.\n\n"
 
-			"    Runs COMMAND with ARGS suppressing  shell function lookup, or display\n"
+			"    Runs COMMAND with ARGS suppressing shell function lookup, or display\n"
 			"    information about the specified COMMANDs.  Can be used to invoke commands\n"
 			"    on disk when a function with the same name exists.\n\n"
 
@@ -116,7 +116,7 @@
 
 			char *path = path_find_first(arg, ft_strchr(opts, 'p') ? PATH : NULL);
 			if (path) {
-				print(STDOUT_FILENO, path, JOIN);
+				print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_JOIN);
 				return (sfree(path), 1);
 			}
 
@@ -165,9 +165,9 @@
 				}
 				opts->args = opts->args->next;
 			}
-				
+
 			print(STDOUT_FILENO, NULL, PRINT);
-			print(STDERR_FILENO, NULL, PRINT);
+			//print(STDERR_FILENO, "\n", PRINT);
 
 			if (result == 2) result = 0;
 			return (sfree(opts), result);
