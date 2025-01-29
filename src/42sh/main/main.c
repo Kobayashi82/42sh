@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 19:04:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:44:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,13 @@
 			signals_set();
 			shell._inline = true;
 			terminal.input = ft_strdup(argv[2]);
-			if (ft_strlen(terminal.input)) ft_printf(1, "inline\n");
+			if (!ft_isspace_s(terminal.input)) {
+				t_arg *args = test_create_args(terminal.input);
+				globbing(args);
+				builtin_exec(args);
+				args_clear(&args);
+			}
+			sfree(terminal.input);
 		} else {
 			t_arg arg = { .value = "banner" }; builtin_exec(&arg);
 			while (!shell.exit && !read_input()) ;

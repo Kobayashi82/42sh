@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 15:53:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/29 16:31:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@
 		args = test_create_args("export a+=k");
 		builtin_exec(args); test_free_args(args);
 		if (!result && variables_length(vars_table, EXPORTED_LIST) != 1) result = 1;
-		if (!result && ft_strcmp(variables_find(vars_table, "a")->value, "ck")) result = 1;
+		if (!result && ft_strcmp(variables_find_value(vars_table, "a"), "ck")) result = 1;
 
 		variables_clear(vars_table);
 

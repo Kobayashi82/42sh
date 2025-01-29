@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:38:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/29 15:26:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,10 @@
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
+			var->exported = true;
 			print(STDOUT_FILENO, NULL, RESET);
 			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+
 			result = 1;
 		} else {
 			if (concatenate && variables_concatenate(vars_table, key, value, 1, -1, -1, -1))	result = 1;

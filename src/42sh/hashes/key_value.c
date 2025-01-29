@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:25:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/29 16:35:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 
 #pragma region "Value"
 
-	const char *get_value(const char *key) {
+	const char *get_value(const char *key, const char sep) {
 		if (!key) return (NULL);
 
-		char *delimiter = ft_strchr(key, '=');
+		char *delimiter = ft_strchr(key, sep);
 		if (!delimiter) return (NULL);
 
 		return (ft_strdup(delimiter + 1));

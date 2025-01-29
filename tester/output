@@ -1,0 +1,57 @@
+======================
+FILE: tests/alias.ts
+======================
+01 - PASS - 'unalias -a'
+**********************
+----------------------
+02 - PASS - 'alias test1='echo hola''
+**********************
+----------------------
+03 - PASS - 'alias test2='ls -l''
+**********************
+----------------------
+04 - PASS - 'alias -p'
+**********************
+----------------------
+05 - PASS - 'alias test1='echo adios''
+**********************
+----------------------
+06 - PASS - 'alias -p'
+**********************
+----------------------
+07 - PASS - 'unalias test1'
+**********************
+42sh err:
+unalias: test1: not found
+- - - - - - - - - - - 
+bash err:
+unalias: test1: not found
+----------------------
+08 - PASS - 'alias -p'
+**********************
+----------------------
+09 - PASS - 'unalias -a'
+**********************
+----------------------
+
+======================
+FILE: tests/tests.ts
+======================
+01 - PASS - 'echo hola'
+**********************
+42sh:
+hola
+- - - - - - - - - - - 
+bash:
+hola
+----------------------
+02 - PASS - 'echo /*'
+**********************
+42sh:
+/Docker /bin /bin.usr-is-merged /boot /cgroup /dev /etc /home /init /lib /lib.usr-is-merged /lib32 /lib64 /lost+found /media /mnt /opt /proc /root /run /sbin /sbin.usr-is-merged /snap /srv /support.html /sys /tmp /usr /var
+- - - - - - - - - - - 
+bash:
+/Docker /bin /bin.usr-is-merged /boot /cgroup /dev /etc /home /init /lib /lib.usr-is-merged /lib32 /lib64 /lost+found /media /mnt /opt /proc /root /run /sbin /sbin.usr-is-merged /snap /srv /support.html /sys /tmp /usr /var
+----------------------
+
+======================

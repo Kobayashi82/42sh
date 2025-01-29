@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 20:30:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/29 12:26:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@
 				files_add(de->d_name, pattern, dir, files, true);
 		} else if (!pattern->is_dir) {
 			if (match_pattern(de->d_name, pattern->value))
-				files_add(de->d_name, pattern, dir, files, S_ISDIR(stbuf.st_mode));
+				files_add(de->d_name, pattern, dir, files, false);
 		}
 
 		return (sfree(fulldir), 0);

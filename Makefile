@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/27 22:33:03 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/01/29 17:07:40 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,14 +95,13 @@ SRCS	=	builtins/utils/executer.c		\
 			builtins/unset.c				\
 			builtins/wait.c					\
 											\
-			clean/error.c					\
-											\
 			hashes/alias.c					\
 			hashes/builtin.c				\
 			hashes/cmdp.c					\
 			hashes/key_value.c				\
 			hashes/variables.c				\
 											\
+			main/error.c					\
 			main/main.c						\
 			main/options.c					\
 			main/shell.c					\
@@ -169,6 +168,7 @@ $(NAME): normal_extra $(OBJS)
 #	Progress line
 	@$(MAKE) -s _progress
 #	----- REMOVE TO DISABLED TEST -----
+	@cp 42sh tester/42sh
 	@printf "\033[A" && ./leaks test || true
 #	----- REMOVE TO DISABLED TEST -----
 	@printf "\n"

@@ -13,3 +13,5 @@
 !.gitignore
 !Notes.c
 !README.md
+!tester
+!tester/**
