@@ -13,7 +13,6 @@
 !.gitignore
 !Notes.c
 !README.md
-!tester
 !tester/**/*.sh
 !tester/tester.c
 !tester/tester
