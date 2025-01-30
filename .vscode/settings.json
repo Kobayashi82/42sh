@@ -23,6 +23,7 @@
 		"utils.h": "c",
 		"cmdp.h": "c",
 		"args.h": "c",
-		"readinput.h": "c"
+		"readinput.h": "c",
+		"unistd.h": "c"
 	}
 }
