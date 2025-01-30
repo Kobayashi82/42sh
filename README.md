@@ -26,16 +26,53 @@ Además, se han implementado características avanzadas como globbing, redirecci
 
 42sh incluye los siguientes builtins:
 
-- `cd` - Cambia el directorio actual.
-- `echo` - Imprime texto en la salida estándar.
-- `exit` - Cierra la sesión del shell.
-- `export` - Define variables de entorno.
-- `unset` - Elimina variables de entorno.
-- `pwd` - Muestra el directorio de trabajo actual.
+### Alias
 - `alias` - Define alias para comandos.
 - `unalias` - Elimina alias definidos.
+
+### Variables de entorno
+- `declare` - Declara variables y atributos.
+- `export` - Define variables de entorno.
+- `readonly` - Marca variables como de solo lectura.
 - `set` - Muestra o define opciones del shell.
-- `unset` - Elimina variables del entorno de shell.
+- `shopt` - Configura opciones del shell.
+- `unset` - Elimina variables de entorno.
+
+### Sistema de archivos
+- `cd` - Cambia el directorio actual.
+- `hash` - Mantiene un caché de comandos.
+- `pwd` - Muestra el directorio de trabajo actual.
+
+### Historial
+- `fc` - Edita y ejecuta comandos previos.
+- `history` - Muestra el historial de comandos.
+
+### Gestión de trabajos
+- `bg` - Reanuda un trabajo en segundo plano.
+- `fg` - Trae un trabajo al primer plano.
+- `jobs` - Lista los trabajos en ejecución.
+- `kill` - Envía señales a procesos.
+- `wait` - Espera la finalización de un proceso.
+
+### Expresiones matemáticas
+- `let` - Evalúa expresiones aritméticas.
+
+### Scripting
+- `.` - Ejecuta un script en el contexto actual.
+- `eval` - Evalúa y ejecuta una cadena de comandos.
+- `exec` - Reemplaza el shell actual con un comando.
+- `source` - Ejecuta un script en el contexto actual.
+- `test` - Evalúa expresiones condicionales.
+
+### Shell
+- `banner` - Muestra un banner al iniciar el shell.
+- `builtin` - Muestra información sobre comandos internos.
+- `command` - Ejecuta un comando sin aplicar alias o funciones.
+- `echo` - Imprime texto en la salida estándar.
+- `enable` - Activa o desactiva builtins.
+- `exit` - Cierra la sesión del shell.
+- `help` - Muestra ayuda sobre builtins.
+- `type` - Indica cómo se interpretará un comando.
 
 ## Globbing
 
