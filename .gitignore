@@ -14,4 +14,6 @@
 !Notes.c
 !README.md
 !tester
-!tester/**
+!tester/**/*.ts
+!tester/tester.c
+!tester/tester
