@@ -1,7 +1,4 @@
-unalias -a
-alias test1='echo hola'
-alias test2='ls -l'
-alias -p
+unalias -a ; alias test1='echo hola' ; alias test2='ls -l' ;alias -p
 
 alias test1='echo adios'
 alias -p

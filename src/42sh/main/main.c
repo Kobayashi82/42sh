@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 13:04:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:06:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,49 @@
 
 #pragma region "Varios"
 
+	void execute_commands(char *input) {
+		if (!input || ft_isspace_s(terminal.input)) return;
+
+		t_arg *args = test_create_args(input);
+		t_arg *current = args;
+		t_arg *next_command = NULL;
+		t_arg *subcommand_args = NULL;
+
+		while (current) {
+			if (current->value && current->value[0] == ';') {
+				next_command = current->next;
+				current->next = NULL;
+				args_clear(&args);
+				args = next_command;
+				current = next_command;
+			} else if (current->next && current->next->value && current->next->value[0] == ';') {
+				next_command = current->next;
+				current->next = NULL;
+
+				globbing(args);
+				subcommand_args = args;
+				builtin_exec(subcommand_args);
+				args_clear(&subcommand_args);
+				args = next_command;
+				current = next_command;
+			} else	current = current->next;
+		}
+
+		if (args) {
+			globbing(args);
+			builtin_exec(args);
+			args_clear(&args);
+		}
+	}
+
 	int read_input() {
 		signals_set();
 
 		if (!(terminal.input = readinput(NULL))) return (1);
 
-		// check syntax
 		history_add(terminal.input, false);
 
-		//ft_printf(1, "%s\n\n", terminal.input);
-		t_arg *args = test_create_args(terminal.input);
-		globbing(args);
-		builtin_exec(args);
-		args_clear(&args);
+		execute_commands(terminal.input);
 		sfree(terminal.input);
 		//first_step();
 
@@ -97,12 +127,7 @@
 			signals_set();
 			shell._inline = true;
 			terminal.input = ft_strdup(argv[2]);
-			if (!ft_isspace_s(terminal.input)) {
-				t_arg *args = test_create_args(terminal.input);
-				globbing(args);
-				builtin_exec(args);
-				args_clear(&args);
-			}
+			execute_commands(terminal.input);
 			sfree(terminal.input);
 		} else {
 			t_arg arg = { .value = "banner" }; builtin_exec(&arg);

@@ -1,25 +1,23 @@
 ======================
 FILE: tests/alias.ts
 ======================
-01 - PASS - 'unalias -a'
+01 - PASS - 'unalias -a ; alias test1='echo hola' ; alias test2='ls -l' ;alias -p'
+**********************
+42sh:
+alias test1='echo hola'
+alias test2='ls -l'
+- - - - - - - - - - - 
+bash:
+alias test1='echo hola'
+alias test2='ls -l'
+----------------------
+02 - PASS - 'alias test1='echo adios''
 **********************
 ----------------------
-02 - PASS - 'alias test1='echo hola''
+03 - PASS - 'alias -p'
 **********************
 ----------------------
-03 - PASS - 'alias test2='ls -l''
-**********************
-----------------------
-04 - PASS - 'alias -p'
-**********************
-----------------------
-05 - PASS - 'alias test1='echo adios''
-**********************
-----------------------
-06 - PASS - 'alias -p'
-**********************
-----------------------
-07 - PASS - 'unalias test1'
+04 - PASS - 'unalias test1'
 **********************
 42sh err:
 unalias: test1: not found
@@ -27,10 +25,10 @@ unalias: test1: not found
 bash err:
 unalias: test1: not found
 ----------------------
-08 - PASS - 'alias -p'
+05 - PASS - 'alias -p'
 **********************
 ----------------------
-09 - PASS - 'unalias -a'
+06 - PASS - 'unalias -a'
 **********************
 ----------------------
 

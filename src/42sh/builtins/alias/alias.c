@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 14:23:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 13:44:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@
 				} else print_alias(opts->args->value, &values, &invalues);
 				opts->args = opts->args->next;
 			}
-		} else alias_print(true);
+		} else if (!*opts->valid) alias_print(true);
 		
 		if (ft_strchr(opts->valid, 'p')) alias_print(true);
 
