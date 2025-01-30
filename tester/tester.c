@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/28 21:06:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 16:45:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 16:47:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,9 +211,11 @@
 		reset_output();
 		output = fopen(OUTPUT_FILE, "a");
 		fprintf(output, "======================\n");
-		printf("\n");
+		printf("\n""\033[?25l");
+
 		while (*(++argv)) run_tests(*argv);
 		fclose(output);
+		printf("\033[?25h");
 
 		return (0);
 	}
