@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 18:40:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 12:58:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 	#include "hashes/alias.h"
 	#include "hashes/cmdp.h"
 	#include "hashes/builtin.h"
-	#include "utils.h"
+	#include "utils/paths.h"
 
 #pragma endregion
 

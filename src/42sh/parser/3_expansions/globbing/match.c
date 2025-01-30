@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/29 12:26:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 12:54:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "parser/args.h"
 	#include "parser/globbing.h"
 	#include "main/options.h"
-	#include "utils/utils.h"
+	#include "utils/paths.h"
 
 	#include <dirent.h>
 	#include <sys/stat.h>

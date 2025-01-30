@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/29 12:44:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 13:04:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 	#include "builtins/builtins.h"
 	#include "main/options.h"
 	#include "main/shell.h"
-	#include "main/clean.h"
+	#include "main/error.h"
 	#include "tests/tests.h"
 
 #pragma endregion

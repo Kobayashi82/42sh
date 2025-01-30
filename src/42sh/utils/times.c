@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   time.c                                             :+:      :+:    :+:   */
+/*   times.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:02:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 13:02:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils.h"
+	#include "libft.h"
+
+	#include "utils/times.h"
 
 #pragma endregion
 

@@ -22,6 +22,7 @@
 		"builtin.h": "c",
 		"utils.h": "c",
 		"cmdp.h": "c",
-		"args.h": "c"
+		"args.h": "c",
+		"readinput.h": "c"
 	}
 }

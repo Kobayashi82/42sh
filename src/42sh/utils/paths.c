@@ -6,14 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 18:36:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 12:56:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils.h"
-	#include "variables.h"
+	#include "libft.h"
+	#include "utils/paths.h"
+	#include "hashes/variables.h"
 
 	#include <sys/stat.h>
 
@@ -197,6 +198,7 @@
 
 		char **path_find_all(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
+
 			if (ft_strchr(cmd, '/')) {
 				char **final_paths = ft_calloc(2, sizeof (char *));
 				char *fullpath = resolve_path(resolve_symlink(cmd));
@@ -240,19 +242,3 @@
 	#pragma endregion
 
 #pragma endregion
-
-const char *default_editor() {
-	const char	*editor = variables_find_value(vars_table, "FCEDIT");
-	if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
-	if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
-	if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
-	if (!editor || !*editor) editor = "nano";
-    return (editor);
-}
-
-//	Check if path is a directory
-bool is_directory(char *path) {
-	struct stat	statbuf;
-
-	return (!stat(path, &statbuf) && S_ISDIR(statbuf.st_mode));
-}

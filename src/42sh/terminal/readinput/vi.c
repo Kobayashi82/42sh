@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 12:57:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/print.h"
@@ -25,7 +26,7 @@
 	#include "terminal/signals.h"
 	#include "hashes/variables.h"
 	#include "main/options.h"
-	#include "utils/utils.h"
+	#include "utils/paths.h"
 
 	#include <sys/wait.h>
 
@@ -956,6 +957,15 @@
 		#pragma endregion
 
 		#pragma region "Edit Input"						("v")
+
+			static const char *default_editor() {
+				const char	*editor = variables_find_value(vars_table, "FCEDIT");
+				if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
+				if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
+				if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
+				if (!editor || !*editor) editor = "nano";
+				return (editor);
+			}
 
 			static int edit_input() {
 				const char *raw_editor = default_editor();

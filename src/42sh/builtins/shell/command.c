@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 17:20:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 12:54:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
-	#include "utils/utils.h"
+	#include "utils/paths.h"
 
 	#include "tests/tests.h"
 
