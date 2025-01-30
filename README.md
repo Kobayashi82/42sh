@@ -65,13 +65,13 @@ Además, se han implementado características avanzadas como globbing, redirecci
 - `test` - Evalúa expresiones condicionales.
 
 ### Shell
-- `banner` - Muestra un banner al iniciar el shell.
+- `banner` - Muestra el banner de 42sh.
 - `builtin` - Muestra información sobre comandos internos.
 - `command` - Ejecuta un comando sin aplicar alias o funciones.
 - `echo` - Imprime texto en la salida estándar.
 - `enable` - Activa o desactiva builtins.
 - `exit` - Cierra la sesión del shell.
-- `help` - Muestra ayuda sobre builtins.
+- `help` - Muestra ayuda sobre 42sh.
 - `type` - Indica cómo se interpretará un comando.
 
 ## Globbing
@@ -88,10 +88,15 @@ El shell implementa globbing para la expansión de patrones en nombres de archiv
 
 Se soportan las siguientes redirecciones:
 
-- `>`  - Redirige la salida estándar a un archivo (sobrescribe).
-- `>>` - Redirige la salida estándar a un archivo (añade al final).
-- `<`  - Toma la entrada de un archivo.
-- `|`  - Conecta la salida de un comando con la entrada de otro.
+- `>`   - Redirige la salida estándar a un archivo (sobrescribe).
+- `>>`  - Redirige la salida estándar a un archivo (añade al final).
+- `<`   - Toma la entrada de un archivo.
+- `<<`  - Permite la redirección de entrada con un _heredoc_.
+- `<<<` - Redirige una cadena como entrada.
+- `>&`  - Duplica descriptores de archivo de salida.
+- `<&`  - Duplica descriptores de archivo de entrada.
+- `|`   - Conecta la salida de un comando con la entrada de otro.
+- `|&`  - Conecta tanto la salida estándar como la de error con la entrada de otro comando.
 
 ## Scripting
 
