@@ -6,16 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 14:06:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:26:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//	Caracteres octal y hexadecimal
-//	libft array.c usa printf
-//	Command -v no es identico a bash
-//	Hash no se como añadir manualmente
-//	Export readonly variable intentando cambiarla muestra mensaje, pero debe exportarla igual
-//	Realizar testeo completo de builtins (todos las opciones)
+#pragma region "TODO"
+
+	//	Caracteres octal y hexadecimal
+	//	Command -v no es identico a bash
+	//	Hash no se como añadir manualmente
+	//	Realizar testeo completo de builtins (todos las opciones)
+
+#pragma endregion
 
 #pragma region "Includes"
 
@@ -41,54 +43,62 @@
 
 #pragma region "Varios"
 
-	void execute_commands(char *input) {
-		if (!input || ft_isspace_s(terminal.input)) return;
+	#pragma region "Execute Commands (for tester)"
 
-		t_arg *args = test_create_args(input);
-		t_arg *current = args;
-		t_arg *next_command = NULL;
-		t_arg *subcommand_args = NULL;
+		void execute_commands(char *input) {
+			if (!input || ft_isspace_s(terminal.input)) return;
 
-		while (current) {
-			if (current->value && current->value[0] == ';') {
-				next_command = current->next;
-				current->next = NULL;
-				args_clear(&args);
-				args = next_command;
-				current = next_command;
-			} else if (current->next && current->next->value && current->next->value[0] == ';') {
-				next_command = current->next;
-				current->next = NULL;
+			t_arg *args = test_create_args(input);
+			t_arg *current = args;
+			t_arg *next_command = NULL;
+			t_arg *subcommand_args = NULL;
 
+			while (current) {
+				if (current->value && current->value[0] == ';') {
+					next_command = current->next;
+					current->next = NULL;
+					args_clear(&args);
+					args = next_command;
+					current = next_command;
+				} else if (current->next && current->next->value && current->next->value[0] == ';') {
+					next_command = current->next;
+					current->next = NULL;
+
+					globbing(args);
+					subcommand_args = args;
+					builtin_exec(subcommand_args);
+					args_clear(&subcommand_args);
+					args = next_command;
+					current = next_command;
+				} else	current = current->next;
+			}
+
+			if (args) {
 				globbing(args);
-				subcommand_args = args;
-				builtin_exec(subcommand_args);
-				args_clear(&subcommand_args);
-				args = next_command;
-				current = next_command;
-			} else	current = current->next;
+				builtin_exec(args);
+				args_clear(&args);
+			}
 		}
 
-		if (args) {
-			globbing(args);
-			builtin_exec(args);
-			args_clear(&args);
+	#pragma endregion
+
+	#pragma region "Read Input"
+
+		int read_input() {
+			signals_set();
+
+			if (!(terminal.input = readinput(NULL))) return (1);
+
+			history_add(terminal.input, false);
+
+			execute_commands(terminal.input);
+			sfree(terminal.input);
+			//first_step();
+
+			return (0);
 		}
-	}
 
-	int read_input() {
-		signals_set();
-
-		if (!(terminal.input = readinput(NULL))) return (1);
-
-		history_add(terminal.input, false);
-
-		execute_commands(terminal.input);
-		sfree(terminal.input);
-		//first_step();
-
-		return (0);
-	}
+	#pragma endregion
 
 #pragma endregion
 

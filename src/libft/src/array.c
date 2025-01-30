@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:24:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/30 14:23:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@
 		if (!array) return;
 
 		for (size_t i = 0; array[i]; i++) {
-			if (numbered)	printf("[%03zu] %s\n", i, array[i]);
-			else			printf("%s\n", array[i]);
+			if (numbered)	ft_printf(STDOUT_FILENO, "[%u] %s\n", i, array[i]);
+			else			ft_printf(STDOUT_FILENO, "%s\n", array[i]);
 		}
 	}
 
@@ -96,7 +96,7 @@
 		if (!array) return;
 
 		for (size_t i = 0; array[i]; i++)
-			printf("%d\n", array[i]);
+			ft_printf(STDOUT_FILENO, "%d\n", array[i]);
 	}
 
 #pragma endregion
