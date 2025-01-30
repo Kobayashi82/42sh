@@ -1,53 +1,55 @@
-#     Crear y listar alias simples
-unalias -a ; alias foo="echo Foo" ; alias bar="ls -l" ; alias -p # prueba
+#ALIAS CANNOT BE TESTED
+#
+#     Create and list simple aliases
+unalias -a ; alias foo="echo Foo" ; alias bar="ls -l" ; alias -p
 
-#     Sobreescribir alias existente
+#     Overwrite an existing alias
 unalias -a ; alias foo="echo Foo" ; alias foo="echo Bar" ; alias -p
 
-#     Intentar ejecutar alias sin comillas
+#     Attempt to run alias without quotes
 unalias -a ; alias foo=echo Foo ; foo
 
-#     Alias con espacios y sin comillas
+#     Alias with spaces and no quotes
 unalias -a ; alias foo=echo\ Foo ; foo
 
-#     Alias con comillas simples dentro
+#     Alias with single quotes inside
 unalias -a ; alias foo='echo '\''Hola'\''' ; foo
 
-#     Crear alias que contiene otro alias
+#     Create alias that contains another alias
 unalias -a ; alias foo="echo Foo" ; alias bar="foo && echo Bar" ; bar
 
-#     Intentar alias recursivo
+#     Attempt recursive alias
 unalias -a ; alias foo="foo" ; foo
 
-#     Alias con redirección
+#     Alias with redirection
 unalias -a ; alias foo="echo Foo > out.txt" ; foo ; cat out.txt ; rm out.txt
 
-#     Alias que usa otro alias como comando
+#     Alias using another alias as a command
 unalias -a ; alias foo="echo Foo" ; alias bar="foo && echo Bar" ; bar
 
-#     Borrar alias específico
+#     Remove specific alias
 unalias -a ; alias foo="echo Foo" ; alias bar="echo Bar" ; unalias foo ; alias -p
 
-#     Borrar todos los alias con unalias -a
+#     Remove all aliases with unalias -a
 unalias -a ; alias foo="echo Foo" ; alias bar="echo Bar" ; unalias -a ; alias -p
 
-#     Alias con pipes (|)
+#     Alias with pipes (|)
 unalias -a ; alias foo="echo Foo | grep F" ; foo
 
-#     Alias con variables
+#     Alias with variables
 unalias -a ; alias foo="echo $HOME" ; foo
 
-#     Alias con && y ||
+#     Alias with && and ||
 unalias -a ; alias foo="false" ; alias bar="foo || echo Fallback" ; bar
 
-#     Alias con argumentos (no funcionan)
+#     Alias with arguments (does not work)
 unalias -a ; alias foo="echo Foo" ; foo bar
 
-#     Alias dentro de un script
+#     Alias inside a script
 unalias -a ; echo "alias foo=\"echo Foo\"" > test.sh ; bash test.sh ; alias -p
 
-#     Crear alias y borrar con unalias -a en la misma línea
+#     Create alias and delete with unalias -a in the same line
 unalias -a ; alias foo="echo Foo" ; alias bar="echo Bar" ; unalias -a ; alias -p
 
-#     Alias con cd y efecto en el shell
+#     Alias with cd and effect in the shell
 unalias -a ; alias gohome="cd ~" ; gohome ; pwd
