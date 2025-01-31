@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:57:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/01/31 23:25:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Arreglar multibytes en columnas primera y ultima
 //	Optimizar Delete World
 //	Hacer Search History & AutoComplete
+
+// + y - mueven el historial
 
 #pragma region "Includes"
 
@@ -38,6 +40,7 @@
 
 	static bool	number_mode;
 	static char	n[7], last_cmd, last_char[7], *clipboard;
+	static int	num_row, num_col, num_len;
 
 	static void	insert_mode(int mode);
 	static int	get_n();
@@ -406,33 +409,6 @@
 	#pragma endregion
 
 	#pragma region "Edit"																									//	Hacer
-
-		#pragma region "Number"							("-+, 0-9")
-
-			static int get_n() {
-				int number = ft_max(1, ft_atoi(n));
-				number_mode = false;
-				ft_memset(n, 0, 7);
-
-				return (number);
-			}
-
-			static void set_n() {
-				if (!number_mode && buffer.c == 48) { home(); return; }					// Move to the start of the line
-				if (!number_mode) {
-					number_mode = true;
-					ft_memset(n, 0, 7);
-				}
-				int pos = ft_max(ft_strlen(n), 0);
-				if (pos > 6) {
-					number_mode = false;
-					ft_memset(n, 0, 7);
-					return;
-				}
-				n[pos] = buffer.c;
-			}
-
-		#pragma endregion
 
 		#pragma region "Insert Mode"					("i, I, a, A, c, s, S")
 
@@ -1072,6 +1048,65 @@
 
 		#pragma endregion
 
+		static int num_mode_off() {
+			number_mode = false;
+			cursor_left(num_len);
+			for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
+			cursor_left(num_len);
+			write(STDOUT_FILENO, buffer.value, buffer.length);
+			num_len -= (8 + ft_strlen(n));
+			cursor_left(num_len);
+			if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)){
+				beep();
+				return (1);
+			}
+			return (0);
+		}
+
+		#pragma region "Number"							("0-9")
+
+			static int get_n() {
+				int number = ft_max(1, ft_atoi(n));
+				number_mode = false;
+				ft_memset(n, 0, 7);
+
+				return (number);
+			}
+
+			static void set_n() {
+				if (!number_mode && buffer.c == 48) { home(); return; }					// Move to the start of the line
+				if (!number_mode) ft_memset(n, 0, 7);
+
+				int pos = ft_max(ft_strlen(n), 0);
+				if (pos > 6) {
+					num_mode_off();
+					ft_memset(n, 0, 7);
+					return;
+				}
+				n[pos] = buffer.c;
+				if (number_mode == false) {
+					number_mode = true;
+					home();
+					num_row = buffer.row;
+					num_col = buffer.col;
+					num_len = chars_width(0, ft_strlen(buffer.value), buffer.value);
+					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
+					cursor_left(num_len);
+					num_len += 9;
+				} else {
+					cursor_left(num_len);
+					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
+					cursor_left(num_len);
+					num_len++;
+				}
+				write(STDOUT_FILENO, "(arg: ", 6);
+				write(STDOUT_FILENO, n, ft_strlen(n));
+				write(STDOUT_FILENO, ") ", 2);
+				write(STDOUT_FILENO, buffer.value, buffer.length);
+			}
+
+		#pragma endregion
+
 	#pragma endregion
 
 	#pragma region "Handle"
@@ -1158,7 +1193,7 @@
 				else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
-					if (buffer.c >= '0' && buffer.c <= '9')	{ set_n();						}	//	Set the repetition number for commands
+					if (ft_isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
 
 					else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
 					else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
@@ -1258,8 +1293,17 @@
 	int vi(int readed) {
 		int result = 0;
 
-		if (vi_mode && (buffer.c < '0' || buffer.c > '9') && !number_mode)	ft_memset(n, 0, 7);
-		if (vi_mode && (buffer.c < '0' || buffer.c > '9') && number_mode)	number_mode = false;
+		if (vi_mode && !ft_isdigit(buffer.c) && !number_mode)	ft_memset(n, 0, 7);
+		if (vi_mode && !ft_isdigit(buffer.c) && number_mode) {
+			if (num_mode_off()) {
+				if		(ctrl_d(readed))		result = 1;
+				else if	(ctrl_c())				result = 0;
+				else if	(enter())				result = 1;
+
+				if (result && clipboard) sfree(clipboard);
+				return (result);
+			}
+		}
 
 		if		(ctrl_d(readed))		result = 1;
 		else if	(ctrl_c())				result = 0;
