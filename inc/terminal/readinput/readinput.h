@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:42:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:38:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@
 			char			*value;
 			size_t			size, position, length;
 			bool			SHIFT, ALT, CTRL;
-			int				row, col;
 		}	t_buffer;
 
 		typedef struct s_word {

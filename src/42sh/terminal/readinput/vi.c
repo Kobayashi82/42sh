@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 18:26:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:20:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,6 +241,7 @@
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						cursor_left(0);
 					}
+					//print_shit();
 				}
 
 			#pragma endregion
@@ -402,6 +403,34 @@
 				}
 
 			#pragma endregion
+
+		#pragma endregion
+
+		#pragma region "Char"
+
+			static int print_char() {
+				if (vi_mode) return (0);
+
+				size_t c_size = char_size(buffer.c);
+
+				// Expand buffer if necessary
+				if (buffer.position + c_size >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+				// Insert all bytes of the character into the buffer
+				buffer.value[buffer.position++] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
+				buffer.length += c_size;
+
+				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+				cursor_move(buffer.length, buffer.position);
+
+				return (0);
+			}
 
 		#pragma endregion
 
@@ -1306,40 +1335,6 @@ char *remove_colors(const char *str) {
 				} else return (0);
 
 				return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Print"
-
-			static int print_char() {
-				if (vi_mode) return (0);
-
-				size_t char_size = 1;
-				if		(buffer.c >= 0xF0)	char_size = 4;
-				else if (buffer.c >= 0xE0)	char_size = 3;
-				else if (buffer.c >= 0xC0)	char_size = 2;
-
-				if (buffer.position >= buffer.size - 1) return (0);
-
-				// Expand buffer if necessary
-				if (buffer.position + char_size >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
-
-				// Insert all bytes of the character into the buffer
-				buffer.value[(buffer.position)++] = buffer.c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
-				buffer.length += char_size;
-
-				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
-
-				cursor_move(buffer.length, buffer.position);
-
-				return (0);
 			}
 
 		#pragma endregion

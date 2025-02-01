@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   termcap.c                                          :+:      :+:    :+:   */
+/*   termcaps.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 18:25:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 23:09:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,21 @@
 
 #pragma region "Variables"
 
-	t_terminal	terminal;
+	t_terminal		terminal;
+
+	static size_t	row, col;
 
 #pragma endregion
 
 #pragma region "Utils"
+
+	size_t char_size(unsigned char c) {
+		if (c >= 0xF0) return(4);
+		if (c >= 0xE0) return(3);
+		if (c >= 0xC0) return(2);
+
+		return (1);
+	}
 
 	#pragma region "Char Width"
 
@@ -62,7 +72,7 @@
 
 		#pragma region "Width"
 
-			int char_width(size_t position, char *value) {
+			size_t char_width(size_t position, const char *value) {
 				unsigned char c = value[position];
 				if (c == '\033') { size_t i = position + 1;
 					if (value[i] == '[') {
@@ -85,8 +95,8 @@
 				return (1);
 			}
 
-			int chars_width(size_t from, size_t to, char *value) {
-				int total_chars = 0;
+			size_t chars_width(size_t from, size_t to, const char *value) {
+				size_t total_chars = 0;
 
 				if (from < to) {
 					while (from < to) {
@@ -109,7 +119,7 @@
 
 	#pragma region "Char Prev"
 
-		size_t char_prev(size_t position, char *value) {
+		size_t char_prev(size_t position, const char *value) {
 			if (position > 0)
 				do { position--; } while (position > 0 && (value[position] & 0xC0) == 0x80);
 			return (position);
@@ -126,7 +136,11 @@
 		void cursor_up() {
 			char *action = tgetstr("up", NULL);
 
-			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+			if (action && row > 0) {
+				write(STDIN_FILENO, action, ft_strlen(action));
+				row--;
+			}
+
 		}
 
 	#pragma endregion
@@ -136,7 +150,10 @@
 		void cursor_down() {
 			char *action = tgetstr("do", NULL);
 
-			if (action) write(STDIN_FILENO, action, ft_strlen(action));
+			if (action) {
+				write(STDIN_FILENO, action, ft_strlen(action));
+				row++;
+			}
 		}
 
 	#pragma endregion
@@ -147,10 +164,10 @@
 			char *action = tgetstr("le", NULL);
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
-			cursor_get();
+			//cursor_get();
 			while (action && moves--) {
-				if (!buffer.col)	{ cursor_set(--buffer.row, terminal.columns);		buffer.col = terminal.columns - 1; }
-				else				{ write(STDIN_FILENO, action, ft_strlen(action));	buffer.col--; }
+				if (!col)	cursor_set(row - 1, terminal.columns - 1);
+				else		{ write(STDIN_FILENO, action, ft_strlen(action));	col--; }
 			}
 		}
 
@@ -164,10 +181,10 @@
 			char *action = tgetstr("nd", NULL);
 			if (!moves) moves = char_width(buffer.position, buffer.value);
 
-			cursor_get();
+			//cursor_get();
 			while (action && moves--) {
-				if (buffer.col == (int)terminal.columns - 1)	{ cursor_set(++buffer.row, 0);						buffer.col = 0; }
-				else											{ write(STDIN_FILENO, action, ft_strlen(action));	buffer.col++; }
+				if (col == terminal.columns - 1)	cursor_set(row + 1, 0);
+				else								{ write(STDIN_FILENO, action, ft_strlen(action));	col++; }
 			}
 		}
 
@@ -175,28 +192,16 @@
 
 	#pragma region "Move"
 
-		void cursor_move(size_t from_pos, size_t to_pos) {
-			if (from_pos > to_pos) {
-				for (size_t i = to_pos; i < from_pos; ) {
-					if (char_width(i, buffer.value) == 2) cursor_left(1);
-					if ((unsigned char)buffer.value[i] >= 0xC0) {
-						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-						else												i += 2;	// 2 bytes
-					} else													i++;	// 1 byte
-					cursor_left(1);
-				}
-			} else if (from_pos < to_pos) {
-				for (size_t i = from_pos; i < to_pos; ) {
-					if (char_width(i, buffer.value) == 2) cursor_right(1);
-					if ((unsigned char)buffer.value[i] >= 0xC0) {
-						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-						else												i += 2;	// 2 bytes
-					} else													i++;	// 1 byte
-					cursor_right(1);
-				}	
+		void cursor_move(size_t from, size_t to) {
+			// ft_printf(1, "%u\n", col);
+			if (from < to) {
+				int total = chars_width(from, to, buffer.value);
+				if (total) cursor_right(total);
+			} else if (from > to) {
+				int total = chars_width(to, from, buffer.value);
+				if (total) cursor_left(total);
 			}
+			// ft_printf(1, "%u\n", col);
 		}
 
 	#pragma endregion
@@ -217,8 +222,8 @@
 						int start = i;
 						while (buf[i] >= '0' && buf[i] <= '9') i++;
 						int value = ft_atoi(&buf[start]);
-						if (a++ == 0)	buffer.row = value - 1;
-						else			buffer.col = value - 1;
+						if (a++ == 0)	row = value - 1;
+						else			col = value - 1;
 					} i++;
 				}
 			}
@@ -226,13 +231,43 @@
 
 	#pragma endregion
 
+	void print_shit() {
+		ft_printf(1, "row: %u - col: %u - pos:%u - rows: %u\n", row, col, buffer.position, terminal.rows);
+	}
+
 	#pragma region "Set"
 
-		void cursor_set(int row, int col) {
-			char *action = tgetstr("cm", NULL);
+		// void cursor_set(size_t new_row, size_t new_col) {
+		// 	char *action = tgetstr("cm", NULL);
 
-			if (action) action = tgoto(action, col, row);
-			if (action) write(STDOUT_FILENO, action, ft_strlen(action));
+		// 	if (new_row == terminal.rows) new_row--;
+		// 	if (action) action = tgoto(action, new_col, new_row);
+		// 	if (action) {
+		// 		write(STDOUT_FILENO, action, ft_strlen(action));
+		// 		row = new_row; col = new_col;
+		// 	}
+		// }
+
+		void cursor_set(size_t new_row, size_t new_col) {
+			while (row != new_row) {
+				if (new_row > row) {
+					cursor_down();
+				} else if (new_row < row) {
+					if (row <= 0) break;
+					cursor_up();
+				}
+			}
+			while (col != new_col) {
+				if (new_col > col) {
+					if (col >= terminal.columns - 1) break;
+					char *action = tgetstr("nd", NULL);
+					if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col++; }
+				} else if (new_col < col) {
+					if (col <= 0) break;
+					char *action = tgetstr("le", NULL);
+					if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col--; }
+				}
+			}
 		}
 
 	#pragma endregion
@@ -257,28 +292,27 @@
 
 	#pragma endregion
 
-	// void update_cursor(char *value) {
-	// 	int length = chars_width(0, ft_strlen(value), value);
-	// 	if (length > (int)terminal.columns - buffer.col) {
-	// 		buffer.row++;
-	// 		length -= (int)terminal.columns - buffer.col;
-	// 		buffer.row += length / (int)terminal.columns;
-	// 		length -= (length / (int)terminal.columns) * (int)terminal.columns;
-	// 		buffer.col = length;
-	// 	}
-	// }
+void update_cursor(size_t length) {
+	while (length--) {
+		if (col == terminal.columns - 1)	{ row++; col = 0; }
+		else								col++;
+	}
+}
 
-	// void update_cursor_length(int length) {
-	// 	if (length > (int)terminal.columns - buffer.col) {
-	// 		buffer.row++;
-	// 		length -= (int)terminal.columns - buffer.col;
-	// 		buffer.row += length / (int)terminal.columns;
-	// 		length -= (length / (int)terminal.columns) * (int)terminal.columns;
-	// 		buffer.col = length;
-	// 	}
-	// }
+
 
 #pragma endregion
+
+int write_value(int fd, const char *value, size_t length) {
+	if (fd < 0 || !value || length <= 0) return (1);
+
+	int result = write(fd, value, length);
+	update_cursor(chars_width(0, ft_strlen(value), value));
+
+	// ft_printf(1, "update %u\n", col);
+	
+	return (result);
+}
 
 #pragma region "Initialize"
 
