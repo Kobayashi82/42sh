@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:25:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,6 +256,27 @@
 		}
 
 	#pragma endregion
+
+	// void update_cursor(char *value) {
+	// 	int length = chars_width(0, ft_strlen(value), value);
+	// 	if (length > (int)terminal.columns - buffer.col) {
+	// 		buffer.row++;
+	// 		length -= (int)terminal.columns - buffer.col;
+	// 		buffer.row += length / (int)terminal.columns;
+	// 		length -= (length / (int)terminal.columns) * (int)terminal.columns;
+	// 		buffer.col = length;
+	// 	}
+	// }
+
+	// void update_cursor_length(int length) {
+	// 	if (length > (int)terminal.columns - buffer.col) {
+	// 		buffer.row++;
+	// 		length -= (int)terminal.columns - buffer.col;
+	// 		buffer.row += length / (int)terminal.columns;
+	// 		length -= (length / (int)terminal.columns) * (int)terminal.columns;
+	// 		buffer.col = length;
+	// 	}
+	// }
 
 #pragma endregion
 

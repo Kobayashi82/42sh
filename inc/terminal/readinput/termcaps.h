@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:35:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:24:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@
 	void	cursor_set(int row, int col);
 	void	cursor_hide();
 	void	cursor_show();
+	// void	update_cursor(char *value);
+	// void	update_cursor_length(int length);
 	int		terminal_initialize();
 
 #pragma endregion

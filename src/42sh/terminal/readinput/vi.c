@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/31 23:25:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 18:26:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@
 
 	static bool	number_mode;
 	static char	n[7], last_cmd, last_char[7], *clipboard;
-	static int	num_row, num_col, num_len;
 
 	static void	insert_mode(int mode);
 	static int	get_n();
@@ -1048,22 +1047,78 @@
 
 		#pragma endregion
 
-		static int num_mode_off() {
-			number_mode = false;
-			cursor_left(num_len);
-			for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-			cursor_left(num_len);
-			write(STDOUT_FILENO, buffer.value, buffer.length);
-			num_len -= (8 + ft_strlen(n));
-			cursor_left(num_len);
-			if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)){
-				beep();
-				return (1);
-			}
-			return (0);
-		}
-
 		#pragma region "Number"							("0-9")
+
+		// int str_nocolor_length(const char *str) {
+		// 	std::string temp = replace_tabs_with_spaces(str);
+		// 	int length = 0;
+		// 	for (size_t i = 0; i < temp.size(); ++i) {
+		// 		if (temp[i] == '\033' && i + 1 < temp.size() && temp[i + 1] == '[')
+		// 			while (i < temp.size() && temp[i] != 'm') ++i;
+		// 		else ++length;
+		// 	}
+		// 	return (length);
+		// }
+
+int nocolor_length(const char *str) {
+	if (!str)
+		return 0;
+
+	int length = 0;
+	size_t i = 0;
+	while (str[i]) {
+		if (str[i] == '\033') {
+			i++;
+			if (str[i] == '[') {
+				while (str[i] && str[i] != 'm') i++;
+				if (str[i] == 'm') i++;
+			}
+		} else {
+			length++;
+			i++;
+		}
+	}
+	return length;
+}
+
+char *remove_colors(const char *str) {
+	if (!str) return (NULL);
+
+	int length = nocolor_length(str);
+	if (length == ft_strlen(str)) return (ft_strdup(str));
+
+	char *result = smalloc(length + 1);
+	size_t i = 0, j = 0;
+
+	while (str[i]) {
+		if (str[i] == '\033') {
+			i++;
+			if (str[i] == '[') {
+				while (str[i] && str[i] != 'm') i++;
+				if (str[i] == 'm') i++;
+			}
+		} else result[j++] = str[i++];
+	} result[j] = '\0';
+
+	return (result);
+}
+
+			static int num_mode_off() {
+				number_mode = false;
+				int num_len = 8 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+				if (num_len > 0) cursor_left(num_len);
+				num_len = 8 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+				for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
+				if (num_len > 0) cursor_left(num_len);
+				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+				write(STDOUT_FILENO, buffer.value, buffer.length);
+				cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
+
+				if (buffer.c == 27) return (0);
+				if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) { beep(); return (1); }
+				return (0);
+			}
+
 
 			static int get_n() {
 				int number = ft_max(1, ft_atoi(n));
@@ -1086,23 +1141,26 @@
 				n[pos] = buffer.c;
 				if (number_mode == false) {
 					number_mode = true;
-					home();
-					num_row = buffer.row;
-					num_col = buffer.col;
-					num_len = chars_width(0, ft_strlen(buffer.value), buffer.value);
+					char *prompt = remove_colors(prompt_PS1);
+					int num_len = chars_width(0, ft_strlen(prompt), prompt);
+					sfree(prompt);
+					num_len += chars_width(0, buffer.position, buffer.value);
+					if (num_len > 0) cursor_left(num_len);
+					num_len += chars_width(buffer.position, buffer.length, buffer.value);
 					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-					cursor_left(num_len);
-					num_len += 9;
+					if (num_len > 0) cursor_left(num_len);
 				} else {
-					cursor_left(num_len);
+					int num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+					if (num_len > 0) cursor_left(num_len);
+					num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
 					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-					cursor_left(num_len);
-					num_len++;
+					if (num_len > 0) cursor_left(num_len);
 				}
 				write(STDOUT_FILENO, "(arg: ", 6);
 				write(STDOUT_FILENO, n, ft_strlen(n));
 				write(STDOUT_FILENO, ") ", 2);
 				write(STDOUT_FILENO, buffer.value, buffer.length);
+				cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
 			}
 
 		#pragma endregion
@@ -1231,6 +1289,8 @@
 					else if (buffer.c == ',')	{ repeat_cmd(true);							}	//	[n] Repeat the last character search command in reverse						(f, F, t, T)
 					else if (buffer.c == '|')	{ goto_position();							}	//	[n] Move the cursor to a specific character position						(default is 1)
 
+					else if (buffer.c == '-')	{ arrow_up();								}	//	[n] Move the cursor up
+					else if (buffer.c == '+')	{ arrow_down();								}	//	[n] Move the cursor down
 					else if (buffer.c == 'k')	{ arrow_up();								}	//	[n] Move the cursor up
 					else if (buffer.c == 'j')	{ arrow_down();								}	//	[n] Move the cursor down
 					else if (buffer.c == 'h')	{ arrow_left();								}	//	[n] Move the cursor left
