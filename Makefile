@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/01/30 13:00:42 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/02/01 18:36:15 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -125,7 +125,7 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/readinput/prompt.c					\
 			terminal/readinput/readinput.c				\
 			terminal/readinput/readline.c				\
-			terminal/readinput/termcap.c				\
+			terminal/readinput/termcaps.c				\
 			terminal/readinput/undo.c					\
 			terminal/readinput/vi.c						\
 			terminal/signal.c							\

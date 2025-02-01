@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/01 19:13:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,25 +121,23 @@
 		#pragma region "Print"
 
 			static int print_char() {
-				size_t char_size = 1;
-				if		(buffer.c >= 0xF0)	char_size = 4;
-				else if (buffer.c >= 0xE0)	char_size = 3;
-				else if (buffer.c >= 0xC0)	char_size = 2;
-
-				if (buffer.position >= buffer.size - 1) return (0);
+				size_t c_size = 1;
+				if 		(buffer.c >= 0xF0)	c_size = 4;
+				else if (buffer.c >= 0xE0)	c_size = 3;
+				else if (buffer.c >= 0xC0)	c_size = 2;
 
 				// Expand buffer if necessary
-				if (buffer.position + char_size >= buffer.size) {
+				if (buffer.position + c_size >= buffer.size) {
 					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 					buffer.size *= 2;
 				}
 
 				// Insert all bytes of the character into the buffer
-				buffer.value[(buffer.position)++] = buffer.c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
-				buffer.length += char_size;
+				buffer.value[buffer.position++] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
+				buffer.length += c_size;
 
-				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
+				write(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
 
 				return (0);
 			}
