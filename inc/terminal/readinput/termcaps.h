@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:37:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:55:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,7 @@
 	int		write_value(int fd, const char *value, size_t length);
 	int		terminal_initialize();
 	int		telemetry();
+	void	popo();
+	void	papa();
 
 #pragma endregion

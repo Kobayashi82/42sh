@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:44:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:55:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -426,10 +426,12 @@
 				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
 				buffer.length += c_size;
 
-				telemetry();
+				//telemetry();
+				popo();
 				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
-				cursor_move(buffer.length, buffer.position);
-				telemetry();
+				papa();
+				//cursor_move(buffer.length, buffer.position);
+				//telemetry();
 
 				return (0);
 			}

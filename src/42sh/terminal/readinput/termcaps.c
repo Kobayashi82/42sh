@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:44:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 17:00:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 	t_terminal		terminal;
 
 	static size_t	row, col;
+	static size_t	row_bk, col_bk;
 
 #pragma endregion
 
@@ -74,6 +75,10 @@
 
 			size_t char_width(size_t position, const char *value) {
 				unsigned char c = value[position];
+
+				if (c == '\0' || c == '\a' || c == '\b' || c == '\f' ||	c == '\r' || c == '\v') return (0);
+				else if (c == '\t') return (8);
+
 				if (c == '\033') { size_t i = position + 1;
 					if (value[i] == '[') {
 						while (value[++i]) {
@@ -136,13 +141,7 @@
 		#pragma region "Up"
 
 			void cursor_up() {
-				char *action = tgetstr("up", NULL);
-
-				if (action && row > 0) {
-					write(STDIN_FILENO, action, ft_strlen(action));
-					row--;
-				}
-
+				cursor_set(row - 1, col);
 			}
 
 		#pragma endregion
@@ -150,12 +149,7 @@
 		#pragma region "Down"
 
 			void cursor_down() {
-				char *action = tgetstr("do", NULL);
-
-				if (action) {
-					write(STDIN_FILENO, action, ft_strlen(action));
-					row++;
-				}
+				cursor_set(row + 1, col);
 			}
 
 		#pragma endregion
@@ -163,13 +157,11 @@
 		#pragma region "Left"
 
 			void cursor_left(int moves) {
-				char *action = tgetstr("le", NULL);
 				if (!moves) moves = char_width(buffer.position, buffer.value);
 
-				//cursor_get();
-				while (action && moves--) {
+				while (moves--) {
 					if (!col)	cursor_set(row - 1, terminal.columns - 1);
-					else		{ write(STDIN_FILENO, action, ft_strlen(action));	col--; }
+					else		cursor_set(row, col - 1);
 				}
 			}
 
@@ -179,14 +171,11 @@
 
 			void cursor_right(int moves) {
 				if (!moves && buffer.position == buffer.length) return;
-
-				char *action = tgetstr("nd", NULL);
 				if (!moves) moves = char_width(buffer.position, buffer.value);
 
-				//cursor_get();
-				while (action && moves--) {
-					if (col == terminal.columns - 1)	cursor_set(row + 1, 0);
-					else								{ write(STDIN_FILENO, action, ft_strlen(action));	col++; }
+				while (moves--) {
+					if (col >= terminal.columns - 1)	cursor_set(row + 1, 0);
+					else								cursor_set(row, col + 1);
 				}
 			}
 
@@ -249,16 +238,32 @@
 
 	#pragma region "Set"
 
-		// void cursor_set(size_t new_row, size_t new_col) {
-		// 	char *action = tgetstr("cm", NULL);
+		void cursor_set(size_t new_row, size_t new_col) {
+			char *action = tgetstr("cm", NULL);
 
-		// 	if (new_row == terminal.rows) new_row--;
-		// 	if (action) action = tgoto(action, new_col, new_row);
-		// 	if (action) {
-		// 		write(STDOUT_FILENO, action, ft_strlen(action));
-		// 		row = new_row; col = new_col;
-		// 	}
-		// }
+			if (new_row == terminal.rows) new_row--;
+			if (action) action = tgoto(action, new_col, new_row);
+			if (action) {
+				write(STDOUT_FILENO, action, ft_strlen(action));
+				row = new_row; col = new_col;
+			}
+		}
+
+		void popo() {
+			row_bk = row;
+			col_bk = col;
+		}
+
+
+		void papa() {
+			if (col_bk == terminal.columns - 1) {
+				col_bk = 0; row_bk++;
+			} else {
+				col_bk++;
+			}
+			cursor_set(row_bk, col_bk);
+		}
+
 
 	#pragma endregion
 
@@ -324,31 +329,40 @@
 
 	#pragma region "Set"
 
-		void cursor_set(size_t new_row, size_t new_col) {
-			if (new_row < row && row > 0) cursor_up();
+		// void cursor_set(size_t new_row, size_t new_col) {
+		// 	while (row != new_row) {
+		// 		if (new_row > row) {
+		// 			char *action = tgetstr("do", NULL);
+		// 			if (action) { write(STDIN_FILENO, action, ft_strlen(action)); row++; }
+		// 		} else if (new_row < row) {
+		// 			if (row <= 0) break;
+		// 			char *action = tgetstr("up", NULL);
+		// 			if (action) { write(STDIN_FILENO, action, ft_strlen(action)); row--; }
+		// 		}
+		// 	}
+		// 	while (col != new_col) {
+		// 		if (new_col > col) {
+		// 			if (col > terminal.columns - 1) break;
+		// 			char *action = tgetstr("nd", NULL);
+		// 			if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col++; }
+		// 			else break;
+		// 		} else if (new_col < col) {
+		// 			if (col <= 0) break;
+		// 			char *action = tgetstr("le", NULL);
+		// 			if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col--; }
+		// 			else break;
+		// 		}
+		// 	}
+		// }
 
-			// while (row != new_row) {
-			// 	if (new_row > row) {
-			// 		cursor_down();
-			// 	} else if (new_row < row) {
-			// 		if (row <= 0) break;
-			// 		cursor_up();
-			// 	}
-			// }
-			while (col != new_col) {
-				if (new_col > col) {
-					if (col >= terminal.columns - 1) break;
-					char *action = tgetstr("nd", NULL);
-					if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col++; }
-					else break;
-				} else if (new_col < col) {
-					if (col <= 0) break;
-					char *action = tgetstr("le", NULL);
-					if (action) { write(STDIN_FILENO, action, ft_strlen(action)); col--; }
-					else break;
-				}
-			}
-		}
+		// void cursor_set(size_t new_row, size_t new_col) {
+		// 	char *action = tgetstr("cm", NULL);
+		// 	if (action) {
+		// 		action = tgoto(action, new_col, new_row);
+		// 		write(STDIN_FILENO, action, ft_strlen(action));
+		// 		row = new_row; col = new_col;
+		// 	}
+		// }
 
 	#pragma endregion
 
@@ -356,8 +370,12 @@
 
 		void cursor_update(size_t length) {
 			while (length--) {
-				if (col == terminal.columns - 1)	{ row++; col = 0; }
-				else								col++;
+				if (++col > terminal.columns - 1)	{
+					//telemetry();
+					row++; col = 0;
+					//telemetry();
+					//terminal_initialize();
+				}
 			}
 		}
 
@@ -373,10 +391,9 @@
 				if (write(fd, &value[i], 1) == -1) break;
 				total++;
 			}
-
 			telemetry();
-			//cursor_update(chars_width(0, total, value));
-			cursor_get();
+			//cursor_get();
+			cursor_update(chars_width(0, total, value));
 			telemetry();
 
 			return (total);
