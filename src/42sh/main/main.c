@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 19:16:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 12:58:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,6 +127,9 @@
 #pragma region "Main"
 
 	int main(int argc, const char **argv, const char **envp) {
+		int fd = open("putamierda", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    	if (!fd) return (-1);
+		close(fd);
 		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);
 		if (tests(argc, argv, envp)) exit_error(NOTHING, 0, NULL, true);
 

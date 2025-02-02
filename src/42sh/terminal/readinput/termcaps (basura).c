@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:44:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 13:22:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,94 +131,104 @@
 
 #pragma region "Cursor"
 
-	#pragma region "Navigation"
+	#pragma region "Up"
 
-		#pragma region "Up"
+		void cursor_up() {
+			char *action = tgetstr("up", NULL);
 
-			void cursor_up() {
-				char *action = tgetstr("up", NULL);
-
-				if (action && row > 0) {
-					write(STDIN_FILENO, action, ft_strlen(action));
-					row--;
-				}
-
+			if (action && row > 0) {
+				write(STDIN_FILENO, action, ft_strlen(action));
+				row--;
 			}
 
-		#pragma endregion
+		}
 
-		#pragma region "Down"
+	#pragma endregion
 
-			void cursor_down() {
-				char *action = tgetstr("do", NULL);
+	#pragma region "Down"
 
-				if (action) {
-					write(STDIN_FILENO, action, ft_strlen(action));
-					row++;
-				}
+		void cursor_down() {
+			char *action = tgetstr("do", NULL);
+
+			if (action) {
+				write(STDIN_FILENO, action, ft_strlen(action));
+				row++;
 			}
+		}
 
-		#pragma endregion
+	#pragma endregion
 
-		#pragma region "Left"
+	#pragma region "Left"
 
-			void cursor_left(int moves) {
-				char *action = tgetstr("le", NULL);
-				if (!moves) moves = char_width(buffer.position, buffer.value);
+		void cursor_left(int moves) {
+			char *action = tgetstr("le", NULL);
+			if (!moves) moves = char_width(buffer.position, buffer.value);
 
-				//cursor_get();
-				while (action && moves--) {
-					if (!col)	cursor_set(row - 1, terminal.columns - 1);
-					else		{ write(STDIN_FILENO, action, ft_strlen(action));	col--; }
-				}
+			//cursor_get();
+			while (action && moves--) {
+				if (!col)	cursor_set(row - 1, terminal.columns - 1);
+				else		{ write(STDIN_FILENO, action, ft_strlen(action));	col--; }
 			}
+		}
 
-		#pragma endregion
+	#pragma endregion
 
-		#pragma region "Right"
+	#pragma region "Right"
 
-			void cursor_right(int moves) {
-				if (!moves && buffer.position == buffer.length) return;
+		void cursor_right(int moves) {
+			if (!moves && buffer.position == buffer.length) return;
 
-				char *action = tgetstr("nd", NULL);
-				if (!moves) moves = char_width(buffer.position, buffer.value);
+			char *action = tgetstr("nd", NULL);
+			if (!moves) moves = char_width(buffer.position, buffer.value);
 
-				//cursor_get();
-				while (action && moves--) {
-					if (col == terminal.columns - 1)	cursor_set(row + 1, 0);
-					else								{ write(STDIN_FILENO, action, ft_strlen(action));	col++; }
-				}
+			//cursor_get();
+			while (action && moves--) {
+				if (col == terminal.columns - 1)	cursor_set(row + 1, 0);
+				else								{ write(STDIN_FILENO, action, ft_strlen(action));	col++; }
 			}
+		}
 
-		#pragma endregion
+	#pragma endregion
+
+	#pragma region "Move"
+
+		// void cursor_move(size_t from, size_t to) {
+		// 	// ft_printf(1, "%u\n", col);
+		// 	if (from < to) {
+		// 		int total = chars_width(from, to, buffer.value);
+		// 		if (total) cursor_right(total);
+		// 	} else if (from > to) {
+		// 		int total = chars_width(to, from, buffer.value);
+		// 		if (total) cursor_left(total);
+		// 	}
+		// 	// ft_printf(1, "%u\n", col);
+		// }
 
 		#pragma region "Move"
 
-			// void cursor_move(size_t from_pos, size_t to_pos) {
-			// 	if (from_pos > to_pos) {
-			// 		for (size_t i = to_pos; i < from_pos; ) {
-			// 			if (char_width(i, buffer.value) == 2) cursor_left(1);
-			// 			if ((unsigned char)buffer.value[i] >= 0xC0) {
-			// 				if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-			// 				else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-			// 				else												i += 2;	// 2 bytes
-			// 			} else													i++;	// 1 byte
-			// 			cursor_left(1);
-			// 		}
-			// 	} else if (from_pos < to_pos) {
-			// 		for (size_t i = from_pos; i < to_pos; ) {
-			// 			if (char_width(i, buffer.value) == 2) cursor_right(1);
-			// 			if ((unsigned char)buffer.value[i] >= 0xC0) {
-			// 				if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
-			// 				else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
-			// 				else												i += 2;	// 2 bytes
-			// 			} else													i++;	// 1 byte
-			// 			cursor_right(1);
-			// 		}	
-			// 	}
-			// }
-
-		#pragma endregion
+		void cursor_move(size_t from_pos, size_t to_pos) {
+			if (from_pos > to_pos) {
+				for (size_t i = to_pos; i < from_pos; ) {
+					if (char_width(i, buffer.value) == 2) cursor_left(1);
+					if ((unsigned char)buffer.value[i] >= 0xC0) {
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
+						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
+						else												i += 2;	// 2 bytes
+					} else													i++;	// 1 byte
+					cursor_left(1);
+				}
+			} else if (from_pos < to_pos) {
+				for (size_t i = from_pos; i < to_pos; ) {
+					if (char_width(i, buffer.value) == 2) cursor_right(1);
+					if ((unsigned char)buffer.value[i] >= 0xC0) {
+						if ((unsigned char)buffer.value[i] >= 0xF0)			i += 4;	// 4 bytes
+						else if ((unsigned char)buffer.value[i] >= 0xE0)	i += 3;	// 3 bytes
+						else												i += 2;	// 2 bytes
+					} else													i++;	// 1 byte
+					cursor_right(1);
+				}	
+			}
+		}
 
 	#pragma endregion
 
@@ -247,6 +257,10 @@
 
 	#pragma endregion
 
+	void print_shit() {
+		ft_printf(1, "row: %u - col: %u - pos:%u - rows: %u\n", row, col, buffer.position, terminal.rows);
+	}
+
 	#pragma region "Set"
 
 		// void cursor_set(size_t new_row, size_t new_col) {
@@ -259,70 +273,6 @@
 		// 		row = new_row; col = new_col;
 		// 	}
 		// }
-
-	#pragma endregion
-
-	#pragma region "Hide"
-
-		void cursor_hide() {
-			char *action = tgetstr("vi", NULL);
-
-			if (action) write(STDIN_FILENO, action, ft_strlen(action));
-		}
-
-	#pragma endregion
-
-	#pragma region "Show"
-
-		void cursor_show() {
-			char *action = tgetstr("ve", NULL);
-
-			if (action) write(STDIN_FILENO, action, ft_strlen(action));
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "Initialize"
-
-	int terminal_initialize() {
-		char *termtype = getenv("TERM");
-		if (!termtype) { termtype = "dumb"; options.emacs = false; options.vi = false; }
-
-		int success = tgetent(NULL, termtype);
-		if (success < 0)	{ write(2, "Could not access the termcap data base.\n", 41);	return (1); }
-		if (success == 0)	{ write(2, "Terminal type is not defined.\n", 31);				return (1); }
-
-		terminal.rows = tgetnum("li");
-		terminal.columns = tgetnum("co");
-
-		return (0);
-	}
-
-#pragma endregion
-
-
-
-#pragma region "Mierdas"
-
-	#pragma region "Move"
-
-		void cursor_move(size_t from, size_t to) {
-			// ft_printf(1, "%u\n", col);
-			if (from < to) {
-				int total = chars_width(from, to, buffer.value);
-				if (total) cursor_right(total);
-			} else if (from > to) {
-				int total = chars_width(to, from, buffer.value);
-				if (total) cursor_left(total);
-			}
-			// ft_printf(1, "%u\n", col);
-		}
-
-	#pragma endregion
-
-	#pragma region "Set"
 
 		void cursor_set(size_t new_row, size_t new_col) {
 			if (new_row < row && row > 0) cursor_up();
@@ -352,49 +302,81 @@
 
 	#pragma endregion
 
-	#pragma region "Update"
+	#pragma region "Hide"
 
-		void cursor_update(size_t length) {
-			while (length--) {
-				if (col == terminal.columns - 1)	{ row++; col = 0; }
-				else								col++;
-			}
+		void cursor_hide() {
+			char *action = tgetstr("vi", NULL);
+
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
 		}
 
 	#pragma endregion
 
-	#pragma region "Write Value"
+	#pragma region "Show"
 
-		int write_value(int fd, const char *value, size_t length) {
-			if (fd < 0 || !value || length <= 0) return (1);
-			int total = 0;
+		void cursor_show() {
+			char *action = tgetstr("ve", NULL);
 
-			for (int i = 0; value[i]; i++) {
-				if (write(fd, &value[i], 1) == -1) break;
-				total++;
-			}
-
-			telemetry();
-			//cursor_update(chars_width(0, total, value));
-			cursor_get();
-			telemetry();
-
-			return (total);
+			if (action) write(STDIN_FILENO, action, ft_strlen(action));
 		}
 
 	#pragma endregion
 
-	#pragma region "Telemetry"
+void update_cursor(size_t length) {
+	while (length--) {
+		if (col == terminal.columns - 1)	{ row++; col = 0; }
+		else								col++;
+	}
+}
 
-		int telemetry() {
-			int fd = open("putamierda", O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (!fd) return (-1);
 
-			ft_printf(fd, "row: %u - col: %u - pos:%u - rows: %u\n", row, col, buffer.position, terminal.rows);
-			close(fd);
-			return (0);
-		}
-
-	#pragma endregion
 
 #pragma endregion
+
+int write_value(int fd, const char *value, size_t length) {
+	if (fd < 0 || !value || length <= 0) return (1);
+	int total = 0;
+
+	for (int i = 0; value[i]; i++) {
+		if (write(fd, &value[i], 1) == -1) break;
+		total++;
+	}
+
+	telemetry();
+	//update_cursor(chars_width(0, total, value));
+	cursor_get();
+	telemetry();
+
+	return (total);
+}
+
+#pragma region "Initialize"
+
+	int terminal_initialize() {
+		char *termtype = getenv("TERM");
+		if (!termtype) { termtype = "dumb"; options.emacs = false; options.vi = false; }
+
+		int success = tgetent(NULL, termtype);
+		if (success < 0)	{ write(2, "Could not access the termcap data base.\n", 41);	return (1); }
+		if (success == 0)	{ write(2, "Terminal type is not defined.\n", 31);				return (1); }
+
+		terminal.rows = tgetnum("li");
+		terminal.columns = tgetnum("co");
+
+		return (0);
+	}
+
+#pragma endregion
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+int telemetry() {
+    int fd = open("putamierda", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (!fd) return (-1);
+
+	ft_printf(fd, "row: %u - col: %u - pos:%u - rows: %u\n", row, col, buffer.position, terminal.rows);
+    close(fd);
+    return (0);
+}

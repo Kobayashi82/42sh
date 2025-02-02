@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:44:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 13:23:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -427,10 +427,9 @@
 				buffer.length += c_size;
 
 				telemetry();
-				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+				write(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
 				cursor_move(buffer.length, buffer.position);
 				telemetry();
-
 				return (0);
 			}
 

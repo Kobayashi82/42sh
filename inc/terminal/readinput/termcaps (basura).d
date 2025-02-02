@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 13:37:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 12:56:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@
 	void	update_cursor(size_t length);
 	int		write_value(int fd, const char *value, size_t length);
 	int		terminal_initialize();
+	void	print_shit();
 	int		telemetry();
 
 #pragma endregion
