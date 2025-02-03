@@ -30,7 +30,7 @@
 	t_terminal		terminal;
 
 	static size_t	row, col;
-	static size_t	row_bk, col_bk;
+	//static size_t	row_bk, col_bk;
 
 #pragma endregion
 
@@ -238,31 +238,31 @@
 
 	#pragma region "Set"
 
-		void cursor_set(size_t new_row, size_t new_col) {
-			char *action = tgetstr("cm", NULL);
+		// void cursor_set(size_t new_row, size_t new_col) {
+		// 	char *action = tgetstr("cm", NULL);
 
-			if (new_row == terminal.rows) new_row--;
-			if (action) action = tgoto(action, new_col, new_row);
-			if (action) {
-				write(STDOUT_FILENO, action, ft_strlen(action));
-				row = new_row; col = new_col;
-			}
-		}
+		// 	if (new_row == terminal.rows) new_row--;
+		// 	if (action) action = tgoto(action, new_col, new_row);
+		// 	if (action) {
+		// 		write(STDOUT_FILENO, action, ft_strlen(action));
+		// 		row = new_row; col = new_col;
+		// 	}
+		// }
 
-		void popo() {
-			row_bk = row;
-			col_bk = col;
-		}
+		// void popo() {
+		// 	row_bk = row;
+		// 	col_bk = col;
+		// }
 
 
-		void papa() {
-			if (col_bk == terminal.columns - 1) {
-				col_bk = 0; row_bk++;
-			} else {
-				col_bk++;
-			}
-			cursor_set(row_bk, col_bk);
-		}
+		// void papa() {
+		// 	if (col_bk == terminal.columns - 1) {
+		// 		col_bk = 0; row_bk++;
+		// 	} else {
+		// 		col_bk++;
+		// 	}
+		// 	cursor_set(row_bk, col_bk);
+		// }
 
 
 	#pragma endregion
@@ -355,14 +355,16 @@
 		// 	}
 		// }
 
-		// void cursor_set(size_t new_row, size_t new_col) {
-		// 	char *action = tgetstr("cm", NULL);
-		// 	if (action) {
-		// 		action = tgoto(action, new_col, new_row);
-		// 		write(STDIN_FILENO, action, ft_strlen(action));
-		// 		row = new_row; col = new_col;
-		// 	}
-		// }
+		void cursor_set(size_t new_row, size_t new_col) {
+			if (new_row >= terminal.rows)
+				new_row = terminal.rows - 1;
+			char *action = tgetstr("cm", NULL);
+			if (action) {
+				action = tgoto(action, new_col, new_row);
+				write(STDIN_FILENO, action, ft_strlen(action));
+				row = new_row; col = new_col;
+			}
+		}
 
 	#pragma endregion
 
@@ -371,10 +373,8 @@
 		void cursor_update(size_t length) {
 			while (length--) {
 				if (++col > terminal.columns - 1)	{
-					//telemetry();
-					row++; col = 0;
-					//telemetry();
-					//terminal_initialize();
+					if (row < terminal.rows) row++;
+					col = 0;
 				}
 			}
 		}
@@ -392,7 +392,6 @@
 				total++;
 			}
 			telemetry();
-			//cursor_get();
 			cursor_update(chars_width(0, total, value));
 			telemetry();
 

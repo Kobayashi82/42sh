@@ -94,7 +94,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ — \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@gcc $(FLAGS) -I$(INC_DIR) -MMD -o $@ -c $<
+	@clang $(FLAGS) -I$(INC_DIR) -MMD -o $@ -c $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #

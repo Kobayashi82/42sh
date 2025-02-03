@@ -25,5 +25,6 @@
 		"args.h": "c",
 		"readinput.h": "c",
 		"unistd.h": "c"
-	}
+	},
+	"makefile.configureOnOpen": false
 }

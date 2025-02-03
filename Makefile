@@ -41,7 +41,7 @@ COUNTER 			= 0
 # ── FLAGS ── #
 # ─────────── #
 
-CC					= gcc
+CC					= clang
 FLAGS				= -Wall -Wextra -Werror -g # -O0 -fsanitize=thread
 EXTRA_FLAGS			= -ltermcap
 EXTRA_FLAGS_OBJ		=

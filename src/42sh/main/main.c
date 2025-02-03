@@ -144,7 +144,7 @@
 			execute_commands(terminal.input);
 			sfree(terminal.input);
 		} else {
-			t_arg arg = { .value = "banner" }; builtin_exec(&arg);
+			//t_arg arg = { .value = "banner" }; builtin_exec(&arg);
 			while (!shell.exit && !read_input()) ;
 		}
 

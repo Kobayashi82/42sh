@@ -20,8 +20,8 @@
 
 	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/termcaps.h"
 	#include "terminal/print.h"
+	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
@@ -426,12 +426,8 @@
 				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
 				buffer.length += c_size;
 
-				//telemetry();
-				popo();
 				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
-				papa();
-				//cursor_move(buffer.length, buffer.position);
-				//telemetry();
+				cursor_move(buffer.length, buffer.position);
 
 				return (0);
 			}
@@ -720,7 +716,7 @@
 						if (cmd == 'F' || cmd == 'T') {
 							for (size_t i = buffer.position - 1; i != (size_t)-1; --i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
-									while (buffer.position > i) arrow_left(0);
+									while (buffer.position > i) arrow_left();
 									if (cmd == 'T') arrow_right();
 									last_match = buffer.position;
 									if (!--number) return;
@@ -729,7 +725,7 @@
 						} else {
 							for (size_t i = buffer.position + 1; i < buffer.length; ++i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
-									while (buffer.position < i) arrow_right(0);
+									while (buffer.position < i) arrow_right();
 									if (cmd == 't') arrow_left();
 									last_match = buffer.position;
 									if (--number == 0) return;
@@ -738,8 +734,8 @@
 						}
 
 						if (buffer.position == last_match) beep();
-						while (buffer.position > last_match) arrow_left(0);
-						while (buffer.position < last_match) arrow_right(0);
+						while (buffer.position > last_match) arrow_left();
+						while (buffer.position < last_match) arrow_right();
 					}
 
 				#pragma endregion
