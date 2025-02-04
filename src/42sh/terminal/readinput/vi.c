@@ -123,8 +123,8 @@
 						buffer.position -= back_pos; buffer.length -= back_pos;
 
 						cursor_left(c_width);
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "    ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
 					}
@@ -143,10 +143,10 @@
 					buffer.length -= buffer.position; buffer.position = buffer.length;
 
 					cursor_left(total_chars);
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 						home();
 					}
@@ -168,8 +168,8 @@
 						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
 						buffer.length -= back_pos;
 
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						cursor_move(buffer.length, buffer.position);
 
 						if (vi_mode == EDIT) {
@@ -217,7 +217,7 @@
 
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 						if (vi_mode == EDIT && buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);

@@ -27,7 +27,9 @@
 	size_t	char_prev(size_t position, const char *value);
 	
 	void	cursor_left(int moves);
+	void	cursor_left_force(int moves);
 	void	cursor_right(int moves);
+	void	cursor_right_force(int moves);
 	void	cursor_move(size_t from, size_t to);
 	void	cursor_get();
 	void	cursor_set(size_t new_row, size_t new_col);

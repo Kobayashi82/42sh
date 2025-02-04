@@ -30,7 +30,6 @@
 	t_terminal		terminal;
 
 	static size_t	row, col;
-	//static size_t	row_bk, col_bk;
 
 #pragma endregion
 
@@ -165,6 +164,18 @@
 				}
 			}
 
+			void cursor_left_force(int moves) {
+				if (!moves) moves = char_width(buffer.position, buffer.value);
+
+				char *action = tgetstr("le", NULL);
+
+				while (action && moves--) {
+					if (!col)	cursor_set(row - 1, terminal.columns - 1);
+					else		{ write(STDOUT_FILENO, action, ft_strlen(action)); col--; }
+				}
+			}
+
+
 		#pragma endregion
 
 		#pragma region "Right"
@@ -176,6 +187,17 @@
 				while (moves--) {
 					if (col >= terminal.columns - 1)	cursor_set(row + 1, 0);
 					else								cursor_set(row, col + 1);
+				}
+			}
+
+			void cursor_right_force(int moves) {
+				if (!moves) moves = char_width(buffer.position, buffer.value);
+
+				char *action = tgetstr("nd", NULL);
+
+				while (action && moves--) {
+					if (col == terminal.columns - 1)	cursor_set(row + 1, 0);
+					else								{ write(STDOUT_FILENO, action, ft_strlen(action)); col++; }
 				}
 			}
 
@@ -387,13 +409,12 @@
 			if (fd < 0 || !value || length <= 0) return (1);
 			int total = 0;
 
-			for (int i = 0; value[i]; i++) {
+			for (size_t i = 0; value[i] && i < length; i++) {
 				if (write(fd, &value[i], 1) == -1) break;
 				total++;
 			}
-			telemetry();
+
 			cursor_update(chars_width(0, total, value));
-			telemetry();
 
 			return (total);
 		}
