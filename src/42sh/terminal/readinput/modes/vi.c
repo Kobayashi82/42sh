@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 16:55:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:26:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@
 					ft_strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 
 					if (vi_mode) {
 						home();
@@ -320,7 +320,7 @@
 					ft_strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 
 					if (vi_mode) {
 						home();
