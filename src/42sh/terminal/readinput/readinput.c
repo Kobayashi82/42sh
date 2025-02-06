@@ -42,7 +42,7 @@
 		if (raw_mode) {
 			raw_mode = false;
 			cursor_show();
-			//tgetent(NULL, "none");
+			terminal_release();
 			tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
 			prompt_clear(BOTH);
 		}

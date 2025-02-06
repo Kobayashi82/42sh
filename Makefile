@@ -118,16 +118,17 @@ SRCS	=	builtins/alias/alias.c						\
 			parser/3_expansions/globbing/match.c		\
 			parser/3_expansions/globbing/pattern.c		\
 														\
-			terminal/print.c							\
-			terminal/readinput/auto.c					\
-			terminal/readinput/dumb.c					\
-			terminal/readinput/history.c				\
-			terminal/readinput/prompt.c					\
+			terminal/readinput/common/auto_complete.c	\
+			terminal/readinput/common/history_search.c	\
+			terminal/readinput/common/history.c			\
+			terminal/readinput/common/prompt.c			\
+			terminal/readinput/common/termcaps.c		\
+			terminal/readinput/common/undo.c			\
+			terminal/readinput/modes/dumb.c				\
+			terminal/readinput/modes/readline.c			\
+			terminal/readinput/modes/vi.c				\
 			terminal/readinput/readinput.c				\
-			terminal/readinput/readline.c				\
-			terminal/readinput/termcaps.c				\
-			terminal/readinput/undo.c					\
-			terminal/readinput/vi.c						\
+			terminal/print.c							\
 			terminal/signal.c							\
 														\
 			tests/builtin.c								\

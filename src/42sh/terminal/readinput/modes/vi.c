@@ -6,22 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 18:26:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/02 16:55:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//	Arreglar multibytes en columnas primera y ultima
 //	Optimizar Delete World
 //	Hacer Search History & AutoComplete
-
-// + y - mueven el historial
 
 #pragma region "Includes"
 
 	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/termcaps.h"
 	#include "terminal/print.h"
+	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
@@ -123,8 +120,8 @@
 						buffer.position -= back_pos; buffer.length -= back_pos;
 
 						cursor_left(c_width);
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "    ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
 					}
@@ -143,10 +140,10 @@
 					buffer.length -= buffer.position; buffer.position = buffer.length;
 
 					cursor_left(total_chars);
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 						home();
 					}
@@ -168,8 +165,8 @@
 						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
 						buffer.length -= back_pos;
 
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						cursor_move(buffer.length, buffer.position);
 
 						if (vi_mode == EDIT) {
@@ -217,7 +214,7 @@
 
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 						if (vi_mode == EDIT && buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
@@ -241,6 +238,7 @@
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						cursor_left(0);
 					}
+					//print_shit();
 				}
 
 			#pragma endregion
@@ -402,6 +400,34 @@
 				}
 
 			#pragma endregion
+
+		#pragma endregion
+
+		#pragma region "Char"
+
+			static int print_char() {
+				if (vi_mode) return (0);
+
+				size_t c_size = char_size(buffer.c);
+
+				// Expand buffer if necessary
+				if (buffer.position + c_size >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+				// Insert all bytes of the character into the buffer
+				buffer.value[buffer.position++] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
+				buffer.length += c_size;
+
+				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+				cursor_move(buffer.length, buffer.position);
+
+				return (0);
+			}
 
 		#pragma endregion
 
@@ -687,7 +713,7 @@
 						if (cmd == 'F' || cmd == 'T') {
 							for (size_t i = buffer.position - 1; i != (size_t)-1; --i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
-									while (buffer.position > i) arrow_left(0);
+									while (buffer.position > i) arrow_left();
 									if (cmd == 'T') arrow_right();
 									last_match = buffer.position;
 									if (!--number) return;
@@ -696,7 +722,7 @@
 						} else {
 							for (size_t i = buffer.position + 1; i < buffer.length; ++i) {
 								if (!ft_strncmp(&buffer.value[i], c, ft_strlen(c))) {
-									while (buffer.position < i) arrow_right(0);
+									while (buffer.position < i) arrow_right();
 									if (cmd == 't') arrow_left();
 									last_match = buffer.position;
 									if (--number == 0) return;
@@ -705,8 +731,8 @@
 						}
 
 						if (buffer.position == last_match) beep();
-						while (buffer.position > last_match) arrow_left(0);
-						while (buffer.position < last_match) arrow_right(0);
+						while (buffer.position > last_match) arrow_left();
+						while (buffer.position < last_match) arrow_right();
 					}
 
 				#pragma endregion
@@ -1049,119 +1075,79 @@
 
 		#pragma region "Number"							("0-9")
 
-		// int str_nocolor_length(const char *str) {
-		// 	std::string temp = replace_tabs_with_spaces(str);
-		// 	int length = 0;
-		// 	for (size_t i = 0; i < temp.size(); ++i) {
-		// 		if (temp[i] == '\033' && i + 1 < temp.size() && temp[i + 1] == '[')
-		// 			while (i < temp.size() && temp[i] != 'm') ++i;
-		// 		else ++length;
-		// 	}
-		// 	return (length);
-		// }
+			#pragma region "Number Mode Off"
 
-int nocolor_length(const char *str) {
-	if (!str)
-		return 0;
+				static int num_mode_off() {
+					number_mode = false;
+					int num_len = 8 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+					if (num_len > 0) cursor_left(num_len);
+					num_len = 8 + ft_strlen(n) + chars_width(0, buffer.length, buffer.value);
+					for (int i = num_len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+					if (num_len > 0) cursor_left(num_len);
+					if (prompt_PS1) {
+						write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+						cursor_update(nocolor_length(prompt_PS1));
+					}
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
+					cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
 
-	int length = 0;
-	size_t i = 0;
-	while (str[i]) {
-		if (str[i] == '\033') {
-			i++;
-			if (str[i] == '[') {
-				while (str[i] && str[i] != 'm') i++;
-				if (str[i] == 'm') i++;
-			}
-		} else {
-			length++;
-			i++;
-		}
-	}
-	return length;
-}
+					if (buffer.c == 27) return (0);
+					if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) { beep(); return (1); }
+					return (0);
+				}
 
-char *remove_colors(const char *str) {
-	if (!str) return (NULL);
+			#pragma endregion
 
-	int length = nocolor_length(str);
-	if (length == ft_strlen(str)) return (ft_strdup(str));
+			#pragma region "Get N"
 
-	char *result = smalloc(length + 1);
-	size_t i = 0, j = 0;
-
-	while (str[i]) {
-		if (str[i] == '\033') {
-			i++;
-			if (str[i] == '[') {
-				while (str[i] && str[i] != 'm') i++;
-				if (str[i] == 'm') i++;
-			}
-		} else result[j++] = str[i++];
-	} result[j] = '\0';
-
-	return (result);
-}
-
-			static int num_mode_off() {
-				number_mode = false;
-				int num_len = 8 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
-				if (num_len > 0) cursor_left(num_len);
-				num_len = 8 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
-				for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-				if (num_len > 0) cursor_left(num_len);
-				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
-				write(STDOUT_FILENO, buffer.value, buffer.length);
-				cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
-
-				if (buffer.c == 27) return (0);
-				if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) { beep(); return (1); }
-				return (0);
-			}
-
-
-			static int get_n() {
-				int number = ft_max(1, ft_atoi(n));
-				number_mode = false;
-				ft_memset(n, 0, 7);
-
-				return (number);
-			}
-
-			static void set_n() {
-				if (!number_mode && buffer.c == 48) { home(); return; }					// Move to the start of the line
-				if (!number_mode) ft_memset(n, 0, 7);
-
-				int pos = ft_max(ft_strlen(n), 0);
-				if (pos > 6) {
-					num_mode_off();
+				static int get_n() {
+					int number = ft_max(1, ft_atoi(n));
+					number_mode = false;
 					ft_memset(n, 0, 7);
-					return;
+
+					return (number);
 				}
-				n[pos] = buffer.c;
-				if (number_mode == false) {
-					number_mode = true;
-					char *prompt = remove_colors(prompt_PS1);
-					int num_len = chars_width(0, ft_strlen(prompt), prompt);
-					sfree(prompt);
-					num_len += chars_width(0, buffer.position, buffer.value);
-					if (num_len > 0) cursor_left(num_len);
-					num_len += chars_width(buffer.position, buffer.length, buffer.value);
-					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-					if (num_len > 0) cursor_left(num_len);
-				} else {
-					int num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
-					if (num_len > 0) cursor_left(num_len);
-					num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
-					for (int i = num_len; i > 0; --i) write(STDOUT_FILENO, " ", 1);
-					if (num_len > 0) cursor_left(num_len);
+
+			#pragma endregion
+
+			#pragma region "Set N"
+
+				static void set_n() {
+					if (!number_mode && buffer.c == 48) { home(); return; }					// Move to the start of the line
+					if (!number_mode) ft_memset(n, 0, 7);
+
+					int pos = ft_max(ft_strlen(n), 0);
+					if (pos > 6) {
+						num_mode_off();
+						ft_memset(n, 0, 7);
+						return;
+					}
+					n[pos] = buffer.c;
+					if (number_mode == false) {
+						number_mode = true;
+						char *prompt = remove_colors(prompt_PS1);
+						int num_len = chars_width(0, ft_strlen(prompt), prompt);
+						sfree(prompt);
+						num_len += chars_width(0, buffer.position, buffer.value);
+						if (num_len > 0) cursor_left(num_len);
+						num_len += chars_width(buffer.position, buffer.length, buffer.value);
+						for (int i = num_len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+						if (num_len > 0) cursor_left(num_len);
+					} else {
+						int num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+						if (num_len > 0) cursor_left(num_len);
+						num_len = 7 + ft_strlen(n) + chars_width(0, buffer.position, buffer.value);
+						for (int i = num_len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+						if (num_len > 0) cursor_left(num_len);
+					}
+					write_value(STDOUT_FILENO, "(arg: ", 6);
+					write_value(STDOUT_FILENO, n, ft_strlen(n));
+					write_value(STDOUT_FILENO, ") ", 2);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
+					cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
 				}
-				write(STDOUT_FILENO, "(arg: ", 6);
-				write(STDOUT_FILENO, n, ft_strlen(n));
-				write(STDOUT_FILENO, ") ", 2);
-				write(STDOUT_FILENO, buffer.value, buffer.length);
-				cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
-			}
+
+			#pragma endregion
 
 		#pragma endregion
 
@@ -1306,40 +1292,6 @@ char *remove_colors(const char *str) {
 				} else return (0);
 
 				return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Print"
-
-			static int print_char() {
-				if (vi_mode) return (0);
-
-				size_t char_size = 1;
-				if		(buffer.c >= 0xF0)	char_size = 4;
-				else if (buffer.c >= 0xE0)	char_size = 3;
-				else if (buffer.c >= 0xC0)	char_size = 2;
-
-				if (buffer.position >= buffer.size - 1) return (0);
-
-				// Expand buffer if necessary
-				if (buffer.position + char_size >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
-
-				// Insert all bytes of the character into the buffer
-				buffer.value[(buffer.position)++] = buffer.c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
-				buffer.length += char_size;
-
-				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
-
-				cursor_move(buffer.length, buffer.position);
-
-				return (0);
 			}
 
 		#pragma endregion

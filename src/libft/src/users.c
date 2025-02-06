@@ -156,12 +156,6 @@
 
 #pragma region "Home"
 
-	#pragma region "Current"
-
-		char *get_home() { return get_home_by_id(getuid()); }
-
-	#pragma endregion
-
 	#pragma region "By ID"
 
 		char *get_home_by_id(int uid) {
@@ -172,6 +166,7 @@
 				free_user(user);
 			}
 
+			if (!tmp) return (get_home_by_var());
 			return (tmp);
 		}
 
@@ -187,8 +182,36 @@
 				free_user(user);
 			}
 
+			if (!tmp) return (get_home_by_var());
 			return (tmp);
 		}
+
+	#pragma endregion
+
+
+	#pragma region "By Var"
+
+		char *get_home_by_var() {
+			char *home = getenv("XDG_CONFIG_HOME");
+			if (home) return ft_strdup(home);
+			home = getenv("HOME");
+			if (home) return (ft_strdup(home));
+
+			home = get_home_by_id(getuid());
+			if (home) return (home);
+
+			char *user = getenv("USER");
+			if (!user) user = getenv("LOGNAME");
+			if (user) return (ft_strjoin("/home/", user, 0));
+
+			return (NULL);
+		}
+
+	#pragma endregion
+
+	#pragma region "Current"
+
+		char *get_home() { return get_home_by_var(); }
 
 	#pragma endregion
 

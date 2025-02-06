@@ -127,9 +127,6 @@
 #pragma region "Main"
 
 	int main(int argc, const char **argv, const char **envp) {
-		int fd = open("putamierda", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    	if (!fd) return (-1);
-		close(fd);
 		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);
 		if (tests(argc, argv, envp)) exit_error(NOTHING, 0, NULL, true);
 

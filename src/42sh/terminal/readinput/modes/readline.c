@@ -10,11 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
-//	Arreglar multibytes en columnas primera y ultima
-//	Optimizar Delete World, Swap Word & Clear Screen
-//	Hacer Search History & AutoComplete
-
 #pragma region "Includes"
 
 	#include "libft.h"

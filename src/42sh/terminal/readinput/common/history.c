@@ -552,9 +552,9 @@
 
 	//	Initialize the history
 	int history_initialize() {
-		//char *hist_file = ft_strjoin_sep(get_home(), "/", ".42sh_history", 1);
-		char *hist_file = ft_strdup(".42sh_history");
-		history_file_set(hist_file); sfree(hist_file);
+		char *home = get_home();
+		if (home) home = ft_strjoin_sep(home, "/", ".42sh_history", 1);
+		history_file_set(home); sfree(home);
 		history_read(NULL);
 
 		return (0);

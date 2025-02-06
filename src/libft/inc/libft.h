@@ -217,9 +217,10 @@
 		t_userinfo	*get_userinfo();
 		t_userinfo	*get_userinfo_by_id(int uid);
 		t_userinfo	*get_userinfo_by_name(const char *name);
-		char		*get_home();
 		char		*get_home_by_id(int uid);
 		char		*get_home_by_name(const char *name);
+		char		*get_home_by_var();
+		char		*get_home();
 		void		free_user(t_userinfo *user);
 
 	#pragma endregion
