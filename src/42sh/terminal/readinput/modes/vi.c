@@ -6,12 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/06 15:26:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:37:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Optimizar Delete World
-//	Hacer Search History & AutoComplete
 
 #pragma region "Includes"
 
@@ -45,7 +44,7 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar / Hacer
+#pragma region "Input"																										//	Optimizar
 
 	#pragma region "Insert"																									//	Optimizar
 
@@ -433,7 +432,7 @@
 
 	#pragma endregion
 
-	#pragma region "Edit"																									//	Hacer
+	#pragma region "Edit"
 
 		#pragma region "Insert Mode"					("i, I, a, A, c, s, S")
 
@@ -1053,22 +1052,6 @@
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					return (2);
 				} return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Search History"					("CTRL + R")														//	Hacer
-
-			static void search_history() {
-
-			}
-
-		#pragma endregion
-
-		#pragma region "AutoComplete"					("Tab")																//	Hacer
-
-			static void autocomplete() {
-
 			}
 
 		#pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 18:38:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:35:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,25 +55,24 @@
 
 #pragma region "Methods"
 
-	//	------- AUTOCOMPLETE -------
-
-	//	-------- UNDO/REDO ---------
-	void	undo();
-	void	redo();
-
-	//	--------- READLINE ---------
-
 	//	--------- READINPUT --------
 	void	disable_raw_mode();
 	char	*readinput(char *prompt);
 
-	//	--------- READLINE ---------
+	//	---------- MODES -----------
 	int		readline(int readed);
-
-	//	----------- DUMB -----------
+	int		vi(int readed);
 	int		dumb(int readed);
 
-	//	------------ VI ------------
-	int		vi(int readed);
+	//	------- AUTOCOMPLETE -------
+	void	autocomplete();
+
+	//	------ HISTORY SEARCH ------
+	void	search_history();
+
+	//	-------- UNDO/REDO ---------
+	void	redo();
+	void	undo();
+	void	undo_all();
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:38:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar / Hacer
+#pragma region "Input"																										//	Optimizar
 
 	#pragma region "Insert"																									//	Optimizar
 
@@ -324,7 +324,7 @@
 
 	#pragma endregion
 
-	#pragma region "Edit"																									//	Optimizar / Hacer
+	#pragma region "Edit"																									//	Optimizar
 
 		#pragma region "Swap"							("CTRL + T, ALT + T")												//	Optimizar
 
@@ -456,22 +456,6 @@
 				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 				buffer.position = buffer.length;
-			}
-
-		#pragma endregion
-
-		#pragma region "Search History"					("CTRL + R")														//	Hacer
-
-			static void search_history() {
-
-			}
-
-		#pragma endregion
-
-		#pragma region "AutoComplete"					("Tab")																//	Hacer
-
-			static void autocomplete() {
-
 			}
 
 		#pragma endregion

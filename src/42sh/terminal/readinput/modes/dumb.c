@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 19:13:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/06 15:36:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,6 @@
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					return (1);
 				} return (0);
-			}
-
-		#pragma endregion
-
-	#pragma endregion
-
-	#pragma region "Edit"
-
-		#pragma region "Search History"					("CTRL + R")														//	Hacer
-
-			static void search_history() {
-
 			}
 
 		#pragma endregion
