@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:55:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/10 10:14:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,5 +26,6 @@
 	char	*path_find_first(char *cmd, char *paths);
 	char	**path_find_all(char *cmd, char *paths);
 	char	*get_fullpath(char *path);
+	char	*get_cwd(char *sender);
 
 #pragma endregion

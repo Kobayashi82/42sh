@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 13:04:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/08 17:03:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@
 		cmdp_clear();
 		tmp_clear();
 		prompt_clear(BOTH);
+		sfree(shell.cwd);
 		sclose(terminal.bk_stdin);
 		sclose(terminal.bk_stdout);
 		sclose(terminal.bk_stderr);

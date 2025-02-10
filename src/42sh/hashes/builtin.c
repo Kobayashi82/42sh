@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 17:17:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/10 10:23:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@
 		builtin_add("banner", 0, 0, &banner);
 		// builtin_add("bg", 0, 0, &bg);
 		// builtin_add("builtin", 0, 0, &builtin);
-		// builtin_add("cd", 0, 0, &cd);
+		builtin_add("cd", 0, 0, &cd);
 		builtin_add("command", 0, 0, &command);
 		builtin_add("declare", 0, 0, &declare);
 		builtin_add("echo", 0, 0, &echo);
@@ -298,7 +298,7 @@
 		// builtin_add("jobs", 0, 0, &jobs);
 		// builtin_add("kill", 0, 0, &kill);
 		// builtin_add("let", 0, 0, &let);
-		// builtin_add("pwd", 0, 0, &pwd);
+		builtin_add("pwd", 0, 0, &pwd);
 		// builtin_add("shopt", 0, 0, &shopt);
 		// builtin_add("test", 0, 0, &test);
 		builtin_add("type", 0, 0, &type);

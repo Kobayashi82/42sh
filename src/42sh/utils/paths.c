@@ -6,16 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:56:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/08 17:48:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "utils/paths.h"
+	#include "terminal/print.h"
 	#include "hashes/variables.h"
+	#include "utils/paths.h"
 
+	#include <string.h>
 	#include <sys/stat.h>
 
 #pragma endregion
@@ -240,5 +242,26 @@
 		}
 
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Working Dir"
+
+	char *get_cwd(char *sender) {
+		char cwd[4096];
+
+		if (!getcwd(cwd, sizeof(cwd))) {
+			if (sender) {
+				print(STDERR_FILENO, sender, RESET);
+				print(STDERR_FILENO, ": error retrieving current directory: ", JOIN);
+				print(STDERR_FILENO, "getcwd: cannot access parent directories: ", JOIN);
+				print(STDERR_FILENO, strerror(errno), JOIN);
+				print(STDERR_FILENO, "\n", PRINT);
+			}
+			return (NULL);
+		}
+
+		return (ft_strdup(cwd));
+	}
 
 #pragma endregion

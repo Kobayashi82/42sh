@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:59:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/08 17:45:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "main/shell.h"
+	#include "utils/paths.h"
 
 #pragma endregion
 
@@ -34,6 +35,7 @@ int shell_time() { return (time(NULL) - shell.started); }
 		shell.subshell_level = 0;
 		shell.started = time(NULL);
 		srand(shell.started);
+		shell.cwd = get_cwd("shell-init");
 		terminal.bk_stdin = sdup(STDIN_FILENO);
 		terminal.bk_stdout = sdup(STDOUT_FILENO);
 		terminal.bk_stderr = sdup(STDERR_FILENO);

@@ -6,17 +6,107 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:23:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/10 11:11:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/print.h"
+	#include "parser/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
+	#include "main/shell.h"
+	#include "utils/paths.h"
 
 #pragma endregion
+
+
+#pragma region "Help"
+
+	static int print_help() {
+		char *msg =
+		"cd: cd [-L|[-P [-e]] [dir]\n"
+		"    Change the shell working directory.\n\n"
+
+		"    Change the current directory to DIR.  The default DIR is the value of the\n"
+		"    HOME shell variable.\n\n"
+
+		"    The variable CDPATH defines the search path for the directory containing\n"
+		"    DIR.  Alternative directory names in CDPATH are separated by a colon (:).\n"
+		"    A null directory name is the same as the current directory.  If DIR begins\n"
+		"    with a slash (/), then CDPATH is not used.\n\n"
+
+		"    If the directory is not found, and the shell option `cdable_vars' is set,\n"
+		"    the word is assumed to be  a variable name.  If that variable has a value,\n"
+		"    its value is used for DIR.\n\n"
+
+		"    Options:\n"
+		"      -L        force symbolic links to be followed: resolve symbolic\n"
+		"                links in DIR after processing instances of `..'\n"
+		"      -P        use the physical directory structure without following\n"
+		"                symbolic links: resolve symbolic links in DIR before\n"
+		"                processing instances of `..'\n"
+		"      -e        if the -P option is supplied, and the current working\n"
+		"                directory cannot be determined successfully, exit with\n"
+		"                a non-zero status\n"
+
+		"    The default is to follow symbolic links, as if `-L' were specified.\n"
+		"    `..' is processed by removing the immediately previous pathname component\n"
+		"    back to a slash or the beginning of DIR.\n\n"
+
+		"    Exit Status:\n"
+		"      Returns 0 if the directory is changed, and if $PWD is set successfully when\n"
+		"      -P is used; non-zero otherwise.\n";
+	
+		print(STDOUT_FILENO, msg, RESET_PRINT);
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "CD"
+
+	int cd(t_arg *args) {
+		t_opt *opts = parse_options(args, "LPe", '-', false);
+
+		if (*opts->invalid) {
+			invalid_option("cd", opts->invalid, "[-L|[-P [-e]] [dir]");
+			return (sfree(opts), 1);
+		}
+
+		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("cd", "1.0"));
+
+		int result = 0;
+
+		// if (ft_strchr(opts->valid, 'P')) {
+		// 	char *cwd = get_cwd("cwd");
+		// 	if (!cwd) 		result = 1;
+		// 	else {
+		// 		print(STDOUT_FILENO, cwd, RESET);
+		// 		print(STDOUT_FILENO, "\n", PRINT);
+		// 		sfree(cwd);
+		// 	}
+		// } else {
+		// 	if (shell.cwd) {
+		// 		print(STDOUT_FILENO, shell.cwd, RESET);
+		// 		print(STDOUT_FILENO, "\n", PRINT);
+		// 	} else {
+		// 		print(STDERR_FILENO, "pwd: no se ha encontrado nada\n", RESET_PRINT);
+		// 		result = 1;
+		// 	}
+		// }
+
+		return (sfree(opts), result);
+	}
+
+#pragma endregion
+
+
+
 
 // /home/pollon/
 // ├── real_dir/

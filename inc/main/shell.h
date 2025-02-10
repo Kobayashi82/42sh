@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 13:29:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/08 16:59:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 			int			epoch_seconds;
 			float		epoch_realtime;
 			int			uid, euid;
+			char		*cwd;
 			time_t		started;
 			t_process	process;
 			bool		_inline;
