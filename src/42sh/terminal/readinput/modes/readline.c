@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/06 15:38:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,7 +215,7 @@
 			#pragma region "Arrow Up"					("Up")
 
 				static void arrow_up() {
-					if (!options.hist_on || !history_length()) return;
+					if (!options.history || !history_length()) return;
 					char *new_line = history_prev();
 
 					if (!new_line) return;
@@ -237,7 +237,7 @@
 			#pragma region "Arrow Down"					("Down")
 
 				static void arrow_down() {
-					if (!options.hist_on || !history_length()) return;
+					if (!options.history || !history_length()) return;
 
 					char *new_line = history_next();
 					bool free_line = false;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 20:04:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 			options.vi = value;		return (0);
 		}
 		if (!ft_strcmp("hist_local", option)) 	{ options.hist_local = value;	return (0); }
-		if (!ft_strcmp("hist_on", option)) 		{ options.hist_on = value;		return (0); }
+		if (!ft_strcmp("hist_on", option)) 		{ options.history = value;		return (0); }
 
 		return (1);
 	}
@@ -56,7 +56,7 @@
 	void options_print() {
 		print(STDOUT_FILENO, CYAN300"emacs \t\t", RESET);	print_value(!options.emacs, JOIN);
 		print(STDOUT_FILENO, CYAN300"hist_local \t", JOIN);	print_value(options.hist_local, JOIN);
-		print(STDOUT_FILENO, CYAN300"hist_on \t", JOIN);	print_value(options.hist_on, JOIN);
+		print(STDOUT_FILENO, CYAN300"hist_on \t", JOIN);	print_value(options.history, JOIN);
 		print(STDOUT_FILENO, CYAN300"vi \t\t", JOIN);		print_value(options.vi, PRINT);
 	}
 
@@ -69,7 +69,7 @@
 		options.emacs		= false;
 		options.vi			= true;
 
-		options.hist_on		= true;
+		options.history		= true;
 		options.hist_local	= true;
 
 		options.noglob		= false;
@@ -77,6 +77,10 @@
 		options.nullglob	= false;
 		options.failglob	= false;
 		options.nocaseglob	= false;
+
+		options.cdable_vars	= false;
+		options.autocd		= false;
+		options.dirspell	= false;
 		return (0);
 	}
 

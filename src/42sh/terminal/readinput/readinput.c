@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 14:31:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@
 			return (readinput(prompt));
 		}
 
-		if ((options.emacs || options.vi) && options.hist_on) {
+		if ((options.emacs || options.vi) && options.history) {
 			// Expand history commands
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/29 15:26:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 13:32:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,7 @@
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
 			var->exported = true;
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
 
 			result = 1;
 		} else {
@@ -107,8 +106,7 @@
 		if (variables_validate(key, value, "export", true, true)) return (sfree(key), sfree(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
 			result = 1;
 		} else {
 			if (concatenate && variables_concatenate(vars_table, key, value, 0, -1, -1, -1))	result = 1;

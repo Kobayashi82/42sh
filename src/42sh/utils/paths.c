@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/08 17:48:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 21:08:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,38 @@
 	#pragma region "Symlink"
 
 		char *resolve_symlink(const char *path) {
-			static char	resolved_path[4096];
-			char 		temp_path[4096];
-			ssize_t		len;
-
-			ft_strcpy(temp_path, path);
+			static char resolved_path[4096];
+			char temp[4096], *segment;
+			ssize_t len;
+		
+			ft_strcpy(temp, path);
 			ft_strcpy(resolved_path, path);
-			while ((len = readlink(temp_path, resolved_path, sizeof(resolved_path) - 1)) != -1) {
-				resolved_path[len] = '\0';
-				ft_strcpy(temp_path, resolved_path);
+		
+			segment = temp;
+			while ((segment = ft_strchr(segment, '/'))) {
+				*segment = '\0';
+				if ((len = readlink(temp, resolved_path, sizeof(resolved_path) - 1)) != -1) {
+					resolved_path[len] = '\0';
+					ft_strcpy(temp, resolved_path);
+					ft_strcat(temp, segment + 1);
+					ft_strcpy(resolved_path, temp);
+					segment = temp;
+				} else {
+					*segment = '/';
+					segment++;
+				}
 			}
-
+		
+			//	Check the last segment (after the last '/')
+			if ((len = readlink(temp, resolved_path, sizeof(resolved_path) - 1)) != -1) {
+				resolved_path[len] = '\0';
+				ft_strcpy(temp, resolved_path);
+				ft_strcpy(resolved_path, temp);
+			}
+		
 			return (resolved_path);
 		}
+		
 
 	#pragma endregion
 

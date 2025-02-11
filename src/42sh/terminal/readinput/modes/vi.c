@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/06 15:37:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -267,7 +267,7 @@
 					int hist_pos = history_get_pos() - (number - 1);
 					if (hist_pos < 0) hist_pos = 0;
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.hist_on || !history_length()) return;
+					if (!options.history || !history_length()) return;
 					char *new_line = history_prev();
 
 					if (!new_line) return;
@@ -299,7 +299,7 @@
 
 					int hist_pos = history_get_pos() + (number - 1);
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.hist_on || !history_length()) return;
+					if (!options.history || !history_length()) return;
 
 					char *new_line = history_next();
 					bool free_line = false;

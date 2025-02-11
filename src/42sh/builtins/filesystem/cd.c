@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/10 11:11:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 21:09:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,20 @@
 	#include "parser/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
+	#include "main/error.h"
 	#include "main/shell.h"
+	#include "main/options.h"
+	#include "hashes/variables.h"
 	#include "utils/paths.h"
+	#include "project.h"
 
 #pragma endregion
-
 
 #pragma region "Help"
 
 	static int print_help() {
 		char *msg =
-		"cd: cd [-L|[-P [-e]] [dir]\n"
+		"cd: cd [-L|[-P] [dir]\n"
 		"    Change the shell working directory.\n\n"
 
 		"    Change the current directory to DIR.  The default DIR is the value of the\n"
@@ -48,9 +51,6 @@
 		"      -P        use the physical directory structure without following\n"
 		"                symbolic links: resolve symbolic links in DIR before\n"
 		"                processing instances of `..'\n"
-		"      -e        if the -P option is supplied, and the current working\n"
-		"                directory cannot be determined successfully, exit with\n"
-		"                a non-zero status\n"
 
 		"    The default is to follow symbolic links, as if `-L' were specified.\n"
 		"    `..' is processed by removing the immediately previous pathname component\n"
@@ -70,10 +70,16 @@
 #pragma region "CD"
 
 	int cd(t_arg *args) {
-		t_opt *opts = parse_options(args, "LPe", '-', false);
+		t_arg *tmp_arg = args;
+		while (tmp_arg && tmp_arg->value) {
+			if (!ft_strcmp(tmp_arg->value, "-")) tmp_arg->value[0] = '|';
+			tmp_arg = tmp_arg->next;
+		}
 
+		t_opt *opts = parse_options(args, "LP", '-', false);
+		
 		if (*opts->invalid) {
-			invalid_option("cd", opts->invalid, "[-L|[-P [-e]] [dir]");
+			invalid_option("cd", opts->invalid, "[-L|[-P] [dir]");
 			return (sfree(opts), 1);
 		}
 
@@ -82,25 +88,74 @@
 
 		int result = 0;
 
-		// if (ft_strchr(opts->valid, 'P')) {
-		// 	char *cwd = get_cwd("cwd");
-		// 	if (!cwd) 		result = 1;
-		// 	else {
-		// 		print(STDOUT_FILENO, cwd, RESET);
-		// 		print(STDOUT_FILENO, "\n", PRINT);
-		// 		sfree(cwd);
-		// 	}
-		// } else {
-		// 	if (shell.cwd) {
-		// 		print(STDOUT_FILENO, shell.cwd, RESET);
-		// 		print(STDOUT_FILENO, "\n", PRINT);
-		// 	} else {
-		// 		print(STDERR_FILENO, "pwd: no se ha encontrado nada\n", RESET_PRINT);
-		// 		result = 1;
-		// 	}
-		// }
+		char *path = NULL;
+		bool is_dash = false;
+		if (!opts->args) path = ft_strdup(get_home());
+		else if (opts->args->value && *opts->args->value) {
+			if (opts->args->next) {
+				print(STDERR_FILENO, PROYECTNAME ": cd: args\n", RESET_PRINT);
+				result = 1;
+			} else if (!ft_strcmp(opts->args->value, "|")) {
+				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
+				is_dash = true;
+				if (!path) { result = 1;
+					print(STDERR_FILENO, PROYECTNAME ": cd: oldpwd\n", RESET_PRINT);
+				}
+			} else path = ft_strdup(opts->args->value);
+		}
+		
+		// cdable_vars;
+		// autocd;
+		// cdspell;
+		// dirspell;
+		// CDPATH;
 
-		return (sfree(opts), result);
+		if (!result && path && *path) {
+			if (*path != '/') {
+				char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
+				path = resolve_path(tmp); sfree(tmp);
+			} else {
+				char *tmp = resolve_path(path); sfree(path);
+				path = tmp;
+			}
+
+			if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
+				;
+			} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
+				char *tmp = ft_strdup(resolve_symlink(path)); sfree(path);
+				path = tmp;
+			}
+
+			if (chdir(path)) { result = 1;  // Check folder file or dir permision
+				if (errno == EACCES)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
+				else					print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
+			} else {
+				if (is_dash) {
+					print(STDOUT_FILENO, path, RESET);
+					print(STDOUT_FILENO, "\n", PRINT);
+				}
+				t_var *var = variables_find(vars_table, "OLDPWD");
+				if (var && var->readonly) {
+					print(STDERR_FILENO, PROYECTNAME ": OLDPWD: readonly variable\n", RESET_PRINT);
+					result = 1;
+				} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
+				
+				sfree(shell.cwd); shell.cwd = ft_strdup(path);
+				var = variables_find(vars_table, "PWD");
+				if (var && var->readonly) {
+					print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);
+					result = 1;
+				} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
+			}
+		}
+
+		tmp_arg = args;
+		while (tmp_arg && tmp_arg->value) {
+			if (!ft_strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
+			tmp_arg = tmp_arg->next;
+		}
+
+		return (sfree(path), sfree(opts), result);
 	}
 
 #pragma endregion

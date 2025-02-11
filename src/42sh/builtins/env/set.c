@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:23:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:52:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,3 +16,11 @@
 	#include "builtins/options.h"
 
 #pragma endregion
+
+//	set -P (set +L)
+//	set -L (set +P)
+
+//	set -o emacs
+//	set -o vi
+//	set -o history;
+//	set -o hist_local;

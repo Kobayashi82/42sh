@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 14:25:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@
 			}
 
 			unsigned int index = hash_index(key);
-			new_var = smalloc(sizeof(t_var));
+			new_var = ft_calloc(1, sizeof(t_var));
 
 			new_var->name = ft_strdup(key);
 			new_var->value = NULL;

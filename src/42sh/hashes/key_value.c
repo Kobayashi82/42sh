@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/29 16:35:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@
 	// 	if (fd == -1) return (1);
 
 	// 	print(fd, ft_strjoin_sep("input_mode=", ft_itoa(options.input_mode), "\n", 2), FREE_RESET);
-	// 	print(fd, ft_strjoin_sep("hist_on=", ft_itoa(options.hist_on), "\n", 2), FREE_JOIN);
+	// 	print(fd, ft_strjoin_sep("hist_on=", ft_itoa(options.history), "\n", 2), FREE_JOIN);
 	// 	print(fd, ft_strjoin_sep("hist_local=", ft_itoa(options.hist_local), "\n", 2), FREE_PRINT);
 
 	// 	sclose(fd);

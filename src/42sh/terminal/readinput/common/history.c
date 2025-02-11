@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 21:05:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -466,7 +466,7 @@
 
 		//	Return the previous entry line
 		char *history_prev() {
-			if (!history || !options.hist_on || !mem_max || !length) return (NULL);
+			if (!history || !options.history || !mem_max || !length) return (NULL);
 
 			if (begining) return (NULL);
 			if (position > 0 && middle) position--;
@@ -482,7 +482,7 @@
 
 		//	Return the next entry line
 		char *history_next() {
-			if (!history || !options.hist_on || !mem_max || !length) return (NULL);
+			if (!history || !options.history || !mem_max || !length) return (NULL);
 
 			begining = false; middle = true;
 			if (position >= length - 1) { middle = false; return (NULL); }
