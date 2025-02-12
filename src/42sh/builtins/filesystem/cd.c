@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 14:07:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:02:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,29 +172,29 @@
 		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
 		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("cd", "1.0"));
 
-		options.cdspell = 0;
-		options.cdable_vars = 1;
-
 		int result = 0;
 		char *path = NULL;
 		bool is_dash = false;
 
-		if (!opts->args)
-			path = ft_strdup(get_home());
-		else if (opts->args->value && *opts->args->value) {
-			if (opts->args->next) { result = 1;
-				print(STDERR_FILENO, PROYECTNAME ": cd: args\n", RESET_PRINT);
+		if (!opts->args) {
+			path = ft_strdup(variables_find_value(vars_table, "HOME"));
+			if (!path) { result = 2;
+				print(STDERR_FILENO, PROYECTNAME ": cd: HOME not set\n", RESET_PRINT);
+			}
+		} else if (opts->args->value && *opts->args->value) {
+			if (opts->args->next) { result = 2;
+				print(STDERR_FILENO, PROYECTNAME ": cd: too many arguments\n", RESET_PRINT);
 			} else if (!ft_strcmp(opts->args->value, "-")) { is_dash = true;
 				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
-				if (!path) { result = 1;
-					print(STDERR_FILENO, PROYECTNAME ": cd: oldpwd not set\n", RESET_PRINT);
+				if (!path) { result = 2;
+					print(STDERR_FILENO, PROYECTNAME ": cd: OLDPWD not set\n", RESET_PRINT);
 				}
 			} else path = ft_strdup(opts->args->value);
 		}
 		
-		if (!path || !*path) result = 1;
+		if (!result && (!path || !*path)) result = 3;
 		if (!result) result = change_dir(&path, opts);
-		if (result) {
+		if (result == 1) {
 			if (!check_CDPATH(&path, opts, &is_dash)) result = 0;
 			else if (access(path, F_OK) != -1 && !is_directory(path))		print(STDERR_FILENO, PROYECTNAME ": cd: not directory\n", RESET_PRINT);
 			else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
@@ -202,7 +202,7 @@
 		}
 
 		if (!result) {
-			if (is_dash)						print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
+			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
 
 			t_var *var = variables_find(vars_table, "OLDPWD");
 			if (var && var->readonly) {
@@ -218,7 +218,7 @@
 			} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
 		}
 
-		return (sfree(path), sfree(opts), result);
+		return (sfree(path), sfree(opts), (result != 0));
 	}
 
 #pragma endregion
