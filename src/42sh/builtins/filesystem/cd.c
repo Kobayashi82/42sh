@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 15:02:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:06:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,9 +196,9 @@
 		if (!result) result = change_dir(&path, opts);
 		if (result == 1) {
 			if (!check_CDPATH(&path, opts, &is_dash)) result = 0;
-			else if (access(path, F_OK) != -1 && !is_directory(path))		print(STDERR_FILENO, PROYECTNAME ": cd: not directory\n", RESET_PRINT);
-			else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
-			else															print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
+			else if (access(path, F_OK) != -1 && !is_directory(path))		print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": Not a directory\n", 0), FREE_RESET_PRINT);
+			else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": Permission denied\n", 0), FREE_RESET_PRINT);
+			else															print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": No such file or directory\n", 0), FREE_RESET_PRINT);
 		}
 
 		if (!result) {
