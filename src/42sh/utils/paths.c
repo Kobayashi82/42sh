@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 21:08:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 11:23:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 
 	#include <string.h>
 	#include <sys/stat.h>
+	#include <dirent.h>
 
 #pragma endregion
 
@@ -282,5 +283,116 @@
 
 		return (ft_strdup(cwd));
 	}
+
+#pragma endregion
+
+#pragma region "Correct Path"
+
+	#pragma region "Levenshtein"
+
+		// Computes the Damerau-Levenshtein distance between two strings
+		static int levenshtein(const char *s1, const char *s2) {
+			int len1 = ft_strlen(s1), len2 = ft_strlen(s2);
+			int matrix[len1 + 1][len2 + 1];
+
+			// Initialize the matrix: first row and first column represent empty string transformations
+			for (int i = 0; i <= len1; i++) matrix[i][0] = i;
+			for (int j = 0; j <= len2; j++) matrix[0][j] = j;
+
+			// Compute the minimum edit distance
+			for (int i = 1; i <= len1; i++) {
+				for (int j = 1; j <= len2; j++) {
+					int cost = (s1[i - 1] == s2[j - 1]) ? 0 : 1;
+
+					// Allow transposition of adjacent characters (Damerau-Levenshtein extension)
+					if (i > 1 && j > 1 && s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1]) {
+						matrix[i][j] = ft_min(matrix[i - 1][j] + 1,								// Deletion
+									ft_min(matrix[i][j - 1] + 1,								// Insertion
+									ft_min(matrix[i - 1][j - 1] + cost,							// Substitution
+										matrix[i - 2][j - 2] + 1)));							// Transposition (swap)
+					} else {
+						matrix[i][j] = ft_min(matrix[i - 1][j] + 1,								// Deletion
+									ft_min(matrix[i][j - 1] + 1,								// Insertion
+										matrix[i - 1][j - 1] + cost));							// Substitution
+					}
+				}
+			}
+			return (matrix[len1][len2]);
+		}
+
+	#pragma endregion
+
+	#pragma region "Closest Dir"
+		
+		// Finds the closest matching directory name based on the Levenshtein distance
+		static char *find_closest_dir(const char *input, const char *path) {
+			DIR *dir = opendir(path);
+			if (!dir) return (NULL);
+
+			struct dirent *entry;
+			char *best_match = NULL;
+			int min_distance = INT_MAX;
+
+			// Iterate through directory entries to find the closest match
+			while ((entry = readdir(dir))) {
+				if (entry->d_type == DT_DIR || entry->d_type == DT_LNK) {
+					int dist = levenshtein(input, entry->d_name);
+					if (dist < min_distance) {
+						min_distance = dist;
+						sfree(best_match);
+						best_match = ft_strdup(entry->d_name);
+					}
+				}
+			} closedir(dir);
+
+			// Return the best match if the distance is small enough
+			if (min_distance < 3)		return (best_match);
+			else { sfree(best_match);	return (NULL); }
+		}
+
+	#pragma endregion
+
+	#pragma region "Correct Path"
+	
+		// Corrects a potentially misspelled directory path using fuzzy matching
+		char *correct_path(char *path) {
+			char resolved_path[1024] = {0};
+			char *token, *temp_path = ft_strdup(path);
+
+			// Handle absolute and relative paths
+			if (path[0] == '/') ft_strcpy(resolved_path, "/");
+			else {
+				if (getcwd(resolved_path, sizeof(resolved_path)) == NULL) {
+					sfree(temp_path); return (path);
+				}
+				size_t len = ft_strlen(resolved_path);
+				if (len == 0 || resolved_path[len - 1] != '/') {
+					ft_strcat(resolved_path, "/");
+				}
+			}
+
+			// Tokenize the path and attempt to correct each segment
+			token = ft_strtok(temp_path, "/", 60);
+			while (token) {
+				char *corrected = find_closest_dir(token, resolved_path);
+				if (corrected) {
+					ft_strcat(resolved_path, corrected);
+					sfree(corrected);
+				} else ft_strcat(resolved_path, token);
+
+				ft_strcat(resolved_path, "/");
+				token = ft_strtok(NULL, "/", 60);
+			} sfree(temp_path);
+
+			// Remove trailing slash if necessary
+			size_t len = ft_strlen(resolved_path);
+			if (len > 1 && resolved_path[len - 1] == '/') resolved_path[len - 1] = '\0';
+
+			// Resolve final path and copy it back
+			sfree(path);
+			return (resolve_path(resolved_path));
+		}
+
+	#pragma endregion
 
 #pragma endregion

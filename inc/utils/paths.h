@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 21:05:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 11:18:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 
 	//	----------- PATH -----------
 	char	*resolve_symlink(const char *path);
-	//char	*resolve_full_symlink(const char *path);
 	char	*resolve_path(const char *path);
 	char	*path_find_first(char *cmd, char *paths);
 	char	**path_find_all(char *cmd, char *paths);
 	char	*get_fullpath(char *path);
 	char	*get_cwd(char *sender);
+	char	*correct_path(char *path);
 
 #pragma endregion

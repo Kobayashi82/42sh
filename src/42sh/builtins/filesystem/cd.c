@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 21:09:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 12:05:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,18 @@
 
 #pragma endregion
 
+static int change_dir(char *path) {
+	
+}
+
+static int check_CDPATH() {
+	char *vars = variables_find_value(vars_table, "CDPATH");
+	if (vars) {
+		;
+	}
+	return (1);
+}
+
 #pragma region "CD"
 
 	int cd(t_arg *args) {
@@ -99,16 +111,10 @@
 				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
 				is_dash = true;
 				if (!path) { result = 1;
-					print(STDERR_FILENO, PROYECTNAME ": cd: oldpwd\n", RESET_PRINT);
+					print(STDERR_FILENO, PROYECTNAME ": cd: oldpwd not set\n", RESET_PRINT);
 				}
 			} else path = ft_strdup(opts->args->value);
 		}
-		
-		// cdable_vars;
-		// autocd;
-		// cdspell;
-		// dirspell;
-		// CDPATH;
 
 		if (!result && path && *path) {
 			if (*path != '/') {
@@ -119,6 +125,25 @@
 				path = tmp;
 			}
 
+			if (options.cdspell) path = correct_path(path);
+
+			if (options.cdable_vars && opts->args && opts->args->value && access(opts->args->value, F_OK) == -1) {
+				char *var_path = variables_find_value(vars_table, opts->args->value);
+				if (var_path) {
+					sfree(path); path = ft_strdup(var_path);
+
+					if (*path != '/') {
+						char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
+						path = resolve_path(tmp); sfree(tmp);
+					} else {
+						char *tmp = resolve_path(path); sfree(path);
+						path = tmp;
+					}
+
+					if (options.cdspell) path = correct_path(path);
+				}
+			}
+
 			if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
 				;
 			} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
@@ -126,14 +151,15 @@
 				path = tmp;
 			}
 
-			if (chdir(path)) { result = 1;  // Check folder file or dir permision
-				if (errno == EACCES)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
-				else					print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
-			} else {
-				if (is_dash) {
-					print(STDOUT_FILENO, path, RESET);
-					print(STDOUT_FILENO, "\n", PRINT);
-				}
+			if (chdir(path)) { result = 1;
+				if (!check_CDPATH()) result = 0;
+				else if (access(path, X_OK) == -1)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
+				else								print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
+			}
+
+			if (!result) {
+				if (is_dash)					print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
+
 				t_var *var = variables_find(vars_table, "OLDPWD");
 				if (var && var->readonly) {
 					print(STDERR_FILENO, PROYECTNAME ": OLDPWD: readonly variable\n", RESET_PRINT);
@@ -160,12 +186,9 @@
 
 #pragma endregion
 
-
-
-
 // /home/pollon/
 // ├── real_dir/
-// │       ├── real_subdir/
+// │	   ├── real_subdir/
 // ├── symlink -> /home/pollon/real_dir/real_subdir
 
 // Inicialmente:
