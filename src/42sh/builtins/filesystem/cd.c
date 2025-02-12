@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 12:05:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/12 14:07:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,17 +67,85 @@
 
 #pragma endregion
 
-static int change_dir(char *path) {
-	
-}
+#pragma region "Change Dir"
 
-static int check_CDPATH() {
-	char *vars = variables_find_value(vars_table, "CDPATH");
-	if (vars) {
-		;
+	static int change_dir(char **main_path, t_opt *opts) {
+		char *path = ft_strdup(*main_path);
+		char *original = *main_path;
+		if (*path != '/') {
+			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
+			path = resolve_path(tmp); sfree(tmp);
+		} else {
+			char *tmp = resolve_path(path); sfree(path);
+			path = tmp;
+		}
+		
+		if (options.cdspell) path = correct_path(path);
+		
+		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
+			char *var_path = variables_find_value(vars_table, original);
+			if (var_path) {
+				sfree(path); path = ft_strdup(var_path);
+
+				if (*path != '/') {
+					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
+					path = resolve_path(tmp); sfree(tmp);
+				} else {
+					char *tmp = resolve_path(path); sfree(path);
+					path = tmp;
+				}
+
+				if (options.cdspell) path = correct_path(path);
+			}
+		}
+
+		if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
+			;
+		} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
+			char *tmp = ft_strdup(resolve_symlink(path)); sfree(path);
+			path = tmp;
+		}
+
+		if (chdir(path)) { sfree(path); return (1); }
+		
+		sfree(*main_path);
+		*main_path = path;
+		return (0);
 	}
-	return (1);
-}
+
+#pragma endregion
+
+#pragma region "Check CDPATH"
+
+	int check_CDPATH(char **main_path, t_opt *opts, bool *is_dash) {
+		char *vars = variables_find_value(vars_table, "CDPATH");
+		if (vars) {
+			char *token = ft_strtok(vars, ":", 61);
+
+			while (token) {
+				if (*token) {
+					char *path = NULL;
+
+					if (!ft_strcmp(token, "-")) { *is_dash = true;
+						path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
+					} else path = ft_strdup(token);
+					
+					if (path && !change_dir(&path, opts)) {
+						sfree(*main_path);
+						*main_path = path;
+						return (0);
+					}
+
+					sfree(path);
+				}
+
+				token = ft_strtok(NULL, ":", 61);
+			}
+		} return (1);
+	}
+
+
+#pragma endregion
 
 #pragma region "CD"
 
@@ -90,6 +158,12 @@ static int check_CDPATH() {
 
 		t_opt *opts = parse_options(args, "LP", '-', false);
 		
+		tmp_arg = args;
+		while (tmp_arg && tmp_arg->value) {
+			if (!ft_strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
+			tmp_arg = tmp_arg->next;
+		}
+
 		if (*opts->invalid) {
 			invalid_option("cd", opts->invalid, "[-L|[-P] [dir]");
 			return (sfree(opts), 1);
@@ -98,87 +172,50 @@ static int check_CDPATH() {
 		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
 		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("cd", "1.0"));
 
-		int result = 0;
+		options.cdspell = 0;
+		options.cdable_vars = 1;
 
+		int result = 0;
 		char *path = NULL;
 		bool is_dash = false;
-		if (!opts->args) path = ft_strdup(get_home());
+
+		if (!opts->args)
+			path = ft_strdup(get_home());
 		else if (opts->args->value && *opts->args->value) {
-			if (opts->args->next) {
+			if (opts->args->next) { result = 1;
 				print(STDERR_FILENO, PROYECTNAME ": cd: args\n", RESET_PRINT);
-				result = 1;
-			} else if (!ft_strcmp(opts->args->value, "|")) {
+			} else if (!ft_strcmp(opts->args->value, "-")) { is_dash = true;
 				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
-				is_dash = true;
 				if (!path) { result = 1;
 					print(STDERR_FILENO, PROYECTNAME ": cd: oldpwd not set\n", RESET_PRINT);
 				}
 			} else path = ft_strdup(opts->args->value);
 		}
-
-		if (!result && path && *path) {
-			if (*path != '/') {
-				char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-				path = resolve_path(tmp); sfree(tmp);
-			} else {
-				char *tmp = resolve_path(path); sfree(path);
-				path = tmp;
-			}
-
-			if (options.cdspell) path = correct_path(path);
-
-			if (options.cdable_vars && opts->args && opts->args->value && access(opts->args->value, F_OK) == -1) {
-				char *var_path = variables_find_value(vars_table, opts->args->value);
-				if (var_path) {
-					sfree(path); path = ft_strdup(var_path);
-
-					if (*path != '/') {
-						char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-						path = resolve_path(tmp); sfree(tmp);
-					} else {
-						char *tmp = resolve_path(path); sfree(path);
-						path = tmp;
-					}
-
-					if (options.cdspell) path = correct_path(path);
-				}
-			}
-
-			if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
-				;
-			} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
-				char *tmp = ft_strdup(resolve_symlink(path)); sfree(path);
-				path = tmp;
-			}
-
-			if (chdir(path)) { result = 1;
-				if (!check_CDPATH()) result = 0;
-				else if (access(path, X_OK) == -1)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
-				else								print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
-			}
-
-			if (!result) {
-				if (is_dash)					print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
-
-				t_var *var = variables_find(vars_table, "OLDPWD");
-				if (var && var->readonly) {
-					print(STDERR_FILENO, PROYECTNAME ": OLDPWD: readonly variable\n", RESET_PRINT);
-					result = 1;
-				} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
-				
-				sfree(shell.cwd); shell.cwd = ft_strdup(path);
-				var = variables_find(vars_table, "PWD");
-				if (var && var->readonly) {
-					print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);
-					result = 1;
-				} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
-			}
+		
+		if (!path || !*path) result = 1;
+		if (!result) result = change_dir(&path, opts);
+		if (result) {
+			if (!check_CDPATH(&path, opts, &is_dash)) result = 0;
+			else if (access(path, F_OK) != -1 && !is_directory(path))		print(STDERR_FILENO, PROYECTNAME ": cd: not directory\n", RESET_PRINT);
+			else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	print(STDERR_FILENO, PROYECTNAME ": cd: permisos\n", RESET_PRINT);
+			else															print(STDERR_FILENO, PROYECTNAME ": cd: failed\n", RESET_PRINT);
 		}
 
-		tmp_arg = args;
-		while (tmp_arg && tmp_arg->value) {
-			if (!ft_strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
-			tmp_arg = tmp_arg->next;
+		if (!result) {
+			if (is_dash)						print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
+
+			t_var *var = variables_find(vars_table, "OLDPWD");
+			if (var && var->readonly) {
+				print(STDERR_FILENO, PROYECTNAME ": OLDPWD: readonly variable\n", RESET_PRINT);
+				result = 1;
+			} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
+				
+			sfree(shell.cwd); shell.cwd = ft_strdup(path);
+			var = variables_find(vars_table, "PWD");
+			if (var && var->readonly) {
+				print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);
+				result = 1;
+			} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
 		}
 
 		return (sfree(path), sfree(opts), result);
@@ -186,33 +223,37 @@ static int check_CDPATH() {
 
 #pragma endregion
 
-// /home/pollon/
-// ├── real_dir/
-// │	   ├── real_subdir/
-// ├── symlink -> /home/pollon/real_dir/real_subdir
+#pragma region "Info"
 
-// Inicialmente:
-// - symlink apunta a /home/pollon/real_dir/real_subdir.
+	// /home/pollon/
+	// ├── real_dir/
+	// │	   ├── real_subdir/
+	// ├── symlink -> /home/pollon/real_dir/real_subdir
 
-// Caso 1: cd symlink
-//   pwd: /home/pollon/symlink
+	// Inicialmente:
+	// - symlink apunta a /home/pollon/real_dir/real_subdir.
 
-// Caso 2: cd symlink; cd -L ..    (o cd .. sin el -L)
-//   pwd: /home/pollon
-//   (Usa el directorio lógico: trata symlink como parte del árbol lógico)
+	// Caso 1: cd symlink
+	//   pwd: /home/pollon/symlink
 
-// Caso 3: cd symlink; cd -P ..
-//   pwd: /home/pollon/real_dir
-//   (Usa el directorio físico real: ignora el enlace simbólico y sube desde real_subdir)
-//	Si la opción [-e] se establece y el directorio del nivel inferior no se puede obtener, sale con un codigo diferente a 0 (1 probablemente)
+	// Caso 2: cd symlink; cd -L ..    (o cd .. sin el -L)
+	//   pwd: /home/pollon
+	//   (Usa el directorio lógico: trata symlink como parte del árbol lógico)
 
-// - Cambia al directorio anterior ($OLDPWD)
+	// Caso 3: cd symlink; cd -P ..
+	//   pwd: /home/pollon/real_dir
+	//   (Usa el directorio físico real: ignora el enlace simbólico y sube desde real_subdir)
+	//	Si la opción [-e] se establece y el directorio del nivel inferior no se puede obtener, sale con un codigo diferente a 0 (1 probablemente)
 
-//	La variable CDPATH es como PATH, pero se usa para buscar rutas relativas desde esas ubicaciones en orden.
-//	Si no se encuentra una ruta válida y la opción 'cdable_vars' está activada, se tratará el argumento como una variable
-//	y si existe, se usará como ruta a seguir (siguiendo el mismo proceso de CDPATH y tal...)
+	// - Cambia al directorio anterior ($OLDPWD)
 
-//	En CDPATH como en PATH si se pone un ':' al principio, al final o dos seguidos entremedio se considera la ruta actual.
-//	Esto también es válido con '.' como ruta.
+	//	La variable CDPATH es como PATH, pero se usa para buscar rutas relativas desde esas ubicaciones en orden.
+	//	Si no se encuentra una ruta válida y la opción 'cdable_vars' está activada, se tratará el argumento como una variable
+	//	y si existe, se usará como ruta a seguir (siguiendo el mismo proceso de CDPATH y tal...)
 
-//	Exit Status: returns 0 if the directory is changed, and if $PWD is set successfully when -P is used; non-zero otherwise.
+	//	En CDPATH como en PATH si se pone un ':' al principio, al final o dos seguidos entremedio se considera la ruta actual.
+	//	Esto también es válido con '.' como ruta.
+
+	//	Exit Status: returns 0 if the directory is changed, and if $PWD is set successfully when -P is used; non-zero otherwise.
+
+#pragma endregion
