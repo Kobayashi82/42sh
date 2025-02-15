@@ -1,3 +1,18 @@
+
+// Vi
+// AutoComplete
+// Replacement mode
+// History search
+// Command with char position
+// Undo
+// Multichar column 0
+// History expansión
+
+
+
+
+
+
 // SIGHUP, SIGTERM para guardar historial
 // leaks si history file no existe
 // 
