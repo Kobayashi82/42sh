@@ -6,9 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/19 17:39:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/19 17:44:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// AutoComplete
+// Replacement mode
+// History search
+// Command with char position (los comandos de vi que dependen de una posicion... duh)
+// Undo
+// History expantion
+// Multichar column 0 (currently ignored. If it is gonna be ignored, ignore prompt too)
 
 #pragma region "Includes"
 
