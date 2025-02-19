@@ -6,11 +6,9 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 17:00:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/19 16:11:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//	Arreglar multibytes en columnas primera y ultima
 
 #pragma region "Includes"
 

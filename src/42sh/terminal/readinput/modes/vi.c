@@ -6,11 +6,9 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/19 17:39:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-//	Optimizar Delete World
 
 #pragma region "Includes"
 
@@ -44,9 +42,9 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar
+#pragma region "Input"
 
-	#pragma region "Insert"																									//	Optimizar
+	#pragma region "Insert"
 
 		#pragma region "EOF"							("CTRL + D")
 
@@ -152,7 +150,7 @@
 
 		#pragma endregion
 
-		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")										//	Optimizar
+		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")
 
 			#pragma region "Char"						("Del")
 
@@ -179,20 +177,33 @@
 
 			#pragma endregion
 
-			#pragma region "Word"						("CTRL + Del")														//	Optimizar
+			#pragma region "Word"						("CTRL + Del")
 
 				static void delete_word() {
-					if (buffer.position < buffer.length) {
-						while (buffer.position < buffer.length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position])))
-							delete_char();
-						while (buffer.position < buffer.length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position]))
-							delete_char();
-
-						if (vi_mode == EDIT) {
-							if (buffer.position) {
-								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-								cursor_left(0);
-							}
+					if (buffer.position >= buffer.length) return;
+					size_t end_pos = buffer.position;
+				
+					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
+						end_pos++;
+					while (end_pos < buffer.length && !ft_isspace(buffer.value[end_pos]) && !ft_ispunct(buffer.value[end_pos]))
+						end_pos += char_size(buffer.value[end_pos]);
+				
+					size_t delete_len = end_pos - buffer.position;
+				
+					if (delete_len > 0) {
+						ft_memmove(&buffer.value[buffer.position], &buffer.value[end_pos], buffer.length - end_pos + 1);
+						buffer.length -= delete_len;
+				
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						for (size_t i = 0; i < delete_len; i++) write_value(STDOUT_FILENO, " ", 1);
+						cursor_left(delete_len);
+						cursor_move(buffer.length, buffer.position);
+					}
+				
+					if (vi_mode == EDIT) {
+						if (buffer.position) {
+							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+							cursor_left(0);
 						}
 					}
 				}
@@ -409,6 +420,14 @@
 
 				size_t c_size = char_size(buffer.c);
 
+				char new_char[c_size + 1];
+				new_char[0] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &new_char[i], 1);
+				new_char[c_size] = '\0';
+
+				//	Ignore multi-space chars
+				if (char_width(0, new_char) > 1) return (0);
+
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
 					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
@@ -418,8 +437,7 @@
 				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
 
 				// Insert all bytes of the character into the buffer
-				buffer.value[buffer.position++] = buffer.c;
-				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
+				for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
 				buffer.length += c_size;
 
 				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
