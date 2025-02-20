@@ -24,7 +24,8 @@
 		"cmdp.h": "c",
 		"args.h": "c",
 		"readinput.h": "c",
-		"unistd.h": "c"
+		"unistd.h": "c",
+		"termcaps.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

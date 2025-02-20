@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:57:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:32:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@
 	bool		fake_segfault		= false;		//	Simulates a segmentation fault in the current command (does not execute or save it to history)
 	int			vi_mode				= INSERT;		//	Current 'vi' mode
 	char		*tmp_line			= NULL;			//	Store input while navigating through history
+	bool		searching			= false;		//	Indicates whether the terminal is searching mode
 
 	static bool	raw_mode			= false;		//	Indicates whether the terminal is in raw mode
 
@@ -89,7 +90,8 @@
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 			cursor_hide();
 
-			if 		(options.emacs)	result = readline(readed);
+			if (searching)			result = search_history();
+			else if	(options.emacs)	result = readline(readed);
 			else if	(options.vi)	result = vi(readed);
 			else					result = dumb(readed);
 		}

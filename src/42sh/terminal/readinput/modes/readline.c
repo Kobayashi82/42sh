@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:52:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 16:26:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,7 +346,7 @@
 				new_char[c_size] = '\0';
 
 				//	Ignore multi-space chars
-				if (char_width(0, new_char) > 1) return (0);
+				if (char_width(0, new_char) > 1) return (1);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -364,7 +364,7 @@
 
 				cursor_move(buffer.length, buffer.position);
 
-				return (0);
+				return (1);
 			}
 
 		#pragma endregion
@@ -590,7 +590,7 @@
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
-				else if (buffer.c == 18)					{ search_history();				}	//	[CTRL + R]	History incremental search
+				else if (buffer.c == 18)					{ search_history_init();		}	//	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19)					{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line

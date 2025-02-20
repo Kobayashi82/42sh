@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:55:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 17:10:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,7 +417,7 @@
 		#pragma region "Char"
 
 			static int print_char() {
-				if (vi_mode && !replacement_char && !replacement_mode) return (0);
+				if (vi_mode && !replacement_char && !replacement_mode) return (1);
 
 				size_t c_size = char_size(buffer.c);
 
@@ -427,7 +427,7 @@
 				new_char[c_size] = '\0';
 
 				//	Ignore multi-space chars
-				if (char_width(0, new_char) > 1) return (0);
+				if (char_width(0, new_char) > 1) return (1);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -469,7 +469,7 @@
 					cursor_left(0);
 				}
 
-				return (0);
+				return (1);
 			}
 
 		#pragma endregion
@@ -1114,7 +1114,9 @@
 						cursor_update(nocolor_length(prompt_PS1));
 					}
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
-					cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
+
+					num_len = chars_width(buffer.position, buffer.length, buffer.value);
+					if (num_len > 0) cursor_left(num_len);
 
 					if (buffer.c == 27) return (0);
 					if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) { beep(); return (1); }
@@ -1169,7 +1171,8 @@
 					write_value(STDOUT_FILENO, n, ft_strlen(n));
 					write_value(STDOUT_FILENO, ") ", 2);
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
-					cursor_left(chars_width(buffer.position, buffer.length, buffer.value));
+					int num_len = chars_width(buffer.position, buffer.length, buffer.value);
+					if (num_len > 0) cursor_left(num_len);
 				}
 
 			#pragma endregion
@@ -1255,7 +1258,7 @@
 				else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
 				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
-				else if (buffer.c == 18)					{ search_history();				}	//	[CTRL + R]	History incremental search
+				else if (buffer.c == 18)					{ search_history_init();		}	//	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
