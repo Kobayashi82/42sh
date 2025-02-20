@@ -6,11 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 12:57:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//	Expand history commands
+// Undo
+// History Search
+// Auto-Complete
+
+// History Expantion
 
 #pragma region "Includes"
 

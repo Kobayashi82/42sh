@@ -6,9 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 09:18:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 12:13:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// Multichar column 0 (currently ignored. If it is gonna be ignored, ignore prompt too)
 
 #pragma region "Includes"
 
@@ -89,14 +91,15 @@
 				}
 
 				unsigned int codepoint = char_codepoint(&value[position], char_length(value[position]));
-				if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo
-					(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets
-					(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK, radicals, etc.
-					(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables
-					(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility
-					(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms
-					(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis
-					(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols
+				if ((codepoint >= 0x1100  && codepoint <= 0x115F)	||			// Hangul Jamo					ᄀ ᄇ
+					(codepoint >= 0x2329  && codepoint <= 0x232A)	||			// Angle brackets				〈	〉
+					(codepoint >= 0x2E80  && codepoint <= 0x9FFF)	||			// CJK Ideographs & Radicals	⺀ 中
+					(codepoint >= 0xAC00  && codepoint <= 0xD7A3)	||			// Hangul syllables				가 힣
+					(codepoint >= 0xF900  && codepoint <= 0xFAFF)	||			// CJK compatibility			豈 﨎
+					(codepoint >= 0xFE10  && codepoint <= 0xFE19)	||			// Vertical forms				︐ ︙
+					(codepoint >= 0x1F300 && codepoint <= 0x1F64F)	||			// Emojis						😂❤️
+					(codepoint >= 0x1F900 && codepoint <= 0x1F9FF))	return (2);	// Supplemental Symbols			🤖🧠
+				
 				return (1);
 			}
 

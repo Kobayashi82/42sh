@@ -6,17 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 11:18:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 12:55:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// AutoComplete
-// Replacement mode
-// History search
 // Command with char position (los comandos de vi que dependen de una posicion... duh)
-// Undo
-// History expantion
-// Multichar column 0 (currently ignored. If it is gonna be ignored, ignore prompt too)
 
 #pragma region "Includes"
 
@@ -89,8 +83,7 @@
 					if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 					nsignal = 2;
 					return (1);
-				}
-				return (0);
+				} return (0);
 			}
 
 		#pragma endregion
@@ -127,7 +120,7 @@
 
 						cursor_left(c_width);
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write_value(STDOUT_FILENO, "    ", c_width); cursor_left(c_width);
+						write_value(STDOUT_FILENO, "  ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
 					}
@@ -181,7 +174,7 @@
 								cursor_left(0);
 							}
 						}
-					}
+					} else beep();
 				}
 
 			#pragma endregion
@@ -257,7 +250,6 @@
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						cursor_left(0);
 					}
-					//print_shit();
 				}
 
 			#pragma endregion
@@ -287,10 +279,10 @@
 					int hist_pos = history_get_pos() - (number - 1);
 					if (hist_pos < 0) hist_pos = 0;
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.history || !history_length()) return;
+					if (!options.history || !history_length()) { beep(); return; }
 					char *new_line = history_prev();
 
-					if (!new_line) return;
+					if (!new_line) { beep(); return; }
 					if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
 
 					home(); delete_end();
@@ -319,12 +311,12 @@
 
 					int hist_pos = history_get_pos() + (number - 1);
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.history || !history_length()) return;
+					if (!options.history || !history_length()) { beep(); return; }
 
 					char *new_line = history_next();
 					bool free_line = false;
 
-					if (!tmp_line && history_get_pos() == history_length() - 1) return;
+					if (!tmp_line && history_get_pos() == history_length() - 1) { beep(); return; }
 					if (!new_line && history_get_pos() == history_length() - 1) {
 						new_line = tmp_line;
 						tmp_line = NULL;
@@ -376,8 +368,8 @@
 							} else if (buffer.position) {
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								cursor_left(0);
-							}
-						}
+							} else beep();
+						} else beep();
 					}
 				}
 
@@ -412,9 +404,9 @@
 								if (buffer.position < length) {
 									cursor_right(0);
 									do { (buffer.position)++; } while (buffer.position < length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-								}
+								} else beep();
 							}
-						}
+						} else beep();
 					}
 				}
 
@@ -465,7 +457,7 @@
 					// Replacement Char/Mode
 					if (replacement_char || replacement_mode) {
 						//int c_width = char_width(0, new_char);
-						write_value(STDOUT_FILENO, "    ", 4); cursor_left(4);
+						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						if (replacement_char && rep_n == 1) buffer.position = prev_pos;
 					}
 					
@@ -833,7 +825,7 @@
 			#pragma region "Char"						("CTRL + T")
 
 				static void swap_char() {
-					if (buffer.position == 0) { beep(); return; }
+					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
 						char temp[8];
 						if (buffer.position < buffer.length) {
@@ -849,7 +841,7 @@
 							ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
 
 							cursor_left(char_width(0, temp));
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
+							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
 							buffer.position += back_pos1;
 						} else {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -866,7 +858,7 @@
 							cursor_left(char_width(0, temp));
 							cursor_left(char_width(buffer.position - back_pos1, buffer.value));
 
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
+							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 							buffer.position += back_pos2;
 						}
 						if (vi_mode == EDIT && buffer.position > char_prev(buffer.length, buffer.value)) arrow_left();
@@ -975,11 +967,9 @@
 		#pragma region "Undo"							("u, U")
 
 			static void n_undo() {
+				int number = get_n();
 
-			}
-
-			static void n_undo_all() {
-				
+				while (number--) undo();
 			}
 
 		#pragma endregion
@@ -1233,19 +1223,19 @@
 						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
 
 						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }					//-	ALT + -			Redo last action
+							if (seq[0] == '-') { redo(); return (1); }							//	ALT + -			Redo last action		(No need to implement)
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
-								if (seq[1] == 'A') 						arrow_up();		//	Up				History next
-								if (seq[1] == 'B') 						arrow_down();	//	Down			History prev
-								if (seq[1] == 'D') 						arrow_left();	//	Left			Cursor left
-								if (seq[1] == 'C') 						arrow_right();	//	Right			Cursor right
-								if (seq[1] == 'H') 						home();			//	Home			Cursor to the start
-								if (seq[1] == 'F')						end();			//	End				Cursor to the end
-								if (seq[1] == '3' && seq[2] == '~')		delete_char();	//	Del				Delete
-								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	//	CTRL + Del		Delete current word
+								if (seq[1] == 'A') 						arrow_up();				//	Up				History next
+								if (seq[1] == 'B') 						arrow_down();			//	Down			History prev
+								if (seq[1] == 'D') 						arrow_left();			//	Left			Cursor left
+								if (seq[1] == 'C') 						arrow_right();			//	Right			Cursor right
+								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
+								if (seq[1] == 'F')						end();					//	End				Cursor to the end
+								if (seq[1] == '3' && seq[2] == '~')		delete_char();			//	Del				Delete
+								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Del		Delete current word
 							}
 						} else if (!vi_mode) {
-							vi_mode = EDIT;												//	Esc				Edit mode
+							vi_mode = EDIT;														//	Esc				Edit mode
 							if (buffer.position) {
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								cursor_left(0);
@@ -1263,13 +1253,13 @@
 			static int specials() {
 				if (buffer.c == 127 && !vi_mode)			{ backspace();					}	//	[BackSpace]	Delete the previous character									(Only in insertion mode)
 				else if (buffer.c == 8 && !vi_mode)			{ backspace();					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
-				else if (buffer.c == 9)						{ autocomplete();				}	//-	[Tab]		Autocomplete
+				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
-				else if (buffer.c == 18)					{ search_history();				}	//-	[CTRL + R]	History incremental search
+				else if (buffer.c == 18)					{ search_history();				}	//	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-				else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo the last change
+				else if (buffer.c == 31)					{ undo();						}	//	[CTRL + _]	Undo the last change
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
 					if (ft_isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
@@ -1318,8 +1308,8 @@
 					else if (buffer.c == 'l')	{ arrow_right();							}	//	[n] Move the cursor right
 					else if (buffer.c == ' ')	{ arrow_right();							}	//	[n] Move the cursor right
 					else if (buffer.c == '$')	{ end();									}	//	Move the cursor to the end of the line
-					else if (buffer.c == 'u')	{ n_undo();									}	//-	[n] Undo the last change
-					else if (buffer.c == 'U')	{ n_undo_all();								}	//-	Undo all changes
+					else if (buffer.c == 'u')	{ n_undo();									}	//	[n] Undo the last change
+					else if (buffer.c == 'U')	{ undo_all();								}	//	Undo all changes
 					else if (buffer.c == 'v')	{ return (edit_input());					}	//	Edit the input using the default editor and terminate the input
 					else if	(buffer.c == '#')	{ return (comment());						}	//	Comment and terminate the input
 

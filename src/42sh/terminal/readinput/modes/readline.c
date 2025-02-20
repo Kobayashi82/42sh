@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 18:57:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 12:52:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,9 @@
 
 #pragma endregion
 
-#pragma region "Input"																										//	Optimizar
+#pragma region "Input"
 
-	#pragma region "Insert"																									//	Optimizar
+	#pragma region "Insert"
 
 		#pragma region "EOF"							("CTRL + D")
 
@@ -81,7 +81,7 @@
 
 		#pragma region "BackSpace"						("BackSpace, CTRL + U")
 
-			#pragma region "Char"
+			#pragma region "Char"						("BackSpace")
 
 				static void backspace() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
@@ -95,8 +95,8 @@
 						buffer.position -= back_pos; buffer.length -= back_pos;
 
 						cursor_left(c_width);
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "  ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
 					}
@@ -104,10 +104,10 @@
 
 			#pragma endregion
 
-			#pragma region "Start"
+			#pragma region "Start"						("CTRL + U")
 
 				static void backspace_start() {
-					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
+					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
@@ -115,10 +115,10 @@
 					buffer.length -= buffer.position; buffer.position = buffer.length;
 
 					cursor_left(total_chars);
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 						home();
 					}
@@ -128,7 +128,7 @@
 
 		#pragma endregion
 
-		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")										//	Optimizar
+		#pragma region "Delete"							("Del, CTRL + Del, C, S, D")
 
 			#pragma region "Char"						("Del")
 
@@ -140,22 +140,35 @@
 						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
 						buffer.length -= back_pos;
 
-						write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
-						write(STDOUT_FILENO, "  ", 2); cursor_left(2);
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						cursor_move(buffer.length, buffer.position);
-					}
+					} else beep();
 				}
 
 			#pragma endregion
 
-			#pragma region "Word"						("CTRL + Del")														//	Optimizar
+			#pragma region "Word"						("CTRL + Del")
 
 				static void delete_word() {
-					if (buffer.position < buffer.length) {
-						while (buffer.position < buffer.length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position])))
-							delete_char();
-						while (buffer.position < buffer.length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position]))
-							delete_char();
+					if (buffer.position >= buffer.length) return;
+					size_t end_pos = buffer.position;
+				
+					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
+						end_pos++;
+					while (end_pos < buffer.length && !ft_isspace(buffer.value[end_pos]) && !ft_ispunct(buffer.value[end_pos]))
+						end_pos += char_size(buffer.value[end_pos]);
+				
+					size_t delete_len = end_pos - buffer.position;
+				
+					if (delete_len > 0) {
+						ft_memmove(&buffer.value[buffer.position], &buffer.value[end_pos], buffer.length - end_pos + 1);
+						buffer.length -= delete_len;
+				
+						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
+						for (size_t i = 0; i < delete_len; i++) write_value(STDOUT_FILENO, " ", 1);
+						cursor_left(delete_len);
+						cursor_move(buffer.length, buffer.position);
 					}
 				}
 
@@ -175,7 +188,7 @@
 
 					if (total_chars) {
 						int tmp = total_chars;
-						while (tmp--) write(STDOUT_FILENO, " ", 1);
+						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 					}
 				}
@@ -215,13 +228,13 @@
 			#pragma region "Arrow Up"					("Up")
 
 				static void arrow_up() {
-					if (!options.history || !history_length()) return;
+					if (!options.history || !history_length()) { beep(); return; }
 					char *new_line = history_prev();
 
-					if (!new_line) return;
+					if (!new_line) { beep(); return; }
 					if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
 
-					end(); backspace_start();
+					home(); delete_end();
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -229,7 +242,7 @@
 					ft_strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 				}
 
 			#pragma endregion
@@ -237,19 +250,19 @@
 			#pragma region "Arrow Down"					("Down")
 
 				static void arrow_down() {
-					if (!options.history || !history_length()) return;
+					if (!options.history || !history_length()) { beep(); return; }
 
 					char *new_line = history_next();
 					bool free_line = false;
 
-					if (!tmp_line && history_get_pos() == history_length() - 1) return;
+					if (!tmp_line && history_get_pos() == history_length() - 1) { beep(); return; }
 					if (!new_line && history_get_pos() == history_length() - 1) {
 						new_line = tmp_line;
 						tmp_line = NULL;
 						free_line = true;
 					}
 
-					end(); backspace_start();
+					home(); delete_end();
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -257,7 +270,7 @@
 					ft_strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
-					write(STDOUT_FILENO, buffer.value, buffer.length);
+					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 
 					if (free_line && new_line) sfree(new_line);
 				}
@@ -272,9 +285,9 @@
 				// Any non-alphanumeric character is considered a delimiter or space.
 				// An empty line is also considered to be a word.
 
-				static void arrow_left() {
+				static void arrow_left(bool simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
-						if (buffer.CTRL) {
+						if (buffer.CTRL && !simple) {
 							while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
 								cursor_left(0); (buffer.position)--;
 							}
@@ -285,8 +298,8 @@
 						} else if (buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							cursor_left(0);
-						}
-					}
+						} else beep();
+					} else beep();
 				}
 
 			#pragma endregion
@@ -299,9 +312,9 @@
 				// Any non-alphanumeric character is considered a delimiter or space.
 				// An empty line is also considered to be a word.
 
-				static void arrow_right() {
+				static void arrow_right(bool simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length) {
-						if (buffer.CTRL) {
+						if (buffer.CTRL && !simple) {
 							while (buffer.position < buffer.length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
 								cursor_right(0); (buffer.position)++;
 							}
@@ -313,24 +326,59 @@
 							if (buffer.position < buffer.length) {
 								cursor_right(0);
 								do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
-							}
+							} else beep();
 						}
-					}
+					} else beep();
 				}
 
 			#pragma endregion
 
 		#pragma endregion
 
+		#pragma region "Char"
+
+			static int print_char() {
+				size_t c_size = char_size(buffer.c);
+
+				char new_char[c_size + 1];
+				new_char[0] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &new_char[i], 1);
+				new_char[c_size] = '\0';
+
+				//	Ignore multi-space chars
+				if (char_width(0, new_char) > 1) return (0);
+
+				// Expand buffer if necessary
+				if (buffer.position + c_size >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+				// Insert all bytes of the character into the buffer
+				for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
+				buffer.length += c_size;
+
+				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+
+				cursor_move(buffer.length, buffer.position);
+
+				return (0);
+			}
+
+		#pragma endregion
+
 	#pragma endregion
 
-	#pragma region "Edit"																									//	Optimizar
+	#pragma region "Edit"
 
-		#pragma region "Swap"							("CTRL + T, ALT + T")												//	Optimizar
+		#pragma region "Swap"							("CTRL + T, ALT + T")
 
 			#pragma region "Char"						("CTRL + T")
 
 				static void swap_char() {
+					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
 						char temp[8];
 						if (buffer.position < buffer.length) {
@@ -346,7 +394,7 @@
 							ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
 
 							cursor_left(char_width(0, temp));
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
+							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
 							buffer.position += back_pos1;
 						} else {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -363,7 +411,7 @@
 							cursor_left(char_width(0, temp));
 							cursor_left(char_width(buffer.position - back_pos1, buffer.value));
 
-							write(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
+							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 							buffer.position += back_pos2;
 						}
 					}
@@ -371,9 +419,9 @@
 
 			#pragma endregion
 
-			#pragma region "Word"						("ALT + T")															//	Optimizar
+			#pragma region "Word"						("ALT + T")
 
-				//	(Not working right with multibytes 漢字)
+				//	(Not working with multi-width chars 漢 🤬)
 				static t_word get_word(size_t position, size_t len, bool prev_word) {
 					t_word	word;
 
@@ -412,17 +460,16 @@
 					t_word prev, next, sep;
 					size_t temp_pos = buffer.position;
 
-					if (buffer.position == buffer.length && buffer.position == 0) return;
+					if (buffer.position == buffer.length && buffer.position == 0) { beep(); return; }
 
 					next = get_word(buffer.position, buffer.length, false);
-					if (next.len > sizeof(next.value)) return;
+					if (next.len > sizeof(next.value)) { beep(); return; };
 					if (!next.len) next = get_word(buffer.position, buffer.length, true);
-					if (!next.len || next.start == 0) return;
+					if (!next.len || next.start == 0) { beep(); return; };
 					temp_pos = next.start - 1;
 					prev = get_word(temp_pos, buffer.length, true);
-					if (!prev.len || prev.len > sizeof(prev.value)) return;
+					if (!prev.len || prev.len > sizeof(prev.value)) { beep(); return; };
 
-					//printf (" - %ld : %ld\n", prev.len, next.len); return ;
 					sep.start = prev.end;
 					sep.end = next.start;
 					if (sep.start < sep.end) {
@@ -435,13 +482,12 @@
 					ft_memmove(&buffer.value[prev.start + next.len], sep.value, sep.len);
 					ft_memmove(&buffer.value[prev.start + next.len + sep.len], prev.value, prev.len);
 
-					// printf("%ld\n", buffer.position);
 					while (buffer.position > 0 && buffer.position > prev.start) {
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 						cursor_left(char_width(buffer.position, buffer.value));
 					}
 
-					write(STDOUT_FILENO, &buffer.value[buffer.position], prev.len + sep.len + next.len);
+					write_value(STDOUT_FILENO, &buffer.value[buffer.position], prev.len + sep.len + next.len);
 					buffer.position = prev.start + next.len + sep.len + prev.len;
 				}
 
@@ -449,13 +495,14 @@
 
 		#pragma endregion
 
-		#pragma region "Clear Screen"					("CTRL + L")														//	Optimizar
+		#pragma region "Clear Screen"					("CTRL + L")
 
 			static void clear_screen() {
 				write(STDOUT_FILENO, "\033[H\033[2J", 7);
 				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 				write(STDOUT_FILENO, buffer.value, buffer.length);
-				buffer.position = buffer.length;
+				cursor_get();
+				cursor_move(buffer.length, buffer.position);
 			}
 
 		#pragma endregion
@@ -507,17 +554,17 @@
 						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
 
 						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }					//-	ALT + -			Redo last action
-							if (seq[0] == 't') { swap_word(); return (1); }				//-	ALT + T			Swap word				(Not working right with multibytes 漢字)
+							if (seq[0] == '-') { redo(); return (1); }							//	ALT + -			Redo last action		(No need to implement)
+							if (seq[0] == 't') { swap_word(); return (1); }						//	ALT + T			Swap word				(Not working with multi-width chars 漢 🤬)
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
-								if (seq[1] == 'A') 						arrow_up();		//	Up				History next
-								if (seq[1] == 'B') 						arrow_down();	//	Down			History prev
-								if (seq[1] == 'D') 						arrow_left();	//	Left			Cursor left
-								if (seq[1] == 'C') 						arrow_right();	//	Right			Cursor right
-								if (seq[1] == 'H') 						home();			//	Home			Cursor to the start
-								if (seq[1] == 'F')						end();			//	End				Cursor to the end
-								if (seq[1] == '3' && seq[2] == '~')		delete_char();	//	Delete			Delete
-								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();	//	CTRL + Delete	Delete current word
+								if (seq[1] == 'A') 						arrow_up();				//	Up				History next
+								if (seq[1] == 'B') 						arrow_down();			//	Down			History prev
+								if (seq[1] == 'D') 						arrow_left(0);			//	Left			Cursor left
+								if (seq[1] == 'C') 						arrow_right(0);			//	Right			Cursor right
+								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
+								if (seq[1] == 'F')						end();					//	End				Cursor to the end
+								if (seq[1] == '3' && seq[2] == '~')		delete_char();			//	Delete			Delete
+								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Delete	Delete current word
 							}
 						} return (1);
 					} return (0);
@@ -532,58 +579,26 @@
 			static int specials() {
 				if (buffer.c == 127)						{ backspace();					}	//	[BackSpace]	Delete the previous character
 				else if	(buffer.c == 1)						{ home();						}	//	[CTRL + A]	Cursor to the start
-				else if (buffer.c == 2)						{ arrow_left();					}	//	[CTRL + B]	Cursor right
+				else if (buffer.c == 2)						{ arrow_left(1);				}	//	[CTRL + B]	Cursor left
 				else if (buffer.c == 4)						{ delete_char();				}	//	[CTRL + D]	Delete
 				else if (buffer.c == 5)						{ end();						}	//	[CTRL + E]	Cursor to the end
-				else if (buffer.c == 6)						{ arrow_right();				}	//	[CTRL + F]	Cursor left
+				else if (buffer.c == 6)						{ arrow_right(1);				}	//	[CTRL + F]	Cursor left
 				else if (buffer.c == 8)						{ backspace();					}	//	[CTRL + H]	Delete the previous character
-				else if (buffer.c == 9)						{ autocomplete();				}	//-	[Tab]		Autocomplete
+				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
 				else if (buffer.c == 11)					{ delete_end();					}	//	[CTRL + K]	Delete from cursor to end
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
-				else if (buffer.c == 18)					{ search_history();				}	//-	[CTRL + R]	History incremental search
+				else if (buffer.c == 18)					{ search_history();				}	//	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19)					{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-				else if (buffer.c == 31)					{ undo();						}	//-	[CTRL + _]	Undo last action
+				else if (buffer.c == 31)					{ undo();						}	//	[CTRL + _]	Undo last action
 				else if (buffer.c >= 1 && buffer.c <= 26) { ;								}	//	Ignore other CTRL + X commands
 				else return (0);
 
 				return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Print"
-
-			static int print_char() {
-				size_t char_size = 1;
-				if		(buffer.c >= 0xF0)	char_size = 4;
-				else if (buffer.c >= 0xE0)	char_size = 3;
-				else if (buffer.c >= 0xC0)	char_size = 2;
-
-				if (buffer.position >= buffer.size - 1) return (0);
-
-				// Expand buffer if necessary
-				if (buffer.position + char_size >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + char_size], &buffer.value[buffer.position], buffer.length - buffer.position);
-
-				// Insert all bytes of the character into the buffer
-				buffer.value[(buffer.position)++] = buffer.c;
-				for (size_t i = 1; i < char_size; i++) read(STDIN_FILENO, &buffer.value[(buffer.position)++], 1);
-				buffer.length += char_size;
-
-				write(STDOUT_FILENO, &buffer.value[buffer.position - char_size], buffer.length - (buffer.position - char_size));
-
-				cursor_move(buffer.length, buffer.position);
-
-				return (0);
 			}
 
 		#pragma endregion

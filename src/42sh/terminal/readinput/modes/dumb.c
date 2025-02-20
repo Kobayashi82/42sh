@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/06 15:36:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 12:17:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,32 @@
 
 		#pragma endregion
 
+		#pragma region "Char"
+
+			static int print_char() {
+				size_t c_size = 1;
+				if 		(buffer.c >= 0xF0)	c_size = 4;
+				else if (buffer.c >= 0xE0)	c_size = 3;
+				else if (buffer.c >= 0xC0)	c_size = 2;
+
+				// Expand buffer if necessary
+				if (buffer.position + c_size >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				// Insert all bytes of the character into the buffer
+				buffer.value[buffer.position++] = buffer.c;
+				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
+				buffer.length += c_size;
+
+				write(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+
+				return (0);
+			}
+
+		#pragma endregion
+
 	#pragma endregion
 
 	#pragma region "Handle"
@@ -97,37 +123,10 @@
 		#pragma region "Specials"
 
 			static int specials() {
-				if (buffer.c == 18)							{ search_history();				}	//-	[CTRL + R]	History incremental search
-				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
+				if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore all CTRL + X commands
 				else return (0);
 
 				return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Print"
-
-			static int print_char() {
-				size_t c_size = 1;
-				if 		(buffer.c >= 0xF0)	c_size = 4;
-				else if (buffer.c >= 0xE0)	c_size = 3;
-				else if (buffer.c >= 0xC0)	c_size = 2;
-
-				// Expand buffer if necessary
-				if (buffer.position + c_size >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-					buffer.size *= 2;
-				}
-
-				// Insert all bytes of the character into the buffer
-				buffer.value[buffer.position++] = buffer.c;
-				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &buffer.value[buffer.position++], 1);
-				buffer.length += c_size;
-
-				write(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
-
-				return (0);
 			}
 
 		#pragma endregion
