@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/19 16:11:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 09:18:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -360,8 +360,8 @@
 		if (!termtype) { termtype = "dumb"; options.emacs = false; options.vi = false; }
 
 		int success = tgetent(NULL, termtype);
-		if (success < 0)	{ write(2, "Could not access the termcap data base.\n", 41);	return (1); }
-		if (success == 0)	{ write(2, "Terminal type is not defined.\n", 31);				return (1); }
+		if (success < 0)	{ write(STDERR_FILENO, "Could not access the termcap data base.\n", 41);	return (1); }
+		if (success == 0)	{ write(STDERR_FILENO, "Terminal type is not defined.\n", 31);				return (1); }
 
 		terminal.rows = tgetnum("li");
 		terminal.columns = tgetnum("co");

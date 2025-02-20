@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/19 17:44:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/20 11:18:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,9 @@
 
 	enum e_mode { CURSOR, AFTER_CURSOR, FIRST, LAST };
 
-	static bool	number_mode;
+	static bool	number_mode, replacement_mode, replacement_char;
 	static char	n[7], last_cmd, last_char[7], *clipboard;
+	static int	rep_n;
 
 	static void	insert_mode(int mode);
 	static int	get_n();
@@ -424,7 +425,7 @@
 		#pragma region "Char"
 
 			static int print_char() {
-				if (vi_mode) return (0);
+				if (vi_mode && !replacement_char && !replacement_mode) return (0);
 
 				size_t c_size = char_size(buffer.c);
 
@@ -442,14 +443,39 @@
 					buffer.size *= 2;
 				}
 
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+				// Replacement Char/Mode
+				do {
+					size_t prev_pos = buffer.position;
+					if ((replacement_char || replacement_mode) && buffer.position < buffer.length) {
+						size_t back_pos = 1;
+						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
 
-				// Insert all bytes of the character into the buffer
-				for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
-				buffer.length += c_size;
+						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
+						buffer.length -= back_pos;
+					}
 
-				write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
-				cursor_move(buffer.length, buffer.position);
+					if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+
+					// Insert all bytes of the character into the buffer
+					for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
+					buffer.length += c_size;
+
+					write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
+
+					// Replacement Char/Mode
+					if (replacement_char || replacement_mode) {
+						//int c_width = char_width(0, new_char);
+						write_value(STDOUT_FILENO, "    ", 4); cursor_left(4);
+						if (replacement_char && rep_n == 1) buffer.position = prev_pos;
+					}
+					
+					cursor_move(buffer.length, buffer.position);
+				} while (replacement_char && --rep_n && buffer.position < buffer.length);
+
+				if (replacement_char && buffer.position == buffer.length) {
+					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+					cursor_left(0);
+				}
 
 				return (0);
 			}
@@ -1261,8 +1287,8 @@
 					else if (buffer.c == 'x')	{ n_delete_char();							}	//	[n] Delete the current character
 					else if (buffer.c == 'X')	{ n_backspace();							}	//	[n] Delete the previous character
 
-					else if (buffer.c == 'r')	{ ;											}	//-	[n]	Replace the current character with the specified one
-					else if (buffer.c == 'R')	{ ;											}	//-	[n]	Enter replace mode: allows replacing characters one by one
+					else if (buffer.c == 'r')	{ replacement_char = true; rep_n = get_n();	}	//	[n]	Replace the current character with the specified one
+					else if (buffer.c == 'R')	{ replacement_mode = true;					}	//	Enter replace mode: allows replacing characters one by one
 					else if (buffer.c == 'y')	{ copy(false);								}	//-	[n] Copy up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, y)
 					else if (buffer.c == 'Y')	{ copy(true);								}	//	Copy from the current position to the end of the line
 					else if (buffer.c == 'p')	{ paste(false);								}	//	[n]	Paste copied text after the cursor
@@ -1326,13 +1352,34 @@
 			}
 		}
 
+		if ((replacement_char || replacement_mode)) {
+			if		(ctrl_d(readed))		result = 1;
+			else if	(ctrl_c())				result = 0;
+			else if	(enter())				result = 1;
+			else if (ft_isprint(buffer.c)) {
+				print_char();
+				if (replacement_mode) return (0);
+			}
+			if (replacement_char) replacement_char = false;
+			if (replacement_mode) { replacement_mode = false;
+				if (buffer.position && !result) {
+					do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+					cursor_left(0);
+					if (buffer.c != 27) beep();
+				}
+			}
+
+			if (result && clipboard) sfree(clipboard);
+			return (result);
+		} replacement_mode = false;
+
 		if		(ctrl_d(readed))		result = 1;
 		else if	(ctrl_c())				result = 0;
 		else if	(enter())				result = 1;
 		else if ((result = specials()))	result = (result == 2);
 		else if (cursor())				result = 0;
 		else if (print_char())			result = 0;
-		
+
 		if (result && clipboard) sfree(clipboard);
 		return (result);
 	}
