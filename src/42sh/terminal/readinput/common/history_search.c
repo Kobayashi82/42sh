@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 14:11:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 16:09:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,81 +224,90 @@
 
 	#pragma region "Find"
 
-		static int process_match(HIST_ENTRY *hist, size_t pos, bool update) {
-			no_match = false;
-			match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
-			match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
+		#pragma region "Match"
+			
+			static int process_match(HIST_ENTRY *hist, size_t pos, bool update) {
+				no_match = false;
+				match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
+				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
 
-			// Expand buffer if necessary
-			while (hist->length >= buffer.size) {
-				buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
-				buffer.size *= 2;
+				// Expand buffer if necessary
+				while (hist->length >= buffer.size) {
+					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.size *= 2;
+				}
+
+				ft_memset(buffer.value, 0, buffer.size);
+				ft_strcpy(buffer.value, hist->line);
+				buffer.length = hist->length;
+				buffer.position = 0;
+
+				if (update) {
+					// Clear line
+					int len = 3 + old_len;
+					for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+					if (len > 0) cursor_left(len);
+					
+					// write match
+					write_value(STDOUT_FILENO, "': ", 3);
+					write_value(STDOUT_FILENO, match_show, ft_strlen(match_show));
+
+					// Move cursor to input position
+					len = 3 + chars_width(0, ft_strlen(match_show), match_show);
+					if (len > 0) cursor_left(len);
+
+					old_len = chars_width(0, buffer.length, buffer.value);
+					sfree(match_show); match_show = NULL;
+				}
+
+				return (1);
 			}
 
-			ft_memset(buffer.value, 0, buffer.size);
-			ft_strcpy(buffer.value, hist->line);
-			buffer.length = hist->length;
-			buffer.position = 0;
+		#pragma endregion
 
-			if (update) {
-				// Clear line
-				int len = 3 + old_len;
-				for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
-				if (len > 0) cursor_left(len);
-				
-				// write match
-				write_value(STDOUT_FILENO, "': ", 3);
-				write_value(STDOUT_FILENO, match_show, ft_strlen(match_show));
+		#pragma region "Find"
 
-				// Move cursor to input position
-				len = 3 + chars_width(0, ft_strlen(match_show), match_show);
-				if (len > 0) cursor_left(len);
+			static int search_find(int mode) {
+				if (!search_buffer.value || !*search_buffer.value) 				return (0);
+				size_t len = history_length();
+				if (mode == FORWARD && !history_pos)				{ beep();	return (0); }
+				if (mode == BACKWARD && history_pos >= len)			{ beep();	return (0); }
+				if (mode == START)									history_pos = len;
 
-				old_len = chars_width(0, buffer.length, buffer.value);
-				sfree(match_show); match_show = NULL;
-			}
-
-			return (1);
-		}
-
-		static int search_find(int mode) {
-			if (!search_buffer.value || !*search_buffer.value) 				return (0);
-			size_t len = history_length();
-			if (mode == FORWARD && !history_pos)				{ beep();	return (0); }
-			if (mode == BACKWARD && history_pos >= len)			{ beep();	return (0); }
-			if (mode == START)									history_pos = len;
-
-			if (mode == BACKWARD) {
-				history_pos++;
-				for (size_t i = history_pos; i < len; ++i) {
-					HIST_ENTRY *hist = history_get(i);
-					if (hist && hist->line) {
+				if (mode == BACKWARD) {
+					size_t i = history_pos + 1;
+					for (; i < len; ++i) {
+						HIST_ENTRY *hist = history_get(i);
+						if (hist && hist->line) {
+							char *match = ft_strstr(hist->line, search_buffer.value);
+							if (match) {
+								history_pos = i;
+								return (process_match(hist, match - hist->line, true));
+							}
+						}
+					}
+				} else {
+					size_t i = history_pos - (mode == FORWARD);
+					for (; i >= 0; --i) {
+						HIST_ENTRY *hist = history_get(i);
+						if (hist && hist->line) {
 						char *match = ft_strstr(hist->line, search_buffer.value);
-						if (match) {
-							history_pos = i;
-							return (process_match(hist, match - hist->line, true));
+							if (match) {
+								history_pos = i;
+								return (process_match(hist, match - hist->line, (mode == FORWARD)));
+							}
 						}
+						if (i == 0) break;
 					}
 				}
-			} else {
-				if (mode == FORWARD) history_pos--;
-				for (size_t i = history_pos; i >= 0; --i) {
-					HIST_ENTRY *hist = history_get(i);
-					if (hist && hist->line) {
-					char *match = ft_strstr(hist->line, search_buffer.value);
-						if (match) {
-							history_pos = i;
-							return (process_match(hist, match - hist->line, (mode == FORWARD)));
-						}
-					}
-					if (i == 0) break;
-				}
+
+				beep();
+				if (mode == START) no_match = true;
+				return (0);
 			}
 
-			no_match = true; beep();
-			return (0);
-		}
-		
+		#pragma endregion
+
 	#pragma endregion
 
 	#pragma region "Search"
