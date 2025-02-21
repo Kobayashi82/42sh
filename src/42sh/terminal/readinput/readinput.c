@@ -6,12 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:35:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 22:01:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Auto-Complete
-// Undo
 
 // History Expantion
 
@@ -22,7 +21,10 @@
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/history.h"
+	#include "terminal/print.h"
 	#include "main/options.h"
+	#include "main/project.h"
 
 #pragma endregion
 
@@ -69,6 +71,107 @@
 
 #pragma endregion
 
+	static char *expand_history_search(char *value, bool at_start) {
+		for (size_t i = history_length() - 1; i >= 0; --i) {
+			HIST_ENTRY *hist = history_get(i);
+			if (hist && hist->line) {
+				if (at_start && !ft_strncmp(hist->line, value, ft_strlen(value)))	return (hist->line);
+				if (!at_start && ft_strstr(hist->line, value))						return (hist->line);
+			}
+			if (i == 0) break;
+		}
+
+		return (NULL);
+	}
+
+	static void expand_history() {
+		if (!options.history || history_length() == 0) return;
+
+		size_t i = 0;
+		bool in_quotes = false;
+		bool in_dquotes = false;
+
+		while (i < buffer.length) {
+			if (buffer.value[i] == '\\' && !in_quotes && !in_dquotes) {
+				i += 2; continue;
+			}
+			if (buffer.value[i] == '\'' && !in_dquotes) {
+				in_quotes = !in_quotes;
+			}
+			if (buffer.value[i] == '\"' && !in_quotes) {
+				in_dquotes = !in_dquotes;
+			}
+
+			if (buffer.value[i] == '!' && !ft_isspace(buffer.value[i + 1]) && !in_quotes && !in_dquotes) {
+				int start = i;
+				size_t end = i + 1;
+				char *replacement = NULL;
+
+				if (buffer.value[end] == '!') { // Caso !!
+					end++;
+					HIST_ENTRY *hist = history_get(history_length() - 1);
+					if (!hist) {
+						print(STDERR_FILENO, ft_strjoin(PROYECTNAME, ": event not found\n", 0), FREE_RESET_PRINT);
+						buffer.value[0] = '\0'; return;
+					} else replacement = hist->line;
+				} else if (ft_isdigit(buffer.value[end])) { // Caso !n
+					while (ft_isdigit(buffer.value[end]) && end < buffer.length) end++;
+					char *number = ft_substr(buffer.value, start + 1, end - (start + 1));
+					size_t event = ft_atoi(number);
+					HIST_ENTRY *hist = history_event(event);
+					if (!hist || ft_strlen(number) > 9) {
+						print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 3), FREE_RESET);
+						print(STDERR_FILENO, ": event not found\n", PRINT);
+						buffer.value[0] = '\0'; return;
+					} else replacement = hist->line;
+					sfree(number);
+				} else if (buffer.value[end] == '-' && ft_isdigit(buffer.value[end + 1])) { // Caso !-n
+					end++;
+					while (ft_isdigit(buffer.value[end]) && end < buffer.length) end++;
+					char *number = ft_substr(buffer.value, start + 2, end - (start + 2));
+					size_t pos = ft_atoi(number);
+					HIST_ENTRY *hist = history_get(history_length() - pos);
+					if (!hist || ft_strlen(number) > 9) {
+						print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 3), FREE_RESET);
+						print(STDERR_FILENO, ": event not found\n", PRINT);
+						buffer.value[0] = '\0'; return;
+					} else replacement = hist->line;
+					sfree(number);
+				} else if (buffer.value[end] == '?' && buffer.value[end + 1] != '?' && !ft_isspace(buffer.value[end + 1])) { // Caso !?substr?
+					end++;
+					while (buffer.value[end] != '?' && !ft_isspace(buffer.value[end]) && end < buffer.length) end++;
+					char *value = ft_substr(buffer.value, start + 2, end - (start + 2));
+					replacement = expand_history_search(value, false);
+					if (!replacement) {
+						print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !?", value, 3), FREE_RESET);
+						if (buffer.value[end] == '?') print(STDERR_FILENO, "?", JOIN);
+						print(STDERR_FILENO, ": event not found\n", PRINT);
+						buffer.value[0] = '\0'; return;
+					}
+					if (buffer.value[end] == '?') end++;
+					sfree(value);
+				} else { // Caso !prefijo
+					while (!ft_isspace(buffer.value[end]) && end < buffer.length) end++;
+					char *value = ft_substr(buffer.value, start + 1, end - (start + 1));
+					replacement = expand_history_search(value, true);
+					if (!replacement) {
+						print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", value, 3), FREE_RESET);
+						print(STDERR_FILENO, ": event not found\n", PRINT);
+						buffer.value[0] = '\0'; return;
+					}
+					sfree(value);
+				}
+
+				if (replacement) {
+					buffer.value = replace(buffer.value, &start, end - start, replacement);
+					i = start;
+					buffer.length = ft_strlen(buffer.value);
+				}
+			}
+			i++;
+		}
+	}
+
 #pragma region "ReadInput"
 
 	char *readinput(char *prompt) {
@@ -100,7 +203,7 @@
 		}
 
 		undo_clear();
-
+		expand_history();
 		disable_raw_mode();
 
 		if (fake_segfault) { fake_segfault = false;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/31 23:43:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:26:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 20:01:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 			else if (base == 17) {	base = 16; print_s("0x", total, fd); }
 			if (fd < 0)				strbase = "0123456789ABCDEF";
 			if (n >= base)			print_n(n / base, base, total, fd);
-			if (*total == -1)		return ;
+			if (*total == -1)		return;
 			if (fd < 0)				fd = -fd;
 
 			print_c(strbase[n % base], total, fd);

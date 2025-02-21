@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:54:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 20:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@
 
 	//	Search for wildcards matches in every arg and join them in a single list
 	void globbing(t_arg *args) {
-		if (args == NULL || options.noglob) return ;
+		if (args == NULL || options.noglob) return;
 
 		globbing(args->next);
 		if (ft_memchr(args->value, '?', ft_strlen(args->value))

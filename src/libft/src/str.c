@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/29 16:31:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 21:53:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -620,6 +620,7 @@
 
 	//	Replace a string inside a string with another string XD
 	char *replace(char *str, int *start, int len, char *replace) {
+		if (len <= 0) return (str);
 		int i = (start) ? *start : 0;
 		int str_len = ft_strlen(str);
 		int replace_len = ft_strlen(replace);
