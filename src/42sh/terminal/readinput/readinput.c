@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 17:32:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 10:52:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,9 @@
 			cursor_hide();
 
 			if (searching)			result = search_history();
-			else if	(options.emacs)	result = readline(readed);
+			if (searching)			continue;
+
+			if		(options.emacs)	result = readline(readed);
 			else if	(options.vi)	result = vi(readed);
 			else					result = dumb(readed);
 		}

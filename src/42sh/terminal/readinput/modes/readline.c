@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 16:26:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 13:39:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@
 						int c_width = char_width(buffer.position - back_pos, buffer.value);
 						if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
 						buffer.position -= back_pos; buffer.length -= back_pos;
+						buffer.value[buffer.length] = '\0';
 
 						cursor_left(c_width);
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
@@ -113,6 +114,7 @@
 
 					ft_memmove(&buffer.value[0], &buffer.value[buffer.position], buffer.length - buffer.position);
 					buffer.length -= buffer.position; buffer.position = buffer.length;
+					buffer.value[buffer.length] = '\0';
 
 					cursor_left(total_chars);
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
@@ -590,7 +592,7 @@
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
-				else if (buffer.c == 18)					{ search_history_init();		}	//	[CTRL + R]	History incremental search
+				else if (buffer.c == 18)					{ search_init();				}	//	[CTRL + R]	History incremental search
 				else if	(buffer.c == 19)					{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
