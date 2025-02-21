@@ -6,28 +6,66 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/06 15:33:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:39:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/readinput.h"
 
 #pragma endregion
 
-#pragma region "Redo"
+#pragma region "Variables"
 
-	void redo() {
-		write(1, "redo", 4);
+	typedef struct s_undo {
+		char			*value;
+		size_t			size, position, length;
+		struct s_undo	*next;
+	} t_undo;
+
+	static t_undo	*stack;
+	bool			pushed;
+
+	static void beep() { write(STDOUT_FILENO, "\a", 1); }
+
+#pragma endregion
+
+#pragma region "Push"
+
+	void undo_push() {
+		if (stack && !ft_strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
+		t_undo *new = smalloc(sizeof(t_undo));
+		new->size = buffer.size;
+		new->length = buffer.length;
+		new->position = buffer.position;
+		new->value = smalloc(buffer.size);
+		ft_memcpy(new->value, buffer.value, buffer.size);
+		new->next = stack;
+		stack = new;
+		pushed = true;
 	}
 
 #pragma endregion
 
 #pragma region "Undo"
 
-	void undo() {
-		write(1, "undo", 4);
+	void undo_pop() {
+		if (!stack) { beep(); return; }
+		t_undo *top = stack;
+
+		sfree(buffer.value);
+		buffer.size = top->size;
+		buffer.length = top->length;
+		buffer.position = top->position;
+		buffer.value = smalloc(top->size);
+		ft_memcpy(buffer.value, top->value, top->size);
+		stack = top->next;
+		sfree(top->value);
+		sfree(top);
+		pushed = false;
 	}
 
 #pragma endregion
@@ -35,7 +73,25 @@
 #pragma region "Undo All"
 
 	void undo_all() {
-		write(1, "undo", 4);
+		while (stack && stack->next) {
+			t_undo *tmp = stack;
+			stack = stack->next;
+			sfree(tmp->value);
+			sfree(tmp);
+		} undo_pop();
+	}
+
+#pragma endregion
+
+#pragma region "Clear"
+
+	void undo_clear() {
+		while (stack) {
+			t_undo *tmp = stack;
+			stack = stack->next;
+			sfree(tmp->value);
+			sfree(tmp);
+		}
 	}
 
 #pragma endregion

@@ -6,13 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 10:52:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:35:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Undo
-// History Search
 // Auto-Complete
+// Undo
 
 // History Expantion
 
@@ -35,7 +34,7 @@
 	bool		fake_segfault		= false;		//	Simulates a segmentation fault in the current command (does not execute or save it to history)
 	int			vi_mode				= INSERT;		//	Current 'vi' mode
 	char		*tmp_line			= NULL;			//	Store input while navigating through history
-	bool		searching			= false;		//	Indicates whether the terminal is searching mode
+	bool		searching			= false;		//	Indicates whether the terminal is in searching mode
 
 	static bool	raw_mode			= false;		//	Indicates whether the terminal is in raw mode
 
@@ -80,6 +79,8 @@
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
+		undo_push();
+
 		prompt_set(PS1, prompt);
 		enable_raw_mode();
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
@@ -90,13 +91,15 @@
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 			cursor_hide();
 
-			if (searching)			result = search_history();
+			if (searching)			search_history();
 			if (searching)			continue;
 
 			if		(options.emacs)	result = readline(readed);
 			else if	(options.vi)	result = vi(readed);
 			else					result = dumb(readed);
 		}
+
+		undo_clear();
 
 		disable_raw_mode();
 

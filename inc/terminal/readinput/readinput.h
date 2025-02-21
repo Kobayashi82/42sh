@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 11:17:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:06:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 	extern int		vi_mode;
 	extern char		*tmp_line;
 	extern bool		searching;
+	extern bool		pushed;
 
 #pragma endregion
 
@@ -69,12 +70,13 @@
 	void	autocomplete();
 
 	//	------ HISTORY SEARCH ------
-	int		search_history();
+	void	search_history();
 	void	search_init();
 
 	//	-------- UNDO/REDO ---------
-	void	redo();
-	void	undo();
+	void	undo_push();
+	void	undo_pop();
 	void	undo_all();
+	void	undo_clear();
 
 #pragma endregion

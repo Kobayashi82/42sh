@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 13:39:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,9 @@
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
 
 					if (buffer.position > 0) {
+
+						undo_push();
+
 						size_t back_pos = 1;
 
 						while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
@@ -100,6 +103,8 @@
 						write_value(STDOUT_FILENO, "  ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
+
+						undo_push();
 					}
 				}
 
@@ -109,6 +114,8 @@
 
 				static void backspace_start() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
+
+					undo_push();
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
@@ -124,6 +131,8 @@
 						cursor_left(total_chars);
 						home();
 					}
+
+					undo_push();
 				}
 
 			#pragma endregion
@@ -136,6 +145,8 @@
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
+						undo_push();
+
 						size_t back_pos = 1;
 						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
 
@@ -145,6 +156,8 @@
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						cursor_move(buffer.length, buffer.position);
+
+						undo_push();
 					} else beep();
 				}
 
@@ -154,6 +167,9 @@
 
 				static void delete_word() {
 					if (buffer.position >= buffer.length) return;
+					
+					undo_push();
+
 					size_t end_pos = buffer.position;
 				
 					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
@@ -172,6 +188,8 @@
 						cursor_left(delete_len);
 						cursor_move(buffer.length, buffer.position);
 					}
+
+					undo_push();
 				}
 
 			#pragma endregion
@@ -180,6 +198,8 @@
 
 				static void delete_end() {
 					if (!buffer.length || buffer.position > buffer.length) return;
+
+					undo_push();
 
 					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
 
@@ -193,6 +213,8 @@
 						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 					}
+
+					undo_push();
 				}
 
 			#pragma endregion
@@ -350,6 +372,8 @@
 				//	Ignore multi-space chars
 				if (char_width(0, new_char) > 1) return (1);
 
+				if (!pushed) undo_push();
+
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
 					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
@@ -382,6 +406,7 @@
 				static void swap_char() {
 					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
+						undo_push();
 						char temp[8];
 						if (buffer.position < buffer.length) {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -416,6 +441,8 @@
 							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 							buffer.position += back_pos2;
 						}
+
+						undo_push();
 					}
 				}
 
@@ -464,6 +491,8 @@
 
 					if (buffer.position == buffer.length && buffer.position == 0) { beep(); return; }
 
+					undo_push();
+
 					next = get_word(buffer.position, buffer.length, false);
 					if (next.len > sizeof(next.value)) { beep(); return; };
 					if (!next.len) next = get_word(buffer.position, buffer.length, true);
@@ -491,9 +520,31 @@
 
 					write_value(STDOUT_FILENO, &buffer.value[buffer.position], prev.len + sep.len + next.len);
 					buffer.position = prev.start + next.len + sep.len + prev.len;
+
+					undo_push();
 				}
 
 			#pragma endregion
+
+		#pragma endregion
+
+		#pragma region "Undo"							("CTRL + _")
+
+			static void undo() {
+				int len = chars_width(0, buffer.position, buffer.value);
+				if (len > 0) cursor_left(len);
+
+				len = chars_width(0, buffer.length, buffer.value);
+				for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+				if (len > 0) cursor_left(len);
+
+				undo_pop();
+
+				write_value(STDOUT_FILENO, buffer.value, buffer.length);
+
+				len = chars_width(buffer.position, buffer.length, buffer.value);
+				if (len > 0) cursor_left(len);
+			}
 
 		#pragma endregion
 
@@ -556,7 +607,6 @@
 						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
 
 						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }							//	ALT + -			Redo last action		(No need to implement)
 							if (seq[0] == 't') { swap_word(); return (1); }						//	ALT + T			Swap word				(Not working with multi-width chars 漢 🤬)
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
 								if (seq[1] == 'A') 						arrow_up();				//	Up				History next

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 13:39:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:43:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,9 @@
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
 
 					if (buffer.position > 0) {
+						undo_push();
+						
 						size_t back_pos = 1;
-
 						while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
 						int c_width = char_width(buffer.position - back_pos, buffer.value);
 						if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
@@ -124,6 +125,7 @@
 						write_value(STDOUT_FILENO, "  ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
+						undo_push();
 					}
 				}
 
@@ -133,6 +135,8 @@
 
 				static void backspace_start() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) return;
+					
+					undo_push();
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
@@ -148,6 +152,7 @@
 						cursor_left(total_chars);
 						home();
 					}
+					undo_push();
 				}
 
 			#pragma endregion
@@ -160,9 +165,11 @@
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
+						undo_push();
+
 						size_t back_pos = 1;
 						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
-
+				
 						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
 						buffer.length -= back_pos;
 
@@ -176,6 +183,7 @@
 								cursor_left(0);
 							}
 						}
+						undo_push();
 					} else beep();
 				}
 
@@ -185,6 +193,9 @@
 
 				static void delete_word() {
 					if (buffer.position >= buffer.length) return;
+
+					undo_push();
+
 					size_t end_pos = buffer.position;
 				
 					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
@@ -202,14 +213,16 @@
 						for (size_t i = 0; i < delete_len; i++) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(delete_len);
 						cursor_move(buffer.length, buffer.position);
-					}
-				
+
+					}		
+					
 					if (vi_mode == EDIT) {
 						if (buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							cursor_left(0);
 						}
 					}
+					undo_push();
 				}
 
 			#pragma endregion
@@ -218,6 +231,8 @@
 
 				static void delete_end() {
 					if (!buffer.length || buffer.position > buffer.length) return;
+					
+					undo_push();
 
 					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
 
@@ -230,11 +245,13 @@
 						int tmp = total_chars;
 						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
+						
 						if (vi_mode == EDIT && buffer.position) {
 							do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							cursor_left(0);
 						}
 					}
+					undo_push();
 				}
 
 			#pragma endregion
@@ -430,6 +447,8 @@
 
 				//	Ignore multi-space chars
 				if (char_width(0, new_char) > 1) return (1);
+
+				if (!pushed) undo_push();
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -829,6 +848,7 @@
 				static void swap_char() {
 					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
+						undo_push();
 						char temp[8];
 						if (buffer.position < buffer.length) {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -864,6 +884,7 @@
 							buffer.position += back_pos2;
 						}
 						if (vi_mode == EDIT && buffer.position > char_prev(buffer.length, buffer.value)) arrow_left();
+						undo_push();
 					}
 				}
 
@@ -878,7 +899,12 @@
 				static void n_backspace() {
 					int number = get_n();
 
+					undo_push();
+
 					while (number--) backspace();
+
+					undo_push();
+
 				}
 
 			#pragma endregion
@@ -888,7 +914,11 @@
 				static void n_delete_char() {
 					int number = get_n();
 
+					undo_push();
+
 					while (number--) delete_char();
+
+					undo_push();
 				}
 
 			#pragma endregion
@@ -918,6 +948,8 @@
 
 			static void paste(bool reverse) {
 				if (!clipboard || !*clipboard) return;
+
+				undo_push();
 
 				int number = get_n();
 
@@ -961,6 +993,7 @@
 							cursor_left(0);
 						}
 					}
+					undo_push();
 				}
 			}
 
@@ -968,10 +1001,24 @@
 
 		#pragma region "Undo"							("u, U")
 
-			static void n_undo() {
-				int number = get_n();
+			static void n_undo(bool all) {			
+				int len = chars_width(0, buffer.position, buffer.value);
+				if (len > 0) cursor_left(len);
+				
+				len = chars_width(0, buffer.length, buffer.value);
+				for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+				if (len > 0) cursor_left(len);
+				
+				if (all) undo_all();
+				else {
+					int number = get_n();
+					while (number--) undo_pop();
+				}
 
-				while (number--) undo();
+				write_value(STDOUT_FILENO, buffer.value, buffer.length);
+
+				len = chars_width(buffer.position, buffer.length, buffer.value);
+				if (len > 0) cursor_left(len);
 			}
 
 		#pragma endregion
@@ -1228,7 +1275,6 @@
 						fcntl(STDIN_FILENO, F_SETFL, O_SYNC);
 
 						if (result > 0) {
-							if (seq[0] == '-') { redo(); return (1); }							//	ALT + -			Redo last action		(No need to implement)
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
 								if (seq[1] == 'A') 						arrow_up();				//	Up				History next
 								if (seq[1] == 'B') 						arrow_down();			//	Down			History prev
@@ -1264,7 +1310,7 @@
 				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
-				else if (buffer.c == 31)					{ undo();						}	//	[CTRL + _]	Undo the last change
+				else if (buffer.c == 31)					{ n_undo(0);					}	//	[CTRL + _]	Undo the last change
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
 					if (ft_isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
@@ -1313,8 +1359,8 @@
 					else if (buffer.c == 'l')	{ arrow_right();							}	//	[n] Move the cursor right
 					else if (buffer.c == ' ')	{ arrow_right();							}	//	[n] Move the cursor right
 					else if (buffer.c == '$')	{ end();									}	//	Move the cursor to the end of the line
-					else if (buffer.c == 'u')	{ n_undo();									}	//	[n] Undo the last change
-					else if (buffer.c == 'U')	{ undo_all();								}	//	Undo all changes
+					else if (buffer.c == 'u')	{ n_undo(0);								}	//	[n] Undo the last change
+					else if (buffer.c == 'U')	{ n_undo(1);								}	//	Undo all changes
 					else if (buffer.c == 'v')	{ return (edit_input());					}	//	Edit the input using the default editor and terminate the input
 					else if	(buffer.c == '#')	{ return (comment());						}	//	Comment and terminate the input
 

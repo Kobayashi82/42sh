@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 16:09:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/21 19:35:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,8 @@
 		void search_init() {
 			if (!history_length()) { beep(); return; }
 
+			undo_push();
+
 			old_len = chars_width(0, buffer.length, buffer.value);
 			original_size = buffer.size;
 			original_position = buffer.position;
@@ -204,6 +206,8 @@
 			sfree(search_buffer.value);
 			sfree(original_buffer);
 			sfree(match_show);
+
+			undo_push();
 		}
 
 	#pragma endregion
@@ -312,15 +316,13 @@
 
 	#pragma region "Search"
 
-		int search_history() {
-			if 		(buffer.c == 7)			{ search_cancel();			return (0); }	//	[CTRL + G]	Cancel search
-			else if (buffer.c == 18)		{ search_find(FORWARD);		return (0); }	//	[CTRL + R]	Search up
-			else if (buffer.c == 19)		{ search_find(BACKWARD);	return (0); }	//	[CTRL + S]	Search down
-			else if	(buffer.c == 127)		{ backspace();				return (0); }	//	[BackSpace]	Delete the previous character
-			else if (ft_isprint(buffer.c))	{ print_char();				return (0); }
-
-			search_exit();
-			return (1);
+		void search_history() {
+			if 		(buffer.c == 7)			search_cancel();		//	[CTRL + G]	Cancel search
+			else if (buffer.c == 18)		search_find(FORWARD);	//	[CTRL + R]	Search up
+			else if (buffer.c == 19)		search_find(BACKWARD);	//	[CTRL + S]	Search down
+			else if	(buffer.c == 127)		backspace();			//	[BackSpace]	Delete the previous character
+			else if (ft_isprint(buffer.c))	print_char();			
+			else							search_exit();
 		}
 
 	#pragma endregion
