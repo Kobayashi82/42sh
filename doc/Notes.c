@@ -1,41 +1,33 @@
 
-// Vi
+// -----------------------------------------
+
 // AutoComplete
-// Replacement mode
-// History search
 // Command with char position
-// Undo
 // Multichar column 0
-// History expansión
-
-
-
-
-
-
 // SIGHUP, SIGTERM para guardar historial
-// leaks si history file no existe
-// 
+
+// -----------------------------------------
+
+// AutoComplete necesita
+// Alias
+// Variables
+// Builtins
+// Options
+
+// -----------------------------------------
+
 // fc builtin
 // history builtin
-// CTRL + R
-// !!
 // 
 // Casos de comillas sin cerrar o terminacion en token
 // 
 // En set o unset, si son variables del historial, actualizar variables internas
 // 
-// Vi input
-// 
 // recordar que - (guion) suele indicar stdin o stdout para algunos comandos, como cat, por ejemplo. en mi caso,
 // creo que se trata normal y corriente. No creo que tenga que hacer nada
 // 
-// !!				substitute for the last command
-// !«-n»			substitute for command «n» from the end of history
-// !«n»			substitute for command event «n» from history
-// !«prefix»		substitute for the last command beginning with “«prefix»”
-// !?«substr»?		substitute for the last command containing “«substr»”.
 
+// -----------------------------------------
 
 //	CONSTANTES
 //
@@ -48,7 +40,7 @@
 // Ambos son constantes:
 // const int *const ptr = &value; // Ni *ptr ni ptr pueden cambiar.
 
-
+// -----------------------------------------
 
 //	SHELL OPERATION
 //
@@ -93,7 +85,6 @@
 // the exit status of the command is the exit status of the last command substitution performed. If there were no command substitutions, the command exits with a status of zero.
 
 
-
 //	QUOTING
 //
 // En cuanto hay una #, todo lo que sigue se considera un comentario a no ser que esté escapada o entre comillas
@@ -127,7 +118,6 @@
 //		\cx			a control-x character
 
 
-
 //	RESERVED WORDS
 //
 // The following words are recognized as reserved when unquoted and the first word of a command (see below for exceptions):
@@ -139,7 +129,6 @@
 
 // in is recognized as a reserved word if it is the third word of a case or select command.
 // in and do are recognized as reserved words if they are the third word in a for command.
-
 
 
 //	SPECIAL PARAMETERS
@@ -175,76 +164,13 @@
 //		commands (see Shell Scripts), $0 is set to the name of that file. If Bash is started with the -c option (see Invoking Bash),
 //		then $0 is set to the first argument after the string to be executed, if one is present. Otherwise, it is set to the filename used to invoke Bash, as given by argument zero.
 
-
-
-// Readline
-// -------------
-// Undo
-// Switch word
-// Fix navigation and switch char/word
-
-// Dumb
-// ---------
-// Backspace, enter (tab or delete?)
-
-// Vi
-// ---
-// Undo
-// Fix navigation and switch char
-// Todas las cosas de vi
-
-
-// Partes importantes:
-
-// Fix navigation
-// Tab
-// Undo/Redo
-
-// Opciones relacionadas:
-// Historial
-// Emacs/vi
-// AutoComplete
-
-
-// Fix Navigation:
-
-// Al mover el cursor, determinar si el caracter es ampliado.
-
-// Esto es importante al cambiar de fila.
-
-// Hay que cambiar:
-
-// Backspace (todos)
-// Delete (todos)
-// Home y End
-
-// Left y right no afectan en el sentido de que se calcula el carácter en base a la posición actual en el buffer.
-
-// Ademas, optimizar delete word.
-// Puede ser que necesite hacer get_cursor solo al principio y al redimensionar.
-
-// Por supuesto switch char y word debe de funcionar cuando está entre filas. Lo mismo que borra palabras
-
-
-// AutoComplete necesita
-// Alias
-// Variables
-// Builtins
-// Options
-
-// History, readinput necesita
-// Options
-
-// Los history expansión se hacen antes de devolver el readinput?
-
+// -----------------------------------------
 
 // Builtins como builtin que dice los builtins que existen?
 
-// Help?
-
+// -----------------------------------------
 
 // Help
-
 // Here are the sections available:
 
 // 1. Input
@@ -253,7 +179,6 @@
 // 4. Wildcards
 // 5. Builtins
 // 6. Redirections
-
 
 // Input
 //     History
@@ -268,19 +193,10 @@
 //     Redirections
 //     Builtins
 
+// -----------------------------------------
 
-// y - Copy
-// d - Delete
-// c - Delete & Insertion
-// r - Replace char
-// R - Replace mode
-// u - Undo last change
-// U - Undo all
-// CTRL + W - Backspace word
-// CTRL + _ - Undo last change
-
-// +- numeric & printed
-
+// Para el tema de saber si es tab copiado o pegado
+//
 // int has_more_bytes(int fd) {
 //  int bytes_pending;
 //  if (ioctl(fd, FIONREAD, &bytes_pending) == -1) {
@@ -289,16 +205,7 @@
 //  return bytes_pending > 0; // Devuelve true si hay más bytes
 // }
 
-// Divido pattern en una lista.
-// Optimizar cada value en cada nodo
-
-// Que pasa si hay varios nodos con **/?
-
-// Obtener base dir (directorio inicial)
-// Por cada nodo genero un files. Si no es el último nodo, llamo a la misma función con el siguiente nodo y con files como base dir. Tiene que devolver un puntero de tipo files la función.
-// Si llega al último nodo y no hay coincidencias, devuelve null, si no, devuelve un puntero a la coincidencia.
-// Pero es importante que se hagan merge de los files devueltos.
-
+// -----------------------------------------
 
 // SINTAXIS
 
@@ -359,9 +266,7 @@
 // "Error de sintaxis: redirección mal ubicada" si una redirección está en un lugar no válido.
 // "Error de sintaxis: paréntesis desbalanceados" si los paréntesis no están correctamente emparejados.
 // 7. Ejemplo de flujo de análisis:
-// c
-// Copiar
-// Editar
+
 // void validate_syntax(char **tokens) {
 //     int i = 0;
 //     int parentheses_count = 0;
@@ -413,169 +318,4 @@
 //     }
 // }
 
-// BRACES
-
-// #include <stdio.h>
-// #include <stdlib.h>
-// #include <string.h>
-// #include <ctype.h>
-
-// typedef struct s_arg {
-//     char *value;
-// } t_arg;
-
-// typedef struct s_list {
-//     void *data;
-//     struct s_list *next;
-// } t_list;
-
-// t_list *new_list(void *data) {
-//     t_list *node = malloc(sizeof(t_list));
-//     if (!node)
-//         return NULL;
-//     node->data = data;
-//     node->next = NULL;
-//     return node;
-// }
-
-// void append_to_list(t_list **list, void *data) {
-//     t_list *node = new_list(data);
-//     if (!*list) {
-//         *list = node;
-//     } else {
-//         t_list *tmp = *list;
-//         while (tmp->next)
-//             tmp = tmp->next;
-//         tmp->next = node;
-//     }
-// }
-
-// // Función para dividir una cadena por comas (como {a,b,c})
-// char **split_by_comma(const char *str) {
-//     int count = 1;
-//     for (const char *p = str; *p; p++) {
-//         if (*p == ',') count++;
-//     }
-
-//     char **result = malloc((count + 1) * sizeof(char *));
-//     if (!result) return NULL;
-
-//     int i = 0;
-//     const char *start = str;
-//     for (const char *p = str; ; p++) {
-//         if (*p == ',' || *p == '\0') {
-//             int len = p - start;
-//             result[i] = malloc(len + 1);
-//             strncpy(result[i], start, len);
-//             result[i][len] = '\0';
-//             i++;
-//             if (*p == '\0') break;
-//             start = p + 1;
-//         }
-//     }
-//     result[i] = NULL;
-//     return result;
-// }
-
-// // Función para expandir secuencias como {a..z} o {0..9}
-// t_list *expand_sequence(const char *start, const char *end, int step) {
-//     t_list *result = NULL;
-//     if (isalpha(start[0]) && isalpha(end[0])) {  // Expansión de letras
-//         for (char c = start[0]; c <= end[0]; c += step) {
-//             char *s = malloc(2);
-//             s[0] = c;
-//             s[1] = '\0';
-//             append_to_list(&result, s);
-//         }
-//     } else if (isdigit(start[0]) && isdigit(end[0])) {  // Expansión de números
-//         for (int i = atoi(start); i <= atoi(end); i += step) {
-//             char *s = malloc(20);
-//             sprintf(s, "%d", i);
-//             append_to_list(&result, s);
-//         }
-//     }
-//     return result;
-// }
-
-// // Función que maneja la expansión de una sección entre llaves
-// t_list *expand_brace_segment(char *segment) {
-//     t_list *result = NULL;
-//     if (strchr(segment, '..')) {  // Expansión de secuencia {a..z} o {0..9}
-//         char *start = strtok(segment, "..");
-//         char *end = strtok(NULL, "..");
-//         int step = 1;
-//         if (strtok(NULL, "..")) {  // Si hay un tercer argumento es el paso
-//             step = atoi(strtok(NULL, ".."));
-//         }
-//         result = expand_sequence(start, end, step);
-//     } else {  // Expansión de comas {a,b,c}
-//         char **expanded = split_by_comma(segment);
-//         for (int i = 0; expanded[i] != NULL; i++) {
-//             append_to_list(&result, expanded[i]);
-//             free(expanded[i]);
-//         }
-//         free(expanded);
-//     }
-//     return result;
-// }
-
-// // Función que maneja el globo general de los braces
-// t_list *expand_braces(t_arg *arg) {
-//     t_list *expansions = NULL;
-//     char *pattern = arg->value;
-//     char *start = pattern;
-//     while (*start) {
-//         if (*start == '{') {
-//             char *end = strchr(start, '}');
-//             if (!end) break;
-
-//             char *brace_content = strndup(start + 1, end - start - 1);
-//             t_list *brace_expansion = expand_brace_segment(brace_content);
-//             free(brace_content);
-
-//             // Expandir el patrón anterior y posterior
-//             char *pre = strndup(pattern, start - pattern);
-//             append_to_list(&expansions, pre);
-//             for (t_list *node = brace_expansion; node; node = node->next) {
-//                 append_to_list(&expansions, node->data);
-//             }
-
-//             char *post = strdup(end + 1);
-//             if (*post) {
-//                 t_arg post_arg = { post };
-//                 t_list *post_expansion = expand_braces(&post_arg);
-//                 for (t_list *node = post_expansion; node; node = node->next) {
-//                     append_to_list(&expansions, node->data);
-//                 }
-//                 free(post);
-//             }
-//             free(pre);
-//             start = end + 1;
-//         } else {
-//             char *end = strchr(start, '{');
-//             if (!end) {
-//                 append_to_list(&expansions, strdup(start));
-//                 break;
-//             } else {
-//                 int len = end - start;
-//                 char *no_braces = strndup(start, len);
-//                 append_to_list(&expansions, no_braces);
-//                 start = end;
-//             }
-//         }
-//     }
-//     return expansions;
-// }
-
-// // Función principal de prueba
-// int main() {
-//     t_arg arg = { "{a..z..2}popo{a,{0..9},c}" };
-//     t_list *expansions = expand_braces(&arg);
-
-//     // Imprimir todas las expansiones generadas
-//     for (t_list *node = expansions; node; node = node->next) {
-//         printf("%s\n", (char *)node->data);
-//     }
-
-//     return 0;
-// }
+// -----------------------------------------

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 12:17:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/22 12:25:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -550,6 +550,12 @@
 #pragma endregion
 
 #pragma region "Expand"
+
+	// !!			Substitute for the last command. Same as !-1.
+	// !-[n]		Substitute for command position [n] from the end of history.
+	// ![n]			Substitute for command event [n] from history.
+	// ![str]		Substitute for the last command beginning with [str].
+	// !?[str]?		Substitute for the last command containing [str]. Last '?' is optional.
 
 	#pragma region "Position"
 
