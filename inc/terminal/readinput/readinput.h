@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:06:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/22 20:09:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@
 	void	search_init();
 
 	//	-------- UNDO/REDO ---------
-	void	undo_push();
+	void	undo_push(bool push);
 	void	undo_pop();
 	void	undo_all();
 	void	undo_clear();

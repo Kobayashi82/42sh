@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:39:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/22 20:09:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 
 #pragma region "Push"
 
-	void undo_push() {
+	void undo_push(bool push) {
 		if (stack && !ft_strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
 		t_undo *new = smalloc(sizeof(t_undo));
 		new->size = buffer.size;
@@ -45,7 +45,7 @@
 		ft_memcpy(new->value, buffer.value, buffer.size);
 		new->next = stack;
 		stack = new;
-		pushed = true;
+		pushed = push;
 	}
 
 #pragma endregion

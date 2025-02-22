@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 12:18:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/22 20:22:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 		vi_mode = INSERT;
 
-		undo_push();
+		//undo_push(f);
 
 		prompt_set(PS1, prompt);
 		enable_raw_mode();

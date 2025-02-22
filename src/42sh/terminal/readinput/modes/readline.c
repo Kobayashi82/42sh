@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 19:36:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/22 21:02:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@
 
 			static int ctrl_d(const int n) {
 				if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
+					history_set_pos_end();
+					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+					
 					sfree(buffer.value); buffer.value = NULL;
 					write(STDOUT_FILENO, "\r\n", 2);
-					history_set_pos_end();
 					return (1);
 				} return (0);
 			}
@@ -52,12 +54,14 @@
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {
-					buffer.position = 0; buffer.length = 0;
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					history_set_pos_end();
+					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
+					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
+
 					if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
 					else					write(STDOUT_FILENO, "\r\n", 2);
-					if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+
 					nsignal = 2;
 					return (1);
 				} return (0);
@@ -69,10 +73,13 @@
 
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
-					buffer.value[buffer.length] = '\0';
-					write(STDOUT_FILENO, "\r\n", 2);
 					history_set_pos_end();
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
+					buffer.value[buffer.length] = '\0';
+
+					write(STDOUT_FILENO, "\r\n", 2);
+
 					return (1);
 				} return (0);
 			}
@@ -88,7 +95,7 @@
 
 					if (buffer.position > 0) {
 
-						undo_push();
+						undo_push(false);
 
 						size_t back_pos = 1;
 
@@ -103,8 +110,6 @@
 						write_value(STDOUT_FILENO, "  ", c_width); cursor_left(c_width);
 
 						cursor_move(buffer.length, buffer.position);
-
-						undo_push();
 					}
 				}
 
@@ -115,7 +120,7 @@
 				static void backspace_start() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
 
-					undo_push();
+					undo_push(false);
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
@@ -131,8 +136,6 @@
 						cursor_left(total_chars);
 						home();
 					}
-
-					undo_push();
 				}
 
 			#pragma endregion
@@ -145,7 +148,7 @@
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
-						undo_push();
+						undo_push(false);
 
 						size_t back_pos = 1;
 						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
@@ -156,8 +159,6 @@
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 						write_value(STDOUT_FILENO, "  ", 2); cursor_left(2);
 						cursor_move(buffer.length, buffer.position);
-
-						undo_push();
 					} else beep();
 				}
 
@@ -168,7 +169,7 @@
 				static void delete_word() {
 					if (buffer.position >= buffer.length) return;
 					
-					undo_push();
+					undo_push(false);
 
 					size_t end_pos = buffer.position;
 				
@@ -188,18 +189,16 @@
 						cursor_left(delete_len);
 						cursor_move(buffer.length, buffer.position);
 					}
-
-					undo_push();
 				}
 
 			#pragma endregion
 
 			#pragma region "End"						("C, S, D")
 
-				static void delete_end() {
+				static void delete_end(bool push) {
 					if (!buffer.length || buffer.position > buffer.length) return;
 
-					undo_push();
+					if (push) undo_push(false);
 
 					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
 
@@ -213,8 +212,6 @@
 						while (tmp--) write_value(STDOUT_FILENO, " ", 1);
 						cursor_left(total_chars);
 					}
-
-					undo_push();
 				}
 
 			#pragma endregion
@@ -258,7 +255,7 @@
 					if (!new_line) { beep(); return; }
 					if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
 
-					home(); delete_end();
+					home(); delete_end(false);
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -286,7 +283,7 @@
 						free_line = true;
 					}
 
-					home(); delete_end();
+					home(); delete_end(false);
 					while (ft_strlen(new_line) >= (int)buffer.size) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
@@ -372,7 +369,7 @@
 				//	Ignore multi-space chars
 				if (char_width(0, new_char) > 1) return (1);
 
-				if (!pushed) undo_push();
+				if (!pushed) undo_push(true);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -406,7 +403,7 @@
 				static void swap_char() {
 					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
-						undo_push();
+						undo_push(false);
 						char temp[8];
 						if (buffer.position < buffer.length) {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -441,8 +438,6 @@
 							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos1], back_pos1 + back_pos2);
 							buffer.position += back_pos2;
 						}
-
-						undo_push();
 					}
 				}
 
@@ -491,7 +486,7 @@
 
 					if (buffer.position == buffer.length && buffer.position == 0) { beep(); return; }
 
-					undo_push();
+					undo_push(false);
 
 					next = get_word(buffer.position, buffer.length, false);
 					if (next.len > sizeof(next.value)) { beep(); return; };
@@ -520,8 +515,6 @@
 
 					write_value(STDOUT_FILENO, &buffer.value[buffer.position], prev.len + sep.len + next.len);
 					buffer.position = prev.start + next.len + sep.len + prev.len;
-
-					undo_push();
 				}
 
 			#pragma endregion
@@ -638,7 +631,7 @@
 				else if (buffer.c == 8)						{ backspace();					}	//	[CTRL + H]	Delete the previous character
 				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
-				else if (buffer.c == 11)					{ delete_end();					}	//	[CTRL + K]	Delete from cursor to end
+				else if (buffer.c == 11)					{ delete_end(1);				}	//	[CTRL + K]	Delete from cursor to end
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
@@ -665,7 +658,7 @@
 		int result = 0;
 
 		if		(ctrl_d(readed))	result = 1;
-		else if	(ctrl_c())			result = 0;
+		else if	(ctrl_c())			result = 1;
 		else if	(enter())			result = 1;
 		else if (specials())		result = 0;
 		else if (cursor())			result = 0;
