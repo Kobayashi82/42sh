@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 12:58:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 11:26:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@
 
 			history_add(terminal.input, false);
 
-			ft_printf(1, "%s\n", terminal.input);
+			if (!ft_isspace_s(terminal.input)) ft_printf(1, "%s\n", terminal.input);
 			execute_commands(terminal.input);
 			sfree(terminal.input);
 			//first_step();

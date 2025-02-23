@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/08 17:03:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:37:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,10 @@
 
 		//	Print main process error messages
 		static void catastrophic_msg(int error, char *value) {
+			if (error == SEGQUIT)		print(2, "Quit\n", PRINT);
+			if (error == SEGFAULT)		print(2, "CATASTROPHIC - Segmentation fault\n", PRINT);
+			if (error == STDIN_CLOSED)	print(2, "CATASTROPHIC - Standard input closed\n", PRINT);
+			if (error == STDOUT_CLOSED)	print(2, "CATASTROPHIC - Standard output closed\n", PRINT);
 			if (error == NO_MEMORY)		print(2, "CATASTROPHIC - No memory left on the device\n", PRINT);
 			if (error == FORK_FAIL)		print(2, "CATASTROPHIC - fork failed\n", PRINT);
 			if (error == START_ARGS)	print(2, "-c: option requires an argument\n", PRINT);

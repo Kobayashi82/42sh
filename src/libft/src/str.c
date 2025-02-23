@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/21 21:53:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 12:31:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -636,5 +636,11 @@
 
 		return (sfree(str), new_str);
 	}
+
+#pragma endregion
+
+#pragma region "BEEP"
+
+	void beep() { write(STDOUT_FILENO, "\a", 1); }
 
 #pragma endregion

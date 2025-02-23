@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 20:20:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 12:55:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,12 @@
 
 #pragma region "Variables"
 
+	enum		e_mode { START, FORWARD, BACKWARD };
+
 	t_buffer		search_buffer;
+	bool			hist_searching;							//	Indicates whether the terminal is in searching mode
+	
+	static bool		initialized;
 
 	static size_t	original_size, original_position;
 	static char		*original_buffer;
@@ -32,9 +37,6 @@
 	static char		*match_show;
 
 	static int		search_find(int mode);
-	static void		beep() { write(STDOUT_FILENO, "\a", 1); }
-
-	enum		e_mode { START, FORWARD, BACKWARD };
 
 #pragma endregion
 
@@ -153,14 +155,15 @@
 			if (!history_length()) { beep(); return; }
 
 			undo_push(false);
-
+			
 			old_len = chars_width(0, buffer.length, buffer.value);
 			original_size = buffer.size;
 			original_position = buffer.position;
 			original_buffer = smalloc(buffer.size);
 			ft_memcpy(original_buffer, buffer.value, buffer.size);
-
-			searching = true;
+			
+			hist_searching = true;
+			initialized = true;
 			search_buffer.size = 1024;
 			search_buffer.position = 0, search_buffer.length = 0;
 			search_buffer.value = ft_calloc(search_buffer.size, sizeof(char));
@@ -182,8 +185,10 @@
 
 	#pragma region "Exit"
 
-		static void search_exit() {
-			searching = false;
+		static int search_exit() {
+			hist_searching = false;
+			initialized = false;
+
 			int len = chars_width(0, search_buffer.position, search_buffer.value);
 			if (no_match) len += 26; else len += 19;
 			if (len > 0) cursor_left(len);
@@ -208,20 +213,24 @@
 			sfree(match_show);
 
 			undo_push(false);
+
+			return (0);
 		}
 
 	#pragma endregion
 
 	#pragma region "Cancel"						("CTRL + G")
 			
-		static void search_cancel() {
+		static int search_cancel() {
 			old_len = chars_width(0, buffer.length, buffer.value);
+
 			sfree(buffer.value);
 			buffer.size = original_size;
 			buffer.position = original_position;
 			buffer.value = smalloc(original_size);
 			ft_memcpy(buffer.value, original_buffer, original_size);
-			search_exit();
+
+			return (search_exit());
 		}
 		
 	#pragma endregion
@@ -316,13 +325,17 @@
 
 	#pragma region "Search"
 
-		void search_history() {
-			if 		(buffer.c == 7)			search_cancel();		//	[CTRL + G]	Cancel search
-			else if (buffer.c == 18)		search_find(FORWARD);	//	[CTRL + R]	Search up
-			else if (buffer.c == 19)		search_find(BACKWARD);	//	[CTRL + S]	Search down
-			else if	(buffer.c == 127)		backspace();			//	[BackSpace]	Delete the previous character
+		int history_search() {
+			if (!initialized) { search_init(); return (1); }
+
+			if 		(buffer.c == 7)			return (search_cancel());	//	[CTRL + G]	Cancel search
+			else if (buffer.c == 18)		search_find(FORWARD);		//	[CTRL + R]	Search up
+			else if (buffer.c == 19)		search_find(BACKWARD);		//	[CTRL + S]	Search down
+			else if	(buffer.c == 127)		backspace();				//	[BackSpace]	Delete the previous character
 			else if (ft_isprint(buffer.c))	print_char();			
-			else							search_exit();
+			else							return (search_exit());
+
+			return (1);
 		}
 
 	#pragma endregion

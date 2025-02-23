@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 20:59:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:28:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@
 
 #pragma region "Variables"
 
+	enum e_vi_mode { INSERT, EDIT };
 	enum e_mode { CURSOR, AFTER_CURSOR, FIRST, LAST };
 
 	static bool	number_mode, replacement_mode, replacement_char;
-	static char	n[7], last_cmd, last_char[7], *clipboard;
-	static int	rep_n;
+	static char	n[7], last_cmd, last_char[7], *clipboard, *tmp_line;
+	static int	rep_n, vi_mode = INSERT;
 
 	static void	insert_mode(int mode);
 	static int	get_n();
-	static void beep() { write(STDOUT_FILENO, "\a", 1); }
 	static void home();
 
 #pragma endregion
@@ -51,16 +51,12 @@
 
 		#pragma region "EOF"							("CTRL + D")
 
-			static int ctrl_d(const int n) {
-				if (n <= 0 || buffer.c == 4) {
-					history_set_pos_end();
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
+			static int ctrl_d() {
+				if (buffer.c == 4) {
 					if (!buffer.length) {
 						sfree(buffer.value); buffer.value = NULL;
 						write(STDOUT_FILENO, "\r\n", 2);
 					} else {
-						insert_mode(CURSOR);
 						buffer.value[buffer.length] = '\0';
 						write(STDOUT_FILENO, "\r\n", 2);
 					}
@@ -74,14 +70,10 @@
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {
-					history_set_pos_end();
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
-					insert_mode(CURSOR);
 					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
 
-					if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
-					else					write(STDOUT_FILENO, "\r\n", 2);
+					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
+					else							write(STDOUT_FILENO, "^C\r\n", 4);
 
 					nsignal = 2;
 					return (1);
@@ -93,11 +85,7 @@
 		#pragma region "NewLine"						("CTRL + J, Enter")
 
 			static int enter() {
-				if (buffer.c == '\r' || buffer.c == '\n') {
-					history_set_pos_end();
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
-					insert_mode(CURSOR);
+				if (buffer.c == '\r' || buffer.c == '\n') {	
 					buffer.value[buffer.length] = '\0';
 
 					write(STDOUT_FILENO, "\r\n", 2);
@@ -449,7 +437,7 @@
 				//	Ignore multi-space chars
 				if (char_width(0, new_char) > 1) return (1);
 
-				if (!pushed) undo_push(true);
+				undo_push(true);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -1038,12 +1026,10 @@
 				buffer.value[0] = '#';
 				buffer.length++;
 
-				history_set_pos_end();
 				buffer.value[buffer.length] = '\0';
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 				write(STDOUT_FILENO, "\r\n", 2);
-				if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-
+				
 				return (2);
 			}
 
@@ -1139,10 +1125,7 @@
 					sfree(editor);
 					tmp_delete_path(tmp_file);
 
-					insert_mode(CURSOR);
-					history_set_pos_end();
 					write(STDOUT_FILENO, "\r\n", 2);
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					return (2);
 				} return (1);
 			}
@@ -1308,12 +1291,12 @@
 				else if (buffer.c == 8 && !vi_mode)			{ backspace(1);					}	//	[CTRL + H]	Delete the previous character									(Only in insertion mode)
 				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
-				else if (buffer.c == 18)					{ search_init();				}	//	[CTRL + R]	History incremental search
-				else if	(buffer.c == 19 && !vi_mode)		{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault													(Only in insertion mode)
+				else if (buffer.c == 18)					{ history_search();				}	//	[CTRL + R]	History incremental search
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
 				else if (buffer.c == 31)					{ n_undo(0);					}	//	[CTRL + _]	Undo the last change
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
+				else if (buffer.c >= 28 && buffer.c <= 31)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
 					if (ft_isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
 
@@ -1380,13 +1363,13 @@
 
 #pragma region "Vi"
 
-	int vi(int readed) {
+	int vi() {
 		int result = 0;
 
 		if (vi_mode && !ft_isdigit(buffer.c) && !number_mode)	ft_memset(n, 0, 7);
 		if (vi_mode && !ft_isdigit(buffer.c) && number_mode) {
 			if (num_mode_off()) {
-				if		(ctrl_d(readed))		result = 1;
+				if		(ctrl_d())				result = 1;
 				else if	(ctrl_c())				result = 0;
 				else if	(enter())				result = 1;
 
@@ -1396,7 +1379,7 @@
 		}
 
 		if ((replacement_char || replacement_mode)) {
-			if		(ctrl_d(readed))		result = 1;
+			if		(ctrl_d())				result = 1;
 			else if	(ctrl_c())				result = 0;
 			else if	(enter())				result = 1;
 			else if (ft_isprint(buffer.c)) {
@@ -1416,14 +1399,16 @@
 			return (result);
 		} replacement_mode = false;
 
-		if		(ctrl_d(readed))		result = 1;
+		if		(ctrl_d())				result = 1;
 		else if	(ctrl_c())				result = 1;
 		else if	(enter())				result = 1;
 		else if ((result = specials()))	result = (result == 2);
 		else if (cursor())				result = 0;
 		else if (print_char())			result = 0;
 
+		if (result) insert_mode(CURSOR);
 		if (result && clipboard) sfree(clipboard);
+		if (result && tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 		return (result);
 	}
 

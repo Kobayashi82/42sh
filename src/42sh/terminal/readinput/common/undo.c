@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 20:09:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 12:32:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,14 @@
 	} t_undo;
 
 	static t_undo	*stack;
-	bool			pushed;
-
-	static void beep() { write(STDOUT_FILENO, "\a", 1); }
+	static bool		pushed;
 
 #pragma endregion
 
 #pragma region "Push"
 
 	void undo_push(bool push) {
+		if (push && !pushed) return;
 		if (stack && !ft_strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
 		t_undo *new = smalloc(sizeof(t_undo));
 		new->size = buffer.size;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:13:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 12:32:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,13 @@
 			char	*replace(char *str, int *start, int len, char *replace);
 
 		#pragma endregion
+
+		#pragma region "BEEP"
+
+			void	beep();
+
+		#pragma endregion
+
 
 	#pragma endregion
 

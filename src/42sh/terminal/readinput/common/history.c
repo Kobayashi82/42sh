@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 12:25:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 12:39:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,16 +444,6 @@
 			for (size_t i = 0; i < length && history[i]; ++i)
 				if (history[i]->event == event) return (history[i]);
 
-			return (NULL);
-		}
-
-	#pragma endregion
-
-	#pragma region "Search"
-
-		HIST_ENTRY *history_search(const char *term, bool reverse) {
-			(void) term;
-			(void) reverse;
 			return (NULL);
 		}
 

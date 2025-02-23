@@ -6,18 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 23:22:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:47:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/readinput.h"
 	#include "terminal/signals.h"
+	#include "main/options.h"
+	#include "main/error.h"
 
-	#include <unistd.h>
 	#include <signal.h>
+	#include <sys/ioctl.h>
 
 #pragma endregion
 
@@ -26,9 +30,12 @@ int	nsignal;
 #pragma region "SIG_INT"
 
 	//	Handle SIGINT signal
-	void sigint_handler(int sig) {
+	static void sigint_handler(int sig) {
 		nsignal = sig;
-		write(STDIN_FILENO, "\n", 1);
+		if (raw_mode) {
+			char byte = 3;
+			ioctl(STDIN_FILENO, TIOCSTI, &byte);
+		}
 	}
 
 #pragma endregion
@@ -36,9 +43,14 @@ int	nsignal;
 #pragma region "SIG_QUIT"
 
 	//	Handle SIGQUIT signal
-	void sigquit_handler(int sig) {
+	static void sigquit_handler(int sig) {
 		nsignal = sig;
-		write(1, "Quit\n", 5);
+		if (raw_mode) {
+			disable_raw_mode();
+			write(1, "\n", 1);
+			if (buffer.value) sfree(buffer.value);
+		}
+		exit_error(SEGQUIT, 3, NULL, true);
 	}
 
 #pragma endregion
@@ -46,10 +58,25 @@ int	nsignal;
 #pragma region "SIG_WINCH"
 
 	//	Handle SIGWINCH signal
-	void sigwinch_handler(int sig) {
-		nsignal = sig;
+	static void sigwinch_handler(int sig) {
+		(void) sig;
 		terminal_initialize();
-		cursor_get();			// Esto solo cuando se esté en modo interactivo
+		if (raw_mode) cursor_get();
+	}
+
+#pragma endregion
+
+#pragma region "SIG_SEV"
+
+	//	Handle SIGSEGV signal
+	static void sigsegv_handler(int sig) {
+		nsignal = sig;
+		if (raw_mode) {
+			disable_raw_mode();
+			write(1, "\n", 1);
+			if (buffer.value) sfree(buffer.value);
+		}
+		exit_error(SEGFAULT, 11, NULL, true);
 	}
 
 #pragma endregion
@@ -58,9 +85,13 @@ int	nsignal;
 
 	void signals_set() {
 		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, SIG_IGN);
+		signal(SIGQUIT, sigquit_handler);
 		signal(SIGWINCH, sigwinch_handler);
+		signal(SIGSEGV, sigsegv_handler);
 		nsignal = 0;
 	}
 
 #pragma endregion
+
+// kill -SIGSEGV $(pgrep 42sh)
+// kill -SIGSEGV $(pgrep -f 'valgrind.*42sh')

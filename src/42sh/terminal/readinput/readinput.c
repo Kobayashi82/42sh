@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 20:22:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:47:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,14 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
 	#include "main/options.h"
+	#include "main/error.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
 	t_buffer	buffer;
-
-	bool		show_control_chars	= true;			//	Displays ^C or hides it
-	bool		fake_segfault		= false;		//	Simulates a segmentation fault in the current command (does not execute or save it to history)
-	int			vi_mode				= INSERT;		//	Current 'vi' mode
-	char		*tmp_line			= NULL;			//	Store input while navigating through history
-	bool		searching			= false;		//	Indicates whether the terminal is in searching mode
-
-	static bool	raw_mode			= false;		//	Indicates whether the terminal is in raw mode
+	bool		raw_mode;				//	Indicates whether the terminal is in raw mode
 
 #pragma endregion
 
@@ -45,7 +39,18 @@
 			raw_mode = false;
 			cursor_show();
 			terminal_release();
-			tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
+			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
+				int tty_fd = open("/dev/tty", O_RDWR);
+				if (tty_fd == -1) {
+					sfree(buffer.value);
+					write(STDERR_FILENO, "\n", 1);
+					exit_error(STDIN_CLOSED, 1, NULL, true);
+				}
+				tcsetattr(tty_fd, TCSAFLUSH, &terminal.term);
+				sdup2(&tty_fd, STDIN_FILENO, true);
+				write(STDOUT_FILENO, "\n", 1);
+			} else
+				tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
 			prompt_clear(BOTH);
 		}
 	}
@@ -75,39 +80,53 @@
 		buffer.position = 0, buffer.length = 0;
 		buffer.value = ft_calloc(buffer.size, sizeof(char));
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
-		vi_mode = INSERT;
 
-		//undo_push(f);
+		enable_raw_mode();
 
 		prompt_set(PS1, prompt);
-		enable_raw_mode();
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
 
 		cursor_get();
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
+			
+			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
+				int tty_fd = open("/dev/tty", O_RDWR);
+				if (tty_fd == -1) {
+					sfree(buffer.value);
+					disable_raw_mode();
+					write(STDERR_FILENO, "\n", 1);
+					exit_error(STDIN_CLOSED, 1, NULL, true);
+				}
+				sdup2(&tty_fd, STDIN_FILENO, true);
+				continue;
+			}
+			
+			if (fcntl(STDOUT_FILENO, F_GETFD) == -1) {
+				int tty_fd = open("/dev/tty", O_WRONLY);
+				if (tty_fd != -1) {
+					sfree(buffer.value);
+					disable_raw_mode();
+					write(STDERR_FILENO, "\n", 1);
+					exit_error(STDOUT_CLOSED, 1, NULL, true);
+				}
+				sdup2(&tty_fd, STDOUT_FILENO, true);
+			}
+			
 			cursor_hide();
 
-			if (searching)			search_history();
-			if (searching)			continue;
+			if (hist_searching && history_search()) continue;
 
 			if		(options.emacs)	result = readline(readed);
-			else if	(options.vi)	result = vi(readed);
+			else if	(options.vi)	result = vi();
 			else					result = dumb(readed);
 		}
-
+		
+		history_set_pos_end();
 		undo_clear();
-		disable_raw_mode();
 		
-		if (fake_segfault) { fake_segfault = false;
-			write(2, "Segmentation fault (core dumped)\n", 34);
-			return (readinput(prompt));
-		}
-		
-		if ((options.emacs || options.vi) && options.history) {
-			// Expand history commands
-		}
+		disable_raw_mode();	
 		
 		return (expand_history(buffer.value));
 	}

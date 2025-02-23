@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:17:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 13:35:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/signals.h"
+	#include "main/options.h"
 
 #pragma endregion
 
@@ -31,8 +32,7 @@
 				if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
 					sfree(buffer.value); buffer.value = NULL;
 					write(STDOUT_FILENO, "\r\n", 2);
-					history_set_pos_end();
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
 					return (1);
 				} return (0);
 			}
@@ -43,12 +43,11 @@
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {
-					buffer.position = 0; buffer.length = 0;
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
-					history_set_pos_end();
-					if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
-					else					write(STDOUT_FILENO, "\r\n", 2);
-					if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
+
+					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
+					else							write(STDOUT_FILENO, "^C\r\n", 4);
+
 					nsignal = 2;
 					return (1);
 				} return (0);
@@ -61,9 +60,9 @@
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
 					buffer.value[buffer.length] = '\0';
+
 					write(STDOUT_FILENO, "\r\n", 2);
-					history_set_pos_end();
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+
 					return (1);
 				} return (0);
 			}
@@ -123,7 +122,8 @@
 		#pragma region "Specials"
 
 			static int specials() {
-				if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore all CTRL + X commands
+				if		(buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore all CTRL + X commands
+				else if (buffer.c >= 28 && buffer.c <= 31)	{ ;								}	//	Ignore other CTRL + X commands
 				else return (0);
 
 				return (1);

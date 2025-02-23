@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   clean.h                                            :+:      :+:    :+:   */
+/*   error.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:19:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:36:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,17 @@
 		};
 
 		enum e_error {
+			SEGQUIT = 3,
+			SEGFAULT = 11,
+			STDIN_CLOSED = 14,
+			STDOUT_CLOSED = 15,
 			SYNTAX = 20,
 			SHLVL_HIGH = 21,
 			VAR_NAME = 30,
 			START_ARGS = 70,
 			START_BIN = 71,
 			START_DIR = 72,
-			NO_MEMORY = 90,
+			NO_MEMORY = 90
 		};
 
 	#pragma endregion

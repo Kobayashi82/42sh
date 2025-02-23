@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 20:09:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:27:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 	#pragma region "Enumerators"
 
 		enum e_input_mode { READLINE, VI };
-		enum e_vi_mode { INSERT, EDIT };
 
 	#pragma endregion
 
@@ -37,21 +36,11 @@
 			bool			SHIFT, ALT, CTRL;
 		}	t_buffer;
 
-		typedef struct s_word {
-			size_t	start, end, len;
-			char	value[1024];
-		}	t_word;
-
 	#pragma endregion
 
 	extern t_buffer	buffer;
-
-	extern bool		show_control_chars;
-	extern bool		fake_segfault;
-	extern int		vi_mode;
-	extern char		*tmp_line;
-	extern bool		searching;
-	extern bool		pushed;
+	extern bool		raw_mode;
+	extern bool		hist_searching;
 
 #pragma endregion
 
@@ -63,15 +52,14 @@
 
 	//	---------- MODES -----------
 	int		readline(int readed);
-	int		vi(int readed);
+	int		vi();
 	int		dumb(int readed);
 
 	//	------- AUTOCOMPLETE -------
 	void	autocomplete();
 
 	//	------ HISTORY SEARCH ------
-	void	search_history();
-	void	search_init();
+	int		history_search();
 
 	//	-------- UNDO/REDO ---------
 	void	undo_push(bool push);

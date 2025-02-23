@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:58:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 14:12:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,22 @@
 
 	//	Set all options to their defaults values
 	int options_initialize() {
-		options.emacs		= false;
-		options.vi			= true;
+		options.emacs			= false;
+		options.vi				= true;
+		options.hide_ctrl_chars	= false;
 
-		options.history		= true;
-		options.hist_local	= true;
+		options.history			= true;
+		options.hist_local		= true;
 
-		options.noglob		= false;
-		options.dotglob		= false;
-		options.nullglob	= false;
-		options.failglob	= false;
-		options.nocaseglob	= false;
+		options.noglob			= false;
+		options.dotglob			= false;
+		options.nullglob		= false;
+		options.failglob		= false;
+		options.nocaseglob		= false;
 
-		options.cdable_vars	= false;
-		options.autocd		= false;
-		options.dirspell	= false;
+		options.cdable_vars		= false;
+		options.autocd			= false;
+		options.dirspell		= false;
 		return (0);
 	}
 

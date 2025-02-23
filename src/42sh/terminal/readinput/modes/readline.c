@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/22 21:02:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 13:34:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,14 @@
 
 #pragma region "Variables"
 
+	typedef struct s_word {
+		size_t	start, end, len;
+		char	value[1024];
+	}	t_word;
+
 	static char	*clipboard;
-	static void beep() { write(STDOUT_FILENO, "\a", 1); }
+	static char	*tmp_line;
+
 	static void home();
 
 #pragma endregion
@@ -39,7 +45,6 @@
 
 			static int ctrl_d(const int n) {
 				if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-					history_set_pos_end();
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 					
 					sfree(buffer.value); buffer.value = NULL;
@@ -54,13 +59,12 @@
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {
-					history_set_pos_end();
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 
 					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
 
-					if (show_control_chars)	write(STDOUT_FILENO, "^C\r\n", 4);
-					else					write(STDOUT_FILENO, "\r\n", 2);
+					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
+					else							write(STDOUT_FILENO, "^C\r\n", 4);
 
 					nsignal = 2;
 					return (1);
@@ -73,7 +77,6 @@
 
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
-					history_set_pos_end();
 					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
 
 					buffer.value[buffer.length] = '\0';
@@ -369,7 +372,7 @@
 				//	Ignore multi-space chars
 				if (char_width(0, new_char) > 1) return (1);
 
-				if (!pushed) undo_push(true);
+				undo_push(true);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size) {
@@ -635,12 +638,12 @@
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
 				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
 				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
-				else if (buffer.c == 18)					{ search_init();				}	//	[CTRL + R]	History incremental search
-				else if	(buffer.c == 19)					{ fake_segfault = true;			}	//	[CTRL + S]	Fake SegFault
+				else if (buffer.c == 18)					{ history_search();				}	//	[CTRL + R]	History incremental search
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line
 				else if (buffer.c == 31)					{ undo();						}	//	[CTRL + _]	Undo last action
-				else if (buffer.c >= 1 && buffer.c <= 26) { ;								}	//	Ignore other CTRL + X commands
+				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
+				else if (buffer.c >= 28 && buffer.c <= 31)	{ ;								}	//	Ignore other CTRL + X commands
 				else return (0);
 
 				return (1);
