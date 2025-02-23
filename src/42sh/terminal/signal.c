@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:47:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 17:08:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/signals.h"
+	#include "main/shell.h"
 	#include "main/options.h"
 	#include "main/error.h"
 
@@ -31,6 +32,7 @@ int	nsignal;
 
 	//	Handle SIGINT signal
 	static void sigint_handler(int sig) {
+		shell.exit_code = 128 + sig;
 		nsignal = sig;
 		if (raw_mode) {
 			char byte = 3;
@@ -43,15 +45,15 @@ int	nsignal;
 #pragma region "SIG_QUIT"
 
 	//	Handle SIGQUIT signal
-	static void sigquit_handler(int sig) {
-		nsignal = sig;
-		if (raw_mode) {
-			disable_raw_mode();
-			write(1, "\n", 1);
-			if (buffer.value) sfree(buffer.value);
-		}
-		exit_error(SEGQUIT, 3, NULL, true);
-	}
+	// static void sigquit_handler(int sig) {
+	// 	nsignal = sig;
+	// 	// if (raw_mode) {
+	// 	// 	disable_raw_mode();
+	// 	// 	write(1, "\n", 1);
+	// 	// 	if (buffer.value) sfree(buffer.value);
+	// 	// }
+	// 	// exit_error(SEGQUIT, 3, NULL, true);
+	// }
 
 #pragma endregion
 
@@ -70,6 +72,7 @@ int	nsignal;
 
 	//	Handle SIGSEGV signal
 	static void sigsegv_handler(int sig) {
+		shell.exit_code = 128 + sig;
 		nsignal = sig;
 		if (raw_mode) {
 			disable_raw_mode();
@@ -85,7 +88,8 @@ int	nsignal;
 
 	void signals_set() {
 		signal(SIGINT, sigint_handler);
-		signal(SIGQUIT, sigquit_handler);
+		//signal(SIGQUIT, sigquit_handler);
+		signal(SIGQUIT, SIG_IGN);
 		signal(SIGWINCH, sigwinch_handler);
 		signal(SIGSEGV, sigsegv_handler);
 		nsignal = 0;

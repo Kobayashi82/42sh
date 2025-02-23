@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:28:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 17:10:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 	#include "terminal/readinput/history.h"
 	#include "terminal/signals.h"
 	#include "hashes/variables.h"
+	#include "main/shell.h"
 	#include "main/options.h"
 	#include "utils/paths.h"
 
@@ -37,7 +38,7 @@
 
 	static bool	number_mode, replacement_mode, replacement_char;
 	static char	n[7], last_cmd, last_char[7], *clipboard, *tmp_line;
-	static int	rep_n, vi_mode = INSERT;
+	static int	rep_n;
 
 	static void	insert_mode(int mode);
 	static int	get_n();
@@ -75,7 +76,7 @@
 					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
 					else							write(STDOUT_FILENO, "^C\r\n", 4);
 
-					nsignal = 2;
+					shell.exit_code = 130; nsignal = 2;
 					return (1);
 				} return (0);
 			}
@@ -1153,7 +1154,10 @@
 					if (num_len > 0) cursor_left(num_len);
 
 					if (buffer.c == 27) return (0);
-					if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) { beep(); return (1); }
+					if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) {
+						if (buffer.c != 3 && buffer.c != 4 && buffer.c != '\r' && buffer.c != '\n') beep();
+						return (1);
+					}
 					return (0);
 				}
 
@@ -1370,7 +1374,7 @@
 		if (vi_mode && !ft_isdigit(buffer.c) && number_mode) {
 			if (num_mode_off()) {
 				if		(ctrl_d())				result = 1;
-				else if	(ctrl_c())				result = 0;
+				else if	(ctrl_c())				result = 1;
 				else if	(enter())				result = 1;
 
 				if (result && clipboard) sfree(clipboard);
@@ -1380,7 +1384,7 @@
 
 		if ((replacement_char || replacement_mode)) {
 			if		(ctrl_d())				result = 1;
-			else if	(ctrl_c())				result = 0;
+			else if	(ctrl_c())				result = 1;
 			else if	(enter())				result = 1;
 			else if (ft_isprint(buffer.c)) {
 				print_char();

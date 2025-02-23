@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:55:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 16:48:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,10 +328,11 @@
 		int history_search() {
 			if (!initialized) { search_init(); return (1); }
 
-			if 		(buffer.c == 7)			return (search_cancel());	//	[CTRL + G]	Cancel search
-			else if (buffer.c == 18)		search_find(FORWARD);		//	[CTRL + R]	Search up
-			else if (buffer.c == 19)		search_find(BACKWARD);		//	[CTRL + S]	Search down
-			else if	(buffer.c == 127)		backspace();				//	[BackSpace]	Delete the previous character
+			if 		(buffer.c == 3)			{ search_cancel(); return (0); }	//	[CTRL + C]	SIG_INT
+			else if	(buffer.c == 7)			return (search_cancel());			//	[CTRL + G]	Cancel search
+			else if (buffer.c == 18)		search_find(FORWARD);				//	[CTRL + R]	Search up
+			else if (buffer.c == 19)		search_find(BACKWARD);				//	[CTRL + S]	Search down
+			else if	(buffer.c == 127)		backspace();						//	[BackSpace]	Delete the previous character
 			else if (ft_isprint(buffer.c))	print_char();			
 			else							return (search_exit());
 

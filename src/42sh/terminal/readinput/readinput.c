@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:47:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 17:14:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@
 #pragma region "Variables"
 
 	t_buffer	buffer;
-	bool		raw_mode;				//	Indicates whether the terminal is in raw mode
+
+	bool		raw_mode;
+	int			vi_mode;
 
 #pragma endregion
 
@@ -72,6 +74,37 @@
 
 #pragma endregion
 
+#pragma region "Check TTY"
+
+	static int check_tty() {
+		if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
+			int tty_fd = open("/dev/tty", O_RDWR);
+			if (tty_fd == -1) {
+				sfree(buffer.value);
+				disable_raw_mode();
+				write(STDERR_FILENO, "\n", 1);
+				exit_error(STDIN_CLOSED, 1, NULL, true);
+			}
+			sdup2(&tty_fd, STDIN_FILENO, true);
+			return (1);
+		}
+		
+		if (fcntl(STDOUT_FILENO, F_GETFD) == -1) {
+			int tty_fd = open("/dev/tty", O_WRONLY);
+			if (tty_fd != -1) {
+				sfree(buffer.value);
+				disable_raw_mode();
+				write(STDERR_FILENO, "\n", 1);
+				exit_error(STDOUT_CLOSED, 1, NULL, true);
+			}
+			sdup2(&tty_fd, STDOUT_FILENO, true);
+		}
+
+		return (0);
+	}
+
+#pragma endregion
+
 #pragma region "ReadInput"
 
 	char *readinput(char *prompt) {
@@ -85,36 +118,14 @@
 
 		prompt_set(PS1, prompt);
 		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+		vi_mode = 0;
 
 		cursor_get();
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
-			
-			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
-				int tty_fd = open("/dev/tty", O_RDWR);
-				if (tty_fd == -1) {
-					sfree(buffer.value);
-					disable_raw_mode();
-					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDIN_CLOSED, 1, NULL, true);
-				}
-				sdup2(&tty_fd, STDIN_FILENO, true);
-				continue;
-			}
-			
-			if (fcntl(STDOUT_FILENO, F_GETFD) == -1) {
-				int tty_fd = open("/dev/tty", O_WRONLY);
-				if (tty_fd != -1) {
-					sfree(buffer.value);
-					disable_raw_mode();
-					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDOUT_CLOSED, 1, NULL, true);
-				}
-				sdup2(&tty_fd, STDOUT_FILENO, true);
-			}
-			
-			cursor_hide();
+			if (check_tty()) continue;
+			cursor_hide();		
 
 			if (hist_searching && history_search()) continue;
 

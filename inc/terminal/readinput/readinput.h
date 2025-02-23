@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:27:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 16:57:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 	extern t_buffer	buffer;
 	extern bool		raw_mode;
 	extern bool		hist_searching;
+	extern int		vi_mode;
 
 #pragma endregion
 
