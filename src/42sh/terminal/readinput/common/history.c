@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:39:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:45:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	#include "libft.h"
 	#include "terminal/print.h"
 	#include "terminal/readinput/history.h"
+	#include "hashes/variables.h"
 	#include "main/options.h"
 	#include "main/project.h"
 
@@ -24,14 +25,12 @@
 
 #pragma region "Variables"
 
-	//.42shrc
-	bool				ignorespace			= true;
-	bool				ignoredups			= true;
-	bool				erasedups			= false;
+	#define HIST_MAXSIZE 5000
 
+	//.42shrc
 	static HIST_ENTRY	**history			= NULL;		//	History array
 
-	static char			history_file[4096];			//	Path to the physical history file
+	static char			history_file[4096];				//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entry
 	static bool			file_unlimited		= false;	//	Indicates if it is limited by a maximum size
 
@@ -43,7 +42,7 @@
 	static size_t		event				= 1;		//	Current event number
 
 	static size_t		position			= 0;		//	Current position within the array
-	// static size_t		search_pos		 = 0;		//	Position for CTRL + R searches
+
 	static bool			begining			= false;
 	static bool			middle				= false;
 
@@ -83,17 +82,16 @@
 			if (type == HIST_FILE) { file_max = new_size; file_unlimited = false; }
 			if (type == HIST_MEM)  { mem_max = new_size;  mem_unlimited = false;
 				if (mem_max < length) {
-					HIST_ENTRY **tmp_history = ft_calloc(mem_max * 2, sizeof(HIST_ENTRY *));
+					HIST_ENTRY **tmp_history = ft_calloc((mem_max * 2) + 1, sizeof(HIST_ENTRY *));
 					size_t i = 0;
 
 					for (size_t start = length - mem_max; start < length && history[start]; ++start) {
 						tmp_history[i++] = history[start]; history[start] = NULL;
 					} tmp_history[i] = NULL;
-					length -= mem_max;
 					history_clear();
 
 					length = mem_max;
-					capacity = mem_max * 2;
+					capacity = ft_max(0, mem_max * 2);
 					position = length > 0 ? length - 1 : 0;
 					history = tmp_history;
 				}
@@ -150,13 +148,13 @@
 			if (fd < 0) return (1);
 
 			tmp_length = 0;
-			char	*line = NULL;
+			char *line = NULL;
 
 			//	Reserve space for the temporary history
 			tmp_history = ft_calloc(HIST_MAXSIZE, sizeof(char *));
 
-			while ((line = get_next_line(fd)) && tmp_length < HIST_MAXSIZE) {
-				if (ft_isspace_s(line)) continue;
+			while (tmp_length < HIST_MAXSIZE - 1 && (line = get_next_line(fd))) {
+				if (ft_isspace_s(line)) { sfree(line); continue; }
 				//	Replace "\\n" with actual newlines
 				const char *src = line; char *dst = line;
 				while (*src) {
@@ -167,6 +165,7 @@
 				tmp_history[tmp_length++] = line;
 			} tmp_history[tmp_length] = NULL;
 
+			get_next_line(-1);
 			sclose(fd);
 
 			return (0);
@@ -191,9 +190,14 @@
 			length = 0;
 			//	Copy entry from the temporary array to the final history
 			while (tmp_history[tmp_length]) {
-				if (length >= mem_max && !mem_unlimited) { break; }
+
+				if (length >= mem_max && !mem_unlimited) {
+					sfree(tmp_history[tmp_length]);
+					tmp_history[tmp_length++] = NULL;
+					continue;
+				}
+
 				history[length] = smalloc(sizeof(HIST_ENTRY));
-				if (!history[length]) { history_clear(); break; }
 				history[length]->line = tmp_history[tmp_length];
 				history[length]->length = ft_strlen(history[length]->line);
 				history[length]->event = event++;
@@ -262,6 +266,20 @@
 		//	Add an entry to the history
 		int history_add(char *line, bool force) {
 			if (!history || !line || ft_isspace_s(line) || !mem_max) return (1);
+
+			bool ignoredups = false, ignorespace = false, erasedups = false;
+			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
+			if (control) {
+				char *token = ft_strtok(control, ":", 30);
+				while (token) {
+					if (ft_strcmp(token, "ignoredups"))		ignoredups = true;
+					if (ft_strcmp(token, "ignorespace"))	ignorespace = true;
+					if (ft_strcmp(token, "erasedups"))		erasedups = true;
+					if (ft_strcmp(token, "ignoreboth"))		ignoredups = true; ignorespace = true;
+					token = ft_strtok(NULL, ":", 30);
+				}
+			}
+
 			if (!force && ignoredups && length && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
 			if (!force && ignorespace && ft_isspace(*line)) return (1);
 			if (!force && erasedups) erase_dups(line, INT_MAX);
@@ -294,6 +312,20 @@
 		//	Replace the indicated entry
 		int history_replace(size_t pos, char *line, void *data) {
 			if (!history || !line || ft_isspace_s(line) || !length || !mem_max) return (1);
+
+			bool ignoredups = false, ignorespace = false, erasedups = false;
+			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
+			if (control) {
+				char *token = ft_strtok(control, ":", 30);
+				while (token) {
+					if (ft_strcmp(token, "ignoredups"))		ignoredups = true;
+					if (ft_strcmp(token, "ignorespace"))	ignorespace = true;
+					if (ft_strcmp(token, "erasedups"))		erasedups = true;
+					if (ft_strcmp(token, "ignoreboth"))		ignoredups = true; ignorespace = true;
+					token = ft_strtok(NULL, ":", 30);
+				}
+			}
+
 			if (pos > 0 && ignoredups && history[pos - 1] && history[pos - 1]->line && !ft_strcmp(history[pos - 1]->line, line)) return (1);
 			if (pos == length - 1 && ignoredups && history[pos + 1] && history[pos + 1]->line && !ft_strcmp(history[pos + 1]->line, line)) return (1);
 			if (ignorespace && ft_isspace(*line)) return (1);
@@ -378,10 +410,11 @@
 			if (!history) return;
 
 			for (size_t i = 0; i < length; ++i) {
-				if (!history || !history[i]) break;
-				if (history[i]->line) sfree(history[i]->line);
-				if (history[i]->data) sfree(history[i]->data);
-				sfree(history[i]); history[i] = NULL;
+				if (history && history[i]) {
+					if (history[i]->line) sfree(history[i]->line);
+					if (history[i]->data) sfree(history[i]->data);
+					sfree(history[i]); history[i] = NULL;
+				}
 			}
 			if (history) { sfree(history); history = NULL; }
 			position = 0; length = 0; capacity = 10;
@@ -568,7 +601,7 @@
 			if (!hist || ft_strlen(number) > 9) {
 
 				if (is_double)
-					print(STDERR_FILENO, ft_strjoin(PROYECTNAME, ": event not found\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(PROYECTNAME, " !!: event not found\n", 0), FREE_RESET_PRINT);
 				else {
 					print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !-", number, 0), FREE_RESET);
 					print(STDERR_FILENO, ": event not found\n", PRINT);
@@ -595,7 +628,7 @@
 
 			if (!hist || ft_strlen(number) > 9) {
 
-				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 3), FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 0), FREE_RESET);
 				print(STDERR_FILENO, ": event not found\n", PRINT);
 
 				sfree(number);
@@ -656,7 +689,7 @@
 	#pragma region "History"
 
 		char *expand_history(char *value) {
-			if (!options.history || history_length() == 0) return (value);
+			if (!options.history) return (value);
 
 			size_t i = 0;
 			size_t length = ft_strlen(value);

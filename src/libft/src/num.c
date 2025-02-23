@@ -51,7 +51,7 @@
 
 #pragma region "ATOL"
 
-	long	ft_atol(char *str) {
+	long	ft_atol(const char *str) {
 		long result = 0;
 		int sign = 1, num = 0;
 

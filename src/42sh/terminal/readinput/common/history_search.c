@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 16:48:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:33:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,10 +152,9 @@
 	#pragma region "Init"
 
 		void search_init() {
-			if (!history_length()) { beep(); return; }
-
 			undo_push(false);
 			
+			no_match = false;
 			old_len = chars_width(0, buffer.length, buffer.value);
 			original_size = buffer.size;
 			original_position = buffer.position;
@@ -281,41 +280,50 @@
 		#pragma region "Find"
 
 			static int search_find(int mode) {
-				if (!search_buffer.value || !*search_buffer.value) 				return (0);
-				size_t len = history_length();
-				if (mode == FORWARD && !history_pos)				{ beep();	return (0); }
-				if (mode == BACKWARD && history_pos >= len)			{ beep();	return (0); }
-				if (mode == START)									history_pos = len;
-
-				if (mode == BACKWARD) {
-					size_t i = history_pos + 1;
-					for (; i < len; ++i) {
-						HIST_ENTRY *hist = history_get(i);
-						if (hist && hist->line) {
-							char *match = ft_strstr(hist->line, search_buffer.value);
-							if (match) {
-								history_pos = i;
-								return (process_match(hist, match - hist->line, true));
+				if (!search_buffer.value) return (0);
+				if (*search_buffer.value) {				
+					size_t len = history_length();
+					if (mode == FORWARD && !history_pos)				{ beep();	return (0); }
+					if (mode == BACKWARD && history_pos >= len)			{ beep();	return (0); }
+					if (mode == START)									history_pos = len;
+					
+					if (mode == BACKWARD) {
+						size_t i = history_pos + 1;
+						for (; i < len; ++i) {
+							HIST_ENTRY *hist = history_get(i);
+							if (hist && hist->line) {
+								char *match = ft_strstr(hist->line, search_buffer.value);
+								if (match) {
+									history_pos = i;
+									return (process_match(hist, match - hist->line, true));
+								}
 							}
 						}
-					}
-				} else {
-					size_t i = history_pos - (mode == FORWARD);
-					for (; i >= 0; --i) {
-						HIST_ENTRY *hist = history_get(i);
-						if (hist && hist->line) {
-						char *match = ft_strstr(hist->line, search_buffer.value);
-							if (match) {
-								history_pos = i;
-								return (process_match(hist, match - hist->line, (mode == FORWARD)));
+					} else {
+						size_t i = history_pos - (mode == FORWARD);
+						for (; i >= 0; --i) {
+							HIST_ENTRY *hist = history_get(i);
+							if (hist && hist->line) {
+								char *match = ft_strstr(hist->line, search_buffer.value);
+								if (match) {
+									history_pos = i;
+									return (process_match(hist, match - hist->line, (mode == FORWARD)));
+								}
 							}
+							if (i == 0) break;
 						}
-						if (i == 0) break;
 					}
 				}
-
+				
 				beep();
-				if (mode == START) no_match = true;
+				if (mode == START) {
+					sfree(buffer.value);
+					buffer.size = original_size;
+					buffer.position = original_position;
+					buffer.value = smalloc(original_size);
+					ft_memcpy(buffer.value, original_buffer, original_size);
+					no_match = true;
+				}
 				return (0);
 			}
 

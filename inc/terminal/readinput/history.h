@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:39:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:40:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 
 	#include <stddef.h>
 	#include <stdbool.h>
-
-	#define HIST_MAXSIZE 5000
 
 #pragma endregion
 
@@ -39,10 +37,6 @@
 		}	HIST_ENTRY;
 
 	#pragma endregion
-
-	extern bool	ignorespace;
-	extern bool	ignoredups;
-	extern bool	erasedups;
 
 #pragma endregion
 

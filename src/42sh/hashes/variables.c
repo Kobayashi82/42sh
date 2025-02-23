@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/11 14:25:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:44:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,11 @@
 
 #pragma region "Import"
 
+	static void specials(const char *key, const char *value) {
+		if (!ft_strcmp(key, "42_HISTSIZE"))		history_set_size(ft_atol(value), HIST_MEM);
+		if (!ft_strcmp(key, "42_HISTFILESIZE"))	history_set_size(ft_atol(value), HIST_FILE);
+	}
+
 	#pragma region "Variable"
 
 		int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
@@ -56,6 +61,7 @@
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
+					specials(key, new_var->value);
 					return (0);
 				} else return (1);
 			}
@@ -71,6 +77,7 @@
 			if (integer != -1) new_var->integer = integer;
 			new_var->next = table[index];
 			table[index] = new_var;
+			specials(key, new_var->value);
 
 			return (0);
 		}
@@ -90,6 +97,7 @@
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
+					specials(key, new_var->value);
 					return (0);
 				} else return (1);
 			}
@@ -106,6 +114,7 @@
 			if (integer != -1) new_var->integer = integer;
 			new_var->next = table[index];
 			table[index] = new_var;
+			specials(key, new_var->value);
 
 			return (0);
 		}
@@ -154,6 +163,15 @@
 			size_t len = ft_strlen(key);
 
 			if (!len || (!ft_isalpha(key[0]) && key[0] != '_')) result = 1;
+
+			if (!ft_strcmp(key, "42_HISTFILE")) result = 0;
+			if (!ft_strcmp(key, "42_HISTSIZE")) result = 0;
+			if (!ft_strcmp(key, "42_HISTFILESIZE")) result = 0;
+			if (!ft_strcmp(key, "42_HISTCONTROL")) result = 0;
+			if (!ft_strcmp(key, "42_SH")) result = 0;
+			if (!ft_strcmp(key, "42_SUBSHELL")) result = 0;
+			if (!ft_strcmp(key, "42_VERSION")) result = 0;
+			if (!ft_strcmp(key, "42_PID")) result = 0;
 
 			for (size_t i = 1; i < len; ++i)
 				if (!ft_isalnum(key[i]) && key[i] != '_') { result = 1; break; }
@@ -413,16 +431,16 @@
 		char *home = get_home();
 		if (home && (home = ft_strjoin(home, "/.42sh_history", 1))) {
 			history_file_set(home);
-			default_add(table, "42HISTFILE", home, 0, 0, 0, 1, 1);
+			default_add(table, "42_HISTFILE", home, 0, 0, 0, 1, 1);
 		}
-		default_add(table, "42HISTSIZE", "1000", 0, 0, 0, 0, 0);
-		default_add(table, "42HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
-		default_add(table, "42HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);
+		default_add(table, "42_HISTSIZE", "1000", 0, 0, 0, 0, 0);
+		default_add(table, "42_HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
+		default_add(table, "42_HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);
 
-		default_add(table, "42SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-		default_add(table, "42SH_SUBSHELL", "0", 0, 0, 0, 1, 0);								//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
-		default_add(table, "42SH_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-		default_add(table, "42SHPID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
+		default_add(table, "42_SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
+		default_add(table, "42_SUBSHELL", "0", 0, 0, 0, 1, 0);									//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
+		default_add(table, "42_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
+		default_add(table, "42_PID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
 		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) READONLY
 		default_add(table, "COLUMNS", ft_itoa(terminal.columns), 0, 0, 1, 1, 1);				//	Update var when expanded (terminal_columns)
 		default_add(table, "LINES", ft_itoa(terminal.rows), 0, 0, 1, 1, 1);						//	Update var when expanded (terminal_rows)

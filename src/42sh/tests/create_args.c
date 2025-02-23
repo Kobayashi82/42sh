@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 15:05:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:38:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static char *extract_word(char *line, int *index) {
     int start = *index;
 	int quoted = 0, move = 0;
 
-	if (line[*index] == '#')		{ (*index) = ft_strlen(line); return (ft_strdup("#")); }
+	if (line[*index] == '#')		{ (*index) += ft_strlen(&line[*index]); return (ft_strdup(&line[*index])); }
 	if (line[*index] == ';')		{ (*index)++; return (ft_strdup(";")); }
 
 	if (line[*index] == '\\')		{ quoted = 1; move = true; }

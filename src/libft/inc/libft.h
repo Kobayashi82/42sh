@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:32:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/23 19:40:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@
 		int		ft_min(int n1, int n2);
 		int		ft_abs(int n);
 		int		ft_atoi(const char *str);
-		long	ft_atol(char *str);
+		long	ft_atol(const char *str);
 		char	*ft_itoa(int n);
 
 	#pragma endregion
