@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 17:14:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/24 19:08:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Auto-Complete
+// Antes de eliminar multi-space
 
 #pragma region "Includes"
 
