@@ -6,19 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/01 14:14:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/24 21:24:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/colors.h"
 
 #pragma endregion
 
 #pragma region "Variables"
+
+	#define PS1_DFLT		BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC
+	#define PS2_DFLT		">"
 
 	char	*prompt_PS1 = NULL;			//	Default prompt displayed for regular input
 	char	*prompt_PS2 = NULL;			//	Continuation prompt for heredocs or multiline input
@@ -47,24 +51,55 @@
 
 #pragma region "Set"
 
-	void prompt_set(int type, char *new_prompt) {
-		// char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
-		char *str_PS1 = BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC;
-		char *tmp_prompt = NULL;
+	#pragma region "Remove Forbidden Chars"
 
-		prompt_clear(type);
+		void remove_forbidden_chars(char *new_prompt) {
+			if (!new_prompt) return;
 
-		if (new_prompt) {
-			//	Procesa barras, variables ($var & \u)
-			tmp_prompt = ft_strdup(new_prompt);
-		} else {
-			tmp_prompt = backslashes(ft_strdup(str_PS1));	//	"\\$USER-\u"
-			//	Procesa barras, variables ($var & \u)
+			char *tmp = smalloc(ft_strlen(new_prompt) + 1);
+			int i = 0, j = 0;
+
+			while (new_prompt[i]) {
+				int len = char_size(new_prompt[i]);
+
+				if (i + len > ft_strlen(new_prompt)) break;
+				if (len == 0) { i++; continue; }
+
+				if (char_width(i, new_prompt) < 2) {
+					ft_memcpy(&tmp[j], &new_prompt[i], len);
+					j += len;
+				} i += len;
+			} tmp[j] = '\0';
+
+			ft_strlcpy(new_prompt, tmp, ft_strlen(tmp) + 1);
+			sfree(tmp);
 		}
 
-		if (type == PS1) prompt_PS1 = tmp_prompt;
-		if (type == PS2) prompt_PS2 = tmp_prompt;
-	}
+	#pragma endregion
+
+	#pragma region "Set"
+
+		void prompt_set(int type, char *new_prompt) {
+			// char *str_PS1 = "\\\\\\$USER-\\u > ";						//	"\\\$USER-\u"
+			char *tmp_prompt = NULL;
+
+			prompt_clear(type);
+
+			if (new_prompt) {
+				//	Procesa barras, variables ($var & \u)
+				tmp_prompt = ft_strdup(new_prompt);
+			} else {
+				tmp_prompt = backslashes(ft_strdup(PS1_DFLT));	//	"\\$USER-\u"
+				//	Procesa barras, variables ($var & \u)
+			}
+
+			remove_forbidden_chars(tmp_prompt);
+
+			if (type == PS1) prompt_PS1 = tmp_prompt;
+			if (type == PS2) prompt_PS2 = tmp_prompt;
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
