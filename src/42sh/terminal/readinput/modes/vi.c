@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:46:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,7 +437,7 @@
 				new_char[c_size] = '\0';
 
 				//	Ignore multi-space chars
-				if (SINGLE_WIDTH && char_width(0, new_char) > 1) return (1);
+				if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
 				undo_push(true);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:37:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
+	#include "main/options.h"
 
 #pragma endregion
 
@@ -100,7 +101,7 @@
 			new_char[c_size] = '\0';
 			
 			// Ignore multi-space chars
-			if (SINGLE_WIDTH && char_width(0, new_char) > 1) return (1);
+			if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
 			// Expand buffer if necessary
 			if (search_buffer.position + c_size >= search_buffer.size) {

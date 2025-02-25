@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:20:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:51:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 			bool	emacs;				//	1 = Emacs mode ON													0 = OFF
 			bool	vi;					//	1 = Vi mode ON														0 = OFF
 			bool	hide_ctrl_chars ;	//	1 = Show control chars (^C)											0 = OFF
+			bool	multiwidth_chars;	//	1 = Enable multi-width chars (there are some issues)				0 = OFF
 
 			//	HISTORY
 			bool	history;			//	1 = History enabled													0 = Disabled
