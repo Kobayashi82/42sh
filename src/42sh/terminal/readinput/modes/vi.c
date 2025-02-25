@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 14:15:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:10:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -442,7 +442,7 @@
 				undo_push(true);
 
 				// Expand buffer if necessary
-				if (buffer.position + c_size >= buffer.size) {
+				if (buffer.position + c_size >= buffer.size - 1) {
 					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 					buffer.size *= 2;
 				}
@@ -952,7 +952,7 @@
 					else			{ insert_mode(CURSOR); arrow_right(); }
 
 					// Expand buffer if necessary
-					while (buffer.length + ft_strlen(clipboard) >= buffer.size) {
+					while (buffer.length + ft_strlen(clipboard) >= buffer.size - 1) {
 						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 						buffer.size *= 2;
 					}

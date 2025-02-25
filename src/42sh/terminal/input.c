@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 15:08:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:12:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,9 +41,10 @@
 #pragma region "Line"
 
 	static int unclosed(char *value) {
-		size_t len = ft_max(0, ft_strlen(value) - 1);
+		(void) value;
+		//size_t len = ft_max(0, ft_strlen(value) - 1);
 		
-		if (value[len] != '"')		return (2);
+		//if (value[len] != '"')		return (2);
 		//if (value[len] != '\\')		return (1);
 
 		return (0);
@@ -71,6 +72,7 @@
 			if (check_syntax(input)) return (ft_strdup(""));
 		}
 
+		history_add(input, false);
 		return (expand_history(input));
 	}
 

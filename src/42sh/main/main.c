@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 15:06:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:10:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@
 
 	#include "libft.h"
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/prompt.h"
-	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/input.h"
 	#include "terminal/signals.h"
@@ -90,16 +88,12 @@
 			signals_set();
 
 			if (!(terminal.input = get_input())) return (1);
-			
-			if (!ft_isspace_s(terminal.input)) {
-				ft_printf(1, "%s\n", terminal.input);
+			if (ft_isspace_s(terminal.input)) { sfree(terminal.input); return (0); }
 
-				history_add(terminal.input, false);
-				execute_commands(terminal.input);
-			}
+			ft_printf(1, "Input: %s\n", terminal.input);
 
+			execute_commands(terminal.input);
 			sfree(terminal.input);
-			//first_step();
 
 			return (0);
 		}
@@ -116,7 +110,6 @@
 		//	uid, euid
 		//	PS1, PS2
 		//	column, row
-		terminal_initialize();
 		builtin_initialize();
 		options_initialize();
 		alias_initialize();

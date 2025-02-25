@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 14:14:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:09:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@
 			if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
 			// Expand buffer if necessary
-			if (search_buffer.position + c_size >= search_buffer.size) {
+			if (search_buffer.position + c_size >= search_buffer.size - 1) {
 				search_buffer.value = ft_realloc(search_buffer.value, search_buffer.size, search_buffer.size * 2);
 				search_buffer.size *= 2;
 			}
@@ -246,7 +246,7 @@
 				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
 
 				// Expand buffer if necessary
-				while (hist->length >= buffer.size) {
+				while (hist->length >= buffer.size - 1) {
 					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
 					buffer.size *= 2;
 				}
