@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:33:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -607,8 +607,8 @@
 						if (result > 0) {
 							if (seq[0] == 't') { swap_word(); return (1); }						//	ALT + T			Swap word				(Not working with multi-width chars 漢 🤬)
 							if (seq[0] == '[') { seq[1] = modifiers(seq);
-								if (seq[1] == 'A') 						arrow_up();				//	Up				History next
-								if (seq[1] == 'B') 						arrow_down();			//	Down			History prev
+								if (seq[1] == 'A') 						arrow_up();				//	Up				History prev
+								if (seq[1] == 'B') 						arrow_down();			//	Down			History next
 								if (seq[1] == 'D') 						arrow_left(0);			//	Left			Cursor left
 								if (seq[1] == 'C') 						arrow_right(0);			//	Right			Cursor right
 								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
@@ -632,14 +632,14 @@
 				else if (buffer.c == 2)						{ arrow_left(1);				}	//	[CTRL + B]	Cursor left
 				else if (buffer.c == 4)						{ delete_char();				}	//	[CTRL + D]	Delete
 				else if (buffer.c == 5)						{ end();						}	//	[CTRL + E]	Cursor to the end
-				else if (buffer.c == 6)						{ arrow_right(1);				}	//	[CTRL + F]	Cursor left
+				else if (buffer.c == 6)						{ arrow_right(1);				}	//	[CTRL + F]	Cursor right
 				else if (buffer.c == 8)						{ backspace();					}	//	[CTRL + H]	Delete the previous character
 				else if (buffer.c == 9)						{ autocomplete();				}	//	[Tab]		Auto-Complete
 				else if (buffer.c == 10)					{ enter();						}	//	[CTRL + J]	Enter
 				else if (buffer.c == 11)					{ delete_end(1);				}	//	[CTRL + K]	Delete from cursor to end
 				else if (buffer.c == 12)					{ clear_screen();				}	//	[CTRL + L]	Clear screen
-				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History next
-				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History prev
+				else if (buffer.c == 14)					{ arrow_down();					}	//	[CTRL + N]	History prev
+				else if (buffer.c == 16)					{ arrow_up();					}	//	[CTRL + P]	History next
 				else if (buffer.c == 18)					{ history_search();				}	//	[CTRL + R]	History incremental search
 				else if (buffer.c == 20)					{ swap_char();					}	//	[CTRL + T]	Swap the current character with the previous one
 				else if (buffer.c == 21)					{ backspace_start();			}	//	[CTRL + U]	Backspace from cursor to the start of the line

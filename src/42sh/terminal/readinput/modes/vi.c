@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 12:58:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1311,21 +1311,21 @@
 					else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
 					else if (buffer.c == 'a')	{ insert_mode(AFTER_CURSOR);				}	//	Enter insert mode after the cursor position
 					else if (buffer.c == 'A')	{ insert_mode(LAST);						}	//	Enter insert mode at the end of the line
-					else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();		}	//- [n]	Delete up to the specified position and enter insert mode				(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
+					else if (buffer.c == 'c')	{ insert_mode(CURSOR); n_delete_to();		}	//- [n] Delete up to the specified position and enter insert mode				(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
 					else if (buffer.c == 'C')	{ insert_mode(CURSOR); delete_end(1);		}	//	Delete from cursor to the end of the line and enter insert mode
 					else if (buffer.c == 's')	{ insert_mode(CURSOR); n_delete_char();		}	//	[n] Delete the current character and enter insert mode
 					else if (buffer.c == 'S')	{ insert_mode(FIRST);  delete_end(1);		}	//	Delete the entire line and enter insert mode
-					else if (buffer.c == 'd')	{ n_delete_to();							}	//- [n]	Delete up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, d)
+					else if (buffer.c == 'd')	{ n_delete_to();							}	//- [n] Delete up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, d)
 					else if (buffer.c == 'D')	{ delete_end(1);							}	//	Delete from cursor to the end of the line
 					else if (buffer.c == 'x')	{ n_delete_char();							}	//	[n] Delete the current character
 					else if (buffer.c == 'X')	{ n_backspace();							}	//	[n] Delete the previous character
 
-					else if (buffer.c == 'r')	{ replacement_char = true; rep_n = get_n();	}	//	[n]	Replace the current character with the specified one
+					else if (buffer.c == 'r')	{ replacement_char = true; rep_n = get_n();	}	//	[n] Replace the current character with the specified one
 					else if (buffer.c == 'R')	{ replacement_mode = true;					}	//	Enter replace mode: allows replacing characters one by one
 					else if (buffer.c == 'y')	{ copy(false);								}	//-	[n] Copy up to the specified position										(0, ^, $, |, , ;,, fFtTbBeEwW, y)
 					else if (buffer.c == 'Y')	{ copy(true);								}	//	Copy from the current position to the end of the line
-					else if (buffer.c == 'p')	{ paste(false);								}	//	[n]	Paste copied text after the cursor
-					else if (buffer.c == 'P')	{ paste(true);								}	//	[n]	Paste copied text before the cursor
+					else if (buffer.c == 'p')	{ paste(false);								}	//	[n] Paste copied text after the cursor
+					else if (buffer.c == 'P')	{ paste(true);								}	//	[n] Paste copied text before the cursor
 
 					else if (buffer.c == 'b')	{ left_start_word();						}	//	[n] Move the cursor to the beginning of the previous word
 					else if (buffer.c == 'B')	{ left_start_bigword();						}	//	[n] Move the cursor to the beginning of the previous big word
