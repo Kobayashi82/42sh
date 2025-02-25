@@ -6,11 +6,9 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 17:10:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:46:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// Command with char position (los comandos de vi que dependen de una posicion... duh)
 
 #pragma region "Includes"
 
@@ -432,11 +430,14 @@
 
 				char new_char[c_size + 1];
 				new_char[0] = buffer.c;
-				for (size_t i = 1; i < c_size; i++) read(STDIN_FILENO, &new_char[i], 1);
+				for (size_t i = 1; i < c_size; i++) {
+					ssize_t readed = read(STDIN_FILENO, &new_char[i], 1);
+					if (readed != 1) return (1);
+				}			
 				new_char[c_size] = '\0';
 
 				//	Ignore multi-space chars
-				if (char_width(0, new_char) > 1) return (1);
+				if (SINGLE_WIDTH && char_width(0, new_char) > 1) return (1);
 
 				undo_push(true);
 
@@ -462,6 +463,7 @@
 					// Insert all bytes of the character into the buffer
 					for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
 					buffer.length += c_size;
+					buffer.value[buffer.length] = '\0';
 
 					write_value(STDOUT_FILENO, &buffer.value[buffer.position - c_size], buffer.length - (buffer.position - c_size));
 
@@ -961,6 +963,7 @@
 					ft_memcpy(&buffer.value[buffer.position], clipboard, ft_strlen(clipboard));
 
 					buffer.length += ft_strlen(clipboard);
+					buffer.value[buffer.length] = '\0';
 
 					write(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
 					buffer.position += ft_strlen(clipboard);

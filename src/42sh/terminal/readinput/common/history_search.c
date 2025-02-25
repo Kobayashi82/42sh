@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 22:33:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:37:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@
 			new_char[c_size] = '\0';
 			
 			// Ignore multi-space chars
-			if (char_width(0, new_char) > 1) return (1);
+			if (SINGLE_WIDTH && char_width(0, new_char) > 1) return (1);
 
 			// Expand buffer if necessary
 			if (search_buffer.position + c_size >= search_buffer.size) {
@@ -111,6 +111,7 @@
 			// Insert all bytes of the character into the buffer
 			for (size_t i = 0; i < c_size; i++) search_buffer.value[search_buffer.position++] = new_char[i];
 			search_buffer.length += c_size;
+			search_buffer.value[search_buffer.length] = '\0';
 			
 			// Move cursor to the beginning of the line
 			int len = chars_width(0, search_buffer.position - c_size, search_buffer.value);

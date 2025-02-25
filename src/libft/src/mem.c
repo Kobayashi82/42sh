@@ -268,13 +268,13 @@
 
 #pragma region "REALLOC"
 
-	void	*ft_realloc(void *ptr, int old_size, int size) {
-		int min_size;
+	void	*ft_realloc(void *ptr, size_t old_size, size_t size) {
+		size_t min_size;
 
 		if (size == 0) return (sfree(ptr), NULL);
 
+		//void *new_ptr = ft_calloc(1, size);
 		void *new_ptr = smalloc(size);
-		if (!new_ptr) return (sfree(ptr), NULL);
 
 		if (ptr) {
 			if (old_size < size)	min_size = old_size;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/02 16:55:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:12:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #pragma region Includes
 
 	#include <stddef.h>
+
+	#define SINGLE_WIDTH 1				//	Ignore characters that take up more than one space in the terminal, such as emojis and full-width characters
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 19:40:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:29:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 		void	*ft_memchr(const void *s, int c, int n);
 		void	*ft_memset(void *b, int c, int len);
 		void	*ft_calloc(int count, int size);
-		void	*ft_realloc(void *ptr, int old_size, int size);
+		void	*ft_realloc(void *ptr, size_t old_size, size_t size);
 		void	*smalloc(long bytes);
 		void	sfree(void *ptr);
 		void	sfree_all();

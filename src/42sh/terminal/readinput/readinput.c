@@ -6,12 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/24 19:08:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 11:46:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Auto-Complete
-// Antes de eliminar multi-space
+// PS2
+// Prompt
+// Command with char position (los comandos de vi que dependen de una posicion... duh)
+
+//	Current issues:
+//
+//	Incomplete support for multi-width characters (missing logic to handle them at column edges).		SOLUTION: Multi-width characters are ignored.
+//	When the input has more lines than the terminal, the cursor movement logic breaks.					SOLUTION: Do not write long lines.
 
 #pragma region "Includes"
 
@@ -110,7 +117,7 @@
 
 	char *readinput(char *prompt) {
 		int result = 0;
-		buffer.size = 1024;
+		buffer.size = 10;
 		buffer.position = 0, buffer.length = 0;
 		buffer.value = ft_calloc(buffer.size, sizeof(char));
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
