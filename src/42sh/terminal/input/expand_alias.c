@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input.h                                            :+:      :+:    :+:   */
+/*   expand_alias.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 21:29:37 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/02/25 21:46:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#pragma region "Includes"
 
-#pragma region Methods
+	#include "libft.h"
+	#include "terminal/input.h"
+	#include "hashes/alias.h"
+	#include "main/options.h"
 
-	//	---------- INPUT -----------
-	char	*get_input();
+#pragma endregion
 
-	//	------- CHECK SYNTAX -------
-	int		check_syntax(char **input);
+#pragma region "Expand"
 
-	//	------- EXPAND ALIAS -------
-	void	expand_alias(char **input);
+void expand_alias(char **input) {
+	if (!options.expand_aliases || input || !*input) return;
 
-	//	------ EXPAND HISTORY ------
-	void	expand_history(char **input);
+	char *value = *input;
+
+	char *new_value = ft_strdup(value);
+	sfree(value);
+	*input = new_value;
+}
 
 #pragma endregion

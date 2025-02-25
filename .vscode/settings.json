@@ -26,7 +26,8 @@
 		"readinput.h": "c",
 		"unistd.h": "c",
 		"termcaps.h": "c",
-		"signals.h": "c"
+		"signals.h": "c",
+		"project.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

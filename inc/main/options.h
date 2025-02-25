@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:51:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 23:04:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@
 #pragma endregion
 
 #pragma region "Variables"
+
+	#pragma region Enumerators
+
+		enum e_option { SHOPT, SET };
+
+	#pragma endregion
 
 	#pragma region "Structures"
 
@@ -33,6 +39,9 @@
 			//	HISTORY
 			bool	history;			//	1 = History enabled													0 = Disabled
 			bool	hist_local;			//	1 = Save history to disk											0 = Do not save
+
+			//	ALIAS
+			bool	expand_aliases;		//	1 = Globbing disabled												0 = Enabled
 
 			//	GLOBBING
 			bool	noglob;				//	1 = Globbing disabled												0 = Enabled
@@ -59,7 +68,7 @@
 #pragma region "Methods"
 
 	int		options_set(const char *option, bool value);
-	void	options_print();
+	char	*options_print(char *value, int type);
 	int		options_initialize();
 
 #pragma endregion

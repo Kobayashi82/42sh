@@ -6,14 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 17:12:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 21:43:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // Auto-Complete
-// PS2
+// Finalizado de linea
+// Sintaxis
 // Prompt
 // Command with char position (los comandos de vi que dependen de una posicion... duh)
+// Historial de varias lineas no se pega a la columna 0
 
 //	Current issues:
 //
@@ -25,8 +27,8 @@
 	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
 	#include "main/options.h"
 	#include "main/error.h"

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 13:44:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 22:40:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,7 @@
 
 		int result = 0;
 		char *values = NULL, *invalues = NULL;
+
 		if (opts->args) {
 			while (opts->args) {
 				if (opts->args->value && opts->args->value[0] != '=' && ft_strchr(opts->args->value, '=')) {

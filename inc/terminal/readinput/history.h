@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 22:40:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 21:03:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,6 @@
 	void		history_set_pos_end();
 	//	---------- PRINT -----------
 	int			history_print(size_t offset, bool hide_events);
-	//	---------- EXPAND ----------
-	char		*expand_history(char *value);
 	//	-------- INITIALIZE --------
 	int			history_initialize();
 
