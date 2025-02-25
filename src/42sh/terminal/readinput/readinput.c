@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:49:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 15:06:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 
 	t_buffer	buffer;
 
+	char		*term_prompt;
 	bool		raw_mode;
 	int			vi_mode;
 
@@ -61,7 +62,7 @@
 				write(STDOUT_FILENO, "\n", 1);
 			} else
 				tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
-			prompt_clear(BOTH);
+			sfree(term_prompt); term_prompt = NULL;
 		}
 	}
 
@@ -124,8 +125,10 @@
 
 		enable_raw_mode();
 
-		prompt_set(PS1, prompt);
-		if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+		sfree(term_prompt);
+		term_prompt = ft_strdup(prompt);
+
+		if (term_prompt) write(STDOUT_FILENO, term_prompt, ft_strlen(term_prompt));
 		vi_mode = 0;
 
 		cursor_get();
@@ -145,9 +148,9 @@
 		history_set_pos_end();
 		undo_clear();
 		
-		disable_raw_mode();	
+		disable_raw_mode();
 		
-		return (expand_history(buffer.value));
+		return (buffer.value);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:22:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,10 @@
 #pragma region "Variables"
 
 	#define PS1_DFLT		BLUE600"["GREEN600"kobayashi"BLUE600"]"GREEN600"-"RED600"42"Y"sh"BLUE600"> "NC
-	#define PS2_DFLT		">"
+	#define PS2_DFLT		"> "
 
-	char	*prompt_PS1 = NULL;			//	Default prompt displayed for regular input
-	char	*prompt_PS2 = NULL;			//	Continuation prompt for heredocs or multiline input
+	char	*prompt_PS1;			//	Default prompt displayed for regular input
+	char	*prompt_PS2;			//	Continuation prompt for heredocs or multiline input
 
 #pragma endregion
 
@@ -90,7 +90,8 @@
 				//	Procesa barras, variables ($var & \u)
 				tmp_prompt = ft_strdup(new_prompt);
 			} else {
-				tmp_prompt = backslashes(ft_strdup(PS1_DFLT));	//	"\\$USER-\u"
+				if (type == PS1) tmp_prompt = backslashes(ft_strdup(PS1_DFLT));	//	"\\$USER-\u"
+				if (type == PS2) tmp_prompt = backslashes(ft_strdup(PS2_DFLT));	//	"\\$USER-\u"
 				//	Procesa barras, variables ($var & \u)
 			}
 
@@ -109,6 +110,17 @@
 	void prompt_clear(int type) {
 		if ((type == PS1 || type == BOTH) && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
 		if ((type == PS2 || type == BOTH) && prompt_PS2) { sfree(prompt_PS2); prompt_PS2 = NULL; }
+	}
+
+#pragma endregion
+
+#pragma region "Initialize"
+
+	int prompt_initialize() {
+		prompt_set(PS1, NULL);
+		prompt_set(PS2, NULL);
+
+		return (0);
 	}
 
 #pragma endregion

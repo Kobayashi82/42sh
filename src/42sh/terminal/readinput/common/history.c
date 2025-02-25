@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 22:45:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:56:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -741,6 +741,8 @@
 
 			if (changes) {
 				char *new_value = ft_strdup(value);
+				print(STDOUT_FILENO, new_value, RESET);
+				print(STDOUT_FILENO, "\n", PRINT);
 				return (sfree(value), new_value);
 			} return (value);
 		}

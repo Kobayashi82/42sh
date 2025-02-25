@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 12:58:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:15:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1147,9 +1147,9 @@
 					num_len = 8 + ft_strlen(n) + chars_width(0, buffer.length, buffer.value);
 					for (int i = num_len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
 					if (num_len > 0) cursor_left(num_len);
-					if (prompt_PS1) {
-						write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
-						cursor_update(nocolor_length(prompt_PS1));
+					if (term_prompt) {
+						write(STDOUT_FILENO, term_prompt, ft_strlen(term_prompt));
+						cursor_update(nocolor_length(term_prompt));
 					}
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 
@@ -1193,7 +1193,7 @@
 					n[pos] = buffer.c;
 					if (number_mode == false) {
 						number_mode = true;
-						char *prompt = remove_colors(prompt_PS1);
+						char *prompt = remove_colors(term_prompt);
 						int num_len = chars_width(0, ft_strlen(prompt), prompt);
 						sfree(prompt);
 						num_len += chars_width(0, buffer.position, buffer.value);

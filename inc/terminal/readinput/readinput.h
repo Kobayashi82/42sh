@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:08:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:34:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 	#pragma endregion
 
 	extern t_buffer	buffer;
+	extern char		*term_prompt;
 	extern bool		raw_mode;
 	extern bool		hist_searching;
 	extern int		vi_mode;
@@ -50,6 +51,7 @@
 	//	--------- READINPUT --------
 	void	disable_raw_mode();
 	char	*readinput(char *prompt);
+	char	*get_input();
 
 	//	---------- MODES -----------
 	int		readline(int readed);

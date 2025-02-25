@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 19:38:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 15:06:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,10 @@
 	#include "libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
+	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
+	#include "terminal/input.h"
 	#include "terminal/signals.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
@@ -87,12 +89,15 @@
 		int read_input() {
 			signals_set();
 
-			if (!(terminal.input = readinput(NULL))) return (1);
+			if (!(terminal.input = get_input())) return (1);
+			
+			if (!ft_isspace_s(terminal.input)) {
+				ft_printf(1, "%s\n", terminal.input);
 
-			history_add(terminal.input, false);
+				history_add(terminal.input, false);
+				execute_commands(terminal.input);
+			}
 
-			if (!ft_isspace_s(terminal.input)) ft_printf(1, "%s\n", terminal.input);
-			execute_commands(terminal.input);
 			sfree(terminal.input);
 			//first_step();
 
@@ -116,6 +121,7 @@
 		options_initialize();
 		alias_initialize();
 		variables_initialize(vars_table, envp);
+		prompt_initialize();
 		shell_initialize();
 		//	Execute ~/.42shrc
 		history_initialize();

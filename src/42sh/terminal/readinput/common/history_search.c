@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:55:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:14:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,7 +169,7 @@
 			search_buffer.position = 0, search_buffer.length = 0;
 			search_buffer.value = ft_calloc(search_buffer.size, sizeof(char));
 
-			char *prompt = remove_colors(prompt_PS1);
+			char *prompt = remove_colors(term_prompt);
 			int len = chars_width(0, ft_strlen(prompt), prompt); sfree(prompt);
 			len += chars_width(0, buffer.position, buffer.value);
 			if (len > 0) cursor_left(len);
@@ -200,9 +200,9 @@
 			for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
 			if (len > 0) cursor_left(len);
 
-			if (prompt_PS1) {
-				write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
-				cursor_update(nocolor_length(prompt_PS1));
+			if (term_prompt) {
+				write(STDOUT_FILENO, term_prompt, ft_strlen(term_prompt));
+				cursor_update(nocolor_length(term_prompt));
 			}
 			write_value(STDOUT_FILENO, buffer.value, buffer.length);
 

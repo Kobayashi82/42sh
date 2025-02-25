@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/02/01 18:36:15 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/02/25 15:06:28 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -128,6 +128,7 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/readinput/modes/readline.c			\
 			terminal/readinput/modes/vi.c				\
 			terminal/readinput/readinput.c				\
+			terminal/input.c							\
 			terminal/print.c							\
 			terminal/signal.c							\
 														\

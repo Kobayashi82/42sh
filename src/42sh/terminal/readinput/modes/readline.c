@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 12:33:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:14:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -550,7 +550,7 @@
 
 			static void clear_screen() {
 				write(STDOUT_FILENO, "\033[H\033[2J", 7);
-				if (prompt_PS1) write(STDOUT_FILENO, prompt_PS1, ft_strlen(prompt_PS1));
+				if (term_prompt) write(STDOUT_FILENO, term_prompt, ft_strlen(term_prompt));
 				write(STDOUT_FILENO, buffer.value, buffer.length);
 				cursor_get();
 				cursor_move(buffer.length, buffer.position);
