@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:21:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 17:16:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 	int				alias_validate(char *key, bool show_msg);
 	//	---------- EXPORT ----------
 	t_alias			*alias_find(const char *key);
+	char			*alias_find_value(const char *key);
 	char			**alias_to_array(bool sort);
 	int				alias_print(bool sort);
 	size_t			alias_length();

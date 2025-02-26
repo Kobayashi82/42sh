@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:27:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 17:16:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,20 @@
 
 			while (alias) {
 				if (!ft_strcmp(alias->name, key)) return (alias);
+				alias = alias->next;
+			}
+
+			return (NULL);
+		}
+
+		char *alias_find_value(const char *key) {
+			if (!key) return (NULL);
+
+			unsigned int index = hash_index(key);
+			t_alias *alias = alias_table[index];
+
+			while (alias) {
+				if (!ft_strcmp(alias->name, key)) return (alias->value);
 				alias = alias->next;
 			}
 

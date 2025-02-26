@@ -27,7 +27,9 @@
 		"unistd.h": "c",
 		"termcaps.h": "c",
 		"signals.h": "c",
-		"project.h": "c"
+		"project.h": "c",
+		"alias.h": "c",
+		"stdbool.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

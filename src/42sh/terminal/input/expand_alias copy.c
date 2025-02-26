@@ -6,12 +6,9 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 23:11:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 22:28:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// falta expansion recursiva
-// Maximum alias expansion no funciona
 
 #pragma region "Includes"
 
@@ -97,7 +94,7 @@ static void pop_context(ContextNode** top) {
 }
 
 static bool is_command_separator(char c) {
-    return c == ';' || c == '|' || c == '&' || c == '\n' || c == '(' || c == '`';
+    return c == ';' || c == '|' || c == '&' || c == '\n' || c == '(' || c == '`' || c == ' ';
 }
 
 static bool should_expand_aliases(ContextNode* ctx) {
@@ -153,15 +150,9 @@ void expand_aliases(char** input) {
                 command_start = false;
                 continue;
             }
-			else if (strncmp(&(*input)[i], "$(", 2) == 0) {
+            else if (i < strlen(*input)-1 && (*input)[i] == '$' && (*input)[i+1] == '(') {
                 push_context(&ctx_stack, CTX_SUBSHELL);
                 i += 2;
-                command_start = true;
-                continue;
-            }
-            else if ((*input)[i] == '(') {
-                push_context(&ctx_stack, CTX_SUBSHELL);
-                i += 1;
                 command_start = true;
                 continue;
             }
@@ -198,7 +189,6 @@ void expand_aliases(char** input) {
         }
 
         // Detectar separadores de comandos
-		if (ft_isspace((*input)[i])) { i++; continue; }
         if (is_command_separator((*input)[i])) {
             command_start = true;
             i++;
@@ -211,20 +201,16 @@ void expand_aliases(char** input) {
             size_t alias_end = alias_start;
             
             // Encontrar fin del posible alias
-            while ((*input)[alias_end] && !is_command_separator((*input)[alias_end]) && (*input)[alias_end] != ')' && !ft_isspace((*input)[alias_end])) {
+            while ((*input)[alias_end] && !is_command_separator((*input)[alias_end])) {
                 alias_end++;
             }
 
             char* alias_name = strndup(*input + alias_start, alias_end - alias_start);
             char* alias_value = alias_find_value(alias_name);
             
-			ft_printf(1, "%s\n", alias_name);
-
-			command_start = false;
-
             if (alias_value) {
-				if (*alias_value && ft_isspace(alias_value[ft_strlen(alias_value) - 1])) command_start = true;
-                char* new_input = replace_substring(*input, alias_start, alias_end - alias_start, alias_value);
+                char* new_input = replace_substring(*input, alias_start, 
+                                                   alias_end - alias_start, alias_value);
                 if (!new_input) {
                     free(alias_name);
                     i++;
@@ -237,9 +223,8 @@ void expand_aliases(char** input) {
                 
                 // Reiniciar el procesado desde la nueva posición
                 i = alias_start + strlen(alias_value);
+                command_start = false;
                 free(alias_name);
-
-				ft_printf(1, "%s\n", &input[i]);
                 continue;
             }
             

@@ -6,9 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 21:50:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:01:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+// TMOUT close shell after prompt
+// interctive variable
+// ignoreeof of set "Use "logout" to leave the shell." en stderr
+// datos por stdin a 42sh se considera script
+// cdspell effect only in interactive
+// \'"'!!'"\' CTRL + Left / CTRL + Right jodido
 
 #pragma region "Includes"
 
@@ -20,19 +27,7 @@
 
 #pragma endregion
 
-#pragma region "Line"
-
-	static int unclosed(char *input) {
-		(void) input;
-		//size_t len = ft_max(0, ft_strlen(input) - 1);
-		
-		//if (input[len] != '"')		return (2);
-		//if (input[len] != '\\')		return (1);
-
-		return (0);
-	}
-
-#pragma endregion
+#include <stdio.h>
 
 #pragma region "Input"
 
@@ -41,23 +36,48 @@
 
 		if (!(input = readinput(prompt_PS1))) return (NULL);
 		if (ft_isspace_s(input)) return (input);
-		int unclosed_mode = 0;
+		int partial_mode = 0;
 
-		expand_alias(&input);
-		if (check_syntax(&input)) return (ft_strdup(""));
+		// alias echo=date c=lala d=lolo b=lele f=lili
+		// $(( $(echo $((2 ** 3)) ) + $(seq 1 3 | wc -l) ))
+		char *input2 = ft_strdup("c ; d ; (d) d d | f $(( $(echo $((b ** 3)) ) + $(b b 3 | wc -l) )) || d");
 
-		while ((unclosed_mode = unclosed(input))) {
+		expand_aliases(&input2);
+		ft_printf(1, "%s\n", input2);
+
+		sfree(input2);
+
+		// size_t i = 0;
+		// size_t end = find_arithmetic_expression(input2, &i);
+
+		// if (end > 0) {
+		// 	printf("Expresión aritmética encontrada. Termina en la posición: %zu\n", end);
+		// 	printf("Contenido: %.*s\n", (int)end, input2);
+		// } else {
+		// 	printf("No se encontró una expresión aritmética.\n");
+		// }
+
+		expand_history(&input, partial_mode);
+		//expand_alias(&input, partial_mode);
+		if ((partial_mode = check_syntax(&input, PARTIAL, partial_mode)) > 3) return (ft_strdup(""));
+		
+		while (partial_mode) {
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) { sfree(input); return (NULL); }
 
-			expand_alias(&input);
-			if (unclosed_mode == 1)	input = ft_strjoin(input, cont_line, 3);
-			else 					input = ft_strjoin_sep(input, "\n", cont_line, 6);
+			expand_history(&cont_line, partial_mode);
+			//expand_alias(&cont_line, partial_mode);
 
-			if (check_syntax(&input)) return (ft_strdup(""));
+			int old_partial_mode = partial_mode;
+			if ((partial_mode = check_syntax(&cont_line, PARTIAL, partial_mode)) > 2) {
+				sfree(input); sfree(cont_line);
+				return (ft_strdup(""));
+			}
+
+			if (old_partial_mode == 1)	input = ft_strjoin(input, cont_line, 3);
+			else 						input = ft_strjoin_sep(input, "\n", cont_line, 6);
 		}
 
-		expand_history(&input);
 		history_add(input, false);
 		return (input);
 	}

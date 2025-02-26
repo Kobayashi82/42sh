@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 21:30:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 19:41:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,15 +140,16 @@
 // 	return (0);
 // }
 
-int	check_syntax(char **input) {
+int	check_syntax(char **input, int type, int partial_mode) {
 	if (input || !*input) return (0);
 
 	char *value = *input;
 	(void) value;
+	(void) type;
+	(void) partial_mode;
 	int invalid = 0;
 
 	if (invalid) {
-		expand_history(input);
 		sfree(*input);
 		write(1, "Error chiquitin\n", 16);
 		return (1);
