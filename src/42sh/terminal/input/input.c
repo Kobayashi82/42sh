@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 23:01:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:12:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 
 		// alias echo=date c=lala d=lolo b=lele f=lili
 		// $(( $(echo $((2 ** 3)) ) + $(seq 1 3 | wc -l) ))
-		char *input2 = ft_strdup("c ; d ; (d) d d | f $(( $(echo $((b ** 3)) ) + $(b b 3 | wc -l) )) || d");
+		char *input2 = ft_strdup("c ; d ; (d) d d | f $(( (b) $(echo $((b ** 3)) ) + $(b b 3 | wc -l) )) || d");
 
 		expand_aliases(&input2);
 		ft_printf(1, "%s\n", input2);

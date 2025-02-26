@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 23:11:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/26 23:18:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // falta expansion recursiva
 // Maximum alias expansion no funciona
+// (), &, ;, etc... dentro de (()) no vale, solo subshell
 
 #pragma region "Includes"
 
