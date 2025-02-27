@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 15:08:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:18:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,28 +129,27 @@
 
 #pragma region "Expand"
 
-	void expand_history(char **input, int partial_mode) {
-		if (!options.history || !input || !*input) return;
+	void expand_history(char **input, t_context *main) {
+		if (!options.history || !options.histexpand || !input || !*input) return;
+
+		// clone main
 
 		char *value = *input;
 		size_t i = 0;
 		size_t length = ft_strlen(value);
-		bool in_quotes = (partial_mode == 2);
-		bool in_dquotes = (partial_mode == 3);
 		bool changes = false;
 
 		while (i < length) {
-			if (value[i] == '\\' && !in_quotes) {
-				i += 2; continue;
-			}
-			if (value[i] == '\'' && !in_dquotes) {
-				in_quotes = !in_quotes;
-			}
-			if (value[i] == '"' && !in_quotes) {
-				in_dquotes = !in_dquotes;
-			}
+			// Handle Escape
+			if (main->in_escape)						{ main->in_escape = false;				i++; continue; }
+			if (value[i] == '\\' && !main->in_quotes)	{ main->in_escape = true;				i++; continue; }
+			// Handle Quotes
+			if (value[i] == '\'' && !main->in_dquotes)	{ main->in_quotes  = !main->in_quotes;	i++; continue; }
+			if (value[i] == '"'  && !main->in_quotes)	{ main->in_dquotes = !main->in_dquotes;	i++; continue; }
+			// Handle Spaces
+			if (ft_isspace(value[i])) {															i++; continue; }
 
-			if (value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"' && !in_quotes) {
+			if (!main->in_quotes && value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"') {
 				size_t start = i;
 				size_t end = i + 1;
 				char *replacement = NULL;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 23:04:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 20:03:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@
 			//	HISTORY
 			bool	history;			//	1 = History enabled													0 = Disabled
 			bool	hist_local;			//	1 = Save history to disk											0 = Do not save
+			bool	histexpand;			//	1 = Expand history													0 = Disabled
 
 			//	ALIAS
 			bool	expand_aliases;		//	1 = Globbing disabled												0 = Enabled

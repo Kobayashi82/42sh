@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 19:25:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:19:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,27 @@
 
 #pragma region "Variables"
 
-	#pragma region Enumerators
+	#pragma region "Enumerators"
 
 		typedef enum e_syntax_type { FULL, PARTIAL } t_syntax_type;
 		typedef enum e_type { CTX_ARITHMETIC, CTX_SUBSHELL, CTX_BACKTICK } t_type;
 
 	#pragma endregion
 
-	#pragma region "Variables"
+	#pragma region "Structures"
+
+		typedef struct e_stack {
+			t_type type;
+			struct e_stack* prev;
+		} t_stack;
 
 		typedef struct e_context {
-			t_type type;
-			int nest_level;
-			struct e_context* prev;
+			t_stack	*stack;
+			bool	in_quotes;
+			bool	in_dquotes;
+			bool	in_escape;
+			bool	in_token;
+			bool	error;
 		} t_context;
 
 	#pragma endregion
@@ -39,13 +47,14 @@
 	char	*get_input();
 
 	//	------- CHECK SYNTAX -------
-	int		check_syntax(char *input, int type, t_context **stack, bool *in_quotes, bool *in_dquotes, bool *escape);
+	int		check_syntax(const char *input, int type, t_context *main);
 
 	//	------- EXPAND ALIAS -------
-	int		expand_alias(char **input, t_context **stack, bool *in_quotes, bool *in_dquotes, bool *escape);
-	void	stack_clear(t_context **stack);
+	int		expand_alias(char **input, t_context *alias);
+	void	stack_clear(t_stack **stack);
+	void	context_copy(t_context *dst, const t_context *src);
 
 	//	------ EXPAND HISTORY ------
-	void	expand_history(char **input, int partial_mode);
+	void	expand_history(char **input, t_context *main);
 
 #pragma endregion

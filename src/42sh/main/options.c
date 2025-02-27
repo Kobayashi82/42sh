@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 23:13:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 20:06:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,19 @@
 	static char *option_names[] = {
 		"autocd", "cdable_vars", "dirspell", "dotglob",
 		"emacs", "expand_aliases", "failglob", "hist_local",
-		"hist_on", "nocaseglob", "noglob", "nullglob", "vi"
+		"hist_on", "nocaseglob", "noglob", "nullglob", "vi", "histexpand"
 	};
 
 	static bool *option_values[] = {
 		&options.autocd, &options.cdable_vars, &options.dirspell, &options.dotglob,
 		&options.emacs, &options.expand_aliases, &options.failglob, &options.hist_local,
-		&options.history, &options.nocaseglob, &options.noglob, &options.nullglob, &options.vi
+		&options.history, &options.nocaseglob, &options.noglob, &options.nullglob, &options.vi, &options.histexpand
 	};
 
 	static int option_types[] = {
 		SHOPT, SHOPT, SHOPT, SHOPT,
 		SET, SHOPT, SHOPT, SET,
-		SET, SHOPT, SET, SHOPT, SET
+		SET, SHOPT, SET, SHOPT, SET, SET
 	};
 
 #pragma endregion
@@ -61,6 +61,7 @@
 		//	HISTORY
 		if (!ft_strcmp("hist_local", option)) 			{ options.hist_local = value;		return (0); }
 		if (!ft_strcmp("hist_on", option)) 				{ options.history = value;			return (0); }
+		if (!ft_strcmp("histexpand", option)) 			{ options.histexpand = value;		return (0); }
 
 		//	ALIAS
 		if (!ft_strcmp("expand_aliases", option)) 		{ options.expand_aliases = value;	return (0); }
@@ -135,6 +136,7 @@
 		//	HISTORY
 		options.history				= true;
 		options.hist_local			= true;
+		options.histexpand			= true;
 
 		//	ALIAS
 		options.expand_aliases		= true;

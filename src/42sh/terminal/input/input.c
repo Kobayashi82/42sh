@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 19:25:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:31:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 // datos por stdin a 42sh se considera script
 // cdspell effect only in interactive
 // \'"'!!'"\' CTRL + Left / CTRL + Right jodido
+
+// alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
+//char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
+
+// \& \&& \| \\ \" \' \( \` \${ $\{ no es válido
+// añadir ${}
 
 #pragma region "Includes"
 
@@ -27,67 +33,81 @@
 
 #pragma endregion
 
-#include <stdio.h>
-
 #pragma region "Input"
 
 	char *get_input() {
-		char *input = NULL;
+		char *input = NULL; char *input_hist = NULL;
 
-		if (!(input = readinput(prompt_PS1))) return (NULL);
-		if (ft_isspace_s(input)) return (input);
-		int partial_mode = 0;
+		if (!(input = readinput(prompt_PS1)))	return (NULL);
+		if (ft_isspace_s(input))				return (input);
 
-		// alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
-		// $(( $(echo $((2 ** 3)) ) + $(seq 1 3 | wc -l) ))
-		char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
-		// alias c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
-		// alias a=b b=c c=b
-		//char *input2 = ft_strdup("a");
+		t_context main;		ft_memset(&main, 0, sizeof(t_context));
+		t_context alias;	ft_memset(&alias, 0, sizeof(t_context));
 
-		t_context *stack = NULL;
-		t_context *syntax_stack = NULL;
-		bool in_quotes = false;
-		bool in_dquotes = false;
-		bool escape = false;
-		expand_aliases(&input2, &stack, &in_quotes, &in_dquotes, &escape);
-		stack_clear(&stack);
-		ft_printf(1, "%s\n", input2);
+		expand_history(&input, &main); input_hist = ft_strdup(input);
 
-		sfree(input2);
+		expand_alias(&input, &alias);
+		context_copy(&main, &alias);
 
-		// size_t i = 0;
-		// size_t end = find_arithmetic_expression(input2, &i);
-
-		// if (end > 0) {
-		// 	printf("Expresión aritmética encontrada. Termina en la posición: %zu\n", end);
-		// 	printf("Contenido: %.*s\n", (int)end, input2);
-		// } else {
-		// 	printf("No se encontró una expresión aritmética.\n");
-		// }
-
-		expand_history(&input, partial_mode);
-		//expand_alias(&input, partial_mode);
-		if ((partial_mode = check_syntax(&input, PARTIAL, partial_mode)) > 3) return (ft_strdup(""));
-		
-		while (partial_mode) {
-			char *cont_line = readinput(prompt_PS2);
-			if (!cont_line) { sfree(input); return (NULL); }
-
-			expand_history(&cont_line, partial_mode);
-			//expand_alias(&cont_line, partial_mode);
-
-			int old_partial_mode = partial_mode;
-			if ((partial_mode = check_syntax(&cont_line, PARTIAL, &syntax_stack, &in_quotes, &in_dquotes, &escape)) > 2) {
-				sfree(input); sfree(cont_line);
-				return (ft_strdup(""));
-			}
-
-			if (old_partial_mode == 1)	input = ft_strjoin(input, cont_line, 3);
-			else 						input = ft_strjoin_sep(input, "\n", cont_line, 6);
+		if (check_syntax(input, PARTIAL, &main)) {
+			stack_clear(&main.stack);
+			stack_clear(&alias.stack);
+			sfree(input_hist);
+			return (ft_strdup(""));
 		}
 
-		history_add(input, false);
+		context_copy(&main, &alias);
+		
+		while (main.in_token || main.stack || main.in_quotes || main.in_dquotes) {
+			bool add_newline = !main.in_token;
+
+			char *cont_line = readinput(prompt_PS2);
+			if (!cont_line) {
+				stack_clear(&main.stack);
+				stack_clear(&alias.stack);
+				sfree(input); sfree(input_hist);
+				return (NULL);
+			}
+
+			expand_history(&cont_line, &main);
+
+			if (add_newline)
+				input_hist = ft_strjoin_sep(input_hist, "\n", cont_line, 1);
+			else if (alias.in_escape) {
+				size_t len = ft_strlen(input_hist);
+				while (len && ft_isspace(input_hist[len - 1])) input_hist[--len] = '\0';
+				if (input_hist[len - 1] == '\\') input_hist[--len] = '\0';
+				input_hist = ft_strjoin(input_hist, cont_line, 1);
+			} else
+				input_hist = ft_strjoin_sep(input_hist, " ", cont_line, 1);
+
+			expand_alias(&cont_line, &alias);
+			context_copy(&main, &alias);
+
+			if (check_syntax(input, PARTIAL, &main)) {
+				sfree(input); sfree(cont_line); sfree(input_hist);
+				stack_clear(&main.stack);
+				stack_clear(&alias.stack);
+				return (ft_strdup(""));
+			}
+	
+			if (add_newline)
+				input = ft_strjoin_sep(input, "\n", cont_line, 6);
+			else if (alias.in_escape) {
+				size_t len = ft_strlen(input);
+				while (len && ft_isspace(input[len - 1])) input[--len] = '\0';
+				if (input[len - 1] == '\\') input[--len] = '\0';
+				input = ft_strjoin(input, cont_line, 1);
+			} else
+				input = ft_strjoin_sep(input, " ", cont_line, 6);
+
+			context_copy(&main, &alias);
+		}
+
+		stack_clear(&main.stack);
+		stack_clear(&alias.stack);
+		history_add(input_hist, false);	sfree(input_hist);
+
 		return (input);
 	}
 

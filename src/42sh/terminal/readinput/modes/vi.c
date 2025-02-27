@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 12:30:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 20:10:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -286,7 +286,7 @@
 					int hist_pos = history_get_pos() - (number - 1);
 					if (hist_pos < 0) hist_pos = 0;
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.history || !history_length()) { beep(); return; }
+					if (!history_length()) { beep(); return; }
 					char *new_line = history_prev();
 
 					if (!new_line) { beep(); return; }
@@ -318,7 +318,7 @@
 
 					int hist_pos = history_get_pos() + (number - 1);
 					if (number > 1) history_set_pos(hist_pos);
-					if (!options.history || !history_length()) { beep(); return; }
+					if (!history_length()) { beep(); return; }
 
 					char *new_line = history_next();
 					bool free_line = false;
