@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 23:12:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 19:25:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,20 @@
 		if (ft_isspace_s(input)) return (input);
 		int partial_mode = 0;
 
-		// alias echo=date c=lala d=lolo b=lele f=lili
+		// alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
 		// $(( $(echo $((2 ** 3)) ) + $(seq 1 3 | wc -l) ))
-		char *input2 = ft_strdup("c ; d ; (d) d d | f $(( (b) $(echo $((b ** 3)) ) + $(b b 3 | wc -l) )) || d");
+		char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
+		// alias c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
+		// alias a=b b=c c=b
+		//char *input2 = ft_strdup("a");
 
-		expand_aliases(&input2);
+		t_context *stack = NULL;
+		t_context *syntax_stack = NULL;
+		bool in_quotes = false;
+		bool in_dquotes = false;
+		bool escape = false;
+		expand_aliases(&input2, &stack, &in_quotes, &in_dquotes, &escape);
+		stack_clear(&stack);
 		ft_printf(1, "%s\n", input2);
 
 		sfree(input2);
@@ -69,7 +78,7 @@
 			//expand_alias(&cont_line, partial_mode);
 
 			int old_partial_mode = partial_mode;
-			if ((partial_mode = check_syntax(&cont_line, PARTIAL, partial_mode)) > 2) {
+			if ((partial_mode = check_syntax(&cont_line, PARTIAL, &syntax_stack, &in_quotes, &in_dquotes, &escape)) > 2) {
 				sfree(input); sfree(cont_line);
 				return (ft_strdup(""));
 			}

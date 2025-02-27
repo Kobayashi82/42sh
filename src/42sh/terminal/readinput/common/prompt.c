@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 14:22:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 12:29:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 			if (!new_prompt) return;
 
 			char *tmp = smalloc(ft_strlen(new_prompt) + 1);
-			int i = 0, j = 0;
+			size_t i = 0, j = 0;
 
 			while (new_prompt[i]) {
 				int len = char_size(new_prompt[i]);

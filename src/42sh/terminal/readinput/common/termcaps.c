@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/20 12:13:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 12:29:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@
 			char *remove_colors(const char *str) {
 				if (!str) return (NULL);
 
-				int length = nocolor_length(str);
+				size_t length = nocolor_length(str);
 				if (length == ft_strlen(str)) return (ft_strdup(str));
 
 				char *result = smalloc(length + 1);

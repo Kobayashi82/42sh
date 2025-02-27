@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:31:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:07:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -353,10 +353,10 @@
 
 	#pragma region "StrNDup"
 
-		char	*ft_strndup(const char *s1, int n) {
-			if (!s1) return (NULL);
+		char	*ft_strndup(const char *s1, size_t n) {
+			if (!s1 || n == 0) return (NULL);
 
-			int len = 0;
+			size_t len = 0;
     		while (len < n && s1[len] != '\0') len++;
 
 			char *copy = smalloc(len + 1);
@@ -388,7 +388,7 @@
 
 	#pragma region "SubStrTrim"
 
-		char	*ft_substr(const char *str, int start, int len) {
+		char	*ft_substr(const char *str, size_t start, int len) {
 			int m_len = 0;
 
 			if (start <= ft_strlen(str)) m_len = ft_strlen(str) - start;
@@ -462,8 +462,8 @@
 
 	#pragma region "StrLen"
 
-		int	ft_strlen(const char *str) {
-			int	i = 0;
+		size_t ft_strlen(const char *str) {
+			size_t i = 0;
 
 			while (str && str[i]) ++i;
 			return (i);
@@ -473,8 +473,8 @@
 
 	#pragma region "StrLen (Lines)"
 
-		int	ft_strlenl(const char *str) {
-			int	lines = 0;
+		size_t ft_strlenl(const char *str) {
+			size_t lines = 0;
 
 			if (str) lines++;
 			while (str && *str) { if (*str++ == '\n') lines++; }
@@ -540,9 +540,9 @@
 			char	**split = smalloc((count_words(s, c) + 1) * sizeof(char *));
 			if (!s || !split) return (free_all(split, 0));
 
-			while (i + 1 <= ft_strlen(s)) {
+			while (i + 1 <= (int) ft_strlen(s)) {
 				if ((s[++i] != c || (s[i] == c && i > 0 && s[i - 1] == c)) && index < 0) index = i;
-				else if ((s[i] == c || i == ft_strlen(s)) && index >= 0) {
+				else if ((s[i] == c || i == (int) ft_strlen(s)) && index >= 0) {
 					split[j++] = word_dup(s, index, i, c);
 					if (split[j - 1] == NULL) return (free_all(split, j));
 					index = -1;
@@ -619,12 +619,12 @@
 #pragma region "REPLACE"
 
 	//	Replace a string inside a string with another string XD
-	char *replace(char *str, int *start, int len, char *replace) {
+	char *replace(char *str, size_t *start, size_t len, char *replace) {
 		if (len <= 0) return (str);
-		int i = (start) ? *start : 0;
-		int str_len = ft_strlen(str);
-		int replace_len = ft_strlen(replace);
-		int new_len = str_len - len + replace_len;
+		size_t i = (start) ? *start : 0;
+		size_t str_len = ft_strlen(str);
+		size_t replace_len = ft_strlen(replace);
+		size_t new_len = str_len - len + replace_len;
 		char *new_str = smalloc(new_len + 1);
 		
 		ft_memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement

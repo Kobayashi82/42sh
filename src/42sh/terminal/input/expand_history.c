@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 17:11:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:08:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@
 			}
 
 			if (value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"' && !in_quotes) {
-				int start = i;
+				size_t start = i;
 				size_t end = i + 1;
 				char *replacement = NULL;
 

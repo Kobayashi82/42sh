@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:29:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:07:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,14 +115,14 @@
 		#pragma region "DUP"
 
 			char	*ft_strdup(const char *s1);
-			char	*ft_strndup(const char *s1, int n);
+			char	*ft_strndup(const char *s1, size_t n);
 
 		#pragma endregion
 
 		#pragma region "TRIM"
 
 			char	*ft_strtrim(char const *s1, char const *set);
-			char	*ft_substr(const char *str, int start, int len);
+			char	*ft_substr(const char *str, size_t start, int len);
 
 		#pragma endregion
 
@@ -135,8 +135,8 @@
 
 		#pragma region "LEN"
 
-			int		ft_strlen(const char *str);
-			int		ft_strlenl(const char *str);
+			size_t	ft_strlen(const char *str);
+			size_t	ft_strlenl(const char *str);
 
 		#pragma endregion
 
@@ -162,7 +162,7 @@
 
 		#pragma region "REPLACE"
 
-			char	*replace(char *str, int *start, int len, char *replace);
+			char	*replace(char *str, size_t *start, size_t len, char *replace);
 
 		#pragma endregion
 
@@ -189,7 +189,7 @@
 
 	#pragma region "ARRAY"
 
-		void	array_nsort(char **array, int skip);
+		void	array_nsort(char **array, size_t skip);
 		void	array_sort(char **array);
 		void	array_int_sort(int *array);
 		void	array_print(const char **array, int numbered);

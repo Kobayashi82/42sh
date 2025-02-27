@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 14:23:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/27 12:28:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 
 #pragma region "Sort"
 
-	void array_nsort(char **array, int skip) {
+	void array_nsort(char **array, size_t skip) {
 		if (!array || !*array) return;
 		if (skip < 0) skip = 0;
 
