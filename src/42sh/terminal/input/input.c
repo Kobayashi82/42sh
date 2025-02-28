@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 23:31:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:14:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@
 //char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
 
 // \& \&& \| \\ \" \' \( \` \${ $\{ no es válido
-// añadir ${}
 
 #pragma region "Includes"
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 22:18:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 13:31:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,14 +140,14 @@
 // 	return (0);
 // }
 
-int	check_syntax(const char *input, int type, t_context *main) {
+int	check_syntax(const char *input, int type, t_context *context) {
 	if (input || !*input) return (0);
 
 	// clone main
 
 	(void) input;
 	(void) type;
-	(void) main;
+	(void) context;
 	int invalid = 0;
 
 	if (invalid) {
