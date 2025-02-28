@@ -6,21 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 21:43:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:36:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Auto-Complete
-// Finalizado de linea
-// Sintaxis
-// Prompt
-// Command with char position (los comandos de vi que dependen de una posicion... duh)
-// Historial de varias lineas no se pega a la columna 0
+//	Auto-Complete
+//	Sintaxis
+//	Prompt
+//	Command with char position (los comandos de vi que dependen de una posicion... duh)
 
 //	Current issues:
 //
 //	Incomplete support for multi-width characters (missing logic to handle them at column edges).		SOLUTION: Multi-width characters are ignored.
 //	When the input has more lines than the terminal, the cursor movement logic breaks.					SOLUTION: Do not write long lines.
+//	Historial de varias lineas no se pega a la columna 0.
 
 #pragma region "Includes"
 

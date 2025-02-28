@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/28 14:12:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:33:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 	#pragma region "Enumerators"
 
-		typedef enum e_syntax_type { FULL, PARTIAL } t_syntax_type;
 		typedef enum e_type { CTX_ARITHMETIC, CTX_ARITHMETIC_GROUP, CTX_SUBSHELL, CTX_BACKTICK, CTX_BRACE, CTX_BRACE_PARAM, CTX_BRACE_COMMAND } t_type;
 
 	#pragma endregion
@@ -60,6 +59,6 @@
 	int		expand_alias(char **input, t_context *context);
 	
 	//	------- CHECK SYNTAX -------
-	int		check_syntax(const char *input, int type, t_context *context);
+	int		check_syntax(const char *input, t_context *context);
 
 #pragma endregion

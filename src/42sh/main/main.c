@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 16:10:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:35:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 	//	Command -v no es identico a bash
 	//	Hash no se como añadir manualmente
 	//	Realizar testeo completo de builtins (todos las opciones)
+	//	TMOUT close shell after prompt
+	//	interctive variable
+	//	ignoreeof of set "Use "logout" to leave the shell." en stderr
+	//	datos por stdin a 42sh se considera script
+	//	cdspell effect only in interactive
+	//	\'"'!!'"\' CTRL + Left / CTRL + Right jodido
 
 #pragma endregion
 

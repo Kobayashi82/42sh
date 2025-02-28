@@ -6,21 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/28 18:14:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/02/28 18:34:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// TMOUT close shell after prompt
-// interctive variable
-// ignoreeof of set "Use "logout" to leave the shell." en stderr
-// datos por stdin a 42sh se considera script
-// cdspell effect only in interactive
-// \'"'!!'"\' CTRL + Left / CTRL + Right jodido
-
 // alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
 //char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
-
-// \& \&& \| \\ \" \' \( \` \${ $\{ no es válido
 
 #pragma region "Includes"
 
@@ -48,10 +39,10 @@
 		expand_alias(&input, &alias);
 		context_copy(&main, &alias);
 
-		if (check_syntax(input, PARTIAL, &main)) {
+		if (check_syntax(input, &main)) {
+			sfree(input); sfree(input_hist);
 			stack_clear(&main.stack);
 			stack_clear(&alias.stack);
-			sfree(input_hist);
 			return (ft_strdup(""));
 		}
 
@@ -62,9 +53,9 @@
 
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) {
+				sfree(input); sfree(input_hist);
 				stack_clear(&main.stack);
 				stack_clear(&alias.stack);
-				sfree(input); sfree(input_hist);
 				return (NULL);
 			}
 
@@ -83,7 +74,7 @@
 			expand_alias(&cont_line, &alias);
 			context_copy(&main, &alias);
 
-			if (check_syntax(input, PARTIAL, &main)) {
+			if (check_syntax(input, &main)) {
 				sfree(input); sfree(cont_line); sfree(input_hist);
 				stack_clear(&main.stack);
 				stack_clear(&alias.stack);
@@ -103,9 +94,10 @@
 			context_copy(&main, &alias);
 		}
 
+		history_add(input_hist, false);
+		sfree(input_hist);
 		stack_clear(&main.stack);
 		stack_clear(&alias.stack);
-		history_add(input_hist, false);	sfree(input_hist);
 
 		return (input);
 	}
