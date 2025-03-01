@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/28 18:33:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:42:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 	#pragma region "Enumerators"
 
-		typedef enum e_type { CTX_ARITHMETIC, CTX_ARITHMETIC_GROUP, CTX_SUBSHELL, CTX_BACKTICK, CTX_BRACE, CTX_BRACE_PARAM, CTX_BRACE_COMMAND } t_type;
+		typedef enum e_type { CTX_QUOTE, CTX_DQUOTE, CTX_ARITHMETIC, CTX_ARITHMETIC_GROUP, CTX_SUBSHELL, CTX_BACKTICK, CTX_BRACE, CTX_BRACE_PARAM, CTX_BRACE_COMMAND, CTX_PROCESS_SUB_IN, CTX_PROCESS_SUB_OUT } t_type;
 
 	#pragma endregion
 
@@ -29,8 +29,6 @@
 
 		typedef struct e_context {
 			t_stack	*stack;
-			bool	in_quotes;
-			bool	in_dquotes;
 			bool	in_escape;
 			bool	in_token;
 			bool	error;
@@ -50,6 +48,7 @@
 	void	stack_pop(t_stack **top);
 	t_stack	*stack_copy(const t_stack *stack);
 	void	stack_clear(t_stack **stack);
+	int		is_context(t_stack *stack, t_type type);
 	void	context_copy(t_context *dst, const t_context *src);
 
 	//	------ EXPAND HISTORY ------

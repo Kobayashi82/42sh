@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 15:07:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:29:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -635,6 +635,27 @@
 		if (start) *start = i + replace_len;											//	Update the start index if needed
 
 		return (sfree(str), new_str);
+	}
+
+#pragma endregion
+
+#pragma region "REPLACE SUBSTRING"
+
+	char *replace_substring(char *original, size_t start, size_t len, const char *replacement) {
+		size_t orig_len = ft_strlen(original);
+		size_t repl_len = ft_strlen(replacement);
+		
+		if (start > orig_len)		return (NULL);
+		if (start + len > orig_len)	len = orig_len - start;
+		
+		char *new_str = smalloc(orig_len - len + repl_len + 1);
+		
+		ft_strncpy(new_str, original, start);
+		new_str[start] = '\0';
+		ft_strcat(new_str, replacement);
+		if (start + len < orig_len) ft_strcat(new_str, original + start + len);
+		
+		return (new_str);
 	}
 
 #pragma endregion

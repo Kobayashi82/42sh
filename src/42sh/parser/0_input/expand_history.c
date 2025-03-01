@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:29:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,26 +130,28 @@
 #pragma region "Expand"
 
 	void expand_history(char **input, t_context *context) {
-		if (!options.history || !options.histexpand || !input || !*input) return;
-
-		// clone main
+		if (!options.history || !options.histexpand || !input || !*input || !context) return;
 
 		char *value = *input;
 		size_t i = 0;
 		size_t length = ft_strlen(value);
-		bool changes = false;
+		bool changes = false, in_escape = false, in_quotes = false, in_dquotes = false;
+		in_quotes = is_context(context->stack, CTX_QUOTE);
+		in_dquotes = is_context(context->stack, CTX_DQUOTE);
+		in_escape = context->in_escape;
 
 		while (i < length) {
 			// Handle Escape
-			if (context->in_escape)						{ context->in_escape = false;				i++; continue; }
-			if (value[i] == '\\' && !context->in_quotes)	{ context->in_escape = true;				i++; continue; }
+			if (in_escape)							{ in_escape = false;		i++; continue; }
+			if (value[i] == '\\' && !in_quotes)		{ in_escape = true;			i++; continue; }
 			// Handle Quotes
-			if (value[i] == '\'' && !context->in_dquotes)	{ context->in_quotes  = !context->in_quotes;	i++; continue; }
-			if (value[i] == '"'  && !context->in_quotes)	{ context->in_dquotes = !context->in_dquotes;	i++; continue; }
+			if (value[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
+			if (value[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
 			// Handle Spaces
-			if (ft_isspace(value[i])) {															i++; continue; }
+			if (ft_isspace(value[i])) {											i++; continue; }
 
-			if (!context->in_quotes && value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"') {
+			if (!in_quotes && value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"') {
+
 				size_t start = i;
 				size_t end = i + 1;
 				char *replacement = NULL;
@@ -172,9 +174,15 @@
 				}
 
 				if (replacement) {
-					value = replace(value, &start, end - start, replacement);
-					i = start;
-					changes = true;
+					char* new_input = replace_substring(value, start, end - start, replacement);
+					if (new_input) {
+						sfree(value);
+						value = new_input;
+						i += ft_strlen(replacement);
+						length = ft_strlen(value);
+						changes = true;
+						continue;
+					}
 				}
 			}
 			i++;

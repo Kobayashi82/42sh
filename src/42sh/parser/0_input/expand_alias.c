@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:29:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,6 @@
 #pragma endregion
 
 #pragma region "Expand"
-
-	#pragma region "Replace"
-
-		static char *replace_substring(char *original, size_t start, size_t len, const char *replacement) {
-			size_t orig_len = ft_strlen(original);
-			size_t repl_len = ft_strlen(replacement);
-			
-			if (start > orig_len)		return (NULL);
-			if (start + len > orig_len)	len = orig_len - start;
-			
-			char *new_str = smalloc(orig_len - len + repl_len + 1);
-			
-			ft_strncpy(new_str, original, start);
-			new_str[start] = '\0';
-			ft_strcat(new_str, replacement);
-			if (start + len < orig_len) ft_strcat(new_str, original + start + len);
-			
-			return (new_str);
-		}
-
-	#pragma endregion
 
 	#pragma region "Is Separator"
 	
@@ -99,114 +78,122 @@
 
 	#pragma endregion
 
-	#pragma region "Is Close Backtick"
-		
-		int is_close_backtick(t_stack *stack) {
-			while (stack) {
-				if (stack->type == CTX_BACKTICK) return (1);
-				stack = stack->prev;
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
 	#pragma region "Expand"
 
 		int expand_alias(char **input, t_context *context) {
-			if (!options.expand_aliases || !input || !*input || !**input) return (0);
+			if (!options.expand_aliases || !input || !*input || !**input || !context) return (0);
 
-			if (current_expansion++ == MAX_ALIAS_EXPANSIONS) {
-				current_expansion = 0; return (1); }
+			if (current_expansion++ == MAX_ALIAS_EXPANSIONS) { current_expansion = 0; return (1); }
 
 			bool command_start = true;
 			char last_token[3]; last_token[0] = '\0';
 			size_t i = 0;
 
 			while ((*input)[i]) {
-				// Handle Escape
-				if (context->in_escape)								{ context->in_escape = false;									i++; continue; }
-				if ((*input)[i] == '\\' && !context->in_quotes)		{ context->in_escape = true;	ft_strcpy(last_token, "\\");	i++; continue; }
-				// Handle Quotes
-				if ((*input)[i] == '\'' && !context->in_dquotes)	{ context->in_quotes  = !context->in_quotes;					i++; continue; }
-				if ((*input)[i] == '"'  && !context->in_quotes)		{ context->in_dquotes = !context->in_dquotes;					i++; continue; }
-				// Handle Spaces
-				if ((*input)[i] != '\n' && ft_isspace((*input)[i])) {																i++; continue; }
 
-				if (!context->in_quotes && !context->in_dquotes) {
-
-					if (context->stack && context->stack->type == CTX_BRACE) {
-						if ((*input)[i] == '}') stack_pop(&context->stack);
-						command_start = false; i += 1; continue;
-					}
-					
-						//	$((	Open Arithmetic Expansion
-					if (!ft_strncmp(&(*input)[i], "$((", 3) && is_arithmetic(&(*input)[i + 3])) {
-						stack_push(&context->stack, CTX_ARITHMETIC);
-						command_start = false; i += 3; continue;
-					}	//	((	Arithmetic Evaluation
-					else if (!ft_strncmp(&(*input)[i], "((", 2)  && is_arithmetic(&(*input)[i + 2])) {
-						stack_push(&context->stack, CTX_ARITHMETIC);
-						command_start = false; i += 2; continue;
-					}	//	$(	Open Command Substitution
-					else if (!ft_strncmp(&(*input)[i], "$(", 2)) {
-						stack_push(&context->stack, CTX_SUBSHELL);
-						command_start = true; i += 2; continue;
-					}	//	(	Open Arithmetic Group
-					else if ((*input)[i] == '(' && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
-						stack_push(&context->stack, CTX_ARITHMETIC_GROUP);
-						command_start = false; i += 1; continue;
-					}	//	(	Open Subshell
-					else if ((*input)[i] == '(' && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-						stack_push(&context->stack, CTX_SUBSHELL);
-						command_start = true; i += 1; continue;	
-					}	//	`	Open Backtick
-					else if ((*input)[i] == '`' && !is_close_backtick(context->stack)) {
-						stack_push(&context->stack, CTX_BACKTICK);
-						command_start = true; i += 1; continue;
-					}	//	${	Open Parameter Expansion
-					else if (!ft_strncmp(&(*input)[i], "${", 2)) {
-						stack_push(&context->stack, CTX_BRACE_PARAM);
-						command_start = false; i += 1; continue;
-					}	//	{ 	Open Group Command
-					else if (!ft_strncmp(&(*input)[i], "{ ", 2) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-						stack_push(&context->stack, CTX_BRACE_COMMAND);
-						command_start = true; i += 1; continue;
-					}	//	{	Open Brace Expansion
-					else if ((*input)[i] == '{' && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-						stack_push(&context->stack, CTX_BRACE);
-						command_start = false; i += 1; continue;
-					}	//	;	&	&&	|	||	\n	Command Separator
-					else if (is_separator(*input, &i, last_token) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-						command_start = true; i++; continue;
-					}
-
-						//	))	Close Arithmetic Expansion or Arithmetic Evaluation
-					if (!ft_strncmp(&(*input)[i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
-						stack_pop(&context->stack);
-						command_start = false; i += 2; continue;
-					}	//	)	Close Command Substitution or Subshell or Arithmetic Group
-					else if (context->stack && (context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_ARITHMETIC_GROUP) && (*input)[i] == ')') {
-						stack_pop(&context->stack);						
-						command_start = false; i += 1; continue;
-					}	//	`	Close Backtick
-					else if ((*input)[i] == '`' && is_close_backtick(context->stack)) {
-						while (context->stack && context->stack->type != CTX_BACKTICK) stack_pop(&context->stack);
-						stack_pop(&context->stack);
-						command_start = false; i += 1; continue;
-					}	//	}	Close Parameter Expansion or Group Command or Brace Expansion
-					else if ((*input)[i] == '}' && (context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND || context->stack->type == CTX_BRACE)) {
-						stack_pop(&context->stack);
-						command_start = false; i += 1; continue;
-					}
+					//	\	Handle Escape
+				if (context->in_escape) {
+					context->in_escape = false; i++; continue;
+				} else if ((*input)[i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
+					ft_strcpy(last_token, "\\");
+					context->in_escape = true; i++; continue;
 				}
 
-				// Expandir aliases cuando corresponde
-				if (command_start && !context->in_quotes && !context->in_dquotes && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					//	'	Handle Single Quotes
+				if (context->stack && context->stack->type == CTX_QUOTE) {
+					if ((*input)[i] == '\'') stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				} else if ((*input)[i] == '\'') {
+					stack_push(&context->stack, CTX_QUOTE);
+					command_start = false; i += 1; continue;
+				}
+		
+					//		Handle Spaces
+				if ((*input)[i] != '\n' && ft_isspace((*input)[i])) { i++; continue; }			
+				
+					//	}	Close Brace Expansion
+				if (context->stack && context->stack->type == CTX_BRACE) {
+					if ((*input)[i] == '}') stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				}	//	"	Close Double Quotes
+				if ((*input)[i] == '"' && context->stack && context->stack->type == CTX_DQUOTE) {
+					stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				}	//	))	Close Arithmetic Expansion or Arithmetic Evaluation
+				else if (!ft_strncmp(&(*input)[i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
+					stack_pop(&context->stack);
+					command_start = false; i += 2; continue;
+				}	//	)	Close Command Substitution or Subshell or Arithmetic Group
+				else if ((*input)[i] == ')' && context->stack && (context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_ARITHMETIC_GROUP || context->stack->type == CTX_PROCESS_SUB_IN || context->stack->type == CTX_PROCESS_SUB_OUT)) {
+					stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				}	//	`	Close Backtick
+				else if ((*input)[i] == '`' && is_context(context->stack, CTX_BACKTICK)) {
+					while (context->stack && context->stack->type != CTX_BACKTICK) stack_pop(&context->stack);
+					stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				}	//	}	Close Parameter Expansion or Group Command or Brace Expansion
+				else if ((*input)[i] == '}' && (context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND || context->stack->type == CTX_BRACE)) {
+					stack_pop(&context->stack);
+					command_start = false; i += 1; continue;
+				}
+
+				//	"	Open Double Quotes
+				if ((*input)[i] == '"' && (!context->stack || context->stack->type != CTX_DQUOTE)) {
+					stack_push(&context->stack, CTX_DQUOTE);
+					command_start = false; i += 1; continue;
+				}	//	$((	Open Arithmetic Expansion
+				else if (!ft_strncmp(&(*input)[i], "$((", 3) && is_arithmetic(&(*input)[i + 3])) {
+					stack_push(&context->stack, CTX_ARITHMETIC);
+					command_start = false; i += 3; continue;
+				}	//	((	Arithmetic Evaluation
+				else if (!ft_strncmp(&(*input)[i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&(*input)[i + 2])) {
+					stack_push(&context->stack, CTX_ARITHMETIC);
+					command_start = false; i += 2; continue;
+				}	//	$(	Open Command Substitution
+				else if (!ft_strncmp(&(*input)[i], "$(", 2)) {
+					stack_push(&context->stack, CTX_SUBSHELL);
+					command_start = true; i += 2; continue;
+				}	//	<(	Open Process Substitution In
+				else if (!ft_strncmp(&(*input)[i], "<(", 2)) {
+					stack_push(&context->stack, CTX_PROCESS_SUB_IN);
+					command_start = true; i += 2; continue;
+				}	//	>(	Open Process Substitution Out
+				else if (!ft_strncmp(&(*input)[i], ">(", 2)) {
+					stack_push(&context->stack, CTX_PROCESS_SUB_OUT);
+					command_start = true; i += 2; continue;	
+				}	//	(	Open Arithmetic Group
+				else if ((*input)[i] == '(' && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
+					stack_push(&context->stack, CTX_ARITHMETIC_GROUP);
+					command_start = false; i += 1; continue;
+				}	//	(	Open Subshell
+				else if ((*input)[i] == '(' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					stack_push(&context->stack, CTX_SUBSHELL);
+					command_start = true; i += 1; continue;	
+				}	//	`	Open Backtick
+				else if ((*input)[i] == '`' && !is_context(context->stack, CTX_BACKTICK)) {
+					stack_push(&context->stack, CTX_BACKTICK);
+					command_start = true; i += 1; continue;
+				}	//	${	Open Parameter Expansion
+				else if (!ft_strncmp(&(*input)[i], "${", 2)) {
+					stack_push(&context->stack, CTX_BRACE_PARAM);
+					command_start = false; i += 1; continue;
+				}	//	{ 	Open Group Command
+				else if (!ft_strncmp(&(*input)[i], "{ ", 2) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					stack_push(&context->stack, CTX_BRACE_COMMAND);
+					command_start = true; i += 1; continue;
+				}	//	{	Open Brace Expansion
+				else if ((*input)[i] == '{' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					stack_push(&context->stack, CTX_BRACE);
+					command_start = false; i += 1; continue;
+				}	//	;	&	&&	|	||	\n	Command Separator
+				else if (is_separator(*input, &i, last_token) && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					command_start = true; i++; continue;
+				}
+
+				if (command_start && (!context->stack || (context->stack->type != CTX_QUOTE && context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 					size_t start = i, end = i;
 					
-					// Encontrar fin del posible alias
 					while ((*input)[end] && !is_not_separator((*input)[end])) end++;
 					char *alias_name  = ft_strndup(*input + start, end - start);
 					char *alias_value = ft_strdup(alias_find_value(alias_name)); sfree(alias_name);
@@ -237,13 +224,15 @@
 					sfree(alias_list); alias_list = NULL;
 					if (!(*input)[end]) break;
 					i = end;
+					command_start = false;
+					continue;
 				}
 
 				command_start = false;
 				i++;
 			}
-			
-			context->in_token = !context->in_quotes && !context->in_dquotes && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
+
+			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
 			context->in_escape = context->in_token && *last_token == '\\';
 			return (0);
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:39:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
+	#include "terminal/signals.h"
 	#include "parser/input.h"
 
 #pragma endregion
@@ -48,7 +49,7 @@
 
 		context_copy(&main, &alias);
 		
-		while (main.in_token || main.stack || main.in_quotes || main.in_dquotes) {
+		while (main.in_token || main.stack) {
 			bool add_newline = !main.in_token;
 
 			char *cont_line = readinput(prompt_PS2);
@@ -57,6 +58,13 @@
 				stack_clear(&main.stack);
 				stack_clear(&alias.stack);
 				return (NULL);
+			}
+
+			if (!*cont_line && nsignal == 2) {
+				sfree(input); sfree(input_hist);
+				stack_clear(&main.stack);
+				stack_clear(&alias.stack);
+				return (cont_line);
 			}
 
 			expand_history(&cont_line, &main);

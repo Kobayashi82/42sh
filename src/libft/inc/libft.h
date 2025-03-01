@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 15:07:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:29:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,12 @@
 
 		#pragma endregion
 
+		#pragma region "REPLACE SUBSTRING"
+		
+			char *replace_substring(char *original, size_t start, size_t len, const char *replacement);
+		
+		#pragma endregion
+		
 		#pragma region "BEEP"
 
 			void	beep();

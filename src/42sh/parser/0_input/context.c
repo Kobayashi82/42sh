@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:26:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 20:05:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,19 @@
 
 #pragma region "Context"
 
+	#pragma region "Is Context"
+
+		int is_context(t_stack *stack, t_type type) {
+			while (stack) {
+				if (stack->type == type) return (1);
+				stack = stack->prev;
+			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
 	#pragma region "Copy"
 
 		void context_copy(t_context *dst, const t_context *src) {
@@ -91,8 +104,6 @@
 			stack_clear(&dst->stack);
 			dst->stack = stack_copy(src->stack);
 			
-			dst->in_quotes = src->in_quotes;
-			dst->in_dquotes = src->in_dquotes;
 			dst->in_escape = src->in_escape;
 			dst->in_token = src->in_token;
 			dst->error = src->error;
