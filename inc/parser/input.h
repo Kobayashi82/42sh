@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 20:42:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:41:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,20 @@
 
 	#pragma region "Enumerators"
 
-		typedef enum e_type { CTX_QUOTE, CTX_DQUOTE, CTX_ARITHMETIC, CTX_ARITHMETIC_GROUP, CTX_SUBSHELL, CTX_BACKTICK, CTX_BRACE, CTX_BRACE_PARAM, CTX_BRACE_COMMAND, CTX_PROCESS_SUB_IN, CTX_PROCESS_SUB_OUT } t_type;
-
+		typedef enum e_type {
+			CTX_QUOTE,
+			CTX_DQUOTE,
+			CTX_ARITHMETIC,
+			CTX_ARITHMETIC_GROUP,
+			CTX_SUBSHELL,
+			CTX_BACKTICK,
+			CTX_BRACE,
+			CTX_BRACE_PARAM,
+			CTX_BRACE_COMMAND,
+			CTX_PROCESS_SUB_IN,
+			CTX_PROCESS_SUB_OUT,
+		} t_type;
+		
 	#pragma endregion
 
 	#pragma region "Structures"
@@ -57,7 +69,7 @@
 	//	------- EXPAND ALIAS -------
 	int		expand_alias(char **input, t_context *context);
 	
-	//	------- CHECK SYNTAX -------
-	int		check_syntax(const char *input, t_context *context);
+	//	------- SYNTAX CHECK -------
+	int		syntax_check(const char *input, t_context *context);
 
 #pragma endregion

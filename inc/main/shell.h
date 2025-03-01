@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/08 16:59:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:56:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 
 	#pragma region "Structures"
 
-		typedef struct {
+		typedef struct s_shell {
 			pid_t		pid;
 			pid_t		parent_pid;
 			int			subshell_level;

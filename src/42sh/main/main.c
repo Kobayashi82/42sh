@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 22:05:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,10 @@
 			if (!(terminal.input = get_input())) return (1);
 			if (ft_isspace_s(terminal.input)) { sfree(terminal.input); return (0); }
 
-			ft_printf(1, "Input: %s\n", terminal.input);
+			if (!ft_strcmp(terminal.input, "$?"))
+				ft_printf(1, "Exit code: %d\n", shell.exit_code);
+			else
+				ft_printf(1, "Input: %s\n", terminal.input);
 
 			execute_commands(terminal.input);
 			sfree(terminal.input);

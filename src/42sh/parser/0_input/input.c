@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 20:39:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 21:41:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 		expand_alias(&input, &alias);
 		context_copy(&main, &alias);
 
-		if (check_syntax(input, &main)) {
+		if (syntax_check(input, &main)) {
 			sfree(input); sfree(input_hist);
 			stack_clear(&main.stack);
 			stack_clear(&alias.stack);
@@ -82,7 +82,7 @@
 			expand_alias(&cont_line, &alias);
 			context_copy(&main, &alias);
 
-			if (check_syntax(input, &main)) {
+			if (syntax_check(input, &main)) {
 				sfree(input); sfree(cont_line); sfree(input_hist);
 				stack_clear(&main.stack);
 				stack_clear(&alias.stack);
