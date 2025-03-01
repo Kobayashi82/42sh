@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/02/28 13:33:43 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/03/01 14:32:41 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,6 +109,12 @@ SRCS	=	builtins/alias/alias.c						\
 			main/options.c								\
 			main/shell.c								\
 														\
+			parser/0_input/check_syntax.c				\
+			parser/0_input/context.c					\
+			parser/0_input/expand_alias.c				\
+			parser/0_input/expand_history.c				\
+			parser/0_input/input.c						\
+														\
 			parser/1_tokenizer/args.c					\
 			parser/1_tokenizer/lexer.c					\
 			parser/1_tokenizer/parser.c					\
@@ -128,12 +134,6 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/readinput/modes/readline.c			\
 			terminal/readinput/modes/vi.c				\
 			terminal/readinput/readinput.c				\
-														\
-			terminal/input/check_syntax.c				\
-			terminal/input/context.c					\
-			terminal/input/expand_alias.c				\
-			terminal/input/expand_history.c				\
-			terminal/input/input.c						\
 														\
 			terminal/print.c							\
 			terminal/signal.c							\

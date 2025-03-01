@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/28 18:34:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "terminal/input.h"
+	#include "parser/input.h"
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/28 18:35:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/01 14:34:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
-	#include "terminal/input.h"
+	#include "parser/input.h"
 	#include "terminal/signals.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
