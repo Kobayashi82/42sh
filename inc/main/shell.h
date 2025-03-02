@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 21:56:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 12:30:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 			char		*cwd;
 			time_t		started;
 			t_process	process;
-			bool		_inline;
+			bool		interactive;
 			bool		exit;
 			int			exit_code;
 		} t_shell;
