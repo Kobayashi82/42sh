@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 21:29:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 10:48:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,8 @@
 	#pragma endregion
 
 	#pragma region "Expand"
+
+//  echo ${a:=$(echo ${a:=$(echo ${a:=papa})})}
 
 		int expand_alias(char **input, t_context *context) {
 			if (!options.expand_aliases || !input || !*input || !**input || !context) return (0);
@@ -177,7 +179,7 @@
 				}	//	${	Open Parameter Expansion
 				else if (!ft_strncmp(&(*input)[i], "${", 2)) {
 					stack_push(&context->stack, CTX_BRACE_PARAM);
-					command_start = false; i += 1; continue;
+					command_start = false; i += 2; continue;
 				}	//	{ 	Open Group Command
 				else if (!ft_strncmp(&(*input)[i], "{ ", 2) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 					stack_push(&context->stack, CTX_BRACE_COMMAND);

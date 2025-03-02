@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 21:41:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 11:00:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@
 		
 		while (main.in_token || main.stack) {
 			bool add_newline = !main.in_token;
+			bool is_escape = main.in_escape;
 
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) {
@@ -71,7 +72,7 @@
 
 			if (add_newline)
 				input_hist = ft_strjoin_sep(input_hist, "\n", cont_line, 1);
-			else if (alias.in_escape) {
+			else if (is_escape) {
 				size_t len = ft_strlen(input_hist);
 				while (len && ft_isspace(input_hist[len - 1])) input_hist[--len] = '\0';
 				if (input_hist[len - 1] == '\\') input_hist[--len] = '\0';
@@ -91,7 +92,7 @@
 	
 			if (add_newline)
 				input = ft_strjoin_sep(input, "\n", cont_line, 6);
-			else if (alias.in_escape) {
+			else if (is_escape) {
 				size_t len = ft_strlen(input);
 				while (len && ft_isspace(input[len - 1])) input[--len] = '\0';
 				if (input[len - 1] == '\\') input[--len] = '\0';
