@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 21:41:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 19:21:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@
 #pragma region Methods
 
 	//	---------- INPUT -----------
+	char	*expand_input(char *input);
 	char	*get_input();
 
 	//	--------- CONTEXT ----------
@@ -70,6 +71,9 @@
 	int		expand_alias(char **input, t_context *context);
 	
 	//	------- SYNTAX CHECK -------
-	int		syntax_check(const char *input, t_context *context);
+	bool	is_separator(const char *input, size_t *i, char *last_token);
+	bool	is_not_separator(char c);
+	bool	is_arithmetic(const char *input);
+	int		syntax_check(const char *input, t_context *context, int line);
 
 #pragma endregion

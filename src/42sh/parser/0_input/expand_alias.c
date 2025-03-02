@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 10:48:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 19:08:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,57 +30,7 @@
 
 #pragma region "Expand"
 
-	#pragma region "Is Separator"
-	
-		static bool is_separator(char *input, size_t *i, char *last_token) {
-			if (!ft_strncmp(&input[*i], "&&", 2) || !ft_strncmp(&input[*i], "||", 2) || !ft_strncmp(&input[*i], "$(", 2) || !ft_strncmp(&input[*i], "${", 2) || !ft_strncmp(&input[*i], "{ ", 2)) {
-				last_token[0] = input[*i]; last_token[1] = input[*i + 1]; last_token[2] = '\0';
-				*i += 1; return (true);
-			} else if (input[*i] == ';' || input[*i] == '|' || input[*i] == '&' || input[*i] == '\n') {
-				last_token[0] = input[*i]; last_token[1] = '\0';
-				return (true);
-			}
-			
-			last_token[0] = '\0';
-			return (false);
-		}
-	
-		static bool is_not_separator(char c) {
-			return (c == '$' || c == '`' || c == '(' || c == ')' || c == '\'' || c == '"' || c == '{' || c == '}' || c == ';' || c == '&' || c == '|' || c == '\n' || ft_isspace(c));
-		}
-
-	#pragma endregion
-
-	#pragma region "Is Arithmetic"
-
-		static bool is_arithmetic(const char *input) {
-			size_t	i = 0;
-			int		parenthesis = 0;
-			bool	in_quotes = false, in_dquotes = false, escape = false;
-
-			while (input[i] && parenthesis >= 0) {
-				// Manejar escapes
-				if (escape)								{ escape = false;			i++; continue; }
-				if (input[i] == '\\' && !in_quotes)		{ escape = true;			i++; continue; }
-
-				// Manejar comillas
-				if (input[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
-				if (input[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
-
-				if (input[i] == ')' && input[i + 1] == ')' && !parenthesis) return (true);
-				if (input[i] == '(') parenthesis++;
-				if (input[i] == ')') parenthesis--;
-				i++;
-			}
-
-			return (false);
-		}
-
-	#pragma endregion
-
 	#pragma region "Expand"
-
-//  echo ${a:=$(echo ${a:=$(echo ${a:=papa})})}
 
 		int expand_alias(char **input, t_context *context) {
 			if (!options.expand_aliases || !input || !*input || !**input || !context) return (0);
@@ -95,10 +45,10 @@
 
 					//	\	Handle Escape
 				if (context->in_escape) {
-					context->in_escape = false; i++; continue;
+					context->in_escape = false; i += 1; continue;
 				} else if ((*input)[i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
 					ft_strcpy(last_token, "\\");
-					context->in_escape = true; i++; continue;
+					context->in_escape = true; i += 1; continue;
 				}
 
 					//	'	Handle Single Quotes
@@ -111,7 +61,7 @@
 				}
 		
 					//		Handle Spaces
-				if ((*input)[i] != '\n' && ft_isspace((*input)[i])) { i++; continue; }			
+				if ((*input)[i] != '\n' && ft_isspace((*input)[i])) { i += 1; continue; }
 				
 					//	}	Close Brace Expansion
 				if (context->stack && context->stack->type == CTX_BRACE) {
@@ -190,7 +140,7 @@
 					command_start = false; i += 1; continue;
 				}	//	;	&	&&	|	||	\n	Command Separator
 				else if (is_separator(*input, &i, last_token) && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-					command_start = true; i++; continue;
+					command_start = true; i += 1; continue;
 				}
 
 				if (command_start && (!context->stack || (context->stack->type != CTX_QUOTE && context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
@@ -231,7 +181,7 @@
 				}
 
 				command_start = false;
-				i++;
+				i += 1;
 			}
 
 			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');

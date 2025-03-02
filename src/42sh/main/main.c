@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 12:30:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 19:52:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,11 @@
 			signals_set();
 
 			if (!(terminal.input = get_input())) return (1);
-			if (ft_isspace_s(terminal.input)) { sfree(terminal.input); return (0); }
+
+			if (ft_isspace_s(terminal.input)) {
+				sfree(terminal.input);
+				return (!shell.interactive);
+			}
 
 			if (!ft_strcmp(terminal.input, "$?"))
 				ft_printf(1, "Exit code: %d\n", shell.exit_code);
@@ -104,7 +108,7 @@
 			execute_commands(terminal.input);
 			sfree(terminal.input);
 
-			return (0);
+			return (!shell.interactive);
 		}
 
 	#pragma endregion
@@ -145,11 +149,14 @@
 		else if (argc > 2 && !ft_strcmp(argv[1], "-c")) {
 			signals_set();
 			shell.interactive = false;
-			terminal.input = ft_strdup(argv[2]);
+			terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
 			sfree(terminal.input);
 		} else {
-			//t_arg arg = { .value = "banner" }; builtin_exec(&arg);
+			shell.interactive = isatty(STDIN_FILENO);
+			if (shell.interactive) {
+				//t_arg arg = { .value = "banner" }; builtin_exec(&arg);
+			}
 			while (!shell.exit && !read_input()) ;
 		}
 

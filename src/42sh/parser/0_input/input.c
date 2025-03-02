@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 11:00:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/02 19:50:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,26 +21,28 @@
 	#include "terminal/readinput/history.h"
 	#include "terminal/signals.h"
 	#include "parser/input.h"
+	#include "main/shell.h"
 
 #pragma endregion
 
-#pragma region "Input"
+#pragma region "Expand"
 
-	char *get_input() {
-		char *input = NULL; char *input_hist = NULL;
+	char *expand_input(char *input) {
+		if (!input || ft_isspace_s(input)) return (input);
 
-		if (!(input = readinput(prompt_PS1)))	return (NULL);
-		if (ft_isspace_s(input))				return (input);
+		char *input_hist = NULL;
+		int line = 0;
 
 		t_context main;		ft_memset(&main, 0, sizeof(t_context));
 		t_context alias;	ft_memset(&alias, 0, sizeof(t_context));
 
-		expand_history(&input, &main); input_hist = ft_strdup(input);
+		expand_history(&input, &main);
+		input_hist = ft_strdup(input);
 
 		expand_alias(&input, &alias);
 		context_copy(&main, &alias);
 
-		if (syntax_check(input, &main)) {
+		if (syntax_check(input, &main, line)) {
 			sfree(input); sfree(input_hist);
 			stack_clear(&main.stack);
 			stack_clear(&alias.stack);
@@ -49,9 +51,10 @@
 
 		context_copy(&main, &alias);
 		
-		while (main.in_token || main.stack) {
+		while (shell.interactive && (main.in_token || main.stack)) {
 			bool add_newline = !main.in_token;
 			bool is_escape = main.in_escape;
+			if (add_newline) line++;
 
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) {
@@ -83,7 +86,7 @@
 			expand_alias(&cont_line, &alias);
 			context_copy(&main, &alias);
 
-			if (syntax_check(input, &main)) {
+			if (syntax_check(input, &main, line)) {
 				sfree(input); sfree(cont_line); sfree(input_hist);
 				stack_clear(&main.stack);
 				stack_clear(&alias.stack);
@@ -103,12 +106,55 @@
 			context_copy(&main, &alias);
 		}
 
-		history_add(input_hist, false);
+		if (shell.interactive) history_add(input_hist, false);
 		sfree(input_hist);
 		stack_clear(&main.stack);
 		stack_clear(&alias.stack);
 
 		return (input);
+	}
+
+	#pragma endregion
+
+	char *readme() {
+		size_t size = 1024, bytes_read = 0;
+		char *value = ft_calloc(size + 1, sizeof(char));
+
+		while (1) {
+			size_t bytes_to_read = size - bytes_read;
+			ssize_t read_now = read(STDIN_FILENO, value + bytes_read, bytes_to_read);
+			
+			if (read_now == -1) { sfree(value); return (NULL); }
+			
+			bytes_read += read_now;
+			value[bytes_read] = '\0';
+					
+			// Expand value if necessary
+			if (bytes_read == size) {
+				value = ft_realloc(value, size, (size * 2) + 1);
+				size *= 2;
+			}
+			
+			if (read_now == 0) break;
+		}
+
+		return (value);
+	}
+
+	#pragma region "Input"
+
+	char *get_input() {
+		char *input = NULL;
+
+		if (!shell.interactive) {
+			if (!(input = readme()))	return (NULL);
+		} else {
+			if (!(input = readinput(prompt_PS1)))	return (NULL);
+		}
+
+		if (ft_isspace_s(input))				return (input);
+
+		return (expand_input(input));
 	}
 
 #pragma endregion
