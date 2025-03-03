@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/03 13:45:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 20:45:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,9 @@
 	typedef enum e_syntax_error {
 		IN_TOKEN,
 		IN_TOKEN_EOF,
+		TOKEN_NEAR,
+		ARGS_ARITHMETIC,
+		ARGS_SUBSHELL,
 	} t_syntax_error;
 
 #pragma endregion
@@ -46,6 +49,10 @@
 
 	bool is_not_separator(char c) {
 		return (c == '$' || c == '`' || c == '(' || c == ')' || c == '\'' || c == '"' || c == '{' || c == '}' || c == ';' || c == '&' || c == '|' || c == '\n' || ft_isspace(c));
+	}
+
+	bool is_end_arguments(const char *input, size_t i) {
+		return (input[i] == '(' || input[i] == ')' || (input[i] == '{' && ft_isspace(input[i + 1])) || input[i] == '}' || input[i] == '\n' || ft_isspace(input[i]));
 	}
 
 #pragma endregion
@@ -72,6 +79,8 @@
 			i++;
 	}
 
+	if (!input[i]) return (true);
+
 	return (false);
 }
 
@@ -95,9 +104,14 @@
 
 			if (error == IN_TOKEN)
 				print(STDERR_FILENO, ft_strjoin(pname, "syntax error: unexpected end of file", 0), FREE_JOIN);
-			if (error == IN_TOKEN_EOF) {
+			if (error == IN_TOKEN_EOF)
 				print(STDERR_FILENO, ft_strjoin_sep(pname, "unexpected EOF while looking for matching ", value, 0), FREE_JOIN);
-			}
+			if (error == TOKEN_NEAR)
+				print(STDERR_FILENO, ft_strjoin_sep(pname, "syntax error near unexpected token ", value, 0), FREE_JOIN);
+			if (error == ARGS_ARITHMETIC)
+				print(STDERR_FILENO, ft_strjoin(pname, "syntax error: invalid arithmetic expression ", 0), FREE_JOIN);
+			if (error == ARGS_SUBSHELL)
+				print(STDERR_FILENO, ft_strjoin(pname, "syntax error: invalid subshell ", 0), FREE_JOIN);
 
 			print(STDERR_FILENO, "\n", PRINT);
 			sfree(pname); sfree(value);
@@ -105,12 +119,19 @@
 
 	#pragma endregion
 
+	//	Comprobar si {a,b,c} es válido, si no, no lo cuenta como stack
+	//	Comprobar si { cmd; } es válido, si no, no lo cuenta como stack
+	//	Básicamente {   } se considera literal
+	//	Saber cuando es comando o argumento
+
+
 	#pragma region "Shell"
 	
 		static int syntax_shell(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
 			if (!input || !*input || !context) return (0);
 
-			bool command_start = true;
+			bool command_start = true, is_argument = false;
+			(void) is_argument;
 
 			while (input[*i]) {
 					//	\	Handle Escape
@@ -122,7 +143,7 @@
 				}
 		
 				if (input[*i] == '\n') *line += 1;
-					//	'	Handle Single Quotes
+				//	'	Handle Single Quotes
 				if (context->stack && context->stack->type == CTX_QUOTE) {
 					if (input[*i] == '\'') stack_pop(&context->stack);
 					command_start = false; *i += 1; continue;
@@ -130,7 +151,7 @@
 					stack_push(&context->stack, CTX_QUOTE);
 					command_start = false; *i += 1; continue;
 				}
-		
+				
 					//		Handle Spaces
 				if (input[*i] != '\n' && ft_isspace(input[*i])) { *i += 1; continue; }
 				
@@ -142,7 +163,7 @@
 				if (input[*i] == '"' && context->stack && context->stack->type == CTX_DQUOTE) {
 					stack_pop(&context->stack);
 					command_start = false; *i += 1; continue;
-				}	//	))	Close Arithmetic Expansion or Arithmetic Evaluation
+				}	//	))	Close Arithmetic Expansion or Arithmetic Expression
 				else if (!ft_strncmp(&input[*i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
 					stack_pop(&context->stack);
 					command_start = false; *i += 2; continue;
@@ -169,8 +190,9 @@
 				else if (!ft_strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
 					stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; *i += 3; continue;
-				}	//	((	Arithmetic Evaluation
+				}	//	((	Open Arithmetic Expression
 				else if (!ft_strncmp(&input[*i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&input[*i + 2])) {
+					if (!command_start) return (syntax_error(ARGS_ARITHMETIC, NULL, *line), 2);
 					stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; *i += 2; continue;
 				}	//	$(	Open Command Substitution
@@ -191,6 +213,7 @@
 					command_start = false; *i += 1; continue;
 				}	//	(	Open Subshell
 				else if (input[*i] == '(' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					if (!command_start) return (syntax_error(ARGS_SUBSHELL, NULL, *line), 2);
 					stack_push(&context->stack, CTX_SUBSHELL);
 					command_start = true; *i += 1; continue;	
 				}	//	`	Open Backtick
@@ -202,7 +225,8 @@
 					stack_push(&context->stack, CTX_BRACE_PARAM);
 					command_start = false; *i += 2; continue;
 				}	//	{ 	Open Group Command
-				else if (!ft_strncmp(&input[*i], "{ ", 2) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+				else if (input[*i] == '{' && ft_isspace(input[*i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+					if (!command_start) return (syntax_error(TOKEN_NEAR, ft_strdup("}"), *line), 2);
 					stack_push(&context->stack, CTX_BRACE_COMMAND);
 					command_start = true; *i += 1; continue;
 				}	//	{	Open Brace Expansion
@@ -218,16 +242,14 @@
 					size_t start = *i, end = *i;
 					(void) start;
 					while (input[end] && !is_not_separator(input[end])) end++;
-
+					is_argument = !is_end_arguments(input, *i);
 					is_separator(input, i, last_token);
+					if (*last_token) is_argument = true;
 					if (!input[end]) break;
 					*i = end;
-					command_start = false;
-					continue;
-				}
-		
+				} else *i += 1;		
+				
 				command_start = false;
-				*i += 1;
 			}
 
 			return (0);
@@ -254,7 +276,6 @@
 					syntax_error(IN_TOKEN, NULL, line);
 				} else {
 					char *value = NULL;
-					if (context->stack->type == CTX_BRACE_COMMAND || context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_PROCESS_SUB_IN || context->stack->type == CTX_PROCESS_SUB_OUT) line += 1;
 					if (context->stack->type == CTX_QUOTE) value = ft_strdup("'");
 					else if (context->stack->type == CTX_DQUOTE) value = ft_strdup("\"");
 					else if (context->stack->type == CTX_BACKTICK) value = ft_strdup("`");
@@ -273,28 +294,3 @@
 	#pragma endregion
 	
 #pragma endregion
-
-
-
-// (echo lala
-// bash: -c: line 2: syntax error: unexpected end of file
-// $(echo lala
-// bash: -c: line 2: unexpected EOF while looking for matching `)'
-// ((echo lala
-// bash: -c: line 1: unexpected EOF while looking for matching `)'
-// $((echo lala
-// bash: -c: line 1: unexpected EOF while looking for matching `)'
-// <(echo lala
-// bash: -c: line 2: unexpected EOF while looking for matching `)'
-// $((echo (lala
-// bash: -c: line 1: unexpected EOF while looking for matching `)'
-// `echo lala
-// bash: -c: line 1: unexpected EOF while looking for matching ``'
-// ${
-// bash: -c: line 1: unexpected EOF while looking for matching `}'
-// {
-// bash: -c: line 2: syntax error: unexpected end of file
-// { echo; 
-// bash: -c: line 2: syntax error: unexpected end of file
-// echo |
-// bash: -c: line 2: syntax error: unexpected end of file

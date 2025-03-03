@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 22:38:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 17:50:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static char *extract_word(char *line, int *index) {
 
 	if (line[*index] == '#')		{ (*index) += ft_strlen(&line[*index]); return (ft_strdup(&line[*index])); }
 	if (line[*index] == ';')		{ (*index)++; return (ft_strdup(";")); }
+	if (line[*index] == '\n')		{ (*index)++; return (ft_strdup("\n")); }
 
 	if (line[*index] == '\\')		{ quoted = 1; move = true; }
 	else if (line[*index] == '\'')	{ quoted = 2; move = true; }
@@ -50,7 +51,7 @@ static char *extract_word(char *line, int *index) {
 
 	if (move) { ft_memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
 
-    while (line[*index] && !(ft_isspace(line[*index]) && !quoted) && !(line[*index] == ';' && !quoted) && !(line[*index] == '#' && !quoted)) {
+    while (line[*index] && !(ft_isspace(line[*index]) && !quoted) && !((line[*index] == ';' || line[*index] == '\n') && !quoted) && !(line[*index] == '#' && !quoted)) {
 		if (!quoted && line[*index] == '\\')			{ quoted = 1; move = true; }
 		else if (quoted == 1)							quoted = 0;
 		else if (!quoted && line[*index] == '\'')		{ quoted = 2; move = true; }

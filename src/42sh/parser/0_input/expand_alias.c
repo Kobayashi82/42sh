@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/03 13:33:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 18:21:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@
 				if ((*input)[i] == '"' && context->stack && context->stack->type == CTX_DQUOTE) {
 					stack_pop(&context->stack);
 					command_start = false; i += 1; continue;
-				}	//	))	Close Arithmetic Expansion or Arithmetic Evaluation
+				}	//	))	Close Arithmetic Expansion or Arithmetic Expression
 				else if (!ft_strncmp(&(*input)[i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
 					stack_pop(&context->stack);
 					command_start = false; i += 2; continue;
@@ -98,7 +98,7 @@
 				else if (!ft_strncmp(&(*input)[i], "$((", 3) && is_arithmetic(&(*input)[i + 3])) {
 					stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; i += 3; continue;
-				}	//	((	Arithmetic Evaluation
+				}	//	((	Open Arithmetic Expression
 				else if (!ft_strncmp(&(*input)[i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&(*input)[i + 2])) {
 					stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; i += 2; continue;
