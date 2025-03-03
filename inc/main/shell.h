@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 12:30:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 12:43:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 			time_t		started;
 			t_process	process;
 			bool		interactive;
+			bool		as_argument;
 			bool		exit;
 			int			exit_code;
 		} t_shell;

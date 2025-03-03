@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:08:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 13:33:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,6 +162,7 @@
 						sfree(alias_value); alias_value = NULL;
 						sfree(alias_list); alias_list = NULL;
 						
+						is_separator(*input, &i, last_token);
 						if (new_input) {
 							sfree(*input);
 							*input = new_input;
@@ -171,6 +172,7 @@
 						}
 					}
 
+					is_separator(*input, &i, last_token);
 					current_expansion = 0;
 					sfree(tmp); sfree(alias_value);
 					sfree(alias_list); alias_list = NULL;

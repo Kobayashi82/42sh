@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:50:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 13:26:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,47 +31,49 @@
 		if (!input || ft_isspace_s(input)) return (input);
 
 		char *input_hist = NULL;
-		int line = 0;
+		int line = 1;
 
-		t_context main;		ft_memset(&main, 0, sizeof(t_context));
-		t_context alias;	ft_memset(&alias, 0, sizeof(t_context));
+		t_context ctx_history;		ft_memset(&ctx_history, 0, sizeof(t_context));
+		t_context ctx_syntax;		ft_memset(&ctx_syntax, 0, sizeof(t_context));
+		t_context ctx_alias;		ft_memset(&ctx_alias, 0, sizeof(t_context));
 
-		expand_history(&input, &main);
+		expand_history(&input, &ctx_history);
 		input_hist = ft_strdup(input);
 
-		expand_alias(&input, &alias);
-		context_copy(&main, &alias);
+		expand_alias(&input, &ctx_alias);
+		context_copy(&ctx_history, &ctx_alias);
 
-		if (syntax_check(input, &main, line)) {
+		if (syntax_check(input, &ctx_syntax, line)) {
 			sfree(input); sfree(input_hist);
-			stack_clear(&main.stack);
-			stack_clear(&alias.stack);
+			stack_clear(&ctx_history.stack);
+			stack_clear(&ctx_syntax.stack);
+			stack_clear(&ctx_alias.stack);
 			return (ft_strdup(""));
 		}
-
-		context_copy(&main, &alias);
 		
-		while (shell.interactive && (main.in_token || main.stack)) {
-			bool add_newline = !main.in_token;
-			bool is_escape = main.in_escape;
+		while (shell.interactive && (ctx_history.in_token || ctx_history.stack)) {
+			bool add_newline = !ctx_history.in_token;
+			bool is_escape = ctx_history.in_escape;
 			if (add_newline) line++;
 
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) {
 				sfree(input); sfree(input_hist);
-				stack_clear(&main.stack);
-				stack_clear(&alias.stack);
+				stack_clear(&ctx_history.stack);
+				stack_clear(&ctx_syntax.stack);
+				stack_clear(&ctx_alias.stack);
 				return (NULL);
 			}
 
 			if (!*cont_line && nsignal == 2) {
 				sfree(input); sfree(input_hist);
-				stack_clear(&main.stack);
-				stack_clear(&alias.stack);
+				stack_clear(&ctx_history.stack);
+				stack_clear(&ctx_syntax.stack);
+				stack_clear(&ctx_alias.stack);
 				return (cont_line);
 			}
 
-			expand_history(&cont_line, &main);
+			expand_history(&cont_line, &ctx_history);
 
 			if (add_newline)
 				input_hist = ft_strjoin_sep(input_hist, "\n", cont_line, 1);
@@ -83,13 +85,14 @@
 			} else
 				input_hist = ft_strjoin_sep(input_hist, " ", cont_line, 1);
 
-			expand_alias(&cont_line, &alias);
-			context_copy(&main, &alias);
+			expand_alias(&cont_line, &ctx_alias);
+			context_copy(&ctx_history, &ctx_alias);
 
-			if (syntax_check(input, &main, line)) {
+			if (syntax_check(input, &ctx_syntax, line)) {
 				sfree(input); sfree(cont_line); sfree(input_hist);
-				stack_clear(&main.stack);
-				stack_clear(&alias.stack);
+				stack_clear(&ctx_history.stack);
+				stack_clear(&ctx_syntax.stack);
+				stack_clear(&ctx_alias.stack);
 				return (ft_strdup(""));
 			}
 	
@@ -102,14 +105,13 @@
 				input = ft_strjoin(input, cont_line, 1);
 			} else
 				input = ft_strjoin_sep(input, " ", cont_line, 6);
-
-			context_copy(&main, &alias);
 		}
 
 		if (shell.interactive) history_add(input_hist, false);
 		sfree(input_hist);
-		stack_clear(&main.stack);
-		stack_clear(&alias.stack);
+		stack_clear(&ctx_history.stack);
+		stack_clear(&ctx_syntax.stack);
+		stack_clear(&ctx_alias.stack);
 
 		return (input);
 	}

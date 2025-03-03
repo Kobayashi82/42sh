@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:52:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 13:35:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,6 +149,8 @@
 		else if (argc > 2 && !ft_strcmp(argv[1], "-c")) {
 			signals_set();
 			shell.interactive = false;
+			shell.as_argument = true;
+			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
 			terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
 			sfree(terminal.input);

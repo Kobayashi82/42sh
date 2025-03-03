@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:14:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/03 13:45:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@
 	#include "terminal/print.h"
 	#include "parser/input.h"
 	#include "main/shell.h"
+	#include "main/project.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
 	typedef enum e_syntax_error {
-		ERRORCITO
+		IN_TOKEN,
+		IN_TOKEN_EOF,
 	} t_syntax_error;
 
 #pragma endregion
@@ -79,16 +81,33 @@
 
 	#pragma region "Error"
 
-		void syntax_error(t_syntax_error error, char *value) {
-			if (error == ERRORCITO)
-				print(STDOUT_FILENO, ft_strjoin_sep("Errorcito: ", value, "\n", 0), FREE_RESET_PRINT);
+		void syntax_error(t_syntax_error error, char *value, int line) {
+			char *pname = ft_strjoin(PROYECTNAME, ": ", 0);
+			if (shell.as_argument) pname = ft_strjoin(pname, "-c: ", 1);
+			if (!shell.interactive && line >= 0) { 
+				pname = ft_strjoin_sep(pname, "line ", ft_itoa(line), 6);
+				pname = ft_strjoin(pname, ": ", 1);
+			}
+
+			if (value) value = ft_strjoin_sep("`", value, "'", 2);
+
+			print(STDERR_FILENO, NULL, RESET);
+
+			if (error == IN_TOKEN)
+				print(STDERR_FILENO, ft_strjoin(pname, "syntax error: unexpected end of file", 0), FREE_JOIN);
+			if (error == IN_TOKEN_EOF) {
+				print(STDERR_FILENO, ft_strjoin_sep(pname, "unexpected EOF while looking for matching ", value, 0), FREE_JOIN);
+			}
+
+			print(STDERR_FILENO, "\n", PRINT);
+			sfree(pname); sfree(value);
 		}
 
 	#pragma endregion
 
 	#pragma region "Shell"
 	
-		static int syntax_shell(const char *input, size_t *i, t_context *context, char *last_token) {
+		static int syntax_shell(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
 			if (!input || !*input || !context) return (0);
 
 			bool command_start = true;
@@ -102,6 +121,7 @@
 					context->in_escape = true; *i += 1; continue;
 				}
 		
+				if (input[*i] == '\n') *line += 1;
 					//	'	Handle Single Quotes
 				if (context->stack && context->stack->type == CTX_QUOTE) {
 					if (input[*i] == '\'') stack_pop(&context->stack);
@@ -198,7 +218,8 @@
 					size_t start = *i, end = *i;
 					(void) start;
 					while (input[end] && !is_not_separator(input[end])) end++;
-		
+
+					is_separator(input, i, last_token);
 					if (!input[end]) break;
 					*i = end;
 					command_start = false;
@@ -207,14 +228,6 @@
 		
 				command_start = false;
 				*i += 1;
-			}
-
-			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
-			context->in_escape = context->in_token && *last_token == '\\';
-
-			if (!shell.interactive && (context->stack || context->in_token)) {
-				// si hay cosas sin cerrar, error
-				return (1);
 			}
 
 			return (0);
@@ -227,11 +240,31 @@
 		int	syntax_check(const char *input, t_context *context, int line) {
 			if (!input || !*input || !context) return (1);
 
-			(void) line;
 			char last_token[3]; last_token[0] = '\0';
 			size_t i = 0;
 
-			int result = syntax_shell(input, &i, context, last_token);
+			int result = syntax_shell(input, &i, context, last_token, &line);
+
+			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
+			context->in_escape = context->in_token && *last_token == '\\';
+
+			// si hay cosas sin cerrar, error
+			if (!shell.interactive && (context->stack || context->in_token)) {
+				if (context->in_token) {
+					syntax_error(IN_TOKEN, NULL, line);
+				} else {
+					char *value = NULL;
+					if (context->stack->type == CTX_BRACE_COMMAND || context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_PROCESS_SUB_IN || context->stack->type == CTX_PROCESS_SUB_OUT) line += 1;
+					if (context->stack->type == CTX_QUOTE) value = ft_strdup("'");
+					else if (context->stack->type == CTX_DQUOTE) value = ft_strdup("\"");
+					else if (context->stack->type == CTX_BACKTICK) value = ft_strdup("`");
+					else if (context->stack->type == CTX_BRACE || context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND) value = ft_strdup("}");
+					else value = ft_strdup(")");
+					syntax_error(IN_TOKEN_EOF, value, line);
+				}
+				result = 2;
+			}
+
 			if (result) shell.exit_code = result;
 
 			return (result);
@@ -240,3 +273,28 @@
 	#pragma endregion
 	
 #pragma endregion
+
+
+
+// (echo lala
+// bash: -c: line 2: syntax error: unexpected end of file
+// $(echo lala
+// bash: -c: line 2: unexpected EOF while looking for matching `)'
+// ((echo lala
+// bash: -c: line 1: unexpected EOF while looking for matching `)'
+// $((echo lala
+// bash: -c: line 1: unexpected EOF while looking for matching `)'
+// <(echo lala
+// bash: -c: line 2: unexpected EOF while looking for matching `)'
+// $((echo (lala
+// bash: -c: line 1: unexpected EOF while looking for matching `)'
+// `echo lala
+// bash: -c: line 1: unexpected EOF while looking for matching ``'
+// ${
+// bash: -c: line 1: unexpected EOF while looking for matching `}'
+// {
+// bash: -c: line 2: syntax error: unexpected end of file
+// { echo; 
+// bash: -c: line 2: syntax error: unexpected end of file
+// echo |
+// bash: -c: line 2: syntax error: unexpected end of file
