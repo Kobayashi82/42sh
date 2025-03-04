@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:26:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 20:05:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 18:43:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,8 @@
 			t_stack *new_node = smalloc(sizeof(t_stack));
 			
 			new_node->type = type;
+			new_node->value[0] = '\0';
+			new_node->nvalue = 0;
 			new_node->prev = *top;
 			*top = new_node;
 
@@ -63,6 +65,7 @@
 			
 			while (current) {
 				stack_push(&reversed, current->type);
+				ft_strcpy(reversed->value, current->value);
 				current = current->prev;
 			}
 			

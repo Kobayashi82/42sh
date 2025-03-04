@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:21:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 18:42:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,10 @@
 	#pragma region "Structures"
 
 		typedef struct e_stack {
-			t_type type;
-			struct e_stack* prev;
+			t_type			type;
+			char			value[4];
+			int				nvalue;
+			struct e_stack	*prev;
 		} t_stack;
 
 		typedef struct e_context {

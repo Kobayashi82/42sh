@@ -29,7 +29,8 @@
 		"signals.h": "c",
 		"project.h": "c",
 		"alias.h": "c",
-		"stdbool.h": "c"
+		"stdbool.h": "c",
+		"initializer_list": "c"
 	},
 	"makefile.configureOnOpen": false
 }

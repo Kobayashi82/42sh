@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/01 21:29:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 14:02:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@
 
 			while (++i < n && src[i]) dest[i] = src[i];
 			while (i < n) dest[i++] = '\0';
+
 			return (dest);
 		}
 
@@ -186,6 +187,7 @@
 				while (dstsize > 0 && src[i] && i < dstsize - 1) { dst[i] = src[i]; ++i; }
 				dst[i] = '\0';
 			}
+
 			return (srclen);
 		}
 

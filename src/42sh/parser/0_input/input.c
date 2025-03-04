@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/03 13:26:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 18:30:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@
 			expand_alias(&cont_line, &ctx_alias);
 			context_copy(&ctx_history, &ctx_alias);
 
-			if (syntax_check(input, &ctx_syntax, line)) {
+			if (syntax_check(cont_line, &ctx_syntax, line)) {
 				sfree(input); sfree(cont_line); sfree(input_hist);
 				stack_clear(&ctx_history.stack);
 				stack_clear(&ctx_syntax.stack);
