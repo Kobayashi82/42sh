@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 12:29:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 20:58:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -218,7 +218,7 @@
 				if (!moves) moves = char_width(buffer.position, buffer.value);
 
 				while (moves--) {
-					if (!col)	cursor_set(row - 1, terminal.columns - 1);
+					if (!col)	cursor_set(row - 1, terminal.cols - 1);
 					else		cursor_set(row, col - 1);
 				}
 			}
@@ -232,7 +232,7 @@
 				if (!moves) moves = char_width(buffer.position, buffer.value);
 
 				while (moves--) {
-					if (col >= terminal.columns - 1)	cursor_set(row + 1, 0);
+					if (col >= terminal.cols - 1)	cursor_set(row + 1, 0);
 					else								cursor_set(row, col + 1);
 				}
 			}
@@ -301,7 +301,7 @@
 
 			void cursor_update(size_t length) {
 				while (length--) {
-					if (++col > terminal.columns - 1)	{
+					if (++col > terminal.cols - 1)	{
 						if (row < terminal.rows) row++;
 						col = 0;
 					}
@@ -367,7 +367,7 @@
 		if (success == 0)	{ write(STDERR_FILENO, "Terminal type is not defined.\n", 31);				return (1); }
 
 		terminal.rows = tgetnum("li");
-		terminal.columns = tgetnum("co");
+		terminal.cols = tgetnum("co");
 
 		return (0);
 	}

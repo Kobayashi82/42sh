@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 13:37:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/04 20:37:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 		typedef struct {
 			t_termios	term;
 			size_t		rows;
-			size_t		columns;
+			size_t		cols;
 			char		*input;
 
 			char 		*PS1;
