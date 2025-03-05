@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 15:03:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 18:43:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@
 				//	$(	Open Command Substitution
 			else if (!ft_strncmp(&input[*i], "$(", 2)) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
-				*i += 2; stack_push(&context->stack, CTX_SUBSHELL);
+				*i += 2; stack_push(&context->stack, CTX_SUBSHELL_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	`	Open Backtick

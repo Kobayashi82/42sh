@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 13:53:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 18:16:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 			CTX_DQUOTE,
 			CTX_ARITHMETIC,
 			CTX_ARITHMETIC_GROUP,
+			CTX_SUBSHELL_COMMAND,
 			CTX_SUBSHELL,
 			CTX_BACKTICK,
 			CTX_BRACE,
