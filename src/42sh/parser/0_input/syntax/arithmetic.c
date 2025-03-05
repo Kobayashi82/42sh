@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 18:43:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 22:15:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@
 
 	int syntax_arithmetic(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
 		if (!input || !*input || !context) return (0);
-		if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP)) return (0);
+		if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP)) return (0);
 		
 		int result = 0;
 		if (!context->stack->nvalue) context->stack->nvalue = 2;
@@ -145,7 +145,7 @@
 			}
 			
 				//	))	Close Arithmetic Expansion or Arithmetic Expression
-			if (!ft_strncmp(&input[*i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
+			if (!ft_strncmp(&input[*i], "))", 2) && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_EXPAND)) {
 				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, ft_strdup("end with operator"), *line), 2);
 				*i += 2; stack_pop(&context->stack);
 				if (context->stack) context->stack->nvalue = 1;
@@ -161,7 +161,7 @@
 				//	$((	Open Arithmetic Expansion
 			else if (!ft_strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
-				*i += 3; stack_push(&context->stack, CTX_ARITHMETIC);
+				*i += 3; stack_push(&context->stack, CTX_ARITHMETIC_EXPAND);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	((	Open Arithmetic Expression

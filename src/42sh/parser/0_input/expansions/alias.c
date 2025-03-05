@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 18:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 20:32:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@
 					i += 1; stack_pop(&context->stack);
 					command_start = false; continue;
 				}	//	}	Close Parameter Expansion or Command Group
-				else if ((*input)[i] == '}' && (context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND || context->stack->type == CTX_BRACE)) {
+				else if ((*input)[i] == '}' && context->stack && (context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND)) {
 					i += 1; stack_pop(&context->stack);
 					command_start = false; continue;
 				}
