@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 14:00:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 15:12:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@
 		if (!input || !*input || !context) return (0);
 
 		bool command_start = true, is_argument = false;
-		int result = 0;
+		//int result = 0;
 		(void) is_argument;
 
 		while (input[*i]) {
-			if (context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
-				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
-			}
+			// if (context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
+			// 	if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
+			// }
 
 				//	\	Handle Escape
 			if (context->in_escape) {
@@ -77,7 +77,7 @@
 				if (input[*i] == '\'') stack_pop(&context->stack);
 				command_start = false; *i += 1; continue;
 			} else if (input[*i] == '\'') {
-				stack_push(&context->stack, CTX_QUOTE);
+				if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP)) stack_push(&context->stack, CTX_QUOTE);
 				command_start = false; *i += 1; continue;
 			}
 			
@@ -112,21 +112,19 @@
 			}
 	
 			//	"	Open Double Quotes
-			if (input[*i] == '"' && (!context->stack || context->stack->type != CTX_DQUOTE)) {
+			if (input[*i] == '"' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 				stack_push(&context->stack, CTX_DQUOTE);
 				command_start = false; *i += 1; continue;
 			}	//	$((	Open Arithmetic Expansion
 			else if (!ft_strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
 				stack_push(&context->stack, CTX_ARITHMETIC);
 				command_start = false; *i += 3;
-				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	((	Open Arithmetic Expression
 			else if (!ft_strncmp(&input[*i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&input[*i + 2])) {
 				if (!command_start) return (syntax_error(ARGS_ARITHMETIC, NULL, *line), 2);
 				stack_push(&context->stack, CTX_ARITHMETIC);
 				command_start = false; *i += 2;
-				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	$(	Open Command Substitution
 			else if (!ft_strncmp(&input[*i], "$(", 2)) {
@@ -144,7 +142,6 @@
 			else if (input[*i] == '(' && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
 				stack_push(&context->stack, CTX_ARITHMETIC_GROUP);
 				command_start = false; *i += 1;
-				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	(	Open Subshell
 			else if (input[*i] == '(' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {

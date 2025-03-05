@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 14:02:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 15:11:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 					if ((*input)[i] == '\'') stack_pop(&context->stack);
 					command_start = false; i += 1; continue;
 				} else if ((*input)[i] == '\'') {
-					stack_push(&context->stack, CTX_QUOTE);
+					if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP)) stack_push(&context->stack, CTX_QUOTE);
 					command_start = false; i += 1; continue;
 				}
 		
@@ -92,7 +92,7 @@
 				}
 
 				//	"	Open Double Quotes
-				if ((*input)[i] == '"' && (!context->stack || context->stack->type != CTX_DQUOTE)) {
+				if ((*input)[i] == '"' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 					stack_push(&context->stack, CTX_DQUOTE);
 					command_start = false; i += 1; continue;
 				}	//	$((	Open Arithmetic Expansion
