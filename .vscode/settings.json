@@ -30,7 +30,8 @@
 		"project.h": "c",
 		"alias.h": "c",
 		"stdbool.h": "c",
-		"initializer_list": "c"
+		"initializer_list": "c",
+		"syntax.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/03/01 14:32:41 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/03/05 13:54:32 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -109,10 +109,16 @@ SRCS	=	builtins/alias/alias.c						\
 			main/options.c								\
 			main/shell.c								\
 														\
-			parser/0_input/check_syntax.c				\
-			parser/0_input/context.c					\
-			parser/0_input/expand_alias.c				\
-			parser/0_input/expand_history.c				\
+			parser/0_input/expansions/alias.c			\
+			parser/0_input/expansions/history.c			\
+			parser/0_input/syntax/arithmetic.c			\
+			parser/0_input/syntax/brace.c				\
+			parser/0_input/syntax/check.c				\
+			parser/0_input/syntax/context.c				\
+			parser/0_input/syntax/error.c				\
+			parser/0_input/syntax/group.c				\
+			parser/0_input/syntax/parameter.c			\
+			parser/0_input/syntax/shell.c				\
 			parser/0_input/input.c						\
 														\
 			parser/1_tokenizer/args.c					\

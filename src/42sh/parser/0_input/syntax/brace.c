@@ -1,37 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   input.h                                            :+:      :+:    :+:   */
+/*   brace.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 13:43:23 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/03/05 13:52:02 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/03/05 14:01:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#pragma region "Includes"
 
-#pragma region Methods
-
-#pragma region "Variables"
-
-	#pragma region "Structures"
-
-		typedef struct s_context t_context;
-
-	#pragma endregion
+	#include "libft.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 
-	//	------ EXPAND HISTORY ------
-	void	expand_history(char **input, t_context *context);
+#pragma region "Brace"
 
-	//	------- EXPAND ALIAS -------
-	int		expand_alias(char **input, t_context *context);
+	int syntax_brace(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
+		if (!input || !*input || !context) return (0);
 
-	//	---------- INPUT -----------
-	char	*expand_input(char *input);
-	char	*get_input();
+		(void) i;
+		(void) last_token;
+		(void) line;
+
+		return (0);
+	}
 
 #pragma endregion

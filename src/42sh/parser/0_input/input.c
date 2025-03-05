@@ -6,12 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/04 18:30:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/05 14:05:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
-//char *input2 = ft_strdup("c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d");
+//	alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
+//	c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d
 
 #pragma region "Includes"
 
@@ -21,6 +21,7 @@
 	#include "terminal/readinput/history.h"
 	#include "terminal/signals.h"
 	#include "parser/input.h"
+	#include "parser/syntax.h"
 	#include "main/shell.h"
 
 #pragma endregion
@@ -118,7 +119,9 @@
 
 	#pragma endregion
 
-	char *readme() {
+#pragma region "Readfile"
+
+	static char *readfile() {
 		size_t size = 1024, bytes_read = 0;
 		char *value = ft_calloc(size + 1, sizeof(char));
 
@@ -143,18 +146,20 @@
 		return (value);
 	}
 
-	#pragma region "Input"
+#pragma endregion
+
+#pragma region "Input"
 
 	char *get_input() {
 		char *input = NULL;
 
 		if (!shell.interactive) {
-			if (!(input = readme()))	return (NULL);
+			if (!(input = readfile())) return (NULL);
 		} else {
-			if (!(input = readinput(prompt_PS1)))	return (NULL);
+			if (!(input = readinput(prompt_PS1))) return (NULL);
 		}
 
-		if (ft_isspace_s(input))				return (input);
+		if (ft_isspace_s(input)) return (input);
 
 		return (expand_input(input));
 	}
