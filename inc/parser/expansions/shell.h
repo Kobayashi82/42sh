@@ -1,29 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   shell.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/03/06 13:21:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma region "Includes"
+#pragma once
 
-	#include "terminal/print.h"
-	#include "parser/tokenizer/args.h"
-	#include "builtins/builtins.h"
-	#include "builtins/options.h"
+#pragma region "Variables"
+
+	#pragma region "Structures"
+
+		typedef struct s_context t_context;
+
+	#pragma endregion
 
 #pragma endregion
 
-#pragma region "Echo"
+#pragma region Methods
 
-	int echo(t_arg *args) {
-		args_print(args);
-		return (0);
-	}
+	//	---------- SHELL -----------
+	bool	is_separator(const char *input, size_t *i, char *last_token);
+	bool	is_not_separator(char c);
+	int		syntax_shell(const char *input, size_t *i, t_context *context, char *last_token, int *line);
 
 #pragma endregion

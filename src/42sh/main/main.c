@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 13:41:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,10 @@
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
-	#include "parser/input/input.h"
+	#include "terminal/input.h"
 	#include "parser/expansions/globbing.h"
-	#include "parser/args.h"
-	#include "parser/token.h"
+	#include "parser/tokenizer/args.h"
+	#include "parser/tokenizer/token.h"
 	#include "builtins/builtins.h"
 	#include "main/options.h"
 	#include "main/shell.h"

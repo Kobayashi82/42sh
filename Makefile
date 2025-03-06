@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/03/06 13:05:51 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/03/06 13:40:11 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -116,22 +116,20 @@ SRCS	=	builtins/alias/alias.c						\
 			main/shell.c								\
 														\
 														\
+			parser/expansions/alias/alias.c				\
 			parser/expansions/arithmetic/arithmetic.c	\
 			parser/expansions/brace/brace.c				\
 			parser/expansions/globbing/brackets.c		\
 			parser/expansions/globbing/globbing.c		\
 			parser/expansions/globbing/match.c			\
 			parser/expansions/globbing/pattern.c		\
+			parser/expansions/history/history.c			\
 			parser/expansions/parameter/parameter.c		\
+			parser/expansions/shell/shell.c				\
 														\
-			parser/input/expansions/alias.c				\
-			parser/input/expansions/history.c			\
-			parser/input/syntax/check.c					\
-			parser/input/syntax/context.c				\
-			parser/input/syntax/error.c					\
-			parser/input/syntax/group.c					\
-			parser/input/syntax/shell.c					\
-			parser/input/input.c						\
+			parser/syntax/check.c						\
+			parser/syntax/context.c						\
+			parser/syntax/error.c						\
 														\
 			parser/tokenizer/args.c						\
 			parser/tokenizer/lexer.c					\
@@ -150,6 +148,7 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/readinput/modes/vi.c				\
 			terminal/readinput/readinput.c				\
 														\
+			terminal/input.c							\
 			terminal/print.c							\
 			terminal/signal.c							\
 														\

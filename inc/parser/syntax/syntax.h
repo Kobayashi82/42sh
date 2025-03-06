@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 21:49:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 13:30:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 			ARGS_ARITHMETIC,
 			ARGS_SUBSHELL,
 		} t_syntax_error;
-		
+
 	#pragma endregion
 
 	#pragma region "Structures"
@@ -74,24 +74,6 @@
 
 	//	---------- ERROR -----------
 	void	syntax_error(t_syntax_error error, char *value, int line);
-
-	//	---------- BRACE -----------
-	int		syntax_brace(const char *input, size_t *i, t_context *context, char *last_token, int *line);
-
-	//	---------- GROUP -----------
-	int		syntax_group(const char *input, size_t *i, t_context *context, char *last_token, int *line);
-
-	//	-------- PARAMETER ---------
-	int		syntax_parameter(const char *input, size_t *i, t_context *context, char *last_token, int *line);
-
-	//	-------- ARITHMETIC --------
-	bool	is_arithmetic(const char *input);
-	int		syntax_arithmetic(const char *input, size_t *i, t_context *context, char *last_token, int *line);
-
-	//	---------- SHELL -----------
-	bool	is_separator(const char *input, size_t *i, char *last_token);
-	bool	is_not_separator(char c);
-	int		syntax_shell(const char *input, size_t *i, t_context *context, char *last_token, int *line);
 
 	//	---------- CHECK -----------
 	int		syntax_check(const char *input, t_context *context, int line);

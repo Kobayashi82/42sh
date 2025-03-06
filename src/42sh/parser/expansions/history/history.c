@@ -6,17 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 12:40:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 13:31:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "terminal/print.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/input/input.h"
-	#include "parser/input/syntax.h"
+	#include "terminal/input.h"
+	#include "terminal/print.h"
+	#include "parser/syntax/syntax.h"
 	#include "main/options.h"
 	#include "main/project.h"
 

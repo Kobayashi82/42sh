@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   alias.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/03/06 13:36:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma region "Includes"
+#pragma once
 
-	#include "terminal/print.h"
-	#include "parser/tokenizer/args.h"
-	#include "builtins/builtins.h"
-	#include "builtins/options.h"
+#pragma region "Variables"
+
+	#pragma region "Structures"
+
+		typedef struct s_context t_context;
+
+	#pragma endregion
 
 #pragma endregion
 
-#pragma region "Echo"
+#pragma region Methods
 
-	int echo(t_arg *args) {
-		args_print(args);
-		return (0);
-	}
+	//	------- EXPAND ALIAS -------
+	int		expand_alias(char **input, t_context *context);
 
 #pragma endregion

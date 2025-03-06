@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 12:40:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 13:42:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "parser/input/syntax.h"
 	#include "parser/expansions/arithmetics.h"
+	#include "parser/expansions/parameter.h"
+	#include "parser/expansions/shell.h"
+	#include "parser/syntax/syntax.h"
 
 #pragma endregion
 
@@ -57,7 +59,6 @@
 			i++;
 	}
 
-	
 	if (!input[i] || input[i] == '\n') return (true);
 
 	return (false);
