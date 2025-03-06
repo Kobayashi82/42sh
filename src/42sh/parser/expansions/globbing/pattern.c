@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 20:42:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "libft.h"
 	#include "main/options.h"
-	#include "parser/globbing.h"
+	#include "parser/expansions/globbing.h"
 
 #pragma endregion
 

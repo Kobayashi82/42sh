@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 12:54:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "libft.h"
 	#include "parser/args.h"
-	#include "parser/globbing.h"
+	#include "parser/expansions/globbing.h"
 	#include "main/options.h"
 	#include "utils/paths.h"
 

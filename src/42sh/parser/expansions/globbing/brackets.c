@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/28 13:18:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "parser/globbing.h"
+	#include "parser/expansions/globbing.h"
 	#include "main/options.h"
 
 	#define MAX_NEW_PATTERN_SIZE 512

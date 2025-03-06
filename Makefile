@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/03/05 13:54:32 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/03/06 13:05:51 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,14 +42,18 @@ COUNTER 			= 0
 # ─────────── #
 
 CC					= clang
-FLAGS				= -Wall -Wextra -Werror -g # -O0 -fsanitize=thread
+# FLAGS				= -Wall -Wextra -Werror -O2							# (for production)
+FLAGS				= -Wall -Wextra -Werror -g -O0						# (for debugging)
+# FLAGS				= -Wall -Wextra -Werror -g -O0 -fsanitize=thread	# (for debugging with sanitize)
 EXTRA_FLAGS			= -ltermcap
 EXTRA_FLAGS_OBJ		=
+TESTING				= 1
+
 # ───────────────── #
 # ── DIRECTORIES ── #
 # ───────────────── #
 
-INC_DIR				= -I./inc/ -I./inc/terminal -I./inc/hashes -I./inc/parser -I./inc/builtins -I./inc/main -I./inc/utils -I./inc/tests
+INC_DIR				= $(shell find inc -type d | sed 's/^/-I/')
 OBJ_DIR				= build/obj/
 LIB_DIR				= build/lib/
 LIBFT_INC			= src/libft/inc/
@@ -98,37 +102,42 @@ SRCS	=	builtins/alias/alias.c						\
 			builtins/utils/executer.c					\
 			builtins/utils/options.c					\
 														\
+														\
 			hashes/alias.c								\
 			hashes/builtin.c							\
 			hashes/cmdp.c								\
 			hashes/key_value.c							\
 			hashes/variables.c							\
 														\
+														\
 			main/error.c								\
 			main/main.c									\
 			main/options.c								\
 			main/shell.c								\
 														\
-			parser/0_input/expansions/alias.c			\
-			parser/0_input/expansions/history.c			\
-			parser/0_input/syntax/arithmetic.c			\
-			parser/0_input/syntax/brace.c				\
-			parser/0_input/syntax/check.c				\
-			parser/0_input/syntax/context.c				\
-			parser/0_input/syntax/error.c				\
-			parser/0_input/syntax/group.c				\
-			parser/0_input/syntax/parameter.c			\
-			parser/0_input/syntax/shell.c				\
-			parser/0_input/input.c						\
 														\
-			parser/1_tokenizer/args.c					\
-			parser/1_tokenizer/lexer.c					\
-			parser/1_tokenizer/parser.c					\
-			parser/1_tokenizer/tokenizer.c				\
-			parser/3_expansions/globbing/brackets.c		\
-			parser/3_expansions/globbing/globbing.c		\
-			parser/3_expansions/globbing/match.c		\
-			parser/3_expansions/globbing/pattern.c		\
+			parser/expansions/arithmetic/arithmetic.c	\
+			parser/expansions/brace/brace.c				\
+			parser/expansions/globbing/brackets.c		\
+			parser/expansions/globbing/globbing.c		\
+			parser/expansions/globbing/match.c			\
+			parser/expansions/globbing/pattern.c		\
+			parser/expansions/parameter/parameter.c		\
+														\
+			parser/input/expansions/alias.c				\
+			parser/input/expansions/history.c			\
+			parser/input/syntax/check.c					\
+			parser/input/syntax/context.c				\
+			parser/input/syntax/error.c					\
+			parser/input/syntax/group.c					\
+			parser/input/syntax/shell.c					\
+			parser/input/input.c						\
+														\
+			parser/tokenizer/args.c						\
+			parser/tokenizer/lexer.c					\
+			parser/tokenizer/parser.c					\
+			parser/tokenizer/tokenizer.c				\
+														\
 														\
 			terminal/readinput/common/auto_complete.c	\
 			terminal/readinput/common/history_search.c	\
@@ -144,14 +153,16 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/print.c							\
 			terminal/signal.c							\
 														\
+														\
+			utils/paths.c								\
+			utils/times.c								\
+														\
+														\
 			tests/builtin.c								\
 			tests/create_args.c							\
 			tests/internal.c							\
 			tests/tests.c								\
 			tests/untests.c								\
-														\
-			utils/paths.c								\
-			utils/times.c								\
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 
@@ -185,8 +196,10 @@ $(NAME): normal_extra $(OBJS)
 #	Progress line
 	@$(MAKE) -s _progress
 #	----- REMOVE TO DISABLED TEST -----
-	@cp 42sh tester/42sh
-	@printf "\033[A" && ./leaks test || true
+	@if [ "$(TESTING)" -ne 0 ]; then \
+		cp 42sh tester/42sh; \
+		printf "\033[A" && ./leaks test || true; \
+	fi
 #	----- REMOVE TO DISABLED TEST -----
 	@printf "\n"
 #	Restore cursor

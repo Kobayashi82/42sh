@@ -6,15 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 20:32:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:40:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include "parser/input.h"
-	#include "parser/syntax.h"
+	#include "parser/input/input.h"
+	#include "parser/input/syntax.h"
+	#include "parser/expansions/arithmetics.h"
 	#include "hashes/alias.h"
 	#include "main/options.h"
 

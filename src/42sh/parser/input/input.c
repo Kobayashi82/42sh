@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 14:05:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 12:40:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/signals.h"
-	#include "parser/input.h"
-	#include "parser/syntax.h"
+	#include "parser/input/input.h"
+	#include "parser/input/syntax.h"
 	#include "main/shell.h"
 
 #pragma endregion

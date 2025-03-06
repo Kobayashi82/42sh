@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   brace.c                                            :+:      :+:    :+:   */
+/*   brace.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/05 13:52:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/05 14:01:10 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/03/06 12:36:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma region "Includes"
+#pragma once
 
-	#include "libft.h"
-	#include "parser/syntax.h"
+#pragma region "Variables"
+
+	#pragma region "Structures"
+
+		typedef struct s_context t_context;
+
+	#pragma endregion
 
 #pragma endregion
 
-#pragma region "Brace"
-
-	int syntax_brace(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
-		if (!input || !*input || !context) return (0);
-
-		(void) i;
-		(void) last_token;
-		(void) line;
-
-		return (0);
-	}
+#pragma region Methods
+	
+	//	---------- BRACE -----------
+	int		syntax_brace(const char *input, size_t *i, t_context *context, char *last_token, int *line);
 
 #pragma endregion
