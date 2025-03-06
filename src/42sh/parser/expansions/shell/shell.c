@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:32:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/06 19:48:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,21 @@
 	//	Redirecciones
 	//	Error messages
 
+	// echo $(echo "popo
+	// 	> && echo pipi")
+	// 	42sh: syntax error near unexpected token `invalid comand'
+
 	int syntax_shell(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
 		if (!input || !*input || !context) return (0);
 
 		bool command_start = true, is_argument = false;
 		int result = 0;
 		size_t starting = *i;
+
+		// if (context->stack && (context->stack->type == CTX_QUOTE || context->stack->type == CTX_DQUOTE)) { command_start = false; is_argument = true; }
+		// else if (context->in_escape && !*last_token) { command_start = false; is_argument = true; ft_printf(1, "1"); }
+		// else if (!context->in_token) { command_start = false; is_argument = true; ft_printf(1, "2"); }
+		// ft_printf(1, "%s", last_token);
 
 		while (input[*i]) {
 				//	\	Handle Escape
