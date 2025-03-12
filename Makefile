@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/03/06 13:40:11 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/03/12 16:49:38 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,7 +43,7 @@ COUNTER 			= 0
 
 CC					= clang
 # FLAGS				= -Wall -Wextra -Werror -O2							# (for production)
-FLAGS				= -Wall -Wextra -Werror -g -O0						# (for debugging)
+FLAGS				= -Wall -Wextra -Werror -g -O0 -gdwarf-4			# (for debugging)
 # FLAGS				= -Wall -Wextra -Werror -g -O0 -fsanitize=thread	# (for debugging with sanitize)
 EXTRA_FLAGS			= -ltermcap
 EXTRA_FLAGS_OBJ		=

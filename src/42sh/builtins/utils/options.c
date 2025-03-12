@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/12 17:04:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@
 	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid) {
 		t_opt *result = ft_calloc(1, sizeof(t_opt));
 		result->options = valid_opts; result->args = args;
-		if (!args || !valid_opts || !*valid_opts) return (result);
+		if (!args || !valid_opts) return (result);
 
 		int valid_index = 0, invalid_index = 0, done = 0;
+		if (args && args->value && (!ft_strcmp(args->value, "-") || !ft_strcmp(args->value, "+"))) done = true;
 		while (args && args->value && args->value[0] == opt_char && !done) {
 			if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1) {
 				result->too_many = true;
