@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 16:42:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/12 17:27:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@
 	int		export(t_arg *args);
 
 	//	========= BUILTIN ==========
-	int		ft_builtin(t_arg *args);
+	int		bt_builtin(t_arg *args);
+
+	//	=========== EXIT ===========
+	int		bt_exit(t_arg *args);
 
 	//	=========== HASH ===========
 	int		hash(t_arg *args);

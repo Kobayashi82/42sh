@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 17:05:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/12 17:27:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 
 #pragma region "Builtin"
 
-	int ft_builtin(t_arg *args) {
+	int bt_builtin(t_arg *args) {
 		t_opt *opts = parse_options(args, "", '-', false);
 
 		if (*opts->invalid) {
@@ -65,7 +65,7 @@
 				print(STDERR_FILENO, ft_strjoin_sep("builtin: ", opts->args->value, ": not a shell builtin\n", 0), FREE_RESET_PRINT);
 				result = 1;
 			}
-		};
+		}
 
 		return (sfree(opts), result);
 	}

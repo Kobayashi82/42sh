@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 16:41:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/12 17:27:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@
 		// builtin_add("continue", 0, 1, &bt_continue);
 		// builtin_add("eval", 0, 1, &eval);
 		// builtin_add("exec", 0, 1, &exec);
-		// builtin_add("exit", 0, 1, &bt_exit);
+		builtin_add("exit", 0, 1, &bt_exit);
 		builtin_add("export", 0, 1, &export);
 		builtin_add("readonly", 0, 1, &readonly);
 		// builtin_add("return", 0, 1, &bt_return);
@@ -284,7 +284,7 @@
 		builtin_add("alias", 0, 0, &alias);
 		builtin_add("banner", 0, 0, &banner);
 		// builtin_add("bg", 0, 0, &bg);
-		builtin_add("builtin", 0, 0, &ft_builtin);
+		builtin_add("builtin", 0, 0, &bt_builtin);
 		builtin_add("cd", 0, 0, &cd);
 		builtin_add("command", 0, 0, &command);
 		builtin_add("declare", 0, 0, &declare);
