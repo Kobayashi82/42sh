@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/04 14:02:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/13 14:11:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,11 @@
 			int	ft_isdigit_s(char *str) {
 				if (str && (*str == '+' || *str == '-')) str++;
 				if (!str || *str == '\0') return (0);
-				while (*str) { if (!ft_isdigit(*str++)) return (0); } return (1);
+				while (*str) {
+					if (!ft_isdigit(*str++)) return (0);
+				}
+				
+				return (1);
 			}
 
 		#pragma endregion

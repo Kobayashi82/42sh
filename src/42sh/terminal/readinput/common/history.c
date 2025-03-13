@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 21:02:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:48:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,6 +176,7 @@
 			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
 			if (tmp_length < 1) { sfree(tmp_history);	history_resize(true); return (0); }
 
+			if (history) history_clear();
 			//	Adjust capacity to the required size
 			while (capacity <= tmp_length) capacity *= 2;
 			if (capacity > mem_max && !mem_unlimited) capacity = mem_max;
@@ -234,11 +235,12 @@
 				if (history[i]) {
 					//	Replace newlines with "\\n"
 					const char *entry = history[i]->line;
-					while (entry) {
+					while (*entry) {
 						if (*entry == '\n')	write(fd, "\\n", 2);
 						else				write(fd, entry, 1);
 						entry++;
 					}
+					write(fd, "\n", 1);
 				}
 			}
 
@@ -265,7 +267,7 @@
 
 		//	Add an entry to the history
 		int history_add(char *line, bool force) {
-			if (!history || !line || ft_isspace_s(line) || !mem_max) return (1);
+			if (!line || ft_isspace_s(line) || !mem_max) return (1);
 
 			bool ignoredups = false, ignorespace = false, erasedups = false;
 			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
@@ -279,8 +281,8 @@
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
-
-			if (!force && ignoredups && length && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
+			
+			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
 			if (!force && ignorespace && ft_isspace(*line)) return (1);
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 
@@ -370,6 +372,7 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+				if (length && position == length) position = length -1;
 			}
 		}
 
@@ -384,7 +387,16 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+				if (length && position == length) position = length -1;
 			}
+		}
+
+		//	Remove the indicate event
+		void history_remove_event(size_t event) {
+			if (!history || length == 0) return;
+
+			for (size_t i = 0; i < length && history[i]; ++i)
+				if (history[i]->event == event) history_remove(i);
 		}
 
 		//	Remove the current entry
@@ -398,6 +410,7 @@
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+				if (length && position == length) position = length -1;
 			}
 		}
 
@@ -492,6 +505,7 @@
 		char *history_prev() {
 			if (!history || !options.history || !mem_max || !length) return (NULL);
 
+			if (position == length) position = length -1;
 			if (begining) return (NULL);
 			if (position > 0 && middle) position--;
 			if (position == 0) begining = true;
@@ -508,6 +522,7 @@
 		char *history_next() {
 			if (!history || !options.history || !mem_max || !length) return (NULL);
 
+			if (position == length) position = length -1;
 			begining = false; middle = true;
 			if (position >= length - 1) { middle = false; return (NULL); }
 			position++;

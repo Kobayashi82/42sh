@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/13 15:51:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@
 
 #pragma endregion
 
-#pragma region Add
+#pragma region "Add"
 
 	static int add_declare(char *arg) {
 		if (!arg) return (0);
@@ -103,7 +103,7 @@
 
 #pragma endregion
 
-#pragma region Delete
+#pragma region "Delete"
 
 	static int delete_declare(char *arg) {
 		if (!arg) return (0);
@@ -139,7 +139,7 @@
 
 #pragma endregion
 
-#pragma region Declare
+#pragma region "Declare"
 
 	int declare(t_arg *args) {
 		t_opt *opts = parse_options(args, "pilrux", '-', false);
