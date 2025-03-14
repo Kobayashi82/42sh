@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/04 20:58:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 13:09:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,6 +306,14 @@
 						col = 0;
 					}
 				}
+			}
+
+		#pragma endregion
+
+		#pragma region "0 Column"
+
+			void cursor_start_column() {
+				if (col) cursor_left(col);
 			}
 
 		#pragma endregion

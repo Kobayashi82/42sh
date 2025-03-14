@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 20:10:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 13:09:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1123,6 +1123,7 @@
 						sfree(buffer.value);
 						buffer.value = file_content;
 						print(STDOUT_FILENO, "\n", RESET);
+						cursor_start_column();
 						print(STDOUT_FILENO, buffer.value, PRINT);
 					}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 11:53:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 13:09:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@
 	void	cursor_set(size_t new_row, size_t new_col);
 	void	cursor_move(size_t from, size_t to);
 	void	cursor_update(size_t length);
+	void	cursor_start_column();
 	//	-------- VISIBILITY --------
 	void	cursor_hide();
 	void	cursor_show();
