@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 11:20:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,27 +15,7 @@
 	#include "libft.h"
 	#include "parser/tokenizer/args.h"
 
-	#include <string.h>
-	#include <stdio.h>
-
 #pragma endregion
-
-// int is_quote(char c) { return c == '\'' || c == '"'; }
-
-// char *extract_quoted(char *line, char quote, int *index) {
-//     int start = ++(*index);
-
-//     while (line[*index] && line[*index] != quote) (*index)++;
-
-//     if (line[*index] == quote) {
-//         int len = *index - start;
-//         char *arg = strndup(&line[start], len);
-//         (*index)++;
-//         return (arg);
-//     }
-
-//     return (NULL);
-// }
 
 static char *extract_word(char *line, int *index) {
     int start = *index;
@@ -63,13 +43,12 @@ static char *extract_word(char *line, int *index) {
 		else (*index)++;
 	}
 
-	if (start == *index) return (NULL);
+	if (start == *index) return (ft_strdup(""));
     return (ft_strndup(&line[start], *index - start));
 }
 
 static t_arg *add_arg(t_arg **head, char *value) {
     t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
-    if (!new_arg) return (NULL);
 
     new_arg->value = value;
     new_arg->next = NULL;
@@ -96,29 +75,8 @@ t_arg *test_create_args(char *line) {
         char *arg = NULL;
 
 		arg = extract_word(line, &i);
-
-        if (!arg) {
-            while (args) {
-                t_arg *tmp = args;
-                args = args->next;
-                sfree(tmp->value);
-                sfree(tmp);
-            }
-            return (NULL);
-        }
-
 		if (*arg == '#') return (args);
-
-        if (!add_arg(&args, arg)) {
-            sfree(arg);
-            while (args) {
-                t_arg *tmp = args;
-                args = args->next;
-                sfree(tmp->value);
-                sfree(tmp);
-            }
-            return (NULL);
-        }
+        add_arg(&args, arg);
     }
 
     return (args);
@@ -129,9 +87,9 @@ void test_free_args(t_arg *args) {
     t_arg *next;
 
     while (current) {
-        next = current->next; // Guardar el siguiente nodo
-        sfree(current->value); // Liberar el valor del argumento
-        sfree(current);        // Liberar el nodo actual
-        current = next;       // Avanzar al siguiente nodo
+        next = current->next;
+        sfree(current->value);
+        sfree(current);
+        current = next;
     }
 }

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:36:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 09:29:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 		t_context ctx_syntax;		ft_memset(&ctx_syntax, 0, sizeof(t_context));
 		t_context ctx_alias;		ft_memset(&ctx_alias, 0, sizeof(t_context));
 
-		expand_history(&input, &ctx_history);
+		expand_history(&input, &ctx_history, true);
 		input_hist = ft_strdup(input);
 
 		expand_alias(&input, &ctx_alias);
@@ -76,7 +76,7 @@
 				return (cont_line);
 			}
 
-			expand_history(&cont_line, &ctx_history);
+			expand_history(&cont_line, &ctx_history, true);
 
 			if (add_newline)
 				input_hist = ft_strjoin_sep(input_hist, "\n", cont_line, 1);

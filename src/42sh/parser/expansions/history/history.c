@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:31:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 09:29:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@
 
 #pragma region "Expand"
 
-	void expand_history(char **input, t_context *context) {
+	void expand_history(char **input, t_context *context, bool show_expansion) {
 		if (!options.history || !options.histexpand || !input || !*input || !context) return;
 
 		char *value = *input;
@@ -191,8 +191,10 @@
 
 		if (changes) {
 			char *new_value = ft_strdup(value);
-			print(STDOUT_FILENO, new_value, RESET);
-			print(STDOUT_FILENO, "\n", PRINT);
+			if (show_expansion) {
+				print(STDOUT_FILENO, new_value, RESET);
+				print(STDOUT_FILENO, "\n", PRINT);
+			}
 			sfree(value);
 			*input = new_value;
 		}

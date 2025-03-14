@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:41:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 11:15:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 	//	datos por stdin a 42sh se considera script
 	//	cdspell effect only in interactive
 	//	\'"'!!'"\' CTRL + Left / CTRL + Right jodido
+	// Argumentos con "" no llegan a los builtins
 
 #pragma endregion
 

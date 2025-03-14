@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/13 15:07:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 11:54:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@
 	void		history_remove_offset(int offset);
 	void		history_remove(size_t pos);
 	void		history_remove_event(size_t event);
-	void		history_remove_current();
+	void		history_remove_current(bool remove_event);
+	void		history_remove_last_if_added(bool remove_event);
 	void		history_clear();
 	//	---------- GET -------------
 	HIST_ENTRY	**history_clone();

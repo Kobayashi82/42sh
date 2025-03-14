@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/13 15:50:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 11:54:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "terminal/readinput/history.h"
+	#include "parser/expansions/history.h"
+	#include "parser/syntax/syntax.h"
 
 #pragma endregion
 
@@ -41,6 +43,10 @@
 		"      -r        read the history file and overwrite the current history\n"
 		"      -w        write the current history to the history file\n\n"
 
+		"      -p        perform history expansion on each ARG and display the result\n"
+		"                without storing it in the history list\n"
+		"      -s        append the ARGs to the history list as a single entry\n\n"
+
 		"    If FILENAME is given, it is used as the history file. Otherwise,\n"
 		"    if HISTFILE has a value, that is used, else ~/.42sh_history.\n\n"
 
@@ -57,7 +63,7 @@
 #pragma region "History"
 
 	int bt_history(t_arg *args) {
-		t_opt *opts = parse_options(args, "cdrw", '-', false);
+		t_opt *opts = parse_options(args, "cdsprw", '-', false);
 
 		if (*opts->invalid) {
 			invalid_option("history", opts->invalid, "[-c] [-d offset] [n] or history -rw [filename]");
@@ -79,7 +85,9 @@
 					history_print(ft_atoi(opts->args->value), false);
 				}
 			}
-		} else {
+		}
+
+		if (*opts->valid) {
 			if (ft_strchr(opts->valid, 'c')) {
 				history_clear();
 			} else if (ft_strchr(opts->valid, 'd')) {
@@ -108,6 +116,28 @@
 						}
 					}
 				}
+			} else if (ft_strchr(opts->valid, 's')) {
+				history_remove_last_if_added(true);
+				char *line = NULL;
+				while (opts->args) {
+					line = ft_strjoin(line, opts->args->value, 1);
+					if (opts->args->next) line = ft_strjoin(line, " ", 1);
+					opts->args = opts->args->next;
+				}
+				if (line) history_add(line, false);
+				sfree(line);
+			} else if (ft_strchr(opts->valid, 'p')) {
+				history_remove_last_if_added(true);
+				print(STDOUT_FILENO, NULL, RESET);
+				while (opts->args) {
+					t_context ctx_history;	ft_memset(&ctx_history, 0, sizeof(t_context));
+					char *line = ft_strdup(opts->args->value);
+					expand_history(&line, &ctx_history, false);
+					print(STDOUT_FILENO, line, FREE_JOIN);
+					print(STDOUT_FILENO, "\n", JOIN);
+					opts->args = opts->args->next;
+				}
+				print(STDOUT_FILENO, NULL, PRINT);
 			} else if (ft_strchr(opts->valid, 'w')) {
 				if (!opts->args) history_write(NULL);
 				else {
@@ -139,4 +169,4 @@
 // -r [filename]	Carga todo el archivo en el historial actual	([filename], HISTFILE or ~/.bash_history)
 // -w [filename]	Guarda el historial actual en el archivo		([filename], HISTFILE or ~/.bash_history)
 
-// Nota:	si se juntan flags, tiene prioridad [--help], [--version], [-c], [-d], [-w], [-r]
+// Nota:	si se juntan flags, tiene prioridad [--help], [--version], [-c], [-d], [-s], [-p], [-w], [-r]

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/13 15:48:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/14 12:48:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 
 	static bool			begining			= false;
 	static bool			middle				= false;
+	static bool			added				= false;
 
 	static char			**tmp_history		= NULL;		//	Temporary array to store history entry
 	static size_t		tmp_length			= 0;		//	Number of entry currently in the temporary history
@@ -177,6 +178,7 @@
 			if (tmp_length < 1) { sfree(tmp_history);	history_resize(true); return (0); }
 
 			if (history) history_clear();
+			event = 1;
 			//	Adjust capacity to the required size
 			while (capacity <= tmp_length) capacity *= 2;
 			if (capacity > mem_max && !mem_unlimited) capacity = mem_max;
@@ -256,7 +258,7 @@
 
 		//	Remove copies of the same line in the history
 		static void erase_dups(const char *line, size_t pos) {
-			if (!history) return;
+			if (!history || !length) return;
 
 			size_t i = length;
 			while (i-- > 0 && history[i])
@@ -274,16 +276,16 @@
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (ft_strcmp(token, "ignoredups"))		ignoredups = true;
-					if (ft_strcmp(token, "ignorespace"))	ignorespace = true;
-					if (ft_strcmp(token, "erasedups"))		erasedups = true;
-					if (ft_strcmp(token, "ignoreboth"))		ignoredups = true; ignorespace = true;
+					if (!ft_strcmp(token, "ignoredups"))	ignoredups = true;
+					if (!ft_strcmp(token, "ignorespace"))	ignorespace = true;
+					if (!ft_strcmp(token, "erasedups"))		erasedups = true;
+					if (!ft_strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
-			
-			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) return (1);
-			if (!force && ignorespace && ft_isspace(*line)) return (1);
+
+			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) { added = false; return (1); }
+			if (!force && ignorespace && ft_isspace(*line)) { added = false; return (1); }
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 
 			history_resize(false);
@@ -301,9 +303,11 @@
 			history[length]->event = event++;
 			history[length++]->data = NULL;
 			history[length] = NULL;
-			position = length - 1;
+			history_set_pos_end();
+			added = true;
 
 			begining = middle = false;
+
 			return (0);
 		}
 
@@ -320,10 +324,10 @@
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (ft_strcmp(token, "ignoredups"))		ignoredups = true;
-					if (ft_strcmp(token, "ignorespace"))	ignorespace = true;
-					if (ft_strcmp(token, "erasedups"))		erasedups = true;
-					if (ft_strcmp(token, "ignoreboth"))		ignoredups = true; ignorespace = true;
+					if (!ft_strcmp(token, "ignoredups"))	ignoredups = true;
+					if (!ft_strcmp(token, "ignorespace"))	ignorespace = true;
+					if (!ft_strcmp(token, "erasedups"))		erasedups = true;
+					if (!ft_strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
@@ -372,7 +376,7 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position == length) position = length -1;
+				if (length && position == length) { history_set_pos_end(); added = false; }
 			}
 		}
 
@@ -387,7 +391,7 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position == length) position = length -1;
+				if (length && position == length) { history_set_pos_end(); added = false; }
 			}
 		}
 
@@ -400,7 +404,7 @@
 		}
 
 		//	Remove the current entry
-		void history_remove_current() {
+		void history_remove_current(bool remove_event) {
 			if (!history || length == 0) return;
 
 			if (history && position < length && history[position]) {
@@ -410,8 +414,18 @@
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position == length) position = length -1;
+				if (length && position >= length) { history_set_pos_end(); added = false; }
+				if (remove_event) event--;
 			}
+		}
+
+		//	Remove the last entry
+		void history_remove_last_if_added(bool remove_event) {
+			if (!history || length == 0 || !added) return;
+
+			history_set_pos_end();
+			history_remove_current(remove_event);
+			added = false;
 		}
 
 	#pragma endregion
