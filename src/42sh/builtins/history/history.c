@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 11:54:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/15 17:00:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,12 @@
 
 	#include "libft.h"
 	#include "terminal/print.h"
-	#include "parser/tokenizer/args.h"
-	#include "builtins/builtins.h"
-	#include "builtins/options.h"
 	#include "terminal/readinput/history.h"
+	#include "parser/tokenizer/args.h"
 	#include "parser/expansions/history.h"
 	#include "parser/syntax/syntax.h"
+	#include "builtins/builtins.h"
+	#include "builtins/options.h"
 
 #pragma endregion
 

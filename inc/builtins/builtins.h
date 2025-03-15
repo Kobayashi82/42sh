@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/13 13:56:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/15 17:07:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@
 	int		bt_history(t_arg *args);
 
 	//	============ FC ============
-	//int		fc(t_arg *args);
+	int		fc(t_arg *args);
 
 	int		builtin_exec(t_arg *args);
 
