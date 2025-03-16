@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 11:54:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/16 12:41:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,12 @@
 	HIST_ENTRY	*history_get(size_t pos);
 	HIST_ENTRY	*history_current();
 	HIST_ENTRY	*history_event(size_t event);
+	HIST_ENTRY	*history_get_last_if_added();
 	//	--------- NAVIGATE ---------
 	char		*history_prev();
 	char		*history_next();
 	size_t		history_get_pos();
+	int			history_event_pos(size_t event);
 	void		history_set_pos(size_t pos);
 	void		history_set_pos_end();
 	//	---------- PRINT -----------

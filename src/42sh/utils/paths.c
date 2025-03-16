@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 14:08:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/16 13:16:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@
 	#pragma region "FullPath"
 
 		char *get_fullpath(char *path) {
-			if (ft_strchr(path, '/')) return (resolve_path(path));
+			if (!path || ft_strchr(path, '/')) return (resolve_path(path));
 
 			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
 			if (!path_list) return (ft_strdup(path));

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/15 23:09:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/16 12:40:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -493,6 +493,14 @@
 			return (NULL);
 		}
 
+		//	Return a pointer to the last entry if added
+		HIST_ENTRY *history_get_last_if_added() {
+			if (!history || length == 0 || !added) return (NULL);
+
+			history_set_pos_end();
+			return (history_current());
+		}
+
 	#pragma endregion
 
 	#pragma region "Event"
@@ -505,6 +513,16 @@
 				if (history[i]->event == event) return (history[i]);
 
 			return (NULL);
+		}
+
+		//	Return the position to the entry with the indicated event
+		int history_event_pos(size_t event) {
+			if (!history) return (-1);
+
+			for (size_t i = 0; i < length && history[i]; ++i)
+				if (history[i]->event == event) return (i);
+
+			return (-1);
 		}
 
 	#pragma endregion

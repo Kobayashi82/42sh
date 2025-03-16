@@ -6,11 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/15 17:00:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/03/16 14:31:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// -n lo trata como opcion
+// -[n] lo trata como opcion
 
 #pragma region "Includes"
 

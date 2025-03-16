@@ -31,7 +31,17 @@
 
 #pragma region "ABS"
 
-	int		ft_abs(int n) { if (n < 0) { n = -n; } return (n); }
+	int ft_abs(int n) { if (n < 0) { n = -n; } return (n); }
+
+#pragma endregion
+
+#pragma region "SWAP"
+
+	void ft_swap(int *n1, int *n2) {
+		int tmp = *n1;
+		*n1 = *n2;
+		*n2 = tmp;
+	}
 
 #pragma endregion
 
