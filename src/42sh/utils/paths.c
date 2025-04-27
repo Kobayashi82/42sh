@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 13:16:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/04/27 12:39:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,39 +27,83 @@
 
 	#pragma region "Symlink"
 
-		char *resolve_symlink(const char *path) {
-			static char resolved_path[4096];
-			char temp[4096], *segment;
-			ssize_t len;
+	char *resolve_symlink(const char *path) {
+		static char resolved_path[4096];
+		char buffer[4096];
+		ssize_t len;
+
+		if (!path) return (NULL);
+
+		ft_strncpy(resolved_path, path, sizeof(resolved_path) - 1);
+		resolved_path[sizeof(resolved_path) - 1] = '\0';
 		
-			ft_strcpy(temp, path);
-			ft_strcpy(resolved_path, path);
-		
-			segment = temp;
-			while ((segment = ft_strchr(segment, '/'))) {
-				*segment = '\0';
-				if ((len = readlink(temp, resolved_path, sizeof(resolved_path) - 1)) != -1) {
-					resolved_path[len] = '\0';
-					ft_strcpy(temp, resolved_path);
-					ft_strcat(temp, segment + 1);
-					ft_strcpy(resolved_path, temp);
-					segment = temp;
-				} else {
-					*segment = '/';
-					segment++;
-				}
-			}
-		
-			//	Check the last segment (after the last '/')
-			if ((len = readlink(temp, resolved_path, sizeof(resolved_path) - 1)) != -1) {
-				resolved_path[len] = '\0';
-				ft_strcpy(temp, resolved_path);
-				ft_strcpy(resolved_path, temp);
-			}
-		
+		if ((len = readlink(path, buffer, sizeof(buffer) - 1)) != -1) {
+			buffer[len] = '\0';
+			ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+			resolved_path[sizeof(resolved_path) - 1] = '\0';
 			return (resolved_path);
 		}
-		
+
+		if (!ft_strchr(path, '/')) return (resolved_path);
+
+		char temp[4096];
+		ft_strncpy(temp, path, sizeof(temp) - 1);
+		temp[sizeof(temp) - 1] = '\0';
+
+		char *last_slash = NULL;
+		char *p = temp;
+
+		while ((p = ft_strchr(p, '/'))) {
+			*p = '\0';
+
+			if (*temp) {
+				if ((len = readlink(temp, buffer, sizeof(buffer) - 1)) != -1) {
+					buffer[len] = '\0';
+
+					if (buffer[0] == '/')
+						ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+					else {
+						char base_dir[4096] = "";
+						if (last_slash) {
+							ft_strncpy(base_dir, temp, last_slash - temp + 1);
+							base_dir[last_slash - temp + 1] = '\0';
+						}
+						ft_strncpy(resolved_path, base_dir, sizeof(resolved_path) - 1);
+
+						size_t base_len = ft_strlen(resolved_path);
+						size_t buffer_len = ft_strlen(buffer);
+						if (base_len + buffer_len < sizeof(resolved_path) - 1) {
+							ft_strncpy(resolved_path + base_len, buffer, sizeof(resolved_path) - base_len - 1);
+							resolved_path[base_len + buffer_len] = '\0';
+						}
+					}
+
+					if (*(p + 1)) {
+						size_t current_len = ft_strlen(resolved_path);
+						if (current_len < sizeof(resolved_path) - 2) {
+							resolved_path[current_len] = '/';
+							ft_strncpy(resolved_path + current_len + 1, p + 1, sizeof(resolved_path) - current_len - 2);
+							resolved_path[sizeof(resolved_path) - 1] = '\0';
+						}
+					}
+
+					return (resolved_path);
+				}
+			}
+
+			last_slash = p;
+			*p = '/';
+			p++;
+		}
+
+		if (*temp && (len = readlink(temp, buffer, sizeof(buffer) - 1)) != -1) {
+			buffer[len] = '\0';
+			ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+			resolved_path[sizeof(resolved_path) - 1] = '\0';
+		}
+
+		return (resolved_path);
+	}	
 
 	#pragma endregion
 

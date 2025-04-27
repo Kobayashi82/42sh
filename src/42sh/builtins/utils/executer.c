@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 21:45:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:53:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "libft.h"
 	#include "parser/tokenizer/args.h"
 	#include "builtins/builtins.h"
 	#include "hashes/builtin.h"
@@ -27,7 +28,8 @@ int builtin_exec(t_arg *args) {
 
 	t_builtin *builtin = builtin_find(args->value);
 	if (builtin && !builtin->disabled) {
-		int exit_code = builtin->execute(args->next);
+		if (ft_strcmp(args->value, "exit")) args = args->next;
+		int exit_code = builtin->execute(args);
 		if (exit_code != -1) shell.exit_code = exit_code;
 		return (1);
 	}
