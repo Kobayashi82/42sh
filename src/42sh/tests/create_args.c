@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 11:20:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:49:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ static t_arg *add_arg(t_arg **head, char *value) {
     t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
 
     new_arg->value = value;
-    new_arg->next = NULL;
 
     if (!*head) *head = new_arg;
     else {
         t_arg *current = *head;
         while (current->next)
             current = current->next;
+        new_arg->prev = current;
         current->next = new_arg;
     }
 

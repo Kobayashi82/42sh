@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 17:32:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/04/27 11:56:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include "terminal/terminal.h"
 	#include "terminal/print.h"
 	#include "parser/tokenizer/args.h"
 	#include "builtins/builtins.h"
@@ -43,7 +44,7 @@
 #pragma region "Builtin"
 
 	int bt_exit(t_arg *args) {
-		t_opt *opts = parse_options(args, "", '-', false);
+		t_opt *opts = parse_options(args->next, "", '-', false);
 
 		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
 		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("builtin", "1.0"));
@@ -56,9 +57,12 @@
 		} else if (opts->args && !ft_isdigit_s(opts->args->value)) {
 			print(STDOUT_FILENO, "exit: numeric argument required", RESET_PRINT);
 			result = 2;
-		} else result = ft_atol(opts->args->value);
+		} else if (opts->args && opts->args->value)
+			result = ft_atol(opts->args->value);
 		
 		sfree(opts);
+		args_clear(&args);
+		sfree(terminal.input);
 		exit_error(NOTHING, result, NULL, true);
 
 		return (result);
