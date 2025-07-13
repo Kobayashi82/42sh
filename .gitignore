@@ -3,6 +3,7 @@
 !.vscode/**
 !doc
 !doc/**
+doc/subject.pdf
 !inc
 !inc/**
 !src
