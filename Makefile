@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/03/12 16:49:38 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/05/18 12:10:18 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,6 +66,10 @@ SRC_DIR				= src/$(NAME)/
 # ────────── #
 
 NAME	=	42sh
+
+# ─────────── #
+# ── FILES ── #
+# ─────────── #
 
 SRCS	=	builtins/alias/alias.c						\
 			builtins/alias/unalias.c					\
@@ -183,7 +187,7 @@ OBJS	= $(SRCS:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
 DEPS	= $(OBJS:.o=.d)
 -include $(DEPS)
 
-$(NAME): normal_extra $(OBJS)
+$(NAME): _normal_extra $(OBJS)
 #	Compile program
 	@if [ -f $(NAME) ]; then \
 		printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)"; \
@@ -222,7 +226,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 # ── EXTRA RULES ── #
 # ───────────────── #
 
-normal_extra:
+_normal_extra:
 #	Check if NAME is empty and source directory exists
 	@if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; rm -f .is_re; exit 1; fi
 #	Hide cursor
@@ -389,4 +393,4 @@ _progress:
 # ── PHONY ── #
 # ─────────── #
 
-.PHONY: all clean fclean re normal_extra wipe _delete_objects _title _hide_cursor _show_cursor _progress
+.PHONY: all clean fclean re _normal_extra wipe _delete_objects _title _hide_cursor _show_cursor _progress
