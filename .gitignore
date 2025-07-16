@@ -3,7 +3,8 @@
 !.vscode/**
 !doc
 !doc/**
-doc/subject.pdf
+doc/42sh\ 3.1.pdf
+doc/42sh\ 4.1.pdf
 !inc
 !inc/**
 !src
@@ -12,7 +13,6 @@ doc/subject.pdf
 !.valgrind.supp
 !leaks
 !.gitignore
-!Notes.c
 !README.md
 !tester
 !tester/tests
