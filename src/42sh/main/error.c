@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:37:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/07/16 17:31:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,12 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/print.h"
+	#include "main/shell.h"
 	#include "main/error.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
 	#include "hashes/cmdp.h"
-	#include "shell.h"
 
 #pragma endregion
 
