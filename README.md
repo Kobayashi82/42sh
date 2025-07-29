@@ -1,9 +1,21 @@
 
-(Este README es un template y no representa el estado actual del proyecto.)
+<div align="center">
+
+![System & Kernel](https://img.shields.io/badge/System-brown?style=for-the-badge)
+![Unix Shell](https://img.shields.io/badge/Unix-Shell-blue?style=for-the-badge)
+![POSIX Compliance](https://img.shields.io/badge/Compliance-POSIX-green?style=for-the-badge)
+![C Language](https://img.shields.io/badge/Language-C-red?style=for-the-badge)
+
+*Una implementación desde cero de un shell interactivo compatible con POSIX*
+
+</div>
 
 # 42sh
+### <span style="color:yellow;">**🚨 ESTE README ES UN TEMPLATE Y NO REFLEJA EL ESTADO ACTUAL DEL PROYECTO 🚨**</span>
 
-## Descripción
+
+
+## 🎯 Descripción
 42sh es una implementación personalizada de un shell Unix compatible con POSIX.
 
 Diseñado como un proyecto educativo, este shell proporciona una interfaz potente para la ejecución de comandos, scripting y manipulación de procesos, con soporte para edición de línea de comandos en modo `readline` y `vi`.
@@ -147,3 +159,17 @@ Para ejecutar un script:
 ---
 
 42sh es un proyecto en constante evolución, pensado para aprender y mejorar la comprensión del funcionamiento de un shell Unix desde cero.
+
+## 📄 Licencia
+
+Este proyecto está licenciado bajo la WTFPL – [Do What the Fuck You Want to Public License](http://www.wtfpl.net/about/).
+
+---
+
+<div align="center">
+
+**🌐 Desarrollado como parte del curriculum de 42 School 🌐**
+
+*"It's not magic... just pipes and processes"*
+
+</div>
