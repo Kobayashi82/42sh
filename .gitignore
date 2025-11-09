@@ -1,0 +1,22 @@
+*
+!.vscode
+!.vscode/**
+!doc
+!doc/**
+doc/42sh\ 3.1.pdf
+doc/42sh\ 4.1.pdf
+!inc
+!inc/**
+!src
+!src/**
+!Makefile
+!.valgrind.supp
+!leaks
+!.gitignore
+!README.md
+!tester
+!tester/tests
+!tester/tests/**
+!tester/**/*.sh
+!tester/tester.c
+!tester/tester
