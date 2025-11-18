@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,12 +160,12 @@
 				if (path) {
 					print(STDOUT_FILENO, arg, JOIN);
 					print(STDOUT_FILENO, ft_strjoin_sep(" is ", path, "\n", 0), FREE_JOIN);
-					return (sfree(path), 1);
+					return (free(path), 1);
 				}
 
 				if (is_command)	print(STDERR_FILENO, ft_strjoin_sep("command: ", arg, ": not found\n", 0), FREE_JOIN);
 				else			print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
-				return (sfree(path), 0);
+				return (free(path), 0);
 			}
 
 			if (!ft_strchr(opts, 'P') && !ft_strchr(opts, 'a') && (alias_find(arg) || builtin_isactive(arg))) return (0);
@@ -206,11 +206,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("type", opts->invalid, "[-afptP] name [name ...]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("type", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
@@ -239,7 +239,7 @@
 		print(STDERR_FILENO, NULL, PRINT);
 
 		if (result == 2) result = 0;
-		return (sfree(opts), result);
+		return (free(opts), result);
 	}
 
 #pragma endregion

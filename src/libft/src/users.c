@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 15:00:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:33:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 	#pragma region "By ID"
 
 		t_userinfo *get_userinfo_by_id(int uid) {
-			int fd = sopen("/etc/passwd", O_RDONLY, -1);
+			int fd = open("/etc/passwd", O_RDONLY);
 			if (fd == -1) return (NULL);
 
 			char *id = ft_itoa(uid);
@@ -70,25 +70,25 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					sfree(id);
-					sfree(line);
-					sfree(uid_str);
-					sfree(gid_str);
-					sclose(fd);
+					free(id);
+					free(line);
+					free(uid_str);
+					free(gid_str);
+					close(fd);
 					get_next_line(-1);
 					return (info);
 				}
 
-				sfree(line);
-				sfree(username);
-				sfree(uid_str);
-				sfree(gid_str);
-				sfree(home);
-				sfree(shell);
+				free(line);
+				free(username);
+				free(uid_str);
+				free(gid_str);
+				free(home);
+				free(shell);
 			}
 
-			sfree(id);
-			sclose(fd);
+			free(id);
+			close(fd);
 			return (NULL);
 		}
 
@@ -98,7 +98,7 @@
 
 		t_userinfo *get_userinfo_by_name(const char *name) {
 			if (!name) return (NULL);
-			int fd = sopen("/etc/passwd", O_RDONLY, -1);
+			int fd = open("/etc/passwd", O_RDONLY);
 			if (fd == -1) return (NULL);
 
 			char *line = NULL;
@@ -117,23 +117,23 @@
 					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
 					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
 
-					sfree(line);
-					sfree(uid_str);
-					sfree(gid_str);
-					sclose(fd);
+					free(line);
+					free(uid_str);
+					free(gid_str);
+					close(fd);
 					get_next_line(-1);
 					return (info);
 				}
 
-				sfree(line);
-				sfree(username);
-				sfree(uid_str);
-				sfree(gid_str);
-				sfree(home);
-				sfree(shell);
+				free(line);
+				free(username);
+				free(uid_str);
+				free(gid_str);
+				free(home);
+				free(shell);
 			}
 
-			sclose(fd);
+			close(fd);
 			return (NULL);
 		}
 
@@ -143,10 +143,10 @@
 
 		void free_user(t_userinfo *userinfo) {
 			if (userinfo) {
-				sfree(userinfo->username);
-				sfree(userinfo->home);
-				sfree(userinfo->shell);
-				sfree(userinfo);
+				free(userinfo->username);
+				free(userinfo->home);
+				free(userinfo->shell);
+				free(userinfo);
 			}
 		}
 

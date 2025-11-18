@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/13 14:11:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:27:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -348,7 +348,7 @@
 		char	*ft_strdup(const char *s1) {
 			if (!s1) return (NULL);
 
-			char *copy = smalloc(ft_strlen(s1) + 1);
+			char *copy = malloc(ft_strlen(s1) + 1);
 			if (!copy) return (NULL);
 
 			ft_strlcpy(copy, s1, ft_strlen(s1) + 1);
@@ -365,7 +365,7 @@
 			size_t len = 0;
     		while (len < n && s1[len] != '\0') len++;
 
-			char *copy = smalloc(len + 1);
+			char *copy = malloc(len + 1);
 			if (!copy) return (NULL);
 
 			ft_strlcpy(copy, s1, len + 1);
@@ -401,7 +401,7 @@
 			if (len > m_len) len = m_len;
 			len += 1;
 
-			char *new_str = smalloc(len);
+			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
 			if (len > 1) { if (!ft_strlcpy(new_str, str + start, len)) new_str[0] = '\0'; }
 			else new_str[0] = '\0';
@@ -421,15 +421,15 @@
 			if (!str1 && !str2) return (NULL);
 
 			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
-			char *new_str = smalloc(len);
+			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
 			if (str1) {
 				ft_strlcpy (new_str, str1, len);
 				if (str2) ft_strlcat(new_str, str2, len);
 			} else if (str2) ft_strcpy (new_str, str2);
 
-			if (frees == 1 || frees == 3) sfree(str1);
-			if (frees == 2 || frees == 3) sfree(str2);
+			if (frees == 1 || frees == 3) free(str1);
+			if (frees == 2 || frees == 3) free(str2);
 
 			return (new_str);
 		}
@@ -443,7 +443,7 @@
 
 			if (!str1 && !sep && !str2) return (NULL);
 
-			char *new_str = smalloc(len + 1);
+			char *new_str = malloc(len + 1);
 			if (str1) {
 				ft_strlcpy(new_str, str1, len + 1);
 				if (sep)  ft_strlcat(new_str, sep, len + 1);
@@ -453,9 +453,9 @@
 				if (str2) ft_strlcat(new_str, str2, len + 1);
 			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
 
-			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) sfree(str1);
-			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) sfree(sep);
-			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) sfree(str2);
+			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free(str1);
+			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free(sep);
+			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) free(str2);
 
 			return (new_str);
 		}
@@ -497,8 +497,8 @@
 
 		static char	**free_all(char **result, int i) {
 			if (result) {
-				while (i-- > 0) sfree(result[i]);
-				sfree(result);
+				while (i-- > 0) free(result[i]);
+				free(result);
 			}
 
 			return (NULL);
@@ -526,11 +526,11 @@
 	#pragma region "Word Dup"
 
 		static char	*word_dup(char *str, int start, int finish, char c) {
-			char	*word = smalloc((finish - start + 1));
+			char	*word = malloc((finish - start + 1));
 			int		i = 0;
 
 			if (!word) return (NULL);
-			if (finish - start == 1 && str[start] == c) return (sfree(word), ft_strdup(""));
+			if (finish - start == 1 && str[start] == c) return (free(word), ft_strdup(""));
 			while (start < finish) word[i++] = str[start++];
 			word[i] = '\0';
 
@@ -543,7 +543,7 @@
 
 		char	**ft_split(char *s, char c) {
 			int		i = -1, j = 0, index = -1;
-			char	**split = smalloc((count_words(s, c) + 1) * sizeof(char *));
+			char	**split = malloc((count_words(s, c) + 1) * sizeof(char *));
 			if (!s || !split) return (free_all(split, 0));
 
 			while (i + 1 <= (int) ft_strlen(s)) {
@@ -631,7 +631,7 @@
 		size_t str_len = ft_strlen(str);
 		size_t replace_len = ft_strlen(replace);
 		size_t new_len = str_len - len + replace_len;
-		char *new_str = smalloc(new_len + 1);
+		char *new_str = malloc(new_len + 1);
 		
 		ft_memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement
 		ft_memcpy(new_str + i, replace, replace_len);									//	Copy the replacement string
@@ -640,7 +640,7 @@
 
 		if (start) *start = i + replace_len;											//	Update the start index if needed
 
-		return (sfree(str), new_str);
+		return (free(str), new_str);
 	}
 
 #pragma endregion
@@ -654,7 +654,7 @@
 		if (start > orig_len)		return (NULL);
 		if (start + len > orig_len)	len = orig_len - start;
 		
-		char *new_str = smalloc(orig_len - len + repl_len + 1);
+		char *new_str = malloc(orig_len - len + repl_len + 1);
 		
 		ft_strncpy(new_str, original, start);
 		new_str[start] = '\0';

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 17:27:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("builtin", opts->invalid, "[shell-builtin [arg ...]]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("builtin", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("builtin", "1.0"));
 
 		int result = 0;
 		if (opts->args) {
@@ -67,7 +67,7 @@
 			}
 		}
 
-		return (sfree(opts), result);
+		return (free(opts), result);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 09:29:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@
 				print(STDERR_FILENO, ": event not found\n", PRINT);
 			}
 		
-			sfree(number);
+			free(number);
 			value[0] = '\0'; return (NULL);
 		}
 		
-		sfree(number);
+		free(number);
 		return (hist->line);
 	}
 
@@ -73,11 +73,11 @@
 			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 0), FREE_RESET);
 			print(STDERR_FILENO, ": event not found\n", PRINT);
 
-			sfree(number);
+			free(number);
 			value[0] = '\0'; return (NULL);
 		}
 		
-		sfree(number);
+		free(number);
 		return (hist->line);
 	}
 
@@ -117,12 +117,12 @@
 				print(STDERR_FILENO, ": event not found\n", PRINT);
 			}
 
-			sfree(sub_value);
+			free(sub_value);
 			value[0] = '\0'; return (NULL);
 		}
 
 		if (value[*end] == '?') (*end)++;
-		sfree(sub_value);
+		free(sub_value);
 		return (result);
 	}
 
@@ -177,7 +177,7 @@
 				if (replacement) {
 					char* new_input = replace_substring(value, start, end - start, replacement);
 					if (new_input) {
-						sfree(value);
+						free(value);
 						value = new_input;
 						i += ft_strlen(replacement);
 						length = ft_strlen(value);
@@ -195,7 +195,7 @@
 				print(STDOUT_FILENO, new_value, RESET);
 				print(STDOUT_FILENO, "\n", PRINT);
 			}
-			sfree(value);
+			free(value);
 			*input = new_value;
 		}
 	}

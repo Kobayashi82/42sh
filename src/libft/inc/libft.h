@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 11:48:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:25:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,6 @@
 		void	*ft_memset(void *b, int c, int len);
 		void	*ft_calloc(int count, int size);
 		void	*ft_realloc(void *ptr, size_t old_size, size_t size);
-		void	*smalloc(long bytes);
-		void	sfree(void *ptr);
-		void	sfree_all();
-		int		sopen(const char *file, int oflag, int perm);
-		int		sclose(int fd);
-		void	sclose_all();
-		int		sdup(int fd);
-		int		sdup2(int *fd1, int fd2, int closeFD);
-		int		spipe(int *fd);
-		void	sexit(int code);
 
 	#pragma endregion
 

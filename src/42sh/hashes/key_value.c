@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/15 22:59:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:36:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@
 #pragma region "Key / Value"
 
 	int get_key_value(const char *line, char **key, char **value, char sep) {
-		if (*key)	{ sfree(*key); *key = NULL; }
-		if (*value) { sfree(*value); *value = NULL; }
+		if (*key)	{ free(*key); *key = NULL; }
+		if (*value) { free(*value); *value = NULL; }
 		if (!line) 	{ return (2); }
 
 		char *delimiter = ft_strchr(line, sep);
@@ -44,7 +44,7 @@
 		}
 
 		size_t key_length = delimiter - line;
-		*key = smalloc(key_length + 1);
+		*key = malloc(key_length + 1);
 
 		ft_strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
@@ -67,7 +67,7 @@
 		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
 
 		size_t length = ft_strlen(value), j = 0;
-		char *escaped = smalloc(length * 6 + 3);
+		char *escaped = malloc(length * 6 + 3);
 
 		if (quote_type == '\'') escaped[j++] = '\'';
 		if (quote_type == '\"') escaped[j++] = '\"';
@@ -104,14 +104,14 @@
 	// int options_write() {
 	// 	char *filename = ft_strjoin(get_home_path(), "/opciones", 0);
 
-	// 	int fd = sopen(filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); sfree(filename);
+	// 	int fd = open((filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); free(filename);
 	// 	if (fd == -1) return (1);
 
 	// 	print(fd, ft_strjoin_sep("input_mode=", ft_itoa(options.input_mode), "\n", 2), FREE_RESET);
 	// 	print(fd, ft_strjoin_sep("hist_on=", ft_itoa(options.history), "\n", 2), FREE_JOIN);
 	// 	print(fd, ft_strjoin_sep("hist_local=", ft_itoa(options.hist_local), "\n", 2), FREE_PRINT);
 
-	// 	sclose(fd);
+	// 	close(fd);
 	// 	return (0);
 	// }
 
@@ -120,17 +120,17 @@
 	// 	char *filename = ft_strjoin(get_home_path(), "/.42sh", 0);
 
 	// 	options_default();
-	// 	int fd = sopen(filename, O_RDONLY, -1); sfree(filename);
+	// 	int fd = open((filename, O_RDONLY, -1); free(filename);
 	// 	if (fd == -1) { options_write(); return (1); }
 
 	// 	char *line = NULL, *key = NULL, *value = NULL;
 	// 	while ((line = get_next_line(fd))) {
 	// 		get_key_value(line, &key, &value, '=');
 	// 		if (key && key[0] && value && value[0]) options_set(key, value);
-	// 		sfree(line);
-	// 	} sfree(key); sfree(value);
+	// 		free(line);
+	// 	} free(key); free(value);
 
-	// 	sclose(fd); options_write();
+	// 	close(fd); options_write();
 
 	// 	return (0);
 	// }

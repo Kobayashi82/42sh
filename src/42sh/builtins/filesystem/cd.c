@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,9 @@
 		char *original = *main_path;
 		if (*path != '/') {
 			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-			path = resolve_path(tmp); sfree(tmp);
+			path = resolve_path(tmp); free(tmp);
 		} else {
-			char *tmp = resolve_path(path); sfree(path);
+			char *tmp = resolve_path(path); free(path);
 			path = tmp;
 		}
 		
@@ -85,13 +85,13 @@
 		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
 			char *var_path = variables_find_value(vars_table, original);
 			if (var_path) {
-				sfree(path); path = ft_strdup(var_path);
+				free(path); path = ft_strdup(var_path);
 
 				if (*path != '/') {
 					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-					path = resolve_path(tmp); sfree(tmp);
+					path = resolve_path(tmp); free(tmp);
 				} else {
-					char *tmp = resolve_path(path); sfree(path);
+					char *tmp = resolve_path(path); free(path);
 					path = tmp;
 				}
 
@@ -102,13 +102,13 @@
 		if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
 			;
 		} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
-			char *tmp = ft_strdup(resolve_symlink(path)); sfree(path);
+			char *tmp = ft_strdup(resolve_symlink(path)); free(path);
 			path = tmp;
 		}
 
-		if (chdir(path)) { sfree(path); return (1); }
+		if (chdir(path)) { free(path); return (1); }
 		
-		sfree(*main_path);
+		free(*main_path);
 		*main_path = path;
 		return (0);
 	}
@@ -131,12 +131,12 @@
 					} else path = ft_strdup(token);
 					
 					if (path && !change_dir(&path, opts)) {
-						sfree(*main_path);
+						free(*main_path);
 						*main_path = path;
 						return (0);
 					}
 
-					sfree(path);
+					free(path);
 				}
 
 				token = ft_strtok(NULL, ":", 61);
@@ -166,11 +166,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("cd", opts->invalid, "[-L|[-P] [dir]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("cd", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("cd", "1.0"));
 
 		int result = 0;
 		char *path = NULL;
@@ -210,7 +210,7 @@
 				result = 1;
 			} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
 				
-			sfree(shell.cwd); shell.cwd = ft_strdup(path);
+			free(shell.cwd); shell.cwd = ft_strdup(path);
 			var = variables_find(vars_table, "PWD");
 			if (var && var->readonly) {
 				print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);
@@ -218,7 +218,7 @@
 			} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
 		}
 
-		return (sfree(path), sfree(opts), (result != 0));
+		return (free(path), free(opts), (result != 0));
 	}
 
 #pragma endregion

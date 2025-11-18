@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,10 +117,10 @@
 			char *path = path_find_first(arg, ft_strchr(opts, 'p') ? PATH : NULL);
 			if (path) {
 				print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_JOIN);
-				return (sfree(path), 1);
+				return (free(path), 1);
 			}
 
-			return (sfree(path), 0);
+			return (free(path), 0);
 		}
 
 	#pragma endregion
@@ -134,17 +134,17 @@
 
 		if (*opts->invalid) {
 			invalid_option("command", opts->invalid, "[-pVv] command [arg ...]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("command", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("command", "1.0"));
 		
-		if (!opts->args || !opts->args->value) return (sfree(opts), 0);
+		if (!opts->args || !opts->args->value) return (free(opts), 0);
 		
 		if (ft_strchr(opts->valid, 'V')) {
 			t_arg *arg = opts->args; arg->extra = 1;
-			return (sfree(opts), type(arg));
+			return (free(opts), type(arg));
 		}
 
 		if (ft_strchr(opts->valid, 'v')) {
@@ -170,7 +170,7 @@
 			//print(STDERR_FILENO, "\n", PRINT);
 
 			if (result == 2) result = 0;
-			return (sfree(opts), result);
+			return (free(opts), result);
 		}
 
 		if (opts->args->value) {
@@ -188,7 +188,7 @@
 					if (path) {
 						ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
 						args_clear(&cmd);
-						return (sfree(opts), sfree(path), 1);
+						return (free(opts), free(path), 1);
 					} args_clear(&cmd);
 				}
 			} else if (builtin_cmd) {
@@ -201,13 +201,13 @@
 				char *path = path_find_first(opts->args->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
 				if (path) {
 					ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", opts->args->value, path);
-					return (sfree(opts), sfree(path), 1);
+					return (free(opts), free(path), 1);
 				}
 			}
 		}
 
 
-		return (sfree(opts), -1);
+		return (free(opts), -1);
 	}
 
 #pragma endregion

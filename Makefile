@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/05/18 12:10:18 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/18 11:20:30 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,6 +47,7 @@ FLAGS				= -Wall -Wextra -Werror -g -O0 -gdwarf-4			# (for debugging)
 # FLAGS				= -Wall -Wextra -Werror -g -O0 -fsanitize=thread	# (for debugging with sanitize)
 EXTRA_FLAGS			= -ltermcap
 EXTRA_FLAGS_OBJ		=
+LDFLAGS				= -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=dup -Wl,--wrap=dup2 -Wl,--wrap=pipe -Wl,--wrap=execve -Wl,--wrap,exit	# (for safe functions)
 TESTING				= 1
 
 # ───────────────── #
@@ -159,6 +160,9 @@ SRCS	=	builtins/alias/alias.c						\
 														\
 			utils/paths.c								\
 			utils/times.c								\
+			utils/memsafe.c								\
+			utils/fdsafe.c								\
+			utils/execvesafe.c							\
 														\
 														\
 			tests/builtin.c								\
@@ -194,7 +198,7 @@ $(NAME): _normal_extra $(OBJS)
 	else \
 		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
 	fi
-	@$(CC) $(FLAGS) $(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
+	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress

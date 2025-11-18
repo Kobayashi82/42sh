@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:04:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:39:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 		if (mode == RESET_ALL) {
 			//	Reset and free all buffers
 			for (int i = 0; i < 1024; ++i) {
-				sfree(msg[i]);
+				free(msg[i]);
 				len[i] = 0;
 				cap[i] = 0;
 				return (0);
@@ -64,7 +64,7 @@
 
 		//	Reset the buffer if necessary
 		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && msg[fd]) {
-			sfree(msg[fd]);
+			free(msg[fd]);
 			msg[fd] = NULL;
 			len[fd] = 0;
 			cap[fd] = 0;
@@ -75,7 +75,7 @@
 			//	Initialize the buffer if it doesn't exist
 			if (!msg[fd]) {
 				cap[fd] = (str_len > INITIAL_CAP) ? str_len : INITIAL_CAP;
-				msg[fd] = smalloc(cap[fd]);
+				msg[fd] = malloc(cap[fd]);
 				len[fd] = 0;
 			}
 
@@ -100,14 +100,14 @@
 		int result = 0;
 		if (mode % 2 && msg[fd] && fd > 0) {
 			result = write(fd, msg[fd], len[fd]);
-			sfree(msg[fd]);
+			free(msg[fd]);
 			msg[fd] = NULL;
 			len[fd] = 0;
 			cap[fd] = 0;
 		}
 
 		//	Free the input string if necessary
-		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) sfree(str);
+		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free(str);
 
 		return (result == -1);
 	}

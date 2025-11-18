@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 14:31:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:53:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,11 +152,11 @@
 							int len = (find - command) + ft_strlen(value);
 							char *new_command = replace_substring(command, find - command, ft_strlen(key), value);
 							if (!new_command) break;
-							sfree(command);
+							free(command);
 							command = new_command;
 							find = command + len;
 						}
-						sfree(key); sfree(value);
+						free(key); free(value);
 					}
 				}
 				opts->args = opts->args->next;
@@ -168,7 +168,7 @@
 		}
 
 		if (result && hist_fc_command) history_add(hist_fc_command, false);
-		sfree(hist_fc_command);
+		free(hist_fc_command);
 
 		return (result);
 	}
@@ -352,7 +352,7 @@
 							}
 						}
 					}
-					sclose(fd);
+					close(fd);
 				}
 			}
 			if (!result && fd == -1) result = 2;
@@ -369,16 +369,16 @@
 				} else if (pid == 0) {
 					char *const args[] = { editor, tmp_file, NULL};
 					char **env = variables_to_array(vars_table, EXPORTED, true);
-					sclose_all();
+					close(-42);
 					execve(editor, args, env);
-					sexit(1);
+					exit(1);
 				} else if (pid > 0) {
 					int status;
 					waitpid(pid, &status, 0);
 					if (WIFEXITED(status))			status = WEXITSTATUS(status);
 					else if (WIFSIGNALED(status))	status = 128 + WTERMSIG(status);
 
-					if (status || (fd = sopen(tmp_file, O_RDONLY, -1)) == -1) result = 3;
+					if (status || (fd = open(tmp_file, O_RDONLY)) == -1) result = 3;
 				}
 			}
 
@@ -397,7 +397,7 @@
 
 				if (readed < 0) {
 					unlink(tmp_file);
-					sfree(file_content);
+					free(file_content);
 					file_content = NULL;
 					result = 3;
 				} else {
@@ -418,17 +418,17 @@
 			if (result == 2) print(STDOUT_FILENO, "fc: crear\n", RESET_PRINT);
 			if (result == 3) print(STDOUT_FILENO, "fc: leer\n", RESET_PRINT);
 			
-			sfree(editor);
+			free(editor);
 			tmp_delete_path(tmp_file);
 
 			// Add fc command to history
 			if (result && hist_fc_command) history_add(hist_fc_command, false);
-			sfree(hist_fc_command);
+			free(hist_fc_command);
 
 			// Ejecuta
 			if (!result) {
 				ft_printf(1, "%s\n", file_content);
-				sfree(file_content);
+				free(file_content);
 			}
 
 			return (result);
@@ -445,18 +445,18 @@
 		
 		if (*opts->invalid) {
 			invalid_option("fc", opts->invalid, "[-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("fc", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("fc", "1.0"));
 		
 		int result = 0;
 		if (!*opts->valid) {
 			char *editor = get_fullpath((char *)default_editor());
 			if (access(editor, X_OK) == -1) {
 				print(STDERR_FILENO, ft_strjoin(editor, ": command not found\n", 1), FREE_RESET_PRINT);
-				sfree(editor);
+				free(editor);
 				result = 1;
 			} else {
 				result = fc_edit(opts, editor);
@@ -476,7 +476,7 @@
 					char *editor = get_fullpath(opts->args->value);
 					if (access(editor, X_OK) == -1) {
 						print(STDERR_FILENO, ft_strjoin(editor, ": command not found\n", 1), FREE_RESET_PRINT);
-						sfree(editor);
+						free(editor);
 						result = 1;
 					} else {
 						opts->args = opts->args->next;
@@ -486,7 +486,7 @@
 			}
 		}
 
-		return (sfree(opts), (result != 0));
+		return (free(opts), (result != 0));
 	}
 
 #pragma endregion

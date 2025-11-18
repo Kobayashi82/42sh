@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("pwd", opts->invalid, "[-LP]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("pwd", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("pwd", "1.0"));
 
 		int result = 0;
 
@@ -68,7 +68,7 @@
 			else {
 				print(STDOUT_FILENO, cwd, RESET);
 				print(STDOUT_FILENO, "\n", PRINT);
-				sfree(cwd);
+				free(cwd);
 			}
 		} else {
 			if (shell.cwd) {
@@ -80,7 +80,7 @@
 			}
 		}
 
-		return (sfree(opts), result);
+		return (free(opts), result);
 	}
 
 #pragma endregion

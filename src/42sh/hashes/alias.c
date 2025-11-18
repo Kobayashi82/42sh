@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 17:16:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:29:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
-				sfree(new_alias->value);
+				free(new_alias->value);
 				if (value)	new_alias->value = ft_strdup(value);
 				else		new_alias->value = ft_strdup("");
 
@@ -141,7 +141,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
@@ -176,7 +176,7 @@
 			}
 
 			if (i == 0) return (1);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
@@ -244,7 +244,7 @@
 				if (!ft_strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
 					else		alias_table[index] = alias->next;
-					sfree(alias->name); sfree(alias->value); sfree(alias);
+					free(alias->name); free(alias->value); free(alias);
 					return (0);
 				}
 				prev = alias;
@@ -264,9 +264,9 @@
 					t_alias *alias = alias_table[index];
 					while (alias) {
 						t_alias *next = alias->next;
-						sfree(alias->name);
-						sfree(alias->value);
-						sfree(alias);
+						free(alias->name);
+						free(alias->value);
+						free(alias);
 						alias = next;
 					}
 					alias_table[index] = NULL;

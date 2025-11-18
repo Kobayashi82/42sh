@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 12:29:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:38:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 		void remove_forbidden_chars(char *new_prompt) {
 			if (!new_prompt) return;
 
-			char *tmp = smalloc(ft_strlen(new_prompt) + 1);
+			char *tmp = malloc(ft_strlen(new_prompt) + 1);
 			size_t i = 0, j = 0;
 
 			while (new_prompt[i]) {
@@ -73,7 +73,7 @@
 			} tmp[j] = '\0';
 
 			ft_strlcpy(new_prompt, tmp, ft_strlen(tmp) + 1);
-			sfree(tmp);
+			free(tmp);
 		}
 
 	#pragma endregion
@@ -108,8 +108,8 @@
 #pragma region "Clear"
 
 	void prompt_clear(int type) {
-		if ((type == PS1 || type == BOTH) && prompt_PS1) { sfree(prompt_PS1); prompt_PS1 = NULL; }
-		if ((type == PS2 || type == BOTH) && prompt_PS2) { sfree(prompt_PS2); prompt_PS2 = NULL; }
+		if ((type == PS1 || type == BOTH) && prompt_PS1) { free(prompt_PS1); prompt_PS1 = NULL; }
+		if ((type == PS2 || type == BOTH) && prompt_PS2) { free(prompt_PS2); prompt_PS2 = NULL; }
 	}
 
 #pragma endregion

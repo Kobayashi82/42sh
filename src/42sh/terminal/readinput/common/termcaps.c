@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 13:09:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:38:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,7 +170,7 @@
 				size_t length = nocolor_length(str);
 				if (length == ft_strlen(str)) return (ft_strdup(str));
 
-				char *result = smalloc(length + 1);
+				char *result = malloc(length + 1);
 				size_t i = 0, j = 0;
 
 				while (str[i]) {

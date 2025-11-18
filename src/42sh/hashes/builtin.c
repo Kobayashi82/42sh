@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/15 17:07:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:35:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
@@ -149,7 +149,7 @@
 			}
 
 			if (i == 0) return (1);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
@@ -219,7 +219,7 @@
 				if (!ft_strcmp(builtin->name, name)) {
 					if (prev)	prev->next = builtin->next;
 					else		builtin_table[index] = builtin->next;
-					sfree(builtin->name); sfree(builtin);
+					free(builtin->name); free(builtin);
 					return (0);
 				}
 				prev = builtin;
@@ -239,8 +239,8 @@
 					t_builtin *builtin = builtin_table[index];
 					while (builtin) {
 						t_builtin *next = builtin->next;
-						sfree(builtin->name);
-						sfree(builtin);
+						free(builtin->name);
+						free(builtin);
 						builtin = next;
 					}
 					builtin_table[index] = NULL;
