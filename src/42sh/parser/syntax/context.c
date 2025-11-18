@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:26:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:36:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@
 			
 			while (current) {
 				stack_push(&reversed, current->type);
-				ft_strcpy(reversed->value, current->value);
+				strcpy(reversed->value, current->value);
 				current = current->prev;
 			}
 			

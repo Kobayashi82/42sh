@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:00:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,129 +153,6 @@
 
 #pragma endregion
 
-#pragma region "STR_CPY"
-
-	#pragma region "StrCpy"
-
-		char	*ft_strcpy(char *dst, const char *src) {
-			int	i = -1;
-
-			if (!dst || !src) return (NULL);
-			while (src[++i]) dst[i] = src[i];
-			dst[i] = '\0';
-			return (dst);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrNCpy"
-
-		char	*ft_strncpy(char *dest, const char *src, int n) {
-			int	i = -1;
-
-			while (++i < n && src[i]) dest[i] = src[i];
-			while (i < n) dest[i++] = '\0';
-
-			return (dest);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrLCpy"
-
-		int	ft_strlcpy(char *dst, const char *src, int dstsize) {
-			int		i = 0, srclen = 0;
-
-			if (!src) return (0);
-			while (src[srclen]) ++srclen;
-			if (dstsize > 0) {
-				while (dstsize > 0 && src[i] && i < dstsize - 1) { dst[i] = src[i]; ++i; }
-				dst[i] = '\0';
-			}
-
-			return (srclen);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_CAT"
-
-	#pragma region "StrCat"
-
-		char	*ft_strcat(char *dest, const char *src) {
-			int dest_len = 0, i = -1;
-
-			while (dest[dest_len]) dest_len++;
-			while (src[++i]) dest[dest_len + i] = src[i];
-			dest[dest_len + i] = '\0';
-			return (dest);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrNCat"
-
-		char	*ft_strncat(char *dest, const char *src, int n) {
-			int dest_len = 0, i = -1;
-
-			while (dest[dest_len]) dest_len++;
-			while (++i < n && src[i]) dest[dest_len + i] = src[i];
-			dest[dest_len + i] = '\0';
-			return (dest);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrLCat"
-
-		int	ft_strlcat(char *dst, const char *src, int dstsize) {
-			int src_len = 0, dest_len = 0, i;
-
-			while (dst[dest_len] && dest_len < dstsize) dest_len++;
-			while (src[src_len]) src_len++;
-			if (dstsize == 0 || dest_len >= dstsize) return (dest_len + src_len);
-			i = dest_len - 1;
-			while (++i < dstsize - 1 && src[i - dest_len]) dst[i] = src[i - dest_len];
-			dst[i] = '\0';
-			return (dest_len + src_len);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_CHR"
-
-	#pragma region "StrChr"
-
-		char	*ft_strchr(const char *str, int c) {
-			if (!str) return (NULL);
-			while (*str) { if (*str == (char)c) { break; } str++; }
-			if (*str == (char)c) return ((char *)str);
-
-			return (NULL);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrRChr"
-
-		char	*ft_strrchr(const char *str, int c) {
-			int len = ft_strlen(str);
-			if (!str) return (NULL);
-			str += len;
-			while (len-- > 0) { if (*str == (char)c) { break; } str--; }
-			if (*str == (char)c) return ((char *)str);
-
-			return (NULL);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
 #pragma region "STR_STR"
 
 	#pragma region "StrStr"
@@ -320,8 +197,8 @@
 			int i = 0, j = ft_strlen(s1) - 1;
 
 			if (!s1 || !*s1) return (NULL);
-			while (s1[i] && ft_strchr(set, s1[i])) ++i;
-			while (j > i && ft_strchr(set, s1[j])) --j;
+			while (s1[i] && strchr(set, s1[i])) ++i;
+			while (j > i && strchr(set, s1[j])) --j;
 
 			return (ft_substr(s1, i, j - i + 1));
 		}
@@ -339,7 +216,7 @@
 
 			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
-			if (len > 1) { if (!ft_strlcpy(new_str, str + start, len)) new_str[0] = '\0'; }
+			if (len > 1) { if (!strlcpy(new_str, str + start, len)) new_str[0] = '\0'; }
 			else new_str[0] = '\0';
 
 			return (new_str);
@@ -360,9 +237,9 @@
 			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
 			if (str1) {
-				ft_strlcpy (new_str, str1, len);
-				if (str2) ft_strlcat(new_str, str2, len);
-			} else if (str2) ft_strcpy (new_str, str2);
+				strlcpy(new_str, str1, len);
+				if (str2) strlcat(new_str, str2, len);
+			} else if (str2) strcpy(new_str, str2);
 
 			if (frees == 1 || frees == 3) free(str1);
 			if (frees == 2 || frees == 3) free(str2);
@@ -381,13 +258,13 @@
 
 			char *new_str = malloc(len + 1);
 			if (str1) {
-				ft_strlcpy(new_str, str1, len + 1);
-				if (sep)  ft_strlcat(new_str, sep, len + 1);
-				if (str2) ft_strlcat(new_str, str2, len + 1);
+				strlcpy(new_str, str1, len + 1);
+				if (sep)  strlcat(new_str, sep, len + 1);
+				if (str2) strlcat(new_str, str2, len + 1);
 			} else if (sep) {
-				ft_strlcpy(new_str, sep, len + 1);
-				if (str2) ft_strlcat(new_str, str2, len + 1);
-			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
+				strlcpy(new_str, sep, len + 1);
+				if (str2) strlcat(new_str, str2, len + 1);
+			} else if (str2) strlcpy(new_str, str2, len + 1);
 
 			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free(str1);
 			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free(sep);
@@ -533,11 +410,11 @@
 		if (str) static_str[id] = str;
 		if (!static_str[id]) return (NULL);
 
-		while (*static_str[id] && ft_strchr(delim, *static_str[id])) static_str[id]++;
+		while (*static_str[id] && strchr(delim, *static_str[id])) static_str[id]++;
 		if (!*static_str[id]) { static_str[id] = NULL; return (NULL); }
 
 		token = static_str[id];
-		while (*static_str[id] && !ft_strchr(delim, *static_str[id])) static_str[id]++;
+		while (*static_str[id] && !strchr(delim, *static_str[id])) static_str[id]++;
 
 		if (*static_str[id]) { *static_str[id] = '\0'; static_str[id]++; }
 
@@ -580,10 +457,10 @@
 		
 		char *new_str = malloc(orig_len - len + repl_len + 1);
 		
-		ft_strncpy(new_str, original, start);
+		strncpy(new_str, original, start);
 		new_str[start] = '\0';
-		ft_strcat(new_str, replacement);
-		if (start + len < orig_len) ft_strcat(new_str, original + start + len);
+		strcat(new_str, replacement);
+		if (start + len < orig_len) strcat(new_str, original + start + len);
 		
 		return (new_str);
 	}

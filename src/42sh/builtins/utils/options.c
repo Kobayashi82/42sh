@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,17 +37,17 @@
 
 			char *arg = args->value;
 			if (!strcmp(arg, "--")) { args = args->next; break; }
-			else if (opt_char == '-' && !strcmp(arg, "--help"))		{ if (!ft_strchr(result->valid, '?')) result->valid[valid_index++] = '?'; }
-			else if (opt_char == '-' && !strcmp(arg, "--version"))	{ if (!ft_strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
+			else if (opt_char == '-' && !strcmp(arg, "--help"))		{ if (!strchr(result->valid, '?')) result->valid[valid_index++] = '?'; }
+			else if (opt_char == '-' && !strcmp(arg, "--version"))	{ if (!strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
 			else {
 				for (int i = 1; arg[i]; ++i) {
 					if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1)	{ result->too_many = true; break; }
-					if (ft_strchr(valid_opts, arg[i])) {
-						if (!ft_strchr(result->valid, arg[i])) result->valid[valid_index++] = arg[i];
+					if (strchr(valid_opts, arg[i])) {
+						if (!strchr(result->valid, arg[i])) result->valid[valid_index++] = arg[i];
 					} else if (no_invalid) {
 						done = true; break;
 					} else {
-						if (!ft_strchr(result->invalid, arg[i])) result->invalid[invalid_index++] = arg[i];
+						if (!strchr(result->invalid, arg[i])) result->invalid[invalid_index++] = arg[i];
 					} 
 				}
 			} if (!done && !result->too_many) args = args->next;

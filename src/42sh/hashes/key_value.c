@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 	const char *get_value(const char *key, const char sep) {
 		if (!key) return (NULL);
 
-		char *delimiter = ft_strchr(key, sep);
+		char *delimiter = strchr(key, sep);
 		if (!delimiter) return (NULL);
 
 		return (strdup(delimiter + 1));
@@ -37,7 +37,7 @@
 		if (*value) { free(*value); *value = NULL; }
 		if (!line) 	{ return (2); }
 
-		char *delimiter = ft_strchr(line, sep);
+		char *delimiter = strchr(line, sep);
 		if (!delimiter) {
 			*key = strdup(line);
 			return (1);
@@ -46,7 +46,7 @@
 		size_t key_length = delimiter - line;
 		*key = malloc(key_length + 1);
 
-		ft_strncpy(*key, line, key_length);
+		strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
 
 		*value = strdup(delimiter + 1);

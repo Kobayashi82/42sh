@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,22 +101,22 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("hash", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("hash", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 		
 		if ((!*opts->valid || !strcmp(opts->valid, "l")) && !opts->args) {
-			int result = print_hash((ft_strchr(opts->valid, 'l')));
+			int result = print_hash((strchr(opts->valid, 'l')));
 			return (free(opts), result);
 		}
 
-		if ((ft_strchr(opts->valid, 't') || ft_strchr(opts->valid, 'p') || ft_strchr(opts->valid, 'd')) && !opts->args) {
+		if ((strchr(opts->valid, 't') || strchr(opts->valid, 'p') || strchr(opts->valid, 'd')) && !opts->args) {
 			char opt[4]; int i = 0;
-			if (ft_strchr(opts->valid, 't')) opt[i++] = 't';
-			if (ft_strchr(opts->valid, 'p')) opt[i++] = 'p';
-			if (ft_strchr(opts->valid, 'd')) opt[i++] = 'd';
+			if (strchr(opts->valid, 't')) opt[i++] = 't';
+			if (strchr(opts->valid, 'p')) opt[i++] = 'p';
+			if (strchr(opts->valid, 'd')) opt[i++] = 'd';
 			opt[i] = '\0';
 			print(STDERR_FILENO, ft_strjoin_sep("hash: -", opt, ": option requires an argument\n", 0), FREE_JOIN);
 			print(STDERR_FILENO, "usage: hash [-lr] [-p pathname] [-dt] [name ...]\n\n", JOIN);

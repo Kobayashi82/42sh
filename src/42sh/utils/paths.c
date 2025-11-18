@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,26 +34,26 @@
 
 		if (!path) return (NULL);
 
-		ft_strncpy(resolved_path, path, sizeof(resolved_path) - 1);
+		strncpy(resolved_path, path, sizeof(resolved_path) - 1);
 		resolved_path[sizeof(resolved_path) - 1] = '\0';
 		
 		if ((len = readlink(path, buffer, sizeof(buffer) - 1)) != -1) {
 			buffer[len] = '\0';
-			ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+			strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
 			resolved_path[sizeof(resolved_path) - 1] = '\0';
 			return (resolved_path);
 		}
 
-		if (!ft_strchr(path, '/')) return (resolved_path);
+		if (!strchr(path, '/')) return (resolved_path);
 
 		char temp[4096];
-		ft_strncpy(temp, path, sizeof(temp) - 1);
+		strncpy(temp, path, sizeof(temp) - 1);
 		temp[sizeof(temp) - 1] = '\0';
 
 		char *last_slash = NULL;
 		char *p = temp;
 
-		while ((p = ft_strchr(p, '/'))) {
+		while ((p = strchr(p, '/'))) {
 			*p = '\0';
 
 			if (*temp) {
@@ -61,19 +61,19 @@
 					buffer[len] = '\0';
 
 					if (buffer[0] == '/')
-						ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+						strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
 					else {
 						char base_dir[4096] = "";
 						if (last_slash) {
-							ft_strncpy(base_dir, temp, last_slash - temp + 1);
+							strncpy(base_dir, temp, last_slash - temp + 1);
 							base_dir[last_slash - temp + 1] = '\0';
 						}
-						ft_strncpy(resolved_path, base_dir, sizeof(resolved_path) - 1);
+						strncpy(resolved_path, base_dir, sizeof(resolved_path) - 1);
 
 						size_t base_len = ft_strlen(resolved_path);
 						size_t buffer_len = ft_strlen(buffer);
 						if (base_len + buffer_len < sizeof(resolved_path) - 1) {
-							ft_strncpy(resolved_path + base_len, buffer, sizeof(resolved_path) - base_len - 1);
+							strncpy(resolved_path + base_len, buffer, sizeof(resolved_path) - base_len - 1);
 							resolved_path[base_len + buffer_len] = '\0';
 						}
 					}
@@ -82,7 +82,7 @@
 						size_t current_len = ft_strlen(resolved_path);
 						if (current_len < sizeof(resolved_path) - 2) {
 							resolved_path[current_len] = '/';
-							ft_strncpy(resolved_path + current_len + 1, p + 1, sizeof(resolved_path) - current_len - 2);
+							strncpy(resolved_path + current_len + 1, p + 1, sizeof(resolved_path) - current_len - 2);
 							resolved_path[sizeof(resolved_path) - 1] = '\0';
 						}
 					}
@@ -98,7 +98,7 @@
 
 		if (*temp && (len = readlink(temp, buffer, sizeof(buffer) - 1)) != -1) {
 			buffer[len] = '\0';
-			ft_strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
+			strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
 			resolved_path[sizeof(resolved_path) - 1] = '\0';
 		}
 
@@ -136,8 +136,8 @@
 				}
 
 				if (home) {
-					ft_strcpy(abs_path, home);
-					ft_strcat(abs_path, path);
+					strcpy(abs_path, home);
+					strcat(abs_path, path);
 					path = abs_path;
 					free(home);
 				}
@@ -150,21 +150,21 @@
 						write(2, "Error: No se puede determinar el directorio actual\n", 52);
 						return (NULL);
 					}
-					ft_strcpy(cwd, pwd);
+					strcpy(cwd, pwd);
 				}
 				if (ft_strlen(cwd) + ft_strlen(path) + 1 >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}
-				ft_strcpy(abs_path, cwd);
-				ft_strcat(abs_path, "/");
-				ft_strcat(abs_path, path);
+				strcpy(abs_path, cwd);
+				strcat(abs_path, "/");
+				strcat(abs_path, path);
 			} else {
 				if (ft_strlen(path) >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}
-				ft_strcpy(abs_path, path);
+				strcpy(abs_path, path);
 			}
 
 			char *components[4096 / 2];
@@ -184,8 +184,8 @@
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
 				}
-				ft_strcat(final_path, components[i]);
-				if (i < index - 1) ft_strcat(final_path, "/");
+				strcat(final_path, components[i]);
+				if (i < index - 1) strcat(final_path, "/");
 			}
 
 			return (strdup(final_path));
@@ -196,7 +196,7 @@
 	#pragma region "FullPath"
 
 		char *get_fullpath(char *path) {
-			if (!path || ft_strchr(path, '/')) return (resolve_path(path));
+			if (!path || strchr(path, '/')) return (resolve_path(path));
 
 			char *path_list = strdup(variables_find_value(vars_table, "PATH"));
 			if (!path_list) return (strdup(path));
@@ -228,7 +228,7 @@
 
 		char *path_find_first(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
-			if (ft_strchr(cmd, '/')) {
+			if (strchr(cmd, '/')) {
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) return (fullpath);
 				return (free(fullpath), NULL);
@@ -265,7 +265,7 @@
 		char **path_find_all(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
 
-			if (ft_strchr(cmd, '/')) {
+			if (strchr(cmd, '/')) {
 				char **final_paths = calloc(2, sizeof (char *));
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) {
@@ -404,14 +404,14 @@
 			char *token, *temp_path = strdup(path);
 
 			// Handle absolute and relative paths
-			if (path[0] == '/') ft_strcpy(resolved_path, "/");
+			if (path[0] == '/') strcpy(resolved_path, "/");
 			else {
 				if (getcwd(resolved_path, sizeof(resolved_path)) == NULL) {
 					free(temp_path); return (path);
 				}
 				size_t len = ft_strlen(resolved_path);
 				if (len == 0 || resolved_path[len - 1] != '/') {
-					ft_strcat(resolved_path, "/");
+					strcat(resolved_path, "/");
 				}
 			}
 
@@ -420,11 +420,11 @@
 			while (token) {
 				char *corrected = find_closest_dir(token, resolved_path);
 				if (corrected) {
-					ft_strcat(resolved_path, corrected);
+					strcat(resolved_path, corrected);
 					free(corrected);
-				} else ft_strcat(resolved_path, token);
+				} else strcat(resolved_path, token);
 
-				ft_strcat(resolved_path, "/");
+				strcat(resolved_path, "/");
 				token = ft_strtok(NULL, "/", 60);
 			} free(temp_path);
 

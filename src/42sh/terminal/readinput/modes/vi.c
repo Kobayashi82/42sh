@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
-					ft_strcpy(buffer.value, new_line);
+					strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
@@ -335,7 +335,7 @@
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
-					ft_strcpy(buffer.value, new_line);
+					strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
@@ -1158,7 +1158,7 @@
 					if (num_len > 0) cursor_left(num_len);
 
 					if (buffer.c == 27) return (0);
-					if (!ft_strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) {
+					if (!strchr("csdxXrRypPbBwWeEfFtT;,|kjhlu ", buffer.c)) {
 						if (buffer.c != 3 && buffer.c != 4 && buffer.c != '\r' && buffer.c != '\n') beep();
 						return (1);
 					}

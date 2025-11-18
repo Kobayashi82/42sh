@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,7 @@
 				}
 
 				memset(buffer.value, 0, buffer.size);
-				ft_strcpy(buffer.value, hist->line);
+				strcpy(buffer.value, hist->line);
 				buffer.length = hist->length;
 				buffer.position = 0;
 

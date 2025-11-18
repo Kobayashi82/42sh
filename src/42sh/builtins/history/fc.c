@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:51:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@
 		char *query = NULL;
 		char *command = NULL;
 
-		if (ft_strchr(opts->valid, 'e') && opts->args) {
-			if (opts->args->value && !ft_strchr(opts->args->value, '=')) {
+		if (strchr(opts->valid, 'e') && opts->args) {
+			if (opts->args->value && !strchr(opts->args->value, '=')) {
 				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
 				else					opts->args = opts->args->next;
 			}
@@ -82,7 +82,7 @@
 
 		t_arg *start = opts->args;
 		while (opts->args) {
-			if (opts->args->value && !ft_strchr(opts->args->value, '=')) {
+			if (opts->args->value && !strchr(opts->args->value, '=')) {
 				query = opts->args->value;
 				break;
 			}
@@ -143,7 +143,7 @@
 		else {
 			ft_printf(1, "%s\n", command);
 			while (opts->args) {
-				if (opts->args->value && ft_strchr(opts->args->value, '=')) {
+				if (opts->args->value && strchr(opts->args->value, '=')) {
 					char *key = NULL, *value = NULL;
 					get_key_value(opts->args->value, &key, &value, '=');
 					if (key && value) {
@@ -233,7 +233,7 @@
 			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
 			bool reduce_one = (history_get_last_if_added());
 
-			if (ft_strchr(opts->valid, 'e') && opts->args) {
+			if (strchr(opts->valid, 'e') && opts->args) {
 				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
 				else					opts->args = opts->args->next;
 			}
@@ -265,9 +265,9 @@
 			if (!result) {
 				if (end_pos < start_pos) ft_swap(&start_pos, &end_pos);
 				
-				bool hide_events = ft_strchr(opts->valid, 'n');
+				bool hide_events = strchr(opts->valid, 'n');
 				print(STDOUT_FILENO, NULL, RESET);
-				if (ft_strchr(opts->valid, 'r'))
+				if (strchr(opts->valid, 'r'))
 					for (int i = end_pos; i >= start_pos; --i) fc_list_add(i, hide_events);
 				else
 					for (int i = start_pos; i <= end_pos; ++i) fc_list_add(i, hide_events);
@@ -448,8 +448,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("fc", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("fc", "1.0"));
 		
 		int result = 0;
 		if (!*opts->valid) {
@@ -464,11 +464,11 @@
 		}
 
 		if (*opts->valid) {
-			if (ft_strchr(opts->valid, 's')) {
+			if (strchr(opts->valid, 's')) {
 				result = fc_replace(opts);
-			} else if (ft_strchr(opts->valid, 'l')) {
+			} else if (strchr(opts->valid, 'l')) {
 				result = fc_list(opts);
-			} else if (ft_strchr(opts->valid, 'e')) {
+			} else if (strchr(opts->valid, 'e')) {
 				if (!opts->args) {
 					print(STDOUT_FILENO, "fc: -e: option requires an argument\n", RESET_PRINT);
 					result = 1;
