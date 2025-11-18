@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:33:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:29:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,7 @@
 
 					home(); delete_end(false);
 					while (ft_strlen(new_line) >= buffer.size) {
-						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
 					ft_strcpy(buffer.value, new_line);
@@ -332,7 +332,7 @@
 
 					home(); delete_end(false);
 					while (ft_strlen(new_line) >= buffer.size) {
-						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
 					ft_strcpy(buffer.value, new_line);
@@ -443,7 +443,7 @@
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size - 1) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = realloc(buffer.value, buffer.size * 2);
 					buffer.size *= 2;
 				}
 
@@ -953,7 +953,7 @@
 
 					// Expand buffer if necessary
 					while (buffer.length + ft_strlen(clipboard) >= buffer.size - 1) {
-						buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
 
@@ -1021,7 +1021,7 @@
 
 			static int comment() {
 				if (buffer.length + 1 >= buffer.size) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = realloc(buffer.value, buffer.size * 2);
 					buffer.size *= 2;
 				}
 
@@ -1100,7 +1100,7 @@
 					int		readed = 0;
 
 					while ((readed = read(fd, temp_buffer, sizeof(temp_buffer))) > 0) {
-						file_content = ft_realloc(file_content, ft_strlen(file_content), file_size + readed + 1);
+						file_content = realloc(file_content, file_size + readed + 1);
 						ft_memcpy(file_content + file_size, temp_buffer, readed);
 						file_size += readed;
 					}

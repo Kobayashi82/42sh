@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@
 
 		if ((!ft_strcmp(filename, ".") || !ft_strcmp(filename, "..")) && ft_strcmp(filename, pattern->value)) return;
 
-		new_node = ft_calloc(1, sizeof(t_arg));
+		new_node = calloc(1, sizeof(t_arg));
 		if (is_dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", 0);
 		else		new_node->value = ft_strjoin(dir, filename, 0);
 

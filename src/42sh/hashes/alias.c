@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:29:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 			}
 
 			unsigned int index = hash_index(key);
-			new_alias = ft_calloc(1, sizeof(t_alias));
+			new_alias = calloc(1, sizeof(t_alias));
 
 			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;

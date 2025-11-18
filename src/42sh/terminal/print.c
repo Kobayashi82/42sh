@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:39:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:29:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,14 @@
 	#include "libft.h"
 	#include "print.h"
 
-	#define INITIAL_CAP 1024		//	Initial capacity of each buffer
+	#define TOTAL_FD	3			//	Total of FDs to manage
+	#define INITIAL_CAP	1024		//	Initial capacity of each buffer
 
 #pragma endregion
 
 #pragma region "Variables"
 
-	static char		*msg[1024];		//	Pointer to the buffer storing content for each file descriptor
+	static char		*msg[TOTAL_FD];	//	Pointer to the buffer storing content for each file descriptor
 	static size_t	len[1024];		//	Current size of the content stored for each file descriptor
 	static size_t	cap[1024];		//	Total allocated capacity of the buffer for each file descriptor
 
@@ -32,7 +33,7 @@
 	//	Manages and writes content to a dynamic buffer associated with a file descriptor
 	//
 	//	Parameters:
-	//		- fd: The file descriptor to write to
+	//		- fd: The file descriptor to write to (standars by default)
 	//		- str: The string to append to the buffer (can be NULL)
 	//		- mode: Controls the behavior based on the following enum values:
 	//			- RESET:			Resets the buffer
@@ -48,16 +49,16 @@
 	//	Returns: 0 on success, 1 on failure
 	//
 	int print(int fd, char *str, int mode) {
-		if (fd < 0 || fd > 1023) return (1);
+		if (fd < 0 || fd >= TOTAL_FD) return (1);
 
 		if (mode == RESET_ALL) {
 			//	Reset and free all buffers
-			for (int i = 0; i < 1024; ++i) {
+			for (int i = 0; i < TOTAL_FD; ++i) {
 				free(msg[i]);
 				len[i] = 0;
 				cap[i] = 0;
-				return (0);
 			}
+			return (0);
 		}
 
 		size_t str_len = str ? ft_strlen(str) : 0;
@@ -85,7 +86,7 @@
 				while (len[fd] + str_len >= new_cap)
 					new_cap *= 2;
 
-				char *new_msg = ft_realloc(msg[fd], cap[fd], new_cap);
+				char *new_msg = realloc(msg[fd], new_cap);
 				msg[fd] = new_msg;
 				cap[fd] = new_cap;
 			}

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/18 11:20:30 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/18 22:26:32 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ FLAGS				= -Wall -Wextra -Werror -g -O0 -gdwarf-4			# (for debugging)
 # FLAGS				= -Wall -Wextra -Werror -g -O0 -fsanitize=thread	# (for debugging with sanitize)
 EXTRA_FLAGS			= -ltermcap
 EXTRA_FLAGS_OBJ		=
-LDFLAGS				= -Wl,--wrap=malloc -Wl,--wrap=free -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=dup -Wl,--wrap=dup2 -Wl,--wrap=pipe -Wl,--wrap=execve -Wl,--wrap,exit	# (for safe functions)
+LDFLAGS				= -Wl,--wrap=malloc -Wl,--wrap=calloc -Wl,--wrap=realloc -Wl,--wrap=free -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=dup -Wl,--wrap=dup2 -Wl,--wrap=pipe -Wl,--wrap=execve -Wl,--wrap,exit	# (for safe functions)
 TESTING				= 1
 
 # ───────────────── #

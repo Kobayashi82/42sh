@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,7 +191,7 @@ void first_step() {
 	char *word = NULL;
 
 	while ((word = get_next_word(terminal.input, &pos, true)) != NULL) {
-		t_arg *new_arg = ft_calloc(1, sizeof(t_arg));
+		t_arg *new_arg = calloc(1, sizeof(t_arg));
 		t_arg *tmp = tokens.arg;
 		new_arg->value = word;
 

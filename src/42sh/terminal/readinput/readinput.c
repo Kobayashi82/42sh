@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:32:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@
 		int result = 0;
 		buffer.size = 1024;
 		buffer.position = 0, buffer.length = 0;
-		buffer.value = ft_calloc(buffer.size, sizeof(char));
+		buffer.value = calloc(buffer.size, sizeof(char));
 		buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
 
 		enable_raw_mode();

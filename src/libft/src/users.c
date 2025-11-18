@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:33:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:31:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 				char *shell		= extract_field(line, 6);
 
 				if (id && uid_str && home && !ft_strcmp(uid_str, id)) {
-					t_userinfo *info	= ft_calloc(1, sizeof(t_userinfo));
+					t_userinfo *info	= calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;
@@ -110,7 +110,7 @@
 				char *shell		= extract_field(line, 6);
 
 				if (username && home && !ft_strcmp(username, name)) {
-					t_userinfo *info	= ft_calloc(1, sizeof(t_userinfo));
+					t_userinfo *info	= calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;

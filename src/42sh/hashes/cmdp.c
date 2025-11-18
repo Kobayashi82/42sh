@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:36:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 			}
 
 			unsigned int index = hash_index(name);
-			new_cmdp = ft_calloc(1, sizeof(t_cmdp));
+			new_cmdp = calloc(1, sizeof(t_cmdp));
 
 			new_cmdp->name = ft_strdup(name);
 			new_cmdp->path = ft_strdup(path);

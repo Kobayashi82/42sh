@@ -118,8 +118,6 @@
 		size_t min_size;
 
 		if (size == 0) return (free(ptr), NULL);
-
-		//void *new_ptr = ft_calloc(1, size);
 		void *new_ptr = malloc(size);
 
 		if (ptr) {

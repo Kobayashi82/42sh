@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/12 17:04:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #pragma region "Parse"
 
 	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid) {
-		t_opt *result = ft_calloc(1, sizeof(t_opt));
+		t_opt *result = calloc(1, sizeof(t_opt));
 		result->options = valid_opts; result->args = args;
 		if (!args || !valid_opts) return (result);
 

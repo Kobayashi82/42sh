@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -266,7 +266,7 @@
 			if (!cmd) return (NULL);
 
 			if (ft_strchr(cmd, '/')) {
-				char **final_paths = ft_calloc(2, sizeof (char *));
+				char **final_paths = calloc(2, sizeof (char *));
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) {
 					final_paths[0] = ft_strdup(fullpath);
@@ -281,7 +281,7 @@
 			int i = 0;
 			for (i = 0; search_paths && search_paths[i]; ++i) ;
 
-			char **final_paths = ft_calloc(i + 1, sizeof (char *));
+			char **final_paths = calloc(i + 1, sizeof (char *));
 			if (!final_paths) { array_free(search_paths); return (NULL); }
 
 			int j = 0;

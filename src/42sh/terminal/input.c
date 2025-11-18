@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@
 
 	static char *readfile() {
 		size_t size = 1024, bytes_read = 0;
-		char *value = ft_calloc(size + 1, sizeof(char));
+		char *value = calloc(size + 1, sizeof(char));
 
 		while (1) {
 			size_t bytes_to_read = size - bytes_read;
@@ -138,7 +138,7 @@
 					
 			// Expand value if necessary
 			if (bytes_read == size) {
-				value = ft_realloc(value, size, (size * 2) + 1);
+				value = realloc(value, (size * 2) + 1);
 				size *= 2;
 			}
 			

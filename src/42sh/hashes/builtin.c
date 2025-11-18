@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:35:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@
 			}
 
 			unsigned int index = hash_index(name);
-			new_builtin = ft_calloc(1, sizeof(t_builtin));
+			new_builtin = calloc(1, sizeof(t_builtin));
 			new_builtin->name = ft_strdup(name);
 			if (disabled != -1) new_builtin->disabled = disabled;
 			if (special != -1) new_builtin->special = special;
