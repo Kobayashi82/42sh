@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 		if (!args || !valid_opts) return (result);
 
 		int valid_index = 0, invalid_index = 0, done = 0;
-		if (args && args->value && (!ft_strcmp(args->value, "-") || !ft_strcmp(args->value, "+"))) done = true;
+		if (args && args->value && (!strcmp(args->value, "-") || !strcmp(args->value, "+"))) done = true;
 		while (args && args->value && args->value[0] == opt_char && !done) {
 			if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1) {
 				result->too_many = true;
@@ -36,9 +36,9 @@
 			}
 
 			char *arg = args->value;
-			if (!ft_strcmp(arg, "--")) { args = args->next; break; }
-			else if (opt_char == '-' && !ft_strcmp(arg, "--help"))		{ if (!ft_strchr(result->valid, '?')) result->valid[valid_index++] = '?'; }
-			else if (opt_char == '-' && !ft_strcmp(arg, "--version"))	{ if (!ft_strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
+			if (!strcmp(arg, "--")) { args = args->next; break; }
+			else if (opt_char == '-' && !strcmp(arg, "--help"))		{ if (!ft_strchr(result->valid, '?')) result->valid[valid_index++] = '?'; }
+			else if (opt_char == '-' && !strcmp(arg, "--version"))	{ if (!ft_strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
 			else {
 				for (int i = 1; arg[i]; ++i) {
 					if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1)	{ result->too_many = true; break; }

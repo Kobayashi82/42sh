@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:43:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:38:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 	
 		int result = syntax_shell(input, &i, context, last_token, &line);
 
-		context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
+		context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!strncmp(last_token, "&&", 2) || !strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
 		context->in_escape = context->in_token && *last_token == '\\';
 
 		if (!shell.interactive && (context->stack || context->in_token)) {
@@ -37,11 +37,11 @@
 				syntax_error(IN_TOKEN, NULL, line);
 			} else {
 				char *value = NULL;
-				if (context->stack->type == CTX_QUOTE) value = ft_strdup("'");
-				else if (context->stack->type == CTX_DQUOTE) value = ft_strdup("\"");
-				else if (context->stack->type == CTX_BACKTICK) value = ft_strdup("`");
-				else if (context->stack->type == CTX_BRACE || context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND) value = ft_strdup("}");
-				else value = ft_strdup(")");
+				if (context->stack->type == CTX_QUOTE) value = strdup("'");
+				else if (context->stack->type == CTX_DQUOTE) value = strdup("\"");
+				else if (context->stack->type == CTX_BACKTICK) value = strdup("`");
+				else if (context->stack->type == CTX_BRACE || context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND) value = strdup("}");
+				else value = strdup(")");
 				syntax_error(IN_TOKEN_EOF, value, line);
 			}
 			result = 2;

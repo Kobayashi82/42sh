@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@
 	static void files_add(char *filename, t_pattern *pattern, char *dir, t_arg **files, bool is_dir) {
 		t_arg *new_node;
 
-		if ((!ft_strcmp(filename, ".") || !ft_strcmp(filename, "..")) && ft_strcmp(filename, pattern->value)) return;
+		if ((!strcmp(filename, ".") || !strcmp(filename, "..")) && strcmp(filename, pattern->value)) return;
 
 		new_node = calloc(1, sizeof(t_arg));
 		if (is_dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", 0);

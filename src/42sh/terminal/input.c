@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,12 @@
 		char *input_hist = NULL;
 		int line = 1;
 
-		t_context ctx_history;		ft_memset(&ctx_history, 0, sizeof(t_context));
-		t_context ctx_syntax;		ft_memset(&ctx_syntax, 0, sizeof(t_context));
-		t_context ctx_alias;		ft_memset(&ctx_alias, 0, sizeof(t_context));
+		t_context ctx_history;		memset(&ctx_history, 0, sizeof(t_context));
+		t_context ctx_syntax;		memset(&ctx_syntax, 0, sizeof(t_context));
+		t_context ctx_alias;		memset(&ctx_alias, 0, sizeof(t_context));
 
 		expand_history(&input, &ctx_history, true);
-		input_hist = ft_strdup(input);
+		input_hist = strdup(input);
 
 		expand_alias(&input, &ctx_alias);
 		context_copy(&ctx_history, &ctx_alias);
@@ -51,7 +51,7 @@
 			stack_clear(&ctx_history.stack);
 			stack_clear(&ctx_syntax.stack);
 			stack_clear(&ctx_alias.stack);
-			return (ft_strdup(""));
+			return (strdup(""));
 		}
 		
 		while (shell.interactive && (ctx_history.in_token || ctx_history.stack)) {
@@ -96,7 +96,7 @@
 				stack_clear(&ctx_history.stack);
 				stack_clear(&ctx_syntax.stack);
 				stack_clear(&ctx_alias.stack);
-				return (ft_strdup(""));
+				return (strdup(""));
 			}
 	
 			if (add_newline)

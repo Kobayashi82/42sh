@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:39:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:51:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@
 
 	void undo_push(bool push) {
 		if (push && !pushed) return;
-		if (stack && !ft_strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
+		if (stack && !strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
 		t_undo *new = malloc(sizeof(t_undo));
 		new->size = buffer.size;
 		new->length = buffer.length;
 		new->position = buffer.position;
 		new->value = malloc(buffer.size);
-		ft_memcpy(new->value, buffer.value, buffer.size);
+		memcpy(new->value, buffer.value, buffer.size);
 		new->next = stack;
 		stack = new;
 		pushed = push;
@@ -60,7 +60,7 @@
 		buffer.length = top->length;
 		buffer.position = top->position;
 		buffer.value = malloc(top->size);
-		ft_memcpy(buffer.value, top->value, top->size);
+		memcpy(buffer.value, top->value, top->size);
 		stack = top->next;
 		free(top->value);
 		free(top);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:35:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:41:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "libft.h"
 
+	#include <string.h>
 	#include <sys/time.h>
 	#include <sys/stat.h>
 
@@ -157,7 +158,7 @@
 				if (tmp_table[index]) {
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
-						if (!ft_strcmp(path, tmp->path)) {
+						if (!strcmp(path, tmp->path)) {
 							close(tmp->fd);
 							tmp->fd = -1;
 							return;
@@ -317,8 +318,8 @@
 		}
 
 		char *get_temp_dir() {
-			if (is_writable_dir("/tmp"))		return (ft_strdup("/tmp"));
-			if (is_writable_dir("/var/tmp"))	return (ft_strdup("/var/tmp"));
+			if (is_writable_dir("/tmp"))		return (strdup("/tmp"));
+			if (is_writable_dir("/var/tmp"))	return (strdup("/var/tmp"));
 
 			char *home = get_home();
 			if (home && is_writable_dir(home))	return (home);
@@ -333,7 +334,7 @@
 		char *ft_mkdtemp(char *path, char *name) {
 			if (!path || !is_writable_dir(path)) {
 				if (!(path = get_temp_dir())) return (NULL);
-			} else path = ft_strdup(path);
+			} else path = strdup(path);
 			path = ft_strjoin(path, "/", 1);
 			char *template = random_template();
 			char *fullpath = ft_strjoin_sep(path, name, template, 6);

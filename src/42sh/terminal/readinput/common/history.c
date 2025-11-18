@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -262,7 +262,7 @@
 
 			size_t i = length;
 			while (i-- > 0 && history[i])
-				if (i != pos && !ft_strcmp(history[i]->line, line)) history_remove(i);
+				if (i != pos && !strcmp(history[i]->line, line)) history_remove(i);
 		}
 
 	#pragma region "Add"
@@ -276,15 +276,15 @@
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (!ft_strcmp(token, "ignoredups"))	ignoredups = true;
-					if (!ft_strcmp(token, "ignorespace"))	ignorespace = true;
-					if (!ft_strcmp(token, "erasedups"))		erasedups = true;
-					if (!ft_strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
+					if (!strcmp(token, "ignoredups"))	ignoredups = true;
+					if (!strcmp(token, "ignorespace"))	ignorespace = true;
+					if (!strcmp(token, "erasedups"))		erasedups = true;
+					if (!strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
 
-			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !ft_strcmp(history[length - 1]->line, line)) { added = false; return (1); }
+			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = false; return (1); }
 			if (!force && ignorespace && ft_isspace(*line)) { added = false; return (1); }
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 
@@ -298,7 +298,7 @@
 				length -= 1;
 			}
 			history[length] = malloc(sizeof(HIST_ENTRY));
-			history[length]->line = ft_strdup(line);
+			history[length]->line = strdup(line);
 			history[length]->length = ft_strlen(line);
 			history[length]->event = event++;
 			history[length++]->data = NULL;
@@ -324,23 +324,23 @@
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (!ft_strcmp(token, "ignoredups"))	ignoredups = true;
-					if (!ft_strcmp(token, "ignorespace"))	ignorespace = true;
-					if (!ft_strcmp(token, "erasedups"))		erasedups = true;
-					if (!ft_strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
+					if (!strcmp(token, "ignoredups"))	ignoredups = true;
+					if (!strcmp(token, "ignorespace"))	ignorespace = true;
+					if (!strcmp(token, "erasedups"))		erasedups = true;
+					if (!strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
 
-			if (pos > 0 && ignoredups && history[pos - 1] && history[pos - 1]->line && !ft_strcmp(history[pos - 1]->line, line)) return (1);
-			if (pos == length - 1 && ignoredups && history[pos + 1] && history[pos + 1]->line && !ft_strcmp(history[pos + 1]->line, line)) return (1);
+			if (pos > 0 && ignoredups && history[pos - 1] && history[pos - 1]->line && !strcmp(history[pos - 1]->line, line)) return (1);
+			if (pos == length - 1 && ignoredups && history[pos + 1] && history[pos + 1]->line && !strcmp(history[pos + 1]->line, line)) return (1);
 			if (ignorespace && ft_isspace(*line)) return (1);
 			if (erasedups) erase_dups(line, pos);
 
 			if (history && pos < length && history[pos]) {
 				if (history[pos]->line) free(history[pos]->line);
 				if (history[pos]->data) free(history[pos]->data);
-				history[pos]->line = ft_strdup(line);
+				history[pos]->line = strdup(line);
 				history[pos]->length = ft_strlen(line);
 				history[pos]->data = data;
 			}

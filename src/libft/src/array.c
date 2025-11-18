@@ -6,14 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:41:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-
+	
+	#include <string.h>
 	#include <stdio.h>
 
 #pragma endregion
@@ -35,7 +36,7 @@
 				if (ft_strlen(str1) > skip) str1 += skip;
 				if (ft_strlen(str2) > skip) str2 += skip;
 
-				if (ft_strcmp(str1, str2) > 0) {
+				if (strcmp(str1, str2) > 0) {
 					char *temp = array[j];
 					array[j] = array[j + 1];
 					array[j + 1] = temp;
@@ -53,7 +54,7 @@
 
 		for (size_t i = 0; i < count - 1; i++) {
 			for (size_t j = 0; j < count - i - 1; j++) {
-				if (ft_strcmp(array[j], array[j + 1]) > 0) {
+				if (strcmp(array[j], array[j + 1]) > 0) {
 					char *temp = array[j];
 					array[j] = array[j + 1];
 					array[j + 1] = temp;

@@ -13,6 +13,7 @@
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include <string.h>
 
 #pragma endregion
 
@@ -84,7 +85,7 @@
 		char *str;
 		int len = 0, sign = 1, tmp = n;
 
-		if (n == 0) return (ft_strdup("0"));
+		if (n == 0) return (strdup("0"));
 		if (n < 0) { sign = -1; len++; }
 		while (tmp != 0) { tmp /= 10; len++; }
 		str = malloc((len + 1));

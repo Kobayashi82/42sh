@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #pragma region "Test"
 
 	int tests(int argc, const char **argv, const char **envp) {
-		if (argc == 1 || (ft_strcmp(argv[1], "test") && ft_strcmp(argv[1], "tests"))) return (0);
+		if (argc == 1 || (strcmp(argv[1], "test") && strcmp(argv[1], "tests"))) return (0);
 		int failed = 0;
 		printf(W"\t────────────────────────\n"NC);
 		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);

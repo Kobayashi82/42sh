@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 				size_t back_pos = 1;
 				while (search_buffer.position - back_pos > 0 && (search_buffer.value[search_buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
 				if (search_buffer.position < search_buffer.length)
-					ft_memmove(&search_buffer.value[search_buffer.position - back_pos], &search_buffer.value[search_buffer.position], search_buffer.length - search_buffer.position);
+					memmove(&search_buffer.value[search_buffer.position - back_pos], &search_buffer.value[search_buffer.position], search_buffer.length - search_buffer.position);
 				search_buffer.position -= back_pos; search_buffer.length -= back_pos;
 				search_buffer.value[search_buffer.length] = '\0';
 
@@ -161,7 +161,7 @@
 			original_size = buffer.size;
 			original_position = buffer.position;
 			original_buffer = malloc(buffer.size);
-			ft_memcpy(original_buffer, buffer.value, buffer.size);
+			memcpy(original_buffer, buffer.value, buffer.size);
 			
 			hist_searching = true;
 			initialized = true;
@@ -229,7 +229,7 @@
 			buffer.size = original_size;
 			buffer.position = original_position;
 			buffer.value = malloc(original_size);
-			ft_memcpy(buffer.value, original_buffer, original_size);
+			memcpy(buffer.value, original_buffer, original_size);
 
 			return (search_exit());
 		}
@@ -242,7 +242,7 @@
 			
 			static int process_match(HIST_ENTRY *hist, size_t pos, bool update) {
 				no_match = false;
-				match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
+				match_show = ft_strjoin_sep(strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
 				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
 
 				// Expand buffer if necessary
@@ -251,7 +251,7 @@
 					buffer.size *= 2;
 				}
 
-				ft_memset(buffer.value, 0, buffer.size);
+				memset(buffer.value, 0, buffer.size);
 				ft_strcpy(buffer.value, hist->line);
 				buffer.length = hist->length;
 				buffer.position = 0;
@@ -323,7 +323,7 @@
 					buffer.size = original_size;
 					buffer.position = original_position;
 					buffer.value = malloc(original_size);
-					ft_memcpy(buffer.value, original_buffer, original_size);
+					memcpy(buffer.value, original_buffer, original_size);
 					no_match = true;
 				}
 				return (0);

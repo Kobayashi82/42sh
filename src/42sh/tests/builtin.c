@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 		
 		args = test_create_args("alias a=d");
 		builtin_exec(args); test_free_args(args);
-		if (!result && ft_strcmp(alias_find("a")->value, "d")) result = 1;
+		if (!result && strcmp(alias_find("a")->value, "d")) result = 1;
 
 		alias_clear();
 
@@ -106,7 +106,7 @@
 		args = test_create_args("export a+=k");
 		builtin_exec(args); test_free_args(args);
 		if (!result && variables_length(vars_table, EXPORTED_LIST) != 1) result = 1;
-		if (!result && ft_strcmp(variables_find_value(vars_table, "a"), "ck")) result = 1;
+		if (!result && strcmp(variables_find_value(vars_table, "a"), "ck")) result = 1;
 
 		variables_clear(vars_table);
 

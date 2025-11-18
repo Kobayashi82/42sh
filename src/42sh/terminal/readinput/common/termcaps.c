@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:38:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@
 				if (!str) return (NULL);
 
 				size_t length = nocolor_length(str);
-				if (length == ft_strlen(str)) return (ft_strdup(str));
+				if (length == ft_strlen(str)) return (strdup(str));
 
 				char *result = malloc(length + 1);
 				size_t i = 0, j = 0;
@@ -246,7 +246,7 @@
 		#pragma region "Get"
 
 			void cursor_get() {
-				char	buf[32]; ft_memset(buf, 0, sizeof(buf));
+				char	buf[32]; memset(buf, 0, sizeof(buf));
 				int		a = 0, i = 0;
 				char *action = tgetstr("u7", NULL);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:29:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:51:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@
 
 		char *hist_fc_command = NULL;
 		HIST_ENTRY *hist_curr = history_get_last_if_added();
-		if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
+		if (hist_curr) hist_fc_command = strdup(hist_curr->line);
 		history_remove_last_if_added(true);
 
 		if (query) {
@@ -105,8 +105,8 @@
 							result = 1;
 							break;
 						}
-						if (!ft_strncmp(hist->line, query, ft_strlen(query))) {
-							command = ft_strdup(hist->line);
+						if (!strncmp(hist->line, query, ft_strlen(query))) {
+							command = strdup(hist->line);
 							break;
 						}
 					}
@@ -121,12 +121,12 @@
 						size_t pos = number < 0 ?  history_length() - (size_t) ft_abs(number) : number - 1;
 						HIST_ENTRY *hist = history_get(pos);
 						if (!hist) result = 1;
-						else command = ft_strdup(hist->line);
+						else command = strdup(hist->line);
 					}
 				} else {
 					HIST_ENTRY *hist = history_event(number);
 					if (!hist) result = 1;
-					else command = ft_strdup(hist->line);
+					else command = strdup(hist->line);
 				}
 			}
 		} else {
@@ -134,7 +134,7 @@
 			if (last_pos--) {
 				HIST_ENTRY *hist = history_get(last_pos);
 				if (!hist) result = 1;
-				else command = ft_strdup(hist->line);
+				else command = strdup(hist->line);
 			} else result = 1;
 		}
 
@@ -205,7 +205,7 @@
 					if (last_pos) {
 						for (int i = last_pos; i > 0; i--) {
 							HIST_ENTRY * hist = history_get(i);
-							if (hist && !ft_strncmp(hist->line, query, ft_strlen(query))) return (i);
+							if (hist && !strncmp(hist->line, query, ft_strlen(query))) return (i);
 						} return (-2);
 					} else return (-2);
 				} else {
@@ -306,7 +306,7 @@
 			// Remove fc command from history
 			char *hist_fc_command = NULL;
 			HIST_ENTRY *hist_curr = history_get_last_if_added();
-			if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
+			if (hist_curr) hist_fc_command = strdup(hist_curr->line);
 			history_remove_last_if_added(true);
 
 			// Set first and last
@@ -391,7 +391,7 @@
 
 				while ((readed = read(fd, temp_buffer, sizeof(temp_buffer))) > 0) {
 					file_content = realloc(file_content, file_size + readed + 1);
-					ft_memcpy(file_content + file_size, temp_buffer, readed);
+					memcpy(file_content + file_size, temp_buffer, readed);
 					file_size += readed;
 				}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@
 		if (value[0] != '/') {
 			char cwd[4096];
 			if (!getcwd(cwd, sizeof(cwd))) return (pattern_clear(&patterns), NULL);
-			if (!ft_strcmp(cwd, "/"))	basedir = ft_strdup(cwd);
+			if (!strcmp(cwd, "/"))	basedir = strdup(cwd);
 			else						basedir = ft_strjoin(cwd, "/", 0);
-		} else							dir = ft_strdup("/");
+		} else							dir = strdup("/");
 
 		t_arg *files = search(patterns, basedir, dir);
 		free(basedir); free(dir);
@@ -78,9 +78,9 @@
 		if (args == NULL || options.noglob) return;
 
 		globbing(args->next);
-		if (ft_memchr(args->value, '?', ft_strlen(args->value))
-			|| ft_memchr(args->value, '*', ft_strlen(args->value))
-			|| ft_memchr(args->value, '[', ft_strlen(args->value)))
+		if (memchr(args->value, '?', ft_strlen(args->value))
+			|| memchr(args->value, '*', ft_strlen(args->value))
+			|| memchr(args->value, '[', ft_strlen(args->value)))
 		{
 			t_arg *files = match(args->value);
 			if (!files) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:29:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:51:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@
 			}
 
 			//	Copy the new string into the buffer
-			ft_memcpy(msg[fd] + len[fd], str, str_len);
+			memcpy(msg[fd] + len[fd], str, str_len);
 			len[fd] += str_len;
 			msg[fd][len[fd]] = '\0';
 		}

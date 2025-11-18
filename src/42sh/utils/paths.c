@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,8 +172,8 @@
 
 			char *token = ft_strtok(abs_path, "/", 1);
 			while (token) {
-				if (!ft_strcmp(token, "."))			{ ; } // Ignore '.'
-				else if (!ft_strcmp(token, ".."))	{ if (index > 0) index--; }
+				if (!strcmp(token, "."))			{ ; } // Ignore '.'
+				else if (!strcmp(token, ".."))	{ if (index > 0) index--; }
 				else								{ components[index++] = token; }
 				token = ft_strtok(NULL, "/", 1);
 			}
@@ -188,7 +188,7 @@
 				if (i < index - 1) ft_strcat(final_path, "/");
 			}
 
-			return (ft_strdup(final_path));
+			return (strdup(final_path));
 		}
 
 	#pragma endregion
@@ -198,8 +198,8 @@
 		char *get_fullpath(char *path) {
 			if (!path || ft_strchr(path, '/')) return (resolve_path(path));
 
-			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
-			if (!path_list) return (ft_strdup(path));
+			char *path_list = strdup(variables_find_value(vars_table, "PATH"));
+			if (!path_list) return (strdup(path));
 
 			char *dir = ft_strtok(path_list, ":", 2);
 			while (dir) {
@@ -215,7 +215,7 @@
 				} dir = ft_strtok(NULL, ":", 2);
 			} free(path_list);
 
-			return (ft_strdup(path));
+			return (strdup(path));
 		}
 
 	#pragma endregion
@@ -269,7 +269,7 @@
 				char **final_paths = calloc(2, sizeof (char *));
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) {
-					final_paths[0] = ft_strdup(fullpath);
+					final_paths[0] = strdup(fullpath);
 					return (final_paths);
 				} return (free(fullpath), NULL);
 			}
@@ -325,7 +325,7 @@
 			return (NULL);
 		}
 
-		return (ft_strdup(cwd));
+		return (strdup(cwd));
 	}
 
 #pragma endregion
@@ -384,7 +384,7 @@
 					if (dist < min_distance) {
 						min_distance = dist;
 						free(best_match);
-						best_match = ft_strdup(entry->d_name);
+						best_match = strdup(entry->d_name);
 					}
 				}
 			} closedir(dir);
@@ -401,7 +401,7 @@
 		// Corrects a potentially misspelled directory path using fuzzy matching
 		char *correct_path(char *path) {
 			char resolved_path[1024] = {0};
-			char *token, *temp_path = ft_strdup(path);
+			char *token, *temp_path = strdup(path);
 
 			// Handle absolute and relative paths
 			if (path[0] == '/') ft_strcpy(resolved_path, "/");
