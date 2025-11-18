@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/18 22:26:32 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/19 00:04:40 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,11 +56,7 @@ TESTING				= 1
 
 INC_DIR				= $(shell find inc -type d | sed 's/^/-I/')
 OBJ_DIR				= build/obj/
-LIB_DIR				= build/lib/
-LIBFT_INC			= src/libft/inc/
-LIBFT_DIR			= src/libft/
-LIBFT				= libft.a
-SRC_DIR				= src/$(NAME)/
+SRC_DIR				= src/
 
 # ────────── #
 # ── NAME ── #
@@ -164,6 +160,13 @@ SRCS	=	builtins/alias/alias.c						\
 			utils/fdsafe.c								\
 			utils/execvesafe.c							\
 														\
+			utils/libft/str.c							\
+			utils/libft/num.c							\
+			utils/libft/array.c							\
+			utils/libft/gnl.c							\
+			utils/libft/users.c							\
+			utils/libft/temp.c							\
+														\
 														\
 			tests/builtin.c								\
 			tests/create_args.c							\
@@ -198,7 +201,7 @@ $(NAME): _normal_extra $(OBJS)
 	else \
 		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
 	fi
-	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(LIB_DIR)$(LIBFT) $(EXTRA_FLAGS) -o $(NAME)
+	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(EXTRA_FLAGS) -o $(NAME)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 #	Progress line
 	@$(MAKE) -s _progress
@@ -224,7 +227,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ — \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR  $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@$(CC) $(FLAGS) $(INC_DIR) -I$(LIBFT_INC) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
+	@$(CC) $(FLAGS) $(INC_DIR) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #
@@ -235,16 +238,10 @@ _normal_extra:
 	@if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; rm -f .is_re; exit 1; fi
 #	Hide cursor
 	@$(MAKE) -s _hide_cursor
-#	Create folders
-	@mkdir -p build/lib
 #	Title
 	@if [ ! -f .is_re ]; then clear; $(MAKE) -s _title; fi; rm -f .is_re
-#	Compile LIBFT
-	@if [ -d "$(LIBFT_DIR)" ]; then \
-		(make -s all -C $(LIBFT_DIR)/; exit 0); $(MAKE) -s _hide_cursor; \
-	else \
-		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
-	fi; printf "\n\t────────────────────────$(NC)\033[1A\r"
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
+	@printf "\n\t────────────────────────$(NC)\033[1A\r"
 
 # ───────────────────────────────────────────────────────────── #
 # ────────────────────────── RE-MAKE ────────────────────────── #
@@ -257,12 +254,7 @@ re:
 	@$(MAKE) -s _hide_cursor
 #	Title
 	@clear; $(MAKE) -s _title
-#	Delete LIBFT
-	@if [ -d "$(LIBFT_DIR)" ]; then \
-		(make -s -C $(LIBFT_DIR) fclean; exit 0); \
-	else \
-		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
-	fi
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
 #	Delete objects
 	@$(MAKE) -s _delete_objects
 #	Delete $(NAME)
@@ -272,8 +264,6 @@ re:
 	fi
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 	@$(MAKE) -s _progress; printf "\n"
-#	Delete folder and files
-	@-find build/$(LIB_DIR) -type d -empty -delete >/dev/null 2>&1 || true
 	@-find build -type d -empty -delete >/dev/null 2>&1 || true
 #	Create files
 	@touch .is_re; printf "\033[1A\033[1A\r"
@@ -291,12 +281,7 @@ clean:
 	@$(MAKE) -s _hide_cursor
 #	Title
 	@clear; $(MAKE) -s _title
-#	Delete objects
-	@if [ -d "$(LIBFT_DIR)" ]; then \
-		(make -s _delete_objects -C $(LIBFT_DIR)/; exit 0); \
-	else \
-		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
-	fi
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
 #	Delete objects
 	@$(MAKE) -s _delete_objects 
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)objects$(NC)\n"
@@ -316,12 +301,7 @@ fclean:
 	@$(MAKE) -s _hide_cursor
 #	Title
 	@clear; $(MAKE) -s _title
-#	Delete LIBFT
-	@if [ -d "$(LIBFT_DIR)" ]; then \
-		(make -s -C $(LIBFT_DIR) fclean; exit 0); \
-	else \
-		printf "\t$(WHITE)────────────────────────\n$(NC)"; \
-	fi
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
 #	Delete objects
 	@$(MAKE) -s _delete_objects
 #	Delete $(NAME)
@@ -332,7 +312,6 @@ fclean:
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 	@$(MAKE) -s _progress; printf "\n"
 #	Delete folder and files
-	@-find build/$(LIB_DIR) -type d -empty -delete >/dev/null 2>&1 || true
 	@-find build -type d -empty -delete >/dev/null 2>&1 || true
 #	Restore cursor
 	@$(MAKE) -s _show_cursor
@@ -380,10 +359,10 @@ _delete_objects:
 			fi; \
 		done; \
 	fi; printf "\r%50s\r"
-	@-find $(OBJ_DIR) -type d -empty -delete >/dev/null 2>&1 || true
+	@@rm -rf build >/dev/null 2>&1 || true
 
 wipe:
-	@rm -rf build ; rm -f .is_re $(NAME)
+	@rm -rf build; rm -f .is_re $(NAME)
 
 # ─────────────────── #
 # ── PROGRESS LINE ── #
