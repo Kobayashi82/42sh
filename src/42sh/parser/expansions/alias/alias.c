@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 				}
 
 				//		Handle Spaces
-				if ((*input)[i] != '\n' && ft_isspace((*input)[i])) { i += 1; continue; }
+				if ((*input)[i] != '\n' && isspace((*input)[i])) { i += 1; continue; }
 
 					//	'	Handle Single Quotes
 				if (context->stack && context->stack->type == CTX_QUOTE) {
@@ -128,7 +128,7 @@
 					i += 2; stack_push(&context->stack, CTX_BRACE_PARAM);
 					command_start = false; continue;
 				}	//	{ 	Open Command Group
-				else if ((*input)[i] == '{' && ft_isspace((*input)[i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+				else if ((*input)[i] == '{' && isspace((*input)[i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 					i += 1; stack_push(&context->stack, CTX_BRACE_COMMAND);
 					command_start = true; continue;
 				}	//	;	&	&&	|	||	\n	Command Separator
@@ -149,8 +149,8 @@
 					free(alias_name);
 					char *tmp = ft_strjoin_sep("|", alias_value, "|", 0);
 
-					if (alias_value && (!alias_list || !ft_strstr(alias_list, tmp))) {
-						command_start = (*alias_value && ft_isspace(alias_value[ft_strlen(alias_value) - 1]));
+					if (alias_value && (!alias_list || !strstr(alias_list, tmp))) {
+						command_start = (*alias_value && isspace(alias_value[ft_strlen(alias_value) - 1]));
 
 						alias_list = ft_strjoin(alias_list, tmp, 3); tmp = NULL;
 						expand_alias(&alias_value, context);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,14 +141,14 @@
 		if (!command) result = 1;
 		if (result) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
 		else {
-			ft_printf(1, "%s\n", command);
+			printf("%s\n", command);
 			while (opts->args) {
 				if (opts->args->value && strchr(opts->args->value, '=')) {
 					char *key = NULL, *value = NULL;
 					get_key_value(opts->args->value, &key, &value, '=');
 					if (key && value) {
 						char *find = command;
-						while ((find = ft_strstr(find, key))) {
+						while ((find = strstr(find, key))) {
 							int len = (find - command) + ft_strlen(value);
 							char *new_command = replace_substring(command, find - command, ft_strlen(key), value);
 							if (!new_command) break;
@@ -427,7 +427,7 @@
 
 			// Ejecuta
 			if (!result) {
-				ft_printf(1, "%s\n", file_content);
+				printf("%s\n", file_content);
 				free(file_content);
 			}
 

@@ -6,186 +6,45 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:16:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
-	#include <string.h>
 
 #pragma endregion
 
-#pragma region "STR_IS"
+#pragma region "STR_STRING"
 
-	#pragma region "Char"
 
-		#pragma region "Is_Print"
+	int	ft_isspace_s(char *str) { while (str && *str) { if (!isspace(*str++)) return (0); } return (1); }
+	int	ft_isalnum_s(char *str) { while (str && *str) { if (!isalnum(*str)) return (0); } return (1); }
 
-			int	ft_isprint(int c) { return (c >= 32 && c <= 126); }
-
-		#pragma endregion
-
-		#pragma region "Is_ASCII"
-
-			int	ft_isascii(int c) { return (c >= 0 && c <= 127); }
-
-		#pragma endregion
-
-		#pragma region "Is_Alpha"
-
-			int	ft_isalpha(int c) { return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')); }
-
-		#pragma endregion
-
-		#pragma region "Is_AlphaNum"
-
-			int	ft_isalnum(int c) { return (ft_isdigit(c) || ft_isalpha(c)); }
-
-		#pragma endregion
-
-		#pragma region "Is_Digit"
-
-			int	ft_isdigit(int c) { return (c >= '0' && c <= '9'); }
-
-		#pragma endregion
-
-		#pragma region "Is_Hex"
-
-			int	ft_isxdigit(int c) { return ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F')); }
-
-		#pragma endregion
-
-		#pragma region "Is_Space"
-
-			int	ft_isspace(int c) { return ((c >= 9 && c <= 13) || c == 32); }
-
-		#pragma endregion
-
-		#pragma region "Is_Punct"
-
-			int	ft_ispunct(const char c) {
-				int			i = 0;
-				const char	*punct = "!\"#$%&'()*+,-./:;<=>?@€[\\]^_`{|}~";
-				while (punct[i] != '\0') { if (c == punct[i++]) return (1); } return (0);
-			}
-
-		#pragma endregion
-
-	#pragma endregion
-
-	#pragma region "String"
-
-		#pragma region "Is_AlphaNum STR"
-
-			int	ft_isalnum_s(char *str) { while (str && *str) { if (!ft_isalnum(*str)) return (0); } return (1); }
-
-		#pragma endregion
-
-		#pragma region "Is_Digit STR"
-
-			int	ft_isdigit_s(char *str) {
-				if (str && (*str == '+' || *str == '-')) str++;
-				if (!str || *str == '\0') return (0);
-				while (*str) {
-					if (!ft_isdigit(*str++)) return (0);
-				}
-				
-				return (1);
-			}
-
-		#pragma endregion
-
-		#pragma region "Is_Space STR"
-
-			int	ft_isspace_s(char *str) { while (str && *str) { if (!ft_isspace(*str++)) return (0); } return (1); }
-
-		#pragma endregion
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_TO"
-
-	#pragma region "Char"
-
-		#pragma region "To_Upper"
-
-			int		ft_toupper(int c) { if (c >= 'a' && c <= 'z') { c -= 32; } return (c); }
-
-		#pragma endregion
-
-		#pragma region "To_Lower"
-
-			int		ft_tolower(int c) { if (c >= 'A' && c <= 'Z') { c += 32; } return (c); }
-
-		#pragma endregion
-
-	#pragma endregion
-
-	#pragma region "String"
-
-		#pragma region "To_Upper STR"
-
-			char	*ft_toupper_s(char *str) {
-				int i = -1;
-
-				while (str[++i]) if (str[i] >= 'a' && str[i] <= 'z') str[i] -= 32;
-				return (str);
-			}
-
-		#pragma endregion
-
-		#pragma region "To_Lower STR"
-
-			char	*ft_tolower_s(char *str) {
-				int	i = -1;
-
-				while (str[++i]) { if (str[i] >= 'A' && str[i] <= 'Z') str[i] += 32; }
-				return (str);
-			}
-
-		#pragma endregion
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_STR"
-
-	#pragma region "StrStr"
-
-		char	*ft_strstr(const char *haystack, const char *needle) {
-			int needle_len = ft_strlen(needle);
-
-			if (*needle == '\0') return ((char *)haystack);
-			while (*haystack) {
-				if (*haystack == *needle && !strncmp(haystack, needle, needle_len)) return ((char *)haystack);
-				haystack++;
-			}
-
-			return (NULL);
+	int	ft_isdigit_s(char *str) {
+		if (str && (*str == '+' || *str == '-')) str++;
+		if (!str || *str == '\0') return (0);
+		while (*str) {
+			if (!isdigit(*str++)) return (0);
 		}
+		
+		return (1);
+	}
 
-	#pragma endregion
+	char	*ft_toupper_s(char *str) {
+		int i = -1;
 
-	#pragma region "StrNStr"
+		while (str[++i]) if (str[i] >= 'a' && str[i] <= 'z') str[i] -= 32;
+		return (str);
+	}
 
-		char	*ft_strnstr(const char *haystack, const char *needle, int len) {
-			int needle_len = ft_strlen(needle);;
+	char	*ft_tolower_s(char *str) {
+		int	i = -1;
 
-			if (*needle == '\0') return ((char *)haystack);
-			while (*haystack && len >= needle_len) {
-				if (*haystack == *needle && strncmp(haystack, needle, needle_len) == 0) return ((char *)haystack);
-				haystack++; len--;
-			}
-
-			return (NULL);
-		}
-
-	#pragma endregion
+		while (str[++i]) { if (str[i] >= 'A' && str[i] <= 'Z') str[i] += 32; }
+		return (str);
+	}
 
 #pragma endregion
 
@@ -279,16 +138,12 @@
 
 #pragma region "STR_LEN"
 
-	#pragma region "StrLen"
+	size_t ft_strlen(const char *str) {
+		size_t i = 0;
 
-		size_t ft_strlen(const char *str) {
-			size_t i = 0;
-
-			while (str && str[i]) ++i;
-			return (i);
-		}
-
-	#pragma endregion
+		while (str && str[i]) ++i;
+		return (i);
+	}
 
 #pragma endregion
 
@@ -359,41 +214,6 @@
 			return (split);
 		}
 
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_PUT"
-
-	#pragma region "Put Char"
-
-		void	ft_putchar_fd(int fd, char c) {
-			if (fd > 0) write (fd, &c, 1);
-		}
-
-	#pragma endregion
-
-	#pragma region "Put String"
-
-		void	ft_putstr_fd(int fd, char *str, int add_nl) {
-			if (fd > 0 && str) {
-				write(fd, str, ft_strlen(str));
-				if (add_nl) write(fd, "nl", 1);
-			}
-		}
-
-	#pragma endregion
-
-	#pragma region "Put Number"
-
-		void	ft_putnbr_fd(int fd, int n) {
-			if (fd > 0) { long nb = n;
-				if (nb < 0) {	write(fd, "-", 1); nb = -nb; }
-				if (nb >= 10)	ft_putnbr_fd(nb / 10, fd);
-				char c = (nb % 10) + '0';
-				write(fd, &c, 1);
-			}
-		}
 	#pragma endregion
 
 #pragma endregion

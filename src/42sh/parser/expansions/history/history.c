@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:38:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 			number = strdup("1");
 			pos = 1;
 		} else {
-			while (ft_isdigit(value[*end]) && *end < length) (*end)++;
+			while (isdigit(value[*end]) && *end < length) (*end)++;
 			number = ft_substr(value, start + 2, *end - (start + 2));
 			pos = ft_atoi(number);
 		}
@@ -62,7 +62,7 @@
 #pragma region "Event"
 
 	static char *expand_event(char *value, int start, size_t *end, size_t length) {
-		while (ft_isdigit(value[*end]) && *end < length) (*end)++;
+		while (isdigit(value[*end]) && *end < length) (*end)++;
 		char *number = ft_substr(value, start + 1, *end - (start + 1));
 		size_t event = ft_atoi(number);
 
@@ -89,11 +89,11 @@
 		char *sub_value = NULL;
 
 		if (at_start) {
-			while (!ft_isspace(value[*end]) && value[*end] != '"' && *end < length) (*end)++;
+			while (!isspace(value[*end]) && value[*end] != '"' && *end < length) (*end)++;
 			sub_value = ft_substr(value, start + 1, *end - (start + 1));
 		} else {
 			(*end)++;
-			while (value[*end] != '?' && !ft_isspace(value[*end]) && value[*end] != '"' && *end < length) (*end)++;
+			while (value[*end] != '?' && !isspace(value[*end]) && value[*end] != '"' && *end < length) (*end)++;
 			sub_value = ft_substr(value, start + 2, *end - (start + 2));
 		}
 
@@ -102,7 +102,7 @@
 			HIST_ENTRY *hist = history_get(i);
 			if (hist && hist->line) {
 				if (at_start && !strncmp(hist->line, sub_value, ft_strlen(sub_value)))	{ result = hist->line; break; }
-				if (!at_start && ft_strstr(hist->line, sub_value))							{ result = hist->line; break; }
+				if (!at_start && strstr(hist->line, sub_value))							{ result = hist->line; break; }
 			}
 			if (i == 0) break;
 		}
@@ -149,9 +149,9 @@
 			if (value[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
 			if (value[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
 			// Handle Spaces
-			if (ft_isspace(value[i])) {											i++; continue; }
+			if (isspace(value[i])) {											i++; continue; }
 
-			if (!in_quotes && value[i] == '!' && i + 1 < length && !ft_isspace(value[i + 1]) && value[i + 1] != '"') {
+			if (!in_quotes && value[i] == '!' && i + 1 < length && !isspace(value[i + 1]) && value[i + 1] != '"') {
 
 				size_t start = i;
 				size_t end = i + 1;
@@ -160,13 +160,13 @@
 				if (value[end] == '!') {																						// !!
 					replacement = expand_position(value, start, &end, length, true);
 					if (!replacement) return;
-				} else if (value[end] == '-' && ft_isdigit(value[end + 1])) {													// !-[n]
+				} else if (value[end] == '-' && isdigit(value[end + 1])) {													// !-[n]
 					replacement = expand_position(value, start, &end, length, false);
 					if (!replacement) return;
-				} else if (ft_isdigit(value[end])) {																			// ![n]
+				} else if (isdigit(value[end])) {																			// ![n]
 					replacement = expand_event(value, start, &end, length);
 					if (!replacement) return;
-				} else if (value[end] == '?' && value[end + 1] != '?' && end + 1 < length && !ft_isspace(value[end + 1]) && value[i + 1] != '"') {		// !?[str], !?[str]?
+				} else if (value[end] == '?' && value[end + 1] != '?' && end + 1 < length && !isspace(value[end + 1]) && value[i + 1] != '"') {		// !?[str], !?[str]?
 					replacement = expand_value(value, start, &end, length, false);
 					if (!replacement) return;
 				} else {																										// ![str]

@@ -31,7 +31,9 @@
 		"alias.h": "c",
 		"stdbool.h": "c",
 		"initializer_list": "c",
-		"syntax.h": "c"
+		"syntax.h": "c",
+		"string.h": "c",
+		"random": "c"
 	},
 	"makefile.configureOnOpen": false
 }

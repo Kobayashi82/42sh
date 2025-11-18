@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:21:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 	#include <stdbool.h>
 	#include <errno.h>
 	#include <string.h>
+	#include <ctype.h>
+	#include <stdio.h>
 
 #pragma endregion
 
@@ -30,33 +32,11 @@
 
 		#pragma region "IS"
 
-			int		ft_isprint(int c);
-			int		ft_isascii(int c);
-			int		ft_isalpha(int c);
-			int		ft_isalnum(int c);
-			int		ft_isdigit(int c);
-			int		ft_isxdigit(int c);
-			int		ft_isspace(int c);
+			int		ft_isspace_s(char *str);
 			int		ft_isalnum_s(char *str);
 			int		ft_isdigit_s(char *str);
-			int		ft_isspace_s(char *str);
-			int		ft_ispunct(const char c);
-
-		#pragma endregion
-
-		#pragma region "TO"
-
-			int		ft_toupper(int c);
-			int		ft_tolower(int c);
 			char	*ft_toupper_s(char *str);
 			char	*ft_tolower_s(char *str);
-
-		#pragma endregion
-
-		#pragma region "STR"
-
-			char	*ft_strstr(const char *haystack, const char *needle);
-			char	*ft_strnstr(const char *str, const char *substr, int len);
 
 		#pragma endregion
 
@@ -77,21 +57,12 @@
 		#pragma region "LEN"
 
 			size_t	ft_strlen(const char *str);
-			size_t	ft_strlenl(const char *str);
 
 		#pragma endregion
 
 		#pragma region "SPLIT"
 
 			char	**ft_split(char *s, char c);
-
-		#pragma endregion
-
-		#pragma region "PUT"
-
-			void	ft_putchar_fd(int fd, char c);
-			void	ft_putstr_fd(int fd, char *str, int add_nl);
-			void	ft_putnbr_fd(int fd, int n);
 
 		#pragma endregion
 
@@ -144,12 +115,6 @@
 		void	array_int_print(int *array);
 		void	array_free(char **array);
 		void	array_free_ptr(char ***array);
-
-	#pragma endregion
-
-	#pragma region "FT_PRINTF"
-
-		int		ft_printf(int fd, char const *format, ...);
 
 	#pragma endregion
 

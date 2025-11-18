@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,9 +102,9 @@
 			}
 
 			if (!strcmp(terminal.input, "$?"))
-				ft_printf(1, "Exit code: %d\n", shell.exit_code);
+				printf("Exit code: %d\n", shell.exit_code);
 			else
-				ft_printf(1, "Input: %s\n", terminal.input);
+				printf("Input: %s\n", terminal.input);
 
 			execute_commands(terminal.input);
 			free(terminal.input);

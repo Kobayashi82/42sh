@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:52:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static char *extract_word(char *line, int *index) {
 
 	if (move) { memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
 
-    while (line[*index] && !(ft_isspace(line[*index]) && !quoted) && !((line[*index] == ';' || line[*index] == '\n') && !quoted) && !(line[*index] == '#' && !quoted)) {
+    while (line[*index] && !(isspace(line[*index]) && !quoted) && !((line[*index] == ';' || line[*index] == '\n') && !quoted) && !(line[*index] == '#' && !quoted)) {
 		if (!quoted && line[*index] == '\\')			{ quoted = 1; move = true; }
 		else if (quoted == 1)							quoted = 0;
 		else if (!quoted && line[*index] == '\'')		{ quoted = 2; move = true; }
@@ -69,7 +69,7 @@ t_arg *test_create_args(char *line) {
 
     int i = 0;
     while (line[i]) {
-        while (line[i] && ft_isspace(line[i])) i++;
+        while (line[i] && isspace(line[i])) i++;
         if (!line[i]) break;
 
         char *arg = NULL;
