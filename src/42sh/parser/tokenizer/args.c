@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:00:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@
 	// 	while (current) {
 	// 		t_arg *tmp = current->next;
 	// 		while (tmp) {
-	// 			if (ft_strcmp(current->value, tmp->value) > 0)
+	// 			if (strcmp(current->value, tmp->value) > 0)
 	// 				args_swap(current, tmp);
 	// 			tmp = tmp->next;
 	// 		}
@@ -115,7 +115,7 @@ t_arg *args_merge2(t_arg *left, t_arg *right) {
 	if (!left) return right;
 	if (!right) return left;
 
-	if (ft_strcmp(left->value, right->value) <= 0) {
+	if (strcmp(left->value, right->value) <= 0) {
 		left->next = args_merge2(left->next, right);
 		if (left->next) left->next->prev = left;
 		left->prev = NULL;

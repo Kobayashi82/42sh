@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@
 #pragma region "Change Dir"
 
 	static int change_dir(char **main_path, t_opt *opts) {
-		char *path = ft_strdup(*main_path);
+		char *path = strdup(*main_path);
 		char *original = *main_path;
 		if (*path != '/') {
 			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
@@ -85,7 +85,7 @@
 		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
 			char *var_path = variables_find_value(vars_table, original);
 			if (var_path) {
-				free(path); path = ft_strdup(var_path);
+				free(path); path = strdup(var_path);
 
 				if (*path != '/') {
 					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
@@ -102,7 +102,7 @@
 		if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
 			;
 		} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
-			char *tmp = ft_strdup(resolve_symlink(path)); free(path);
+			char *tmp = strdup(resolve_symlink(path)); free(path);
 			path = tmp;
 		}
 
@@ -126,9 +126,9 @@
 				if (*token) {
 					char *path = NULL;
 
-					if (!ft_strcmp(token, "-")) { *is_dash = true;
-						path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
-					} else path = ft_strdup(token);
+					if (!strcmp(token, "-")) { *is_dash = true;
+						path = strdup(variables_find_value(vars_table, "OLDPWD"));
+					} else path = strdup(token);
 					
 					if (path && !change_dir(&path, opts)) {
 						free(*main_path);
@@ -152,7 +152,7 @@
 	int cd(t_arg *args) {
 		t_arg *tmp_arg = args;
 		while (tmp_arg && tmp_arg->value) {
-			if (!ft_strcmp(tmp_arg->value, "-")) tmp_arg->value[0] = '|';
+			if (!strcmp(tmp_arg->value, "-")) tmp_arg->value[0] = '|';
 			tmp_arg = tmp_arg->next;
 		}
 
@@ -160,7 +160,7 @@
 		
 		tmp_arg = args;
 		while (tmp_arg && tmp_arg->value) {
-			if (!ft_strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
+			if (!strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
 			tmp_arg = tmp_arg->next;
 		}
 
@@ -177,19 +177,19 @@
 		bool is_dash = false;
 
 		if (!opts->args) {
-			path = ft_strdup(variables_find_value(vars_table, "HOME"));
+			path = strdup(variables_find_value(vars_table, "HOME"));
 			if (!path) { result = 2;
 				print(STDERR_FILENO, PROYECTNAME ": cd: HOME not set\n", RESET_PRINT);
 			}
 		} else if (opts->args->value && *opts->args->value) {
 			if (opts->args->next) { result = 2;
 				print(STDERR_FILENO, PROYECTNAME ": cd: too many arguments\n", RESET_PRINT);
-			} else if (!ft_strcmp(opts->args->value, "-")) { is_dash = true;
-				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
+			} else if (!strcmp(opts->args->value, "-")) { is_dash = true;
+				path = strdup(variables_find_value(vars_table, "OLDPWD"));
 				if (!path) { result = 2;
 					print(STDERR_FILENO, PROYECTNAME ": cd: OLDPWD not set\n", RESET_PRINT);
 				}
-			} else path = ft_strdup(opts->args->value);
+			} else path = strdup(opts->args->value);
 		}
 		
 		if (!result && (!path || !*path)) result = 3;
@@ -210,7 +210,7 @@
 				result = 1;
 			} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
 				
-			free(shell.cwd); shell.cwd = ft_strdup(path);
+			free(shell.cwd); shell.cwd = strdup(path);
 			var = variables_find(vars_table, "PWD");
 			if (var && var->readonly) {
 				print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);

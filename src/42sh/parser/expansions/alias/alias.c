@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:50:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@
 					i += 1; stack_pop(&context->stack);
 					command_start = false; continue;
 				}	//	))	Close Arithmetic Expansion or Arithmetic Expression
-				else if (!ft_strncmp(&(*input)[i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
+				else if (!strncmp(&(*input)[i], "))", 2) && context->stack && context->stack->type == CTX_ARITHMETIC) {
 					i += 2; stack_pop(&context->stack);
 					command_start = false; continue;
 				}	//	)	Close Command Substitution or Subshell or Arithmetic Group
@@ -92,23 +92,23 @@
 					i += 1; stack_push(&context->stack, CTX_DQUOTE);
 					command_start = false; continue;
 				}	//	$((	Open Arithmetic Expansion
-				else if (!ft_strncmp(&(*input)[i], "$((", 3) && is_arithmetic(&(*input)[i + 3])) {
+				else if (!strncmp(&(*input)[i], "$((", 3) && is_arithmetic(&(*input)[i + 3])) {
 					i += 3; stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; continue;
 				}	//	((	Open Arithmetic Expression
-				else if (!ft_strncmp(&(*input)[i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&(*input)[i + 2])) {
+				else if (!strncmp(&(*input)[i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&(*input)[i + 2])) {
 					i += 2; stack_push(&context->stack, CTX_ARITHMETIC);
 					command_start = false; continue;
 				}	//	$(	Open Command Substitution
-				else if (!ft_strncmp(&(*input)[i], "$(", 2)) {
+				else if (!strncmp(&(*input)[i], "$(", 2)) {
 					i += 2; stack_push(&context->stack, CTX_SUBSHELL_COMMAND);
 					command_start = true; continue;
 				}	//	<(	Open Process Substitution In
-				else if (!ft_strncmp(&(*input)[i], "<(", 2)) {
+				else if (!strncmp(&(*input)[i], "<(", 2)) {
 					i += 2; stack_push(&context->stack, CTX_PROCESS_SUB_IN);
 					command_start = true; continue;
 				}	//	>(	Open Process Substitution Out
-				else if (!ft_strncmp(&(*input)[i], ">(", 2)) {
+				else if (!strncmp(&(*input)[i], ">(", 2)) {
 					i += 2; stack_push(&context->stack, CTX_PROCESS_SUB_OUT);
 					command_start = true; continue;	
 				}	//	(	Open Arithmetic Group
@@ -124,7 +124,7 @@
 					i += 1; stack_push(&context->stack, CTX_BACKTICK);
 					command_start = true; continue;
 				}	//	${	Open Parameter Expansion
-				else if (!ft_strncmp(&(*input)[i], "${", 2)) {
+				else if (!strncmp(&(*input)[i], "${", 2)) {
 					i += 2; stack_push(&context->stack, CTX_BRACE_PARAM);
 					command_start = false; continue;
 				}	//	{ 	Open Command Group
@@ -141,23 +141,25 @@
 
 				if (command_start && (!context->stack || (context->stack->type != CTX_QUOTE && context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 					size_t start = i, end = i;
-					
+
 					while ((*input)[end] && !is_not_separator((*input)[end])) end++;
-					char *alias_name  = ft_strndup(*input + start, end - start);
-					char *alias_value = ft_strdup(alias_find_value(alias_name)); free(alias_name);
+					char *alias_name  = strndup(*input + start, end - start);
+					char *alias_value = NULL;
+					if (alias_find_value(alias_name)) strdup(alias_find_value(alias_name));
+					free(alias_name);
 					char *tmp = ft_strjoin_sep("|", alias_value, "|", 0);
-					
+
 					if (alias_value && (!alias_list || !ft_strstr(alias_list, tmp))) {
 						command_start = (*alias_value && ft_isspace(alias_value[ft_strlen(alias_value) - 1]));
-						
+
 						alias_list = ft_strjoin(alias_list, tmp, 3); tmp = NULL;
 						expand_alias(&alias_value, context);
 						size_t alias_len = ft_strlen(alias_value);
-						
+
 						char* new_input = replace_substring(*input, start, end - start, alias_value);
 						free(alias_value); alias_value = NULL;
 						free(alias_list); alias_list = NULL;
-						
+
 						is_separator(*input, &i, last_token);
 						if (new_input) {
 							free(*input);
@@ -182,7 +184,7 @@
 				i += 1;
 			}
 
-			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!ft_strncmp(last_token, "&&", 2) || !ft_strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
+			context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!strncmp(last_token, "&&", 2) || !strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
 			context->in_escape = context->in_token && *last_token == '\\';
 			return (0);
 		}

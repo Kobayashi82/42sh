@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:29:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@
 				return (!shell.interactive);
 			}
 
-			if (!ft_strcmp(terminal.input, "$?"))
+			if (!strcmp(terminal.input, "$?"))
 				ft_printf(1, "Exit code: %d\n", shell.exit_code);
 			else
 				ft_printf(1, "Input: %s\n", terminal.input);
@@ -143,16 +143,16 @@
 		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);
 		if (tests(argc, argv, envp)) exit_error(NOTHING, 0, NULL, true);
 
-		if (argc == 2 && !ft_strcmp(argv[1], "-c"))
+		if (argc == 2 && !strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);
-		else if (argc > 1 && ft_strcmp(argv[1], "-c")) ;
+		else if (argc > 1 && strcmp(argv[1], "-c")) ;
 			//argument_error(&data, argv[1]);
-		else if (argc > 2 && !ft_strcmp(argv[1], "-c")) {
+		else if (argc > 2 && !strcmp(argv[1], "-c")) {
 			signals_set();
 			shell.interactive = false;
 			shell.as_argument = true;
 			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
-			terminal.input = expand_input(ft_strdup(argv[2]));
+			terminal.input = expand_input(strdup(argv[2]));
 			execute_commands(terminal.input);
 			free(terminal.input);
 		} else {

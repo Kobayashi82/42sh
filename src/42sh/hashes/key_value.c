@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:36:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 		char *delimiter = ft_strchr(key, sep);
 		if (!delimiter) return (NULL);
 
-		return (ft_strdup(delimiter + 1));
+		return (strdup(delimiter + 1));
 	}
 
 #pragma endregion
@@ -39,7 +39,7 @@
 
 		char *delimiter = ft_strchr(line, sep);
 		if (!delimiter) {
-			*key = ft_strdup(line);
+			*key = strdup(line);
 			return (1);
 		}
 
@@ -49,7 +49,7 @@
 		ft_strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
 
-		*value = ft_strdup(delimiter + 1);
+		*value = strdup(delimiter + 1);
 
 		size_t value_len = ft_strlen(*value);
 		while (value_len > 0 && ((*value)[value_len - 1] == '\n' || (*value)[value_len - 1] == '\r')) {

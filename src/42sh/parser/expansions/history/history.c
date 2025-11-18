@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:38:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 		(*end)++;
 
 		if (is_double) {
-			number = ft_strdup("1");
+			number = strdup("1");
 			pos = 1;
 		} else {
 			while (ft_isdigit(value[*end]) && *end < length) (*end)++;
@@ -101,7 +101,7 @@
 		for (size_t i = history_length() - 1; i >= 0; --i) {
 			HIST_ENTRY *hist = history_get(i);
 			if (hist && hist->line) {
-				if (at_start && !ft_strncmp(hist->line, sub_value, ft_strlen(sub_value)))	{ result = hist->line; break; }
+				if (at_start && !strncmp(hist->line, sub_value, ft_strlen(sub_value)))	{ result = hist->line; break; }
 				if (!at_start && ft_strstr(hist->line, sub_value))							{ result = hist->line; break; }
 			}
 			if (i == 0) break;
@@ -190,7 +190,7 @@
 		}
 
 		if (changes) {
-			char *new_value = ft_strdup(value);
+			char *new_value = strdup(value);
 			if (show_expansion) {
 				print(STDOUT_FILENO, new_value, RESET);
 				print(STDOUT_FILENO, "\n", PRINT);

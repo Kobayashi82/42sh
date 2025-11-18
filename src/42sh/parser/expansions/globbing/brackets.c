@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@
 				pattern_chars = ft_tolower_s(pattern);
 			}
 
-			bool match = ft_memchr(pattern_chars, input_char, ft_strlen(pattern_chars));
+			bool match = memchr(pattern_chars, input_char, ft_strlen(pattern_chars));
 
 			if ((match && !inv) || (!match && inv))
 				return (free(pattern), true);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
 				free(new_alias->value);
-				if (value)	new_alias->value = ft_strdup(value);
-				else		new_alias->value = ft_strdup("");
+				if (value)	new_alias->value = strdup(value);
+				else		new_alias->value = strdup("");
 
 				return (0);
 			}
@@ -55,10 +55,10 @@
 			unsigned int index = hash_index(key);
 			new_alias = calloc(1, sizeof(t_alias));
 
-			new_alias->name = ft_strdup(key);
+			new_alias->name = strdup(key);
 			new_alias->value = NULL;
-			if (value)	new_alias->value = ft_strdup(value);
-			else		new_alias->value = ft_strdup("");
+			if (value)	new_alias->value = strdup(value);
+			else		new_alias->value = strdup("");
 
 			new_alias->next = alias_table[index];
 			alias_table[index] = new_alias;
@@ -104,7 +104,7 @@
 			t_alias *alias = alias_table[index];
 
 			while (alias) {
-				if (!ft_strcmp(alias->name, key)) return (alias);
+				if (!strcmp(alias->name, key)) return (alias);
 				alias = alias->next;
 			}
 
@@ -118,7 +118,7 @@
 			t_alias *alias = alias_table[index];
 
 			while (alias) {
-				if (!ft_strcmp(alias->name, key)) return (alias->value);
+				if (!strcmp(alias->name, key)) return (alias->value);
 				alias = alias->next;
 			}
 
@@ -241,7 +241,7 @@
 			t_alias *prev = NULL;
 
 			while (alias) {
-				if (!ft_strcmp(alias->name, key)) {
+				if (!strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
 					else		alias_table[index] = alias->next;
 					free(alias->name); free(alias->value); free(alias);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@
 		static int check_builtin(char *arg, char *opts) {
 			if (!arg) return (0);
 
-			if ((!opts || !*opts || !ft_strcmp(opts, "t")) && alias_find(arg)) return (0);
+			if ((!opts || !*opts || !strcmp(opts, "t")) && alias_find(arg)) return (0);
 
 			if (!ft_strchr(opts, 'P') && ft_strchr(opts, 't') && builtin_isactive(arg)) {
 				print(STDOUT_FILENO, "builtin\n", JOIN);
@@ -119,7 +119,7 @@
 		static int check_function(char *arg, char *opts) {
 			if (!arg) return (0);
 			
-			if ((!opts || !*opts || !ft_strcmp(opts, "t")) && (alias_find(arg) || builtin_isactive(arg))) return (0);
+			if ((!opts || !*opts || !strcmp(opts, "t")) && (alias_find(arg) || builtin_isactive(arg))) return (0);
 
 			// if (!ft_strchr(opts, 'P') && ft_strchr(opts, 't') && builtin_isactive(arg)) {
 			// 	print(STDOUT_FILENO, "builtin\n", JOIN);

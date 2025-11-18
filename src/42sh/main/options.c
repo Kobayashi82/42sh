@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 20:06:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:44:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,37 +46,39 @@
 
 	//	Set an option
 	int options_set(const char *option, bool value) {
+		if (!option) return (1);
+
 		//	READINPUT
-		if (!ft_strcmp("emacs", option)) {
+		if (!strcmp("emacs", option)) {
 			if (value) options.vi = !value;
 			options.emacs = value;	return (0);
 		}
-		if (!ft_strcmp("vi", option)) {
+		if (!strcmp("vi", option)) {
 			if (value) options.emacs = !value;
 			options.vi = value;		return (0);
 		}
-		if (!ft_strcmp("hide_ctrl_chars", option)) 		{ options.hide_ctrl_chars = value;	return (0); }
-		if (!ft_strcmp("multiwidth_chars", option)) 	{ options.multiwidth_chars = value;	return (0); }
+		if (!strcmp("hide_ctrl_chars", option)) 		{ options.hide_ctrl_chars = value;	return (0); }
+		if (!strcmp("multiwidth_chars", option)) 	{ options.multiwidth_chars = value;	return (0); }
 
 		//	HISTORY
-		if (!ft_strcmp("hist_local", option)) 			{ options.hist_local = value;		return (0); }
-		if (!ft_strcmp("hist_on", option)) 				{ options.history = value;			return (0); }
-		if (!ft_strcmp("histexpand", option)) 			{ options.histexpand = value;		return (0); }
+		if (!strcmp("hist_local", option)) 			{ options.hist_local = value;		return (0); }
+		if (!strcmp("hist_on", option)) 				{ options.history = value;			return (0); }
+		if (!strcmp("histexpand", option)) 			{ options.histexpand = value;		return (0); }
 
 		//	ALIAS
-		if (!ft_strcmp("expand_aliases", option)) 		{ options.expand_aliases = value;	return (0); }
+		if (!strcmp("expand_aliases", option)) 		{ options.expand_aliases = value;	return (0); }
 
 		//	GLOBBING
-		if (!ft_strcmp("noglob", option)) 				{ options.noglob = value;			return (0); }
-		if (!ft_strcmp("dotglob", option)) 				{ options.dotglob = value;			return (0); }
-		if (!ft_strcmp("nullglob", option)) 			{ options.nullglob = value;			return (0); }
-		if (!ft_strcmp("failglob", option)) 			{ options.failglob = value;			return (0); }
-		if (!ft_strcmp("nocaseglob", option)) 			{ options.nocaseglob = value;		return (0); }
+		if (!strcmp("noglob", option)) 				{ options.noglob = value;			return (0); }
+		if (!strcmp("dotglob", option)) 				{ options.dotglob = value;			return (0); }
+		if (!strcmp("nullglob", option)) 			{ options.nullglob = value;			return (0); }
+		if (!strcmp("failglob", option)) 			{ options.failglob = value;			return (0); }
+		if (!strcmp("nocaseglob", option)) 			{ options.nocaseglob = value;		return (0); }
 
 		//	CD
-		if (!ft_strcmp("cdable_vars", option)) 			{ options.cdable_vars = value;		return (0); }
-		if (!ft_strcmp("autocd", option)) 				{ options.autocd = value;			return (0); }
-		if (!ft_strcmp("dirspell", option)) 			{ options.dirspell = value;			return (0); }
+		if (!strcmp("cdable_vars", option)) 			{ options.cdable_vars = value;		return (0); }
+		if (!strcmp("autocd", option)) 				{ options.autocd = value;			return (0); }
+		if (!strcmp("dirspell", option)) 			{ options.dirspell = value;			return (0); }
 
 		return (1);
 	}
@@ -104,7 +106,7 @@
 			return (opt_str);
 		} else {
 			for (int i = 0; i < num_options; i++) {
-				if (ft_strcmp(value, option_names[i]) == 0) {
+				if (strcmp(value, option_names[i]) == 0) {
 					if (option_types[i] != type) continue;
 					char *tab = " \t";
 					if (ft_strlen(option_names[i]) < 7) tab = " \t\t";

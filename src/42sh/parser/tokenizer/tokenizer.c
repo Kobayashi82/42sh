@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:38:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,7 +181,7 @@ char *get_next_word(const char *input, size_t *pos, bool only_space) {
 		if (!only_space || ft_strchr(";|&<>", input[end]) || (ft_strchr("{(", input[end]) && !(end > 0 && input[end -1] == '$'))) break;
 	}
 
-	word = ft_strndup(&input[start], end - start); *pos = end;															// Crear la palabra
+	word = strndup(&input[start], end - start); *pos = end;															// Crear la palabra
 
 	return (word);
 }

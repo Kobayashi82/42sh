@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 #pragma region "Import"
 
 	static void specials(const char *key, const char *value) {
-		if (!ft_strcmp(key, "42_HISTSIZE"))		history_set_size(ft_atol(value), HIST_MEM);
-		if (!ft_strcmp(key, "42_HISTFILESIZE"))	history_set_size(ft_atol(value), HIST_FILE);
+		if (!strcmp(key, "42_HISTSIZE"))		history_set_size(ft_atol(value), HIST_MEM);
+		if (!strcmp(key, "42_HISTFILESIZE"))	history_set_size(ft_atol(value), HIST_FILE);
 	}
 
 	#pragma region "Variable"
@@ -57,7 +57,7 @@
 			if (new_var) {
 				if (!new_var->readonly || force) {
 					free(new_var->value);
-					new_var->value = ft_strdup(value);
+					new_var->value = strdup(value);
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
@@ -69,8 +69,8 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = ft_strdup(key);
-			if (value) new_var->value = ft_strdup(value);
+			new_var->name = strdup(key);
+			if (value) new_var->value = strdup(value);
 
 			if (readonly != -1) new_var->readonly = readonly;
 			if (exported != -1) new_var->exported = exported;
@@ -105,9 +105,9 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = ft_strdup(key);
+			new_var->name = strdup(key);
 			new_var->value = NULL;
-			if (value) new_var->value = ft_strdup(value);
+			if (value) new_var->value = strdup(value);
 
 			if (readonly != -1) new_var->readonly = readonly;
 			if (exported != -1) new_var->exported = exported;
@@ -164,14 +164,14 @@
 
 			if (!len || (!ft_isalpha(key[0]) && key[0] != '_')) result = 1;
 
-			if (!ft_strcmp(key, "42_HISTFILE")) result = 0;
-			if (!ft_strcmp(key, "42_HISTSIZE")) result = 0;
-			if (!ft_strcmp(key, "42_HISTFILESIZE")) result = 0;
-			if (!ft_strcmp(key, "42_HISTCONTROL")) result = 0;
-			if (!ft_strcmp(key, "42_SH")) result = 0;
-			if (!ft_strcmp(key, "42_SUBSHELL")) result = 0;
-			if (!ft_strcmp(key, "42_VERSION")) result = 0;
-			if (!ft_strcmp(key, "42_PID")) result = 0;
+			if (!strcmp(key, "42_HISTFILE")) result = 0;
+			if (!strcmp(key, "42_HISTSIZE")) result = 0;
+			if (!strcmp(key, "42_HISTFILESIZE")) result = 0;
+			if (!strcmp(key, "42_HISTCONTROL")) result = 0;
+			if (!strcmp(key, "42_SH")) result = 0;
+			if (!strcmp(key, "42_SUBSHELL")) result = 0;
+			if (!strcmp(key, "42_VERSION")) result = 0;
+			if (!strcmp(key, "42_PID")) result = 0;
 
 			for (size_t i = 1; i < len; ++i)
 				if (!ft_isalnum(key[i]) && key[i] != '_') { result = 1; break; }
@@ -201,7 +201,7 @@
 			t_var *var = table[index];
 
 			while (var) {
-				if (!ft_strcmp(var->name, key)) return (var);
+				if (!strcmp(var->name, key)) return (var);
 				var = var->next;
 			}
 
@@ -215,7 +215,7 @@
 			t_var *var = table[index];
 
 			while (var) {
-				if (!ft_strcmp(var->name, key)) return (var->value);
+				if (!strcmp(var->name, key)) return (var->value);
 				var = var->next;
 			}
 
@@ -289,7 +289,7 @@
 				while (j < 5) var_type[j++] = ' ';
 				var_type[j] = '\0';
 				
-				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
+				if (type == INTERNAL)	array[i] = strdup(var->name);
 				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
 
 				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
@@ -380,7 +380,7 @@
 			t_var *prev = NULL;
 
 			while (var) {
-				if (!ft_strcmp(var->name, key)) {
+				if (!strcmp(var->name, key)) {
 					if (prev)	prev->next = var->next;
 					else		table[index] = var->next;
 					free(var->name); free(var->value); free(var);

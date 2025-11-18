@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:31:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:58:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include <string.h>
 
 #pragma endregion
 
@@ -62,7 +63,7 @@
 				char *home		= extract_field(line, 5);
 				char *shell		= extract_field(line, 6);
 
-				if (id && uid_str && home && !ft_strcmp(uid_str, id)) {
+				if (id && uid_str && home && !strcmp(uid_str, id)) {
 					t_userinfo *info	= calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
@@ -109,7 +110,7 @@
 				char *home		= extract_field(line, 5);
 				char *shell		= extract_field(line, 6);
 
-				if (username && home && !ft_strcmp(username, name)) {
+				if (username && home && !strcmp(username, name)) {
 					t_userinfo *info	= calloc(1, sizeof(t_userinfo));
 					info->username	= username;
 					info->home		= home;
@@ -162,7 +163,7 @@
 			t_userinfo *user = get_userinfo_by_id(uid);
 			char *tmp = NULL;
 			if (user) {
-				tmp = ft_strdup(user->home);
+				tmp = strdup(user->home);
 				free_user(user);
 			}
 
@@ -178,7 +179,7 @@
 			t_userinfo *user = get_userinfo_by_name(name);
 			char *tmp = NULL;
 			if (user) {
-				tmp = ft_strdup(user->home);
+				tmp = strdup(user->home);
 				free_user(user);
 			}
 
@@ -193,9 +194,9 @@
 
 		char *get_home_by_var() {
 			char *home = getenv("XDG_CONFIG_HOME");
-			if (home) return ft_strdup(home);
+			if (home) return strdup(home);
 			home = getenv("HOME");
-			if (home) return (ft_strdup(home));
+			if (home) return (strdup(home));
 
 			home = get_home_by_id(getuid());
 			if (home) return (home);

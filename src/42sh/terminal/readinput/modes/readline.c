@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:29:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@
 
 						while (buffer.position - back_pos > 0 && (buffer.value[buffer.position - back_pos] & 0xC0) == 0x80) back_pos++;
 						int c_width = char_width(buffer.position - back_pos, buffer.value);
-						if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
+						if (buffer.position < buffer.length) memmove(&buffer.value[buffer.position - back_pos], &buffer.value[buffer.position], buffer.length - buffer.position);
 						buffer.position -= back_pos; buffer.length -= back_pos;
 						buffer.value[buffer.length] = '\0';
 
@@ -128,7 +128,7 @@
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
-					ft_memmove(&buffer.value[0], &buffer.value[buffer.position], buffer.length - buffer.position);
+					memmove(&buffer.value[0], &buffer.value[buffer.position], buffer.length - buffer.position);
 					buffer.length -= buffer.position; buffer.position = buffer.length;
 					buffer.value[buffer.length] = '\0';
 
@@ -157,7 +157,7 @@
 						size_t back_pos = 1;
 						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
 
-						ft_memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
+						memmove(&buffer.value[buffer.position], &buffer.value[buffer.position + back_pos], buffer.length - (buffer.position + back_pos));
 						buffer.length -= back_pos;
 
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
@@ -185,7 +185,7 @@
 					size_t delete_len = end_pos - buffer.position;
 				
 					if (delete_len > 0) {
-						ft_memmove(&buffer.value[buffer.position], &buffer.value[end_pos], buffer.length - end_pos + 1);
+						memmove(&buffer.value[buffer.position], &buffer.value[end_pos], buffer.length - end_pos + 1);
 						buffer.length -= delete_len;
 				
 						write_value(STDOUT_FILENO, &buffer.value[buffer.position], buffer.length - buffer.position);
@@ -207,7 +207,7 @@
 					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
 
 					if (buffer.position < buffer.length) {
-						ft_memset(&buffer.value[buffer.position], 0, buffer.length - buffer.position);
+						memset(&buffer.value[buffer.position], 0, buffer.length - buffer.position);
 						buffer.length -= buffer.length - buffer.position;
 					}
 
@@ -381,7 +381,7 @@
 					buffer.size *= 2;
 				}
 
-				if (buffer.position < buffer.length) ft_memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
+				if (buffer.position < buffer.length) memmove(&buffer.value[buffer.position + c_size], &buffer.value[buffer.position], buffer.length - buffer.position);
 
 				// Insert all bytes of the character into the buffer
 				for (size_t i = 0; i < c_size; i++) buffer.value[buffer.position++] = new_char[i];
@@ -417,10 +417,10 @@
 
 							if (back_pos1 > 8 || back_pos2 > 8) return;
 
-							ft_memcpy(temp, &buffer.value[buffer.position - back_pos1], back_pos1);
-							ft_memmove(&buffer.value[buffer.position - back_pos1], &buffer.value[buffer.position], back_pos2);
+							memcpy(temp, &buffer.value[buffer.position - back_pos1], back_pos1);
+							memmove(&buffer.value[buffer.position - back_pos1], &buffer.value[buffer.position], back_pos2);
 							buffer.position -= back_pos1; buffer.position += back_pos2;
-							ft_memmove(&buffer.value[buffer.position], temp, back_pos1);
+							memmove(&buffer.value[buffer.position], temp, back_pos1);
 
 							cursor_left(char_width(0, temp));
 							write_value(STDOUT_FILENO, &buffer.value[buffer.position - back_pos2], back_pos1 + back_pos2);
@@ -432,10 +432,10 @@
 							buffer.position -= back_pos1;
 							while (buffer.position - back_pos2 > 0 && (buffer.value[buffer.position - back_pos2] & 0xC0) == 0x80) back_pos2++;
 
-							ft_memcpy(temp, &buffer.value[buffer.position - back_pos2], back_pos2);
-							ft_memmove(&buffer.value[buffer.position - back_pos2], &buffer.value[buffer.position], back_pos1);
+							memcpy(temp, &buffer.value[buffer.position - back_pos2], back_pos2);
+							memmove(&buffer.value[buffer.position - back_pos2], &buffer.value[buffer.position], back_pos1);
 							buffer.position -= back_pos2; buffer.position += back_pos1;
-							ft_memmove(&buffer.value[buffer.position], temp, back_pos2);
+							memmove(&buffer.value[buffer.position], temp, back_pos2);
 
 							cursor_left(char_width(0, temp));
 							cursor_left(char_width(buffer.position - back_pos1, buffer.value));
@@ -509,9 +509,9 @@
 							for (size_t i = 0, pos = sep.start; i < sep.len; i++, pos++) sep.value[i] = buffer.value[pos];
 					}
 
-					ft_memmove(&buffer.value[prev.start], next.value, next.len);
-					ft_memmove(&buffer.value[prev.start + next.len], sep.value, sep.len);
-					ft_memmove(&buffer.value[prev.start + next.len + sep.len], prev.value, prev.len);
+					memmove(&buffer.value[prev.start], next.value, next.len);
+					memmove(&buffer.value[prev.start + next.len], sep.value, sep.len);
+					memmove(&buffer.value[prev.start + next.len + sep.len], prev.value, prev.len);
 
 					while (buffer.position > 0 && buffer.position > prev.start) {
 						do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
@@ -597,7 +597,7 @@
 
 				static int cursor() {
 					char seq[8];
-					ft_memset(&seq, 0, sizeof(seq));
+					memset(&seq, 0, sizeof(seq));
 					if (buffer.c == 27) {
 
 						fcntl(STDIN_FILENO, F_SETFL, O_NONBLOCK);
@@ -614,7 +614,7 @@
 								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
 								if (seq[1] == 'F')						end();					//	End				Cursor to the end
 								if (seq[1] == '3' && seq[2] == '~')		delete_char();			//	Delete			Delete
-								if (!ft_strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Delete	Delete current word
+								if (!strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Delete	Delete current word
 							}
 						} return (1);
 					} return (0);

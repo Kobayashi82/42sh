@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:27:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:00:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "libft.h"
+	#include <string.h>
 
 #pragma endregion
 
@@ -245,36 +246,6 @@
 
 #pragma endregion
 
-#pragma region "STR_CMP"
-
-	#pragma region "StrCmp"
-
-		int	ft_strcmp(const char *s1, const char *s2) {
-			if (!s1 || !s2) return (-1);
-			while (*s1 && (*s1 == *s2)) { s1++; s2++; }
-			return (*(unsigned char *)s1 - *(unsigned char *)s2);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrNCmp"
-
-		int	ft_strncmp(const char *s1, const char *s2, int n) {
-			unsigned char	*str1, *str2;
-			int				i = 0;
-
-			if (!s1 || !s2) return (-1);
-			str1 = (unsigned char *)s1;
-			str2 = (unsigned char *)s2;
-			while (*str1 && (*str1 == *str2) && i < n && n > 0) { ++str1; ++str2; ++i; }
-			if ((!*str1 && !*str2) || i == n) return (0);
-			return (*str1 - *str2);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
 #pragma region "STR_CHR"
 
 	#pragma region "StrChr"
@@ -314,7 +285,7 @@
 
 			if (*needle == '\0') return ((char *)haystack);
 			while (*haystack) {
-				if (*haystack == *needle && !ft_strncmp(haystack, needle, needle_len)) return ((char *)haystack);
+				if (*haystack == *needle && !strncmp(haystack, needle, needle_len)) return ((char *)haystack);
 				haystack++;
 			}
 
@@ -330,46 +301,11 @@
 
 			if (*needle == '\0') return ((char *)haystack);
 			while (*haystack && len >= needle_len) {
-				if (*haystack == *needle && ft_strncmp(haystack, needle, needle_len) == 0) return ((char *)haystack);
+				if (*haystack == *needle && strncmp(haystack, needle, needle_len) == 0) return ((char *)haystack);
 				haystack++; len--;
 			}
 
 			return (NULL);
-		}
-
-	#pragma endregion
-
-#pragma endregion
-
-#pragma region "STR_DUP"
-
-	#pragma region "StrDup"
-
-		char	*ft_strdup(const char *s1) {
-			if (!s1) return (NULL);
-
-			char *copy = malloc(ft_strlen(s1) + 1);
-			if (!copy) return (NULL);
-
-			ft_strlcpy(copy, s1, ft_strlen(s1) + 1);
-			return (copy);
-		}
-
-	#pragma endregion
-
-	#pragma region "StrNDup"
-
-		char	*ft_strndup(const char *s1, size_t n) {
-			if (!s1 || n == 0) return (NULL);
-
-			size_t len = 0;
-    		while (len < n && s1[len] != '\0') len++;
-
-			char *copy = malloc(len + 1);
-			if (!copy) return (NULL);
-
-			ft_strlcpy(copy, s1, len + 1);
-			return (copy);
 		}
 
 	#pragma endregion
@@ -477,18 +413,6 @@
 
 	#pragma endregion
 
-	#pragma region "StrLen (Lines)"
-
-		size_t ft_strlenl(const char *str) {
-			size_t lines = 0;
-
-			if (str) lines++;
-			while (str && *str) { if (*str++ == '\n') lines++; }
-			return (lines);
-		}
-
-	#pragma endregion
-
 #pragma endregion
 
 #pragma region "STR_SPLIT"
@@ -530,7 +454,7 @@
 			int		i = 0;
 
 			if (!word) return (NULL);
-			if (finish - start == 1 && str[start] == c) return (free(word), ft_strdup(""));
+			if (finish - start == 1 && str[start] == c) return (free(word), strdup(""));
 			while (start < finish) word[i++] = str[start++];
 			word[i] = '\0';
 
@@ -633,9 +557,9 @@
 		size_t new_len = str_len - len + replace_len;
 		char *new_str = malloc(new_len + 1);
 		
-		ft_memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement
-		ft_memcpy(new_str + i, replace, replace_len);									//	Copy the replacement string
-		ft_memcpy(new_str + i + replace_len, str + i + len, str_len - (i + len));		//	Copy the part of the original string after the replacement
+		memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement
+		memcpy(new_str + i, replace, replace_len);									//	Copy the replacement string
+		memcpy(new_str + i + replace_len, str + i + len, str_len - (i + len));		//	Copy the part of the original string after the replacement
 		new_str[new_len] = '\0';														//	Add the null terminator at the end of the new string
 
 		if (start) *start = i + replace_len;											//	Update the start index if needed

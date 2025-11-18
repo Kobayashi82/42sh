@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:52:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 			while (pattern && pattern[i]) {
 				if (pattern[i] == '*' && pattern[i + 1] == '*')
-					ft_memmove(&pattern[i], &pattern[i + 1], ft_strlen(&pattern[i]));
+					memmove(&pattern[i], &pattern[i + 1], ft_strlen(&pattern[i]));
 				else i++;
 			}
 		}
@@ -42,7 +42,7 @@
 
 			while (str && str[j] && j < i && i >= 0) {
 				if (str[j] == '\\' && (!c || str[j + 1] == c)) {
-					ft_memmove(&str[j], &str[j + 1], ft_strlen(&str[j + 1]) + 1);
+					memmove(&str[j], &str[j + 1], ft_strlen(&str[j + 1]) + 1);
 					if (j == --i) return (true);
 				} j++;
 			}
@@ -56,7 +56,7 @@
 		
 		t_pattern *pattern_create(char *pattern) {
 			if (!pattern) return (NULL);
-			pattern = ft_strdup(pattern);
+			pattern = strdup(pattern);
 
 			char *start = pattern, *tmp_pattern = pattern;
 
@@ -83,10 +83,10 @@
 					start = tmp_pattern;
 					is_dir = true;
 
-					if (!ft_strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { free(value); continue; }
-					if (!ft_strcmp(value, "**/") && tmp_list && tmp_list->value && !ft_strcmp(tmp_list->value, "**/")) { free(value); continue; }
+					if (!strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { free(value); continue; }
+					if (!strcmp(value, "**/") && tmp_list && tmp_list->value && !strcmp(tmp_list->value, "**/")) { free(value); continue; }
 				} else if (*tmp_pattern) {
-					value = ft_strdup(tmp_pattern);
+					value = strdup(tmp_pattern);
 					tmp_pattern = NULL;
 				}
 

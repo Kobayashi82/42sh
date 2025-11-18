@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 		
-		if ((!*opts->valid || !ft_strcmp(opts->valid, "l")) && !opts->args) {
+		if ((!*opts->valid || !strcmp(opts->valid, "l")) && !opts->args) {
 			int result = print_hash((ft_strchr(opts->valid, 'l')));
 			return (free(opts), result);
 		}

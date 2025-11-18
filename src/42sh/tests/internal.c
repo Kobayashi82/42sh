@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:32:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,11 @@
 		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
 		if (!result && !history_add(add_line, false)) {
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
-			else if (ft_strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			else if (strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
 		if (!result) { history_replace(history_get_pos(), replace_line, NULL);
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
-			else if (ft_strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+			else if (strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 		}
 		if (!result) { size_t length = history_length(); history_remove_current(false);
 			if (history_length() == length)								{ result = 1; printf(RD"X"RED500" delete\n"NC); }
@@ -156,10 +156,10 @@
 		char *pattern = "./\\M?*************'k'[aaaa,,,,,b,c-z]?***********?l[!]\\]a\\-df-z]***************";
 
 		t_arg *args = calloc(1, sizeof(t_arg));
-		args->value = ft_strdup(pattern);
+		args->value = strdup(pattern);
 		globbing(args);
 
-		if (!ft_strcmp(args->value, pattern)) { result = 1; printf(RD"X"RED500" pattern\n"NC); }
+		if (!strcmp(args->value, pattern)) { result = 1; printf(RD"X"RED500" pattern\n"NC); }
 		
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

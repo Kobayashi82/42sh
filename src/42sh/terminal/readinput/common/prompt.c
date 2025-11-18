@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:38:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:52:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 			while (tmp && *tmp) {
 				if (*tmp == '\\' && *(tmp + 1) == '\\')
-					ft_memmove(tmp, tmp + 1, ft_strlen(tmp + 1) + 1);
+					memmove(tmp, tmp + 1, ft_strlen(tmp + 1) + 1);
 				tmp++;
 			}
 
@@ -67,7 +67,7 @@
 				if (len == 0) { i++; continue; }
 
 				if (char_width(i, new_prompt) < 2) {
-					ft_memcpy(&tmp[j], &new_prompt[i], len);
+					memcpy(&tmp[j], &new_prompt[i], len);
 					j += len;
 				} i += len;
 			} tmp[j] = '\0';
@@ -88,10 +88,10 @@
 
 			if (new_prompt) {
 				//	Procesa barras, variables ($var & \u)
-				tmp_prompt = ft_strdup(new_prompt);
+				tmp_prompt = strdup(new_prompt);
 			} else {
-				if (type == PS1) tmp_prompt = backslashes(ft_strdup(PS1_DFLT));	//	"\\$USER-\u"
-				if (type == PS2) tmp_prompt = backslashes(ft_strdup(PS2_DFLT));	//	"\\$USER-\u"
+				if (type == PS1) tmp_prompt = backslashes(strdup(PS1_DFLT));	//	"\\$USER-\u"
+				if (type == PS2) tmp_prompt = backslashes(strdup(PS2_DFLT));	//	"\\$USER-\u"
 				//	Procesa barras, variables ($var & \u)
 			}
 
