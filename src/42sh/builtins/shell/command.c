@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@
 					//	Ejecutar comando indicando la ruta default dependiendo de '-p'
 					char *path = path_find_first(cmd->value, strchr(opts->valid, 'p') ? PATH : NULL);
 					if (path) {
-						ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
+						printf("Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
 						args_clear(&cmd);
 						return (free(opts), free(path), 1);
 					} args_clear(&cmd);
@@ -194,13 +194,13 @@
 			} else if (builtin_cmd) {
 				builtin_exec(opts->args);
 			} else if (check_function(opts->args->value)) {
-				ft_printf(1, "Se ejecuta la función '%s()'\n", args->value);
+				printf("Se ejecuta la función '%s()'\n", args->value);
 				//exec_func();
 			} else {
 				//	Ejecutar comando indicando la ruta default dependiendo de '-p'
 				char *path = path_find_first(opts->args->value, strchr(opts->valid, 'p') ? PATH : NULL);
 				if (path) {
-					ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", opts->args->value, path);
+					printf("Se ejecuta el comando '%s' con la ruta '%s'\n", opts->args->value, path);
 					return (free(opts), free(path), 1);
 				}
 			}

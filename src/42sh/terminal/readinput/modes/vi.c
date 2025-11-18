@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:12:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,9 +188,9 @@
 
 					size_t end_pos = buffer.position;
 				
-					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
+					while (end_pos < buffer.length && (isspace(buffer.value[end_pos]) || ispunct(buffer.value[end_pos])))
 						end_pos++;
-					while (end_pos < buffer.length && !ft_isspace(buffer.value[end_pos]) && !ft_ispunct(buffer.value[end_pos]))
+					while (end_pos < buffer.length && !isspace(buffer.value[end_pos]) && !ispunct(buffer.value[end_pos]))
 						end_pos += char_size(buffer.value[end_pos]);
 				
 					size_t delete_len = end_pos - buffer.position;
@@ -365,10 +365,10 @@
 					while (number--) {
 						if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 							if (buffer.CTRL) {
-								while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
+								while (buffer.position > 0 && (isspace(buffer.value[buffer.position - 1]) || ispunct(buffer.value[buffer.position - 1]))) {
 									cursor_left(0); (buffer.position)--;
 								}
-								while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
+								while (buffer.position > 0 && !isspace(buffer.value[buffer.position - 1]) && !ispunct(buffer.value[buffer.position - 1])) {
 									do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 									cursor_left(0);
 								}
@@ -400,10 +400,10 @@
 					while (number--) {
 						if (!buffer.ALT && !buffer.SHIFT && buffer.position < length) {
 							if (buffer.CTRL) {
-								while (buffer.position < length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
+								while (buffer.position < length && (isspace(buffer.value[buffer.position]) || ispunct(buffer.value[buffer.position]))) {
 									cursor_right(0); (buffer.position)++;
 								}
-								while (buffer.position < length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
+								while (buffer.position < length && !isspace(buffer.value[buffer.position]) && !ispunct(buffer.value[buffer.position])) {
 									cursor_right(0);
 									do { (buffer.position)++; } while (buffer.position < length && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								}
@@ -531,23 +531,23 @@
 							size_t pos = buffer.position;
 							do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 
-							while (ft_isspace(buffer.value[pos])) {
+							while (isspace(buffer.value[pos])) {
 								cursor_left(1);
 								buffer.position = pos;
 								if (pos == 0) return;
 								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 							}
 
-							bool isalpha = (ft_isalnum(buffer.value[pos]) || buffer.value[pos] == '_');
+							bool isalpha = (isalnum(buffer.value[pos]) || buffer.value[pos] == '_');
 							if (isalpha) {
-								while ((ft_isalnum(buffer.value[pos]) || buffer.value[pos] == '_') && !ft_isspace(buffer.value[pos])) {
+								while ((isalnum(buffer.value[pos]) || buffer.value[pos] == '_') && !isspace(buffer.value[pos])) {
 									cursor_left(char_width(pos, buffer.value));
 									buffer.position = pos;
 									if (pos == 0) return;
 									do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 								}
 							} else {
-								while (!ft_isalnum(buffer.value[pos]) && buffer.value[pos] != '_' && !ft_isspace(buffer.value[pos])) {
+								while (!isalnum(buffer.value[pos]) && buffer.value[pos] != '_' && !isspace(buffer.value[pos])) {
 									cursor_left(char_width(pos, buffer.value));
 									buffer.position = pos;
 									if (pos == 0) return;
@@ -570,22 +570,22 @@
 
 						if (buffer.position >= length) { beep(); return; }
 						while (number-- && buffer.position < length) {
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
 
 							size_t pos;
-							bool isalpha = (ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
+							bool isalpha = (isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
 							if (isalpha) {
-								while ((ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !ft_isspace(buffer.value[buffer.position])) {
+								while ((isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !isspace(buffer.value[buffer.position])) {
 									arrow_right();
 									pos = buffer.position;
 									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 									if (pos == buffer.length) break;
 								}
 							} else {
-								while (!ft_isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !ft_isspace(buffer.value[buffer.position])) {
+								while (!isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !isspace(buffer.value[buffer.position])) {
 									arrow_right();
 									pos = buffer.position;
 									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
@@ -593,7 +593,7 @@
 								}
 							}
 
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
@@ -615,22 +615,22 @@
 						if (buffer.position >= length) { beep(); return; }
 						while (number-- && buffer.position < length) {
 							arrow_right();
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
 
 							size_t pos;
-							bool isalpha = (ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
+							bool isalpha = (isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_');
 							if (isalpha) {
-								while ((ft_isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !ft_isspace(buffer.value[buffer.position])) {
+								while ((isalnum(buffer.value[buffer.position]) || buffer.value[buffer.position] == '_') && !isspace(buffer.value[buffer.position])) {
 									arrow_right();
 									pos = buffer.position;
 									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 									if (pos == buffer.length) break;
 								}
 							} else {
-								while (!ft_isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !ft_isspace(buffer.value[buffer.position])) {
+								while (!isalnum(buffer.value[buffer.position]) && buffer.value[buffer.position] != '_' && !isspace(buffer.value[buffer.position])) {
 									arrow_right();
 									pos = buffer.position;
 									do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
@@ -664,14 +664,14 @@
 							size_t pos = buffer.position;
 							do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 
-							while (ft_isspace(buffer.value[pos])) {
+							while (isspace(buffer.value[pos])) {
 								cursor_left(1);
 								buffer.position = pos;
 								if (pos == 0) return;
 								do { pos--; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 							}
 
-							while (!ft_isspace(buffer.value[pos])) {
+							while (!isspace(buffer.value[pos])) {
 								cursor_left(char_width(pos, buffer.value));
 								buffer.position = pos;
 								if (pos == 0) return;
@@ -693,20 +693,20 @@
 
 						if (buffer.position >= length) { beep(); return; }
 						while (number-- && buffer.position < length) {
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
 
 							size_t pos;
-							while (!ft_isspace(buffer.value[buffer.position])) {
+							while (!isspace(buffer.value[buffer.position])) {
 								arrow_right();
 								pos = buffer.position;
 								do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
 								if (pos == buffer.length) break;
 							}
 
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
@@ -728,13 +728,13 @@
 						if (buffer.position >= length) { beep(); return; }
 						while (number-- && buffer.position < length) {
 							arrow_right();
-							while (ft_isspace(buffer.value[buffer.position])) {
+							while (isspace(buffer.value[buffer.position])) {
 								cursor_right(1);
 								buffer.position++;
 							}
 
 							size_t pos;
-							while (!ft_isspace(buffer.value[buffer.position])) {
+							while (!isspace(buffer.value[buffer.position])) {
 								arrow_right();
 								pos = buffer.position;
 								do { pos++; } while (pos > 0 && (buffer.value[pos] & 0xC0) == 0x80);
@@ -808,7 +808,7 @@
 
 					static void goto_no_isspace() {
 						home();
-						while (buffer.position < char_prev(buffer.length, buffer.value) && ft_isspace(buffer.value[buffer.position]))
+						while (buffer.position < char_prev(buffer.length, buffer.value) && isspace(buffer.value[buffer.position]))
 							arrow_right();
 					}
 
@@ -1306,7 +1306,7 @@
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (buffer.c >= 28 && buffer.c <= 31)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
-					if (ft_isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
+					if (isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
 
 					else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
 					else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line
@@ -1374,8 +1374,8 @@
 	int vi() {
 		int result = 0;
 
-		if (vi_mode && !ft_isdigit(buffer.c) && !number_mode)	memset(n, 0, 7);
-		if (vi_mode && !ft_isdigit(buffer.c) && number_mode) {
+		if (vi_mode && !isdigit(buffer.c) && !number_mode)	memset(n, 0, 7);
+		if (vi_mode && !isdigit(buffer.c) && number_mode) {
 			if (num_mode_off()) {
 				if		(ctrl_d())				result = 1;
 				else if	(ctrl_c())				result = 1;
@@ -1390,7 +1390,7 @@
 			if		(ctrl_d())				result = 1;
 			else if	(ctrl_c())				result = 1;
 			else if	(enter())				result = 1;
-			else if (ft_isprint(buffer.c)) {
+			else if (isprint(buffer.c)) {
 				print_char();
 				if (replacement_mode) return (0);
 			}

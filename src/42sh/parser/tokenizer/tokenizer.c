@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static size_t handle_braces(const char *input, size_t start, size_t len) {
 static size_t handle_variables(const char *input, size_t start, size_t len) {
 	size_t end = start + 1;
 
-	if (end < len && (input[end] == '$' || ft_isdigit(input[end])))
+	if (end < len && (input[end] == '$' || isdigit(input[end])))
 		end++;
 	else if (end < len && input[end] == '\'')
 		end = handle_single_quotes(input, end, len);
@@ -91,7 +91,7 @@ static size_t handle_variables(const char *input, size_t start, size_t len) {
 	} else if (end < len && input[end] == '{') {
 		end = handle_braces(input, end, len);
 	} else
-		while (end < len && (ft_isalpha(input[end]) || input[end] == '_')) end++;
+		while (end < len && (isalpha(input[end]) || input[end] == '_')) end++;
 
 	return (end);
 }
@@ -103,16 +103,16 @@ static size_t handle_redirection(const char *input, size_t start, size_t len, bo
 
 	} else {
 		if (input[end] == '-') end++;
-		else if (!ft_isspace(input[end]))
-			while(end < len && !ft_isspace(input[end])) end++;
-		else if (ft_isspace(input[end])) {
+		else if (!isspace(input[end]))
+			while(end < len && !isspace(input[end])) end++;
+		else if (isspace(input[end])) {
 			size_t tmp = end;
-			while(tmp < len && ft_isspace(input[tmp])) tmp++;
+			while(tmp < len && isspace(input[tmp])) tmp++;
 			if (tmp == len) return (end);
 			end = tmp;
 			if (input[end] == '-') end++;
 			else
-				while(end < len && !ft_isspace(input[end])) end++;
+				while(end < len && !isspace(input[end])) end++;
 		}
 	}
 
@@ -142,7 +142,7 @@ static size_t handle_separators(const char *input, size_t start, size_t len) {
 static size_t handle_word(const char *input, size_t start, size_t len) {
 	size_t end = start;
 
-	while (end < len && !ft_isspace(input[end]) && !strchr(";|&<>(){}", input[end])) {
+	while (end < len && !isspace(input[end]) && !strchr(";|&<>(){}", input[end])) {
 		if (input[end] == '\\' && end + 1 < len) end += 2;
 		else end++;
 	}
@@ -154,14 +154,14 @@ static size_t handle_word(const char *input, size_t start, size_t len) {
 char *get_next_word(const char *input, size_t *pos, bool only_space) {
     size_t start = *pos, len = ft_strlen(input);
 
-	while (start < len && ft_isspace(input[start])) start++;
+	while (start < len && isspace(input[start])) start++;
 
 	if (start >= len) { *pos = start; return (NULL); }
 
 	size_t end = start;
 	char *word = NULL;
 
-	while (end < len && !ft_isspace(input[end])) {
+	while (end < len && !isspace(input[end])) {
 		if (input[end] == '\'')										end = handle_single_quotes(input, end, len);
 		else if (input[end] == '"')									end = handle_double_quotes(input, end, len);
 		else if (input[end] == '(')									end = handle_parenthesis(input, end, len);
@@ -169,9 +169,9 @@ char *get_next_word(const char *input, size_t *pos, bool only_space) {
 		else if (input[end] == '$')									end = handle_variables(input, end, len);
 		else if (strchr(";|&<>", input[end]))					end = handle_separators(input, end, len);
 		else {
-			if (ft_isdigit(input[end])) {
+			if (isdigit(input[end])) {
 				size_t tmp = end;
-				while(tmp < len && ft_isdigit(input[tmp])) tmp++;
+				while(tmp < len && isdigit(input[tmp])) tmp++;
 				if (tmp != len && strchr("<>", input[tmp])) {	end = handle_separators(input, tmp, len); break; }
 				else												end = handle_word(input, end, len);
 			} else													end = handle_word(input, end, len);
@@ -201,7 +201,7 @@ void first_step() {
 			tmp->next = new_arg;
 		}
 
-		ft_printf(1, "Word: %s\n", word);
+		printf("Word: %s\n", word);
 	}
 
 	t_arg *current = tokens.arg;

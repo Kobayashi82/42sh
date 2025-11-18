@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 	}
 
 	bool is_not_separator(char c) {
-		return (c == '$' || c == '`' || c == '(' || c == ')' || c == '\'' || c == '"' || c == '{' || c == '}' || c == ';' || c == '&' || c == '|' || c == '\n' || ft_isspace(c));
+		return (c == '$' || c == '`' || c == '(' || c == ')' || c == '\'' || c == '"' || c == '{' || c == '}' || c == ';' || c == '&' || c == '|' || c == '\n' || isspace(c));
 	}
 
 #pragma endregion
@@ -67,9 +67,9 @@
 		size_t starting = *i;
 
 		// if (context->stack && (context->stack->type == CTX_QUOTE || context->stack->type == CTX_DQUOTE)) { command_start = false; is_argument = true; }
-		// else if (context->in_escape && !*last_token) { command_start = false; is_argument = true; ft_printf(1, "1"); }
-		// else if (!context->in_token) { command_start = false; is_argument = true; ft_printf(1, "2"); }
-		// ft_printf(1, "%s", last_token);
+		// else if (context->in_escape && !*last_token) { command_start = false; is_argument = true; printf("1"); }
+		// else if (!context->in_token) { command_start = false; is_argument = true; printf("2"); }
+		// printf("%s", last_token);
 
 		while (input[*i]) {
 				//	\	Handle Escape
@@ -82,7 +82,7 @@
 	
 				//		Handle Spaces
 			if (input[*i] == '\n') *line += 1;
-			if (input[*i] != '\n' && ft_isspace(input[*i])) { *i += 1; continue; }
+			if (input[*i] != '\n' && isspace(input[*i])) { *i += 1; continue; }
 
 				//	'	Handle Single Quotes
 			if (context->stack && context->stack->type == CTX_QUOTE) {
@@ -171,7 +171,7 @@
 				*i += 2; stack_push(&context->stack, CTX_BRACE_PARAM);
 				command_start = false; is_argument = true; continue;
 			}	//	{ 	Open Command Group
-			else if (input[*i] == '{' && ft_isspace(input[*i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
+			else if (input[*i] == '{' && isspace(input[*i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 				if (!command_start) return (syntax_error(TOKEN_NEAR, strdup("invalid subshell"), *line), 2);
 				*i += 1; stack_push(&context->stack, CTX_BRACE_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);

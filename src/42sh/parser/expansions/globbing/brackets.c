@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:14:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@
 			char input_char = input;
 			char *pattern_chars = pattern;
 			if (options.nocaseglob) {
-				input_char = ft_tolower(input_char);
+				input_char = tolower(input_char);
 				pattern_chars = ft_tolower_s(pattern);
 			}
 

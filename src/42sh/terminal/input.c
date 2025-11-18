@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@
 				input_hist = ft_strjoin_sep(input_hist, "\n", cont_line, 1);
 			else if (is_escape) {
 				size_t len = ft_strlen(input_hist);
-				while (len && ft_isspace(input_hist[len - 1])) input_hist[--len] = '\0';
+				while (len && isspace(input_hist[len - 1])) input_hist[--len] = '\0';
 				if (input_hist[len - 1] == '\\') input_hist[--len] = '\0';
 				input_hist = ft_strjoin(input_hist, cont_line, 1);
 			} else
@@ -103,7 +103,7 @@
 				input = ft_strjoin_sep(input, "\n", cont_line, 6);
 			else if (is_escape) {
 				size_t len = ft_strlen(input);
-				while (len && ft_isspace(input[len - 1])) input[--len] = '\0';
+				while (len && isspace(input[len - 1])) input[--len] = '\0';
 				if (input[len - 1] == '\\') input[--len] = '\0';
 				input = ft_strjoin(input, cont_line, 1);
 			} else

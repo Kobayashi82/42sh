@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,7 +285,7 @@
 			}
 
 			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = false; return (1); }
-			if (!force && ignorespace && ft_isspace(*line)) { added = false; return (1); }
+			if (!force && ignorespace && isspace(*line)) { added = false; return (1); }
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 
 			history_resize(false);
@@ -334,7 +334,7 @@
 
 			if (pos > 0 && ignoredups && history[pos - 1] && history[pos - 1]->line && !strcmp(history[pos - 1]->line, line)) return (1);
 			if (pos == length - 1 && ignoredups && history[pos + 1] && history[pos + 1]->line && !strcmp(history[pos + 1]->line, line)) return (1);
-			if (ignorespace && ft_isspace(*line)) return (1);
+			if (ignorespace && isspace(*line)) return (1);
 			if (erasedups) erase_dups(line, pos);
 
 			if (history && pos < length && history[pos]) {

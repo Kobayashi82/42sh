@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:07:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,7 @@
 						for (; i < len; ++i) {
 							HIST_ENTRY *hist = history_get(i);
 							if (hist && hist->line) {
-								char *match = ft_strstr(hist->line, search_buffer.value);
+								char *match = strstr(hist->line, search_buffer.value);
 								if (match) {
 									history_pos = i;
 									return (process_match(hist, match - hist->line, true));
@@ -306,7 +306,7 @@
 						for (; i >= 0; --i) {
 							HIST_ENTRY *hist = history_get(i);
 							if (hist && hist->line) {
-								char *match = ft_strstr(hist->line, search_buffer.value);
+								char *match = strstr(hist->line, search_buffer.value);
 								if (match) {
 									history_pos = i;
 									return (process_match(hist, match - hist->line, (mode == FORWARD)));
@@ -343,7 +343,7 @@
 			else if (buffer.c == 18)		search_find(FORWARD);				//	[CTRL + R]	Search up
 			else if (buffer.c == 19)		search_find(BACKWARD);				//	[CTRL + S]	Search down
 			else if	(buffer.c == 127)		backspace();						//	[BackSpace]	Delete the previous character
-			else if (ft_isprint(buffer.c))	print_char();			
+			else if (isprint(buffer.c))	print_char();			
 			else							return (search_exit());
 
 			return (1);

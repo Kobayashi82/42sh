@@ -66,9 +66,9 @@
 		long result = 0;
 		int sign = 1, num = 0;
 
-		while (str && ft_isspace(*str)) str++;
+		while (str && isspace(*str)) str++;
 		if (str && (*str == '-' || *str == '+') && *str++ == '-') sign = -1;
-		while (str && ft_isdigit(*str)) {
+		while (str && isdigit(*str)) {
 			num = *str++ - '0';
 			if (sign > 0 && result > (LONG_MAX - num) / 10)		return (errno = ERANGE, LONG_MAX);
 			if (sign < 0 && (-result) < (LONG_MIN + num) / 10)	return (errno = ERANGE, LONG_MIN);

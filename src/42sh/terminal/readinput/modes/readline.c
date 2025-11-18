@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:12:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,9 +177,9 @@
 
 					size_t end_pos = buffer.position;
 				
-					while (end_pos < buffer.length && (ft_isspace(buffer.value[end_pos]) || ft_ispunct(buffer.value[end_pos])))
+					while (end_pos < buffer.length && (isspace(buffer.value[end_pos]) || ispunct(buffer.value[end_pos])))
 						end_pos++;
-					while (end_pos < buffer.length && !ft_isspace(buffer.value[end_pos]) && !ft_ispunct(buffer.value[end_pos]))
+					while (end_pos < buffer.length && !isspace(buffer.value[end_pos]) && !ispunct(buffer.value[end_pos]))
 						end_pos += char_size(buffer.value[end_pos]);
 				
 					size_t delete_len = end_pos - buffer.position;
@@ -313,10 +313,10 @@
 				static void arrow_left(bool simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 						if (buffer.CTRL && !simple) {
-							while (buffer.position > 0 && (ft_isspace(buffer.value[buffer.position - 1]) || ft_ispunct(buffer.value[buffer.position - 1]))) {
+							while (buffer.position > 0 && (isspace(buffer.value[buffer.position - 1]) || ispunct(buffer.value[buffer.position - 1]))) {
 								cursor_left(0); (buffer.position)--;
 							}
-							while (buffer.position > 0 && !ft_isspace(buffer.value[buffer.position - 1]) && !ft_ispunct(buffer.value[buffer.position - 1])) {
+							while (buffer.position > 0 && !isspace(buffer.value[buffer.position - 1]) && !ispunct(buffer.value[buffer.position - 1])) {
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
 								cursor_left(0);
 							}
@@ -340,10 +340,10 @@
 				static void arrow_right(bool simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length) {
 						if (buffer.CTRL && !simple) {
-							while (buffer.position < buffer.length && (ft_isspace(buffer.value[buffer.position]) || ft_ispunct(buffer.value[buffer.position]))) {
+							while (buffer.position < buffer.length && (isspace(buffer.value[buffer.position]) || ispunct(buffer.value[buffer.position]))) {
 								cursor_right(0); (buffer.position)++;
 							}
-							while (buffer.position < buffer.length && !ft_isspace(buffer.value[buffer.position]) && !ft_ispunct(buffer.value[buffer.position])) {
+							while (buffer.position < buffer.length && !isspace(buffer.value[buffer.position]) && !ispunct(buffer.value[buffer.position])) {
 								cursor_right(0);
 								do { (buffer.position)++; } while (buffer.position < buffer.length && (buffer.value[buffer.position] & 0xC0) == 0x80);
 							}
@@ -456,23 +456,23 @@
 
 					if (prev_word) {
 						if (position == len && position > 0) do { (position)--; } while (position > 0 && (buffer.value[position] & 0xC0) == 0x80);
-						while (position > 0 && (ft_isspace(buffer.value[position]) || ft_ispunct(buffer.value[position]))) position--;
+						while (position > 0 && (isspace(buffer.value[position]) || ispunct(buffer.value[position]))) position--;
 						if (position == 0) { word.len = 0; return (word); }
-						while (position > 0 && !ft_isspace(buffer.value[position]) && !ft_ispunct(buffer.value[position])) position--;
-						word.start = position + (ft_isspace(buffer.value[position]) || ft_ispunct(buffer.value[position]));
+						while (position > 0 && !isspace(buffer.value[position]) && !ispunct(buffer.value[position])) position--;
+						word.start = position + (isspace(buffer.value[position]) || ispunct(buffer.value[position]));
 					} else {
-						while (position < len && (ft_isspace(buffer.value[position]) || ft_ispunct(buffer.value[position]))) position++;
+						while (position < len && (isspace(buffer.value[position]) || ispunct(buffer.value[position]))) position++;
 						if (position == len) { do { (position)--; } while (position > 0 && (buffer.value[position] & 0xC0) == 0x80);
-							while (position > 0 && (ft_isspace(buffer.value[position]) || ft_ispunct(buffer.value[position]))) position--;
-							while (position > 0 && !ft_isspace(buffer.value[position]) && !ft_ispunct(buffer.value[position])) position--;
+							while (position > 0 && (isspace(buffer.value[position]) || ispunct(buffer.value[position]))) position--;
+							while (position > 0 && !isspace(buffer.value[position]) && !ispunct(buffer.value[position])) position--;
 						} else
-							while (position > 0 && !ft_isspace(buffer.value[position]) && !ft_ispunct(buffer.value[position])) position--;
+							while (position > 0 && !isspace(buffer.value[position]) && !ispunct(buffer.value[position])) position--;
 
-						word.start = position + (ft_isspace(buffer.value[position]) || ft_ispunct(buffer.value[position]));
+						word.start = position + (isspace(buffer.value[position]) || ispunct(buffer.value[position]));
 					}
 
 					size_t	temp_pos = word.start;
-					while (temp_pos < len && !ft_isspace(buffer.value[temp_pos]) && !ft_ispunct(buffer.value[temp_pos]))
+					while (temp_pos < len && !isspace(buffer.value[temp_pos]) && !ispunct(buffer.value[temp_pos]))
 						do { temp_pos++; } while (temp_pos < len && (buffer.value[temp_pos] & 0xC0) == 0x80);
 					word.end = temp_pos;
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,7 @@
 	}
 
 	static bool is_not_separator_arithmetic(const char *input, size_t *i) {
-		if (strchr("|&+-*/%=<>!^", input[*i]) || ft_isspace(input[*i])) {
+		if (strchr("|&+-*/%=<>!^", input[*i]) || isspace(input[*i])) {
 			return (true);
 		}
 
@@ -136,7 +136,7 @@
 			
 			//		Handle Spaces
 			if (input[*i] == '\n') *line += 1;
-			if (input[*i] != '\n' && ft_isspace(input[*i])) { *i += 1; continue; }
+			if (input[*i] != '\n' && isspace(input[*i])) { *i += 1; continue; }
 			if (input[*i] == '"') { *i += 1; continue; }
 
 			if (context->stack->nvalue == 2 && is_separator_arithmetic(input, i, &context->stack->nvalue)) {
@@ -208,7 +208,7 @@
 			else if (!strncmp(&input[*i], "<(", 2) || !strncmp(&input[*i], ">(", 2)) {
 				return (syntax_error(TOKEN_NEAR, strdup("Process Subtitution"), *line), 2);
 			}	//	{ 	Open Command Group
-			else if (input[*i] == '{' && input[*i + 1] && ft_isspace(input[*i + 1])) {
+			else if (input[*i] == '{' && input[*i + 1] && isspace(input[*i + 1])) {
 				return (syntax_error(TOKEN_NEAR, strdup("{ cmd; }"), *line), 2);
 			}	//	{	Open Brace Expansion
 			else if (input[*i] == '{') {

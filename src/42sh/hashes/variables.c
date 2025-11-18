@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:08:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@
 
 			size_t len = ft_strlen(key);
 
-			if (!len || (!ft_isalpha(key[0]) && key[0] != '_')) result = 1;
+			if (!len || (!isalpha(key[0]) && key[0] != '_')) result = 1;
 
 			if (!strcmp(key, "42_HISTFILE")) result = 0;
 			if (!strcmp(key, "42_HISTSIZE")) result = 0;
@@ -174,7 +174,7 @@
 			if (!strcmp(key, "42_PID")) result = 0;
 
 			for (size_t i = 1; i < len; ++i)
-				if (!ft_isalnum(key[i]) && key[i] != '_') { result = 1; break; }
+				if (!isalnum(key[i]) && key[i] != '_') { result = 1; break; }
 
 			if (result && show_msg) {
 				if (!name) name = PROYECTNAME;
