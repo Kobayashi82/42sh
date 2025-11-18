@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:53:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:29:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,7 +390,7 @@
 				int		readed = 0;
 
 				while ((readed = read(fd, temp_buffer, sizeof(temp_buffer))) > 0) {
-					file_content = ft_realloc(file_content, ft_strlen(file_content), file_size + readed + 1);
+					file_content = realloc(file_content, file_size + readed + 1);
 					ft_memcpy(file_content + file_size, temp_buffer, readed);
 					file_size += readed;
 				}

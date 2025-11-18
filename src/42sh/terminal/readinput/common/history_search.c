@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:38:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@
 
 			// Expand buffer if necessary
 			if (search_buffer.position + c_size >= search_buffer.size - 1) {
-				search_buffer.value = ft_realloc(search_buffer.value, search_buffer.size, search_buffer.size * 2);
+				search_buffer.value = realloc(search_buffer.value, search_buffer.size * 2);
 				search_buffer.size *= 2;
 			}
 			
@@ -167,7 +167,7 @@
 			initialized = true;
 			search_buffer.size = 1024;
 			search_buffer.position = 0, search_buffer.length = 0;
-			search_buffer.value = ft_calloc(search_buffer.size, sizeof(char));
+			search_buffer.value = calloc(search_buffer.size, sizeof(char));
 
 			char *prompt = remove_colors(term_prompt);
 			int len = chars_width(0, ft_strlen(prompt), prompt); free(prompt);
@@ -247,7 +247,7 @@
 
 				// Expand buffer if necessary
 				while (hist->length >= buffer.size - 1) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = realloc(buffer.value, buffer.size * 2);
 					buffer.size *= 2;
 				}
 

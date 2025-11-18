@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:29:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size - 1) {
-					buffer.value = ft_realloc(buffer.value, buffer.size, buffer.size * 2);
+					buffer.value = realloc(buffer.value, buffer.size * 2);
 					buffer.size *= 2;
 				}
 

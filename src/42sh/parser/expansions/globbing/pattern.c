@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@
 
 				pattern_optimize(value);
 				if (value) {
-					t_pattern *new_pattern = ft_calloc(1, sizeof(t_pattern));
+					t_pattern *new_pattern = calloc(1, sizeof(t_pattern));
 					new_pattern->value = value;
 					new_pattern->is_dir = is_dir;
 

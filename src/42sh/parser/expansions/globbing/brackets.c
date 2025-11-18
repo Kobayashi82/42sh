@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 
 		//	Generates a string of characters to form a new pattern
 		static char *bracket_pattern_create(const char *pattern, int end, int i) {
-			char c, *new_pattern = ft_calloc(MAX_NEW_PATTERN_SIZE + 1, sizeof(char));
+			char c, *new_pattern = calloc(MAX_NEW_PATTERN_SIZE + 1, sizeof(char));
 			int quoted = 0, no_range = 0;
 
 			for (++i; i < end; ++i) {

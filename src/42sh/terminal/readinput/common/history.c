@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:38:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,7 @@
 			if (type == HIST_FILE) { file_max = new_size; file_unlimited = false; }
 			if (type == HIST_MEM)  { mem_max = new_size;  mem_unlimited = false;
 				if (mem_max < length) {
-					HIST_ENTRY **tmp_history = ft_calloc((mem_max * 2) + 1, sizeof(HIST_ENTRY *));
+					HIST_ENTRY **tmp_history = calloc((mem_max * 2) + 1, sizeof(HIST_ENTRY *));
 					size_t i = 0;
 
 					for (size_t start = length - mem_max; start < length && history[start]; ++start) {
@@ -120,10 +120,10 @@
 			if (initialize || !history) {
 				if (history) history_clear();
 				capacity = 10; length = 0;
-				history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+				history = calloc(capacity + 1, sizeof(HIST_ENTRY *));
 			} else if (length == capacity) {
 				capacity *= 2;
-				HIST_ENTRY **new_history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+				HIST_ENTRY **new_history = calloc(capacity + 1, sizeof(HIST_ENTRY *));
 				for (size_t i = 0; i < length && history[i]; ++i)
 					new_history[i] = history[i];
 				free(history);
@@ -152,7 +152,7 @@
 			char *line = NULL;
 
 			//	Reserve space for the temporary history
-			tmp_history = ft_calloc(HIST_MAXSIZE, sizeof(char *));
+			tmp_history = calloc(HIST_MAXSIZE, sizeof(char *));
 
 			while (tmp_length < HIST_MAXSIZE - 1 && (line = get_next_line(fd))) {
 				if (ft_isspace_s(line)) { free(line); continue; }
@@ -188,7 +188,7 @@
 			else							tmp_length -= (capacity + 1);
 
 			//	Allocate memory for the final history
-			history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
+			history = calloc(capacity + 1, sizeof(HIST_ENTRY *));
 
 			length = 0;
 			//	Copy entry from the temporary array to the final history

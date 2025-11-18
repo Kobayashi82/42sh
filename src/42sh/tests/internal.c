@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 11:23:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 22:32:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@
 
 		char *pattern = "./\\M?*************'k'[aaaa,,,,,b,c-z]?***********?l[!]\\]a\\-df-z]***************";
 
-		t_arg *args = ft_calloc(1, sizeof(t_arg));
+		t_arg *args = calloc(1, sizeof(t_arg));
 		args->value = ft_strdup(pattern);
 		globbing(args);
 
