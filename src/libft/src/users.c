@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:15:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:22:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,8 @@
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;
-					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
-					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
+					info->uid		= uid_str ? atoi(uid_str) : -1;
+					info->gid		= gid_str ? atoi(gid_str) : -1;
 
 					free(id);
 					free(line);
@@ -115,8 +115,8 @@
 					info->username	= username;
 					info->home		= home;
 					info->shell		= shell;
-					info->uid		= uid_str ? ft_atoi(uid_str) : -1;
-					info->gid		= gid_str ? ft_atoi(gid_str) : -1;
+					info->uid		= uid_str ? atoi(uid_str) : -1;
+					info->gid		= gid_str ? atoi(gid_str) : -1;
 
 					free(line);
 					free(uid_str);
