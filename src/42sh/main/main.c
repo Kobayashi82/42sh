@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:56:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 12:04:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,8 +163,6 @@
 			while (!shell.exit && !read_input()) ;
 		}
 
-		write(1, "hola\n", 5);
-		malloc(100);
 		if (nsignal) shell.exit_code = 128 + nsignal;
 		exit_error(END, 0, NULL, true);
 	}
