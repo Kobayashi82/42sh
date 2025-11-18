@@ -8,9 +8,10 @@ int		__real_dup(int fd);
 int		__real_dup2(int fd, int fd2);
 int		__real_pipe(int pipedes[2]);
 
+static int fd_table[1024];
+
 int	__wrap_open(const char *file, int oflag, ...)
 {
-	static int	fd_table[1024];
 	va_list		args;
 	int			fd;
 	mode_t		mode;
@@ -33,9 +34,6 @@ int	__wrap_open(const char *file, int oflag, ...)
 
 int	__wrap_close(int fd)
 {
-	int	*fd_table;
-
-	fd_table = (int *)(uintptr_t)open("", -42);
 	if (fd == -42)
 	{
 		fd = -1;
@@ -53,13 +51,11 @@ int	__wrap_close(int fd)
 	fd_table[fd] = 0;
 	return (__real_close(fd));
 }
-
+#include <stdio.h>
 int	__wrap_dup(int fd)
 {
-	int	*fd_table;
 	int	new_fd;
 
-	fd_table = (int *)(uintptr_t)open("", -42);
 	if (fd < 0)
 		return (-1);
 	new_fd = __real_dup(fd);
@@ -70,10 +66,8 @@ int	__wrap_dup(int fd)
 
 int	__wrap_dup2(int fd, int fd2)
 {
-	int	*fd_table;
 	int	new_fd;
 
-	fd_table = (int *)(uintptr_t)open("", -42);
 	new_fd = -1;
 	if (fd == -1)
 		return (new_fd);
@@ -87,9 +81,6 @@ int	__wrap_dup2(int fd, int fd2)
 
 int	__wrap_pipe(int pipedes[2])
 {
-	int	*fd_table;
-
-	fd_table = (int *)(uintptr_t)open("", -42);
 	if (__real_pipe(pipedes) == -1)
 		return (-1);
 	fd_table[pipedes[0]] = 1;
