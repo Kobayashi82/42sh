@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:18:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:28:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,13 +112,13 @@
 					}
 				} else result = 1;
 			} else {
-				int number = ft_atoi(query);
+				int number = atoi(query);
 				if (number == 0) result = 1;
 				else if (*query == '-' ||  *query == '+') {
-					if (ft_strlen(query) > 7 || history_length() < (size_t) ft_abs(number)) {
+					if (ft_strlen(query) > 7 || history_length() < (size_t) abs(number)) {
 						result = 1;
 					} else {
-						size_t pos = number < 0 ?  history_length() - (size_t) ft_abs(number) : number - 1;
+						size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
 						HIST_ENTRY *hist = history_get(pos);
 						if (!hist) result = 1;
 						else command = strdup(hist->line);
@@ -209,13 +209,13 @@
 						} return (-2);
 					} else return (-2);
 				} else {
-					int number = ft_atoi(query);
+					int number = atoi(query);
 					if (number == 0) return (-1);
 					else if (*query == '-' ||  *query == '+') {
-						if (ft_strlen(query) > 7 || history_length() < (size_t) ft_abs(number))
+						if (ft_strlen(query) > 7 || history_length() < (size_t) abs(number))
 							return (-1);
 						else {
-							size_t pos = number < 0 ?  history_length() - (size_t) ft_abs(number) : number - 1;
+							size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
 							HIST_ENTRY *hist = history_get(pos);
 							if (hist) return (pos);
 						}
@@ -263,7 +263,11 @@
 			}
 
 			if (!result) {
-				if (end_pos < start_pos) ft_swap(&start_pos, &end_pos);
+				if (end_pos < start_pos) {
+					int tmp = start_pos;
+					start_pos = end_pos;
+					end_pos = tmp;
+				}
 				
 				bool hide_events = strchr(opts->valid, 'n');
 				print(STDOUT_FILENO, NULL, RESET);
@@ -340,7 +344,11 @@
 				fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
 				if (fd == -1) result = 2;
 				else {
-					if (end_pos < start_pos) ft_swap(&start_pos, &end_pos);
+					if (end_pos < start_pos) {
+						int tmp = start_pos;
+						start_pos = end_pos;
+						end_pos = tmp;
+					}
 					for (int i = start_pos; i <= end_pos; ++i) {
 						HIST_ENTRY *hist = history_get(i);
 						if (hist && hist->line) {

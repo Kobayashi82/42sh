@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:21:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:30:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,13 +95,8 @@
 
 	#pragma region "NUM"
 
-		int		ft_max(int n1, int n2);
-		void	*ft_max_ptr(void *s1, void *s2);
 		int		ft_min(int n1, int n2);
-		int		ft_abs(int n);
-		void	ft_swap(int *n1, int *n2);
-		int		ft_atoi(const char *str);
-		long	ft_atol(const char *str);
+		int		ft_max(int n1, int n2);
 		char	*ft_itoa(int n);
 
 	#pragma endregion

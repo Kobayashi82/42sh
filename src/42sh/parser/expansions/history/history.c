@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:11:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:22:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 		} else {
 			while (isdigit(value[*end]) && *end < length) (*end)++;
 			number = ft_substr(value, start + 2, *end - (start + 2));
-			pos = ft_atoi(number);
+			pos = atoi(number);
 		}
 
 		HIST_ENTRY *hist = history_get(history_length() - pos);
@@ -64,7 +64,7 @@
 	static char *expand_event(char *value, int start, size_t *end, size_t length) {
 		while (isdigit(value[*end]) && *end < length) (*end)++;
 		char *number = ft_substr(value, start + 1, *end - (start + 1));
-		size_t event = ft_atoi(number);
+		size_t event = atoi(number);
 
 		HIST_ENTRY *hist = history_event(event);
 

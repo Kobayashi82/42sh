@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:12:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:22:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1170,7 +1170,7 @@
 			#pragma region "Get N"
 
 				static int get_n() {
-					int number = ft_max(1, ft_atoi(n));
+					int number = ft_max(1, atoi(n));
 					number_mode = false;
 					memset(n, 0, 7);
 

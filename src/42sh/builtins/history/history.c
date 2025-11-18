@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:25:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@
 					print(STDOUT_FILENO, ft_strjoin_sep("history: ", opts->args->value, ": numeric argument required\n", 0), FREE_RESET_PRINT);
 					result = 1;
 				} else {
-					history_print(ft_atoi(opts->args->value), false);
+					history_print(atoi(opts->args->value), false);
 				}
 			}
 		}
@@ -99,9 +99,9 @@
 						print(STDOUT_FILENO, ft_strjoin_sep("history: ", opts->args->value, ": numeric argument required\n", 0), FREE_RESET_PRINT);
 						result = 1;
 					} else {
-						int number = ft_atoi(opts->args->value);
+						int number = atoi(opts->args->value);
 						if (*opts->args->value == '-' ||  *opts->args->value == '+') {
-							if (ft_strlen(opts->args->value) > 7 || history_length() < (size_t) ft_abs(number)) {
+							if (ft_strlen(opts->args->value) > 7 || history_length() < (size_t) abs(number)) {
 								print(STDOUT_FILENO, ft_strjoin_sep("history: ", opts->args->value, ": position out of range\n", 0), FREE_RESET_PRINT);
 								result = 1;
 							} else

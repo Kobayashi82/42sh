@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:22:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@
 						if (buf[i] >= '0' && buf[i] <= '9') {
 							int start = i;
 							while (buf[i] >= '0' && buf[i] <= '9') i++;
-							int value = ft_atoi(&buf[start]);
+							int value = atoi(&buf[start]);
 							if (a++ == 0)	row = value - 1;
 							else			col = value - 1;
 						} i++;

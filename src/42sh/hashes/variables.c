@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:08:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:23:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 #pragma region "Import"
 
 	static void specials(const char *key, const char *value) {
-		if (!strcmp(key, "42_HISTSIZE"))		history_set_size(ft_atol(value), HIST_MEM);
-		if (!strcmp(key, "42_HISTFILESIZE"))	history_set_size(ft_atol(value), HIST_FILE);
+		if (!strcmp(key, "42_HISTSIZE"))		history_set_size(atol(value), HIST_MEM);
+		if (!strcmp(key, "42_HISTFILESIZE"))	history_set_size(atol(value), HIST_FILE);
 	}
 
 	#pragma region "Variable"

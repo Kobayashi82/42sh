@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:23:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@
 			print(STDOUT_FILENO, "exit: numeric argument required", RESET_PRINT);
 			result = 2;
 		} else if (opts->args && opts->args->value)
-			result = ft_atol(opts->args->value);
+			result = atol(opts->args->value);
 		
 		free(opts);
 		args_clear(&args);
