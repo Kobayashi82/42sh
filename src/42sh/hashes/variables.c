@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/04 20:37:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:36:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 			t_var *new_var = variables_find(table, key);
 			if (new_var) {
 				if (!new_var->readonly || force) {
-					sfree(new_var->value);
+					free(new_var->value);
 					new_var->value = ft_strdup(value);
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
@@ -131,7 +131,7 @@
 				get_key_value(array[i], &key, &value, '=');
 				if (!key) continue;
 				variables_add(table, key, value, 1, 0, 0, 0);
-				sfree(key); sfree(value);
+				free(key); free(value);
 			}
 		}
 
@@ -242,7 +242,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
@@ -313,7 +313,7 @@
 				}
 
 				if (i == 0) return (1);
-				char **array = smalloc((i + 1) * sizeof(char *));
+				char **array = malloc((i + 1) * sizeof(char *));
 
 				i = 0;
 				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
@@ -383,7 +383,7 @@
 				if (!ft_strcmp(var->name, key)) {
 					if (prev)	prev->next = var->next;
 					else		table[index] = var->next;
-					sfree(var->name); sfree(var->value); sfree(var);
+					free(var->name); free(var->value); free(var);
 					return (0);
 				}
 				prev = var;
@@ -403,9 +403,9 @@
 					t_var *var = table[index];
 					while (var) {
 						t_var *next = var->next;
-						sfree(var->name);
-						sfree(var->value);
-						sfree(var);
+						free(var->name);
+						free(var->value);
+						free(var);
 						var = next;
 					}
 					table[index] = NULL;
@@ -422,7 +422,7 @@
 	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
 		if (!value) return;
 		if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
-		if (value && free_value) sfree(value);
+		if (value && free_value) free(value);
 	}
 
 	int variables_initialize(t_var **table, const char **envp) {

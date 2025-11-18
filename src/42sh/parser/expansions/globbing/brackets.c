@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@
 				else if (!quoted && pattern[i] == '"') quoted = 3;
 				else if (quoted == 3 && pattern[i] == '"') quoted = 0;
 				else if (!no_range && i + 2 < end && pattern[i + 1] == '-') {
-					if (pattern[i] > pattern[i + 2]) return (sfree(new_pattern), NULL);
+					if (pattern[i] > pattern[i + 2]) return (free(new_pattern), NULL);
 					c = pattern[i];
 					while (c <= pattern[i + 2]) bracket_pattern_add(new_pattern, c++);
 					i += 2;
@@ -75,7 +75,7 @@
 				}
 			}
 
-			if (!*new_pattern) { sfree(new_pattern), new_pattern = NULL; }
+			if (!*new_pattern) { free(new_pattern), new_pattern = NULL; }
 			return (new_pattern);
 		}
 
@@ -96,9 +96,9 @@
 			bool match = ft_memchr(pattern_chars, input_char, ft_strlen(pattern_chars));
 
 			if ((match && !inv) || (!match && inv))
-				return (sfree(pattern), true);
+				return (free(pattern), true);
 
-			return (sfree(pattern), false);
+			return (free(pattern), false);
 		}
 
 	#pragma endregion

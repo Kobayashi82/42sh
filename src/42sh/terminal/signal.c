@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 17:08:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	nsignal;
 	// 	// if (raw_mode) {
 	// 	// 	disable_raw_mode();
 	// 	// 	write(1, "\n", 1);
-	// 	// 	if (buffer.value) sfree(buffer.value);
+	// 	// 	if (buffer.value) free(buffer.value);
 	// 	// }
 	// 	// exit_error(SEGQUIT, 3, NULL, true);
 	// }
@@ -77,7 +77,7 @@ int	nsignal;
 		if (raw_mode) {
 			disable_raw_mode();
 			write(1, "\n", 1);
-			if (buffer.value) sfree(buffer.value);
+			if (buffer.value) free(buffer.value);
 		}
 		exit_error(SEGFAULT, 11, NULL, true);
 	}

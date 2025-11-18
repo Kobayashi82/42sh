@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 12:40:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:38:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@
 				HIST_ENTRY **new_history = ft_calloc(capacity + 1, sizeof(HIST_ENTRY *));
 				for (size_t i = 0; i < length && history[i]; ++i)
 					new_history[i] = history[i];
-				sfree(history);
+				free(history);
 				history = new_history;
 			}
 		}
@@ -145,7 +145,7 @@
 			if (!filename || access(filename, R_OK)) return (1);
 			if (!mem_max && !mem_unlimited)  return (0);
 
-			int fd = sopen(filename, O_RDONLY, -1);
+			int fd = open(filename, O_RDONLY);
 			if (fd < 0) return (1);
 
 			tmp_length = 0;
@@ -155,7 +155,7 @@
 			tmp_history = ft_calloc(HIST_MAXSIZE, sizeof(char *));
 
 			while (tmp_length < HIST_MAXSIZE - 1 && (line = get_next_line(fd))) {
-				if (ft_isspace_s(line)) { sfree(line); continue; }
+				if (ft_isspace_s(line)) { free(line); continue; }
 				//	Replace "\\n" with actual newlines
 				const char *src = line; char *dst = line;
 				while (*src) {
@@ -167,7 +167,7 @@
 			} tmp_history[tmp_length] = NULL;
 
 			get_next_line(-1);
-			sclose(fd);
+			close(fd);
 
 			return (0);
 		}
@@ -175,7 +175,7 @@
 		//	Add the entries to the history
 		int history_read(const char *filename) {
 			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
-			if (tmp_length < 1) { sfree(tmp_history);	history_resize(true); return (0); }
+			if (tmp_length < 1) { free(tmp_history);	history_resize(true); return (0); }
 
 			if (history) history_clear();
 			event = 1;
@@ -195,12 +195,12 @@
 			while (tmp_history[tmp_length]) {
 
 				if (length >= mem_max && !mem_unlimited) {
-					sfree(tmp_history[tmp_length]);
+					free(tmp_history[tmp_length]);
 					tmp_history[tmp_length++] = NULL;
 					continue;
 				}
 
-				history[length] = smalloc(sizeof(HIST_ENTRY));
+				history[length] = malloc(sizeof(HIST_ENTRY));
 				history[length]->line = tmp_history[tmp_length];
 				history[length]->length = ft_strlen(history[length]->line);
 				history[length]->event = event++;
@@ -225,10 +225,10 @@
 			if (!filename)				return (1);
 			if (!options.hist_local)	return (0);
 
-			int fd = sopen(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
+			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
 			if (fd < 0) return (1);
 
-			if (!history || !file_max || !length) { sclose (fd); return (0); }
+			if (!history || !file_max || !length) { close(fd); return (0); }
 
 			size_t i = 0;
 			if (length > file_max) i = length - file_max;
@@ -246,7 +246,7 @@
 				}
 			}
 
-			sclose(fd);
+			close(fd);
 			return (0);
 		}
 
@@ -290,14 +290,14 @@
 
 			history_resize(false);
 			if (length >= mem_max && !mem_unlimited) {
-				sfree(history[0]->line);
-				sfree(history[0]->data);
-				sfree(history[0]); history[0] = NULL;
+				free(history[0]->line);
+				free(history[0]->data);
+				free(history[0]); history[0] = NULL;
 				for (size_t i = 0; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
 			}
-			history[length] = smalloc(sizeof(HIST_ENTRY));
+			history[length] = malloc(sizeof(HIST_ENTRY));
 			history[length]->line = ft_strdup(line);
 			history[length]->length = ft_strlen(line);
 			history[length]->event = event++;
@@ -338,8 +338,8 @@
 			if (erasedups) erase_dups(line, pos);
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) sfree(history[pos]->line);
-				if (history[pos]->data) sfree(history[pos]->data);
+				if (history[pos]->line) free(history[pos]->line);
+				if (history[pos]->data) free(history[pos]->data);
 				history[pos]->line = ft_strdup(line);
 				history[pos]->length = ft_strlen(line);
 				history[pos]->data = data;
@@ -370,9 +370,9 @@
 			}
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) sfree(history[pos]->line);
-				if (history[pos]->data) sfree(history[pos]->data);
-				sfree(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) free(history[pos]->line);
+				if (history[pos]->data) free(history[pos]->data);
+				free(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -385,9 +385,9 @@
 			if (!history || length == 0) return;
 
 			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) sfree(history[pos]->line);
-				if (history[pos]->data) sfree(history[pos]->data);
-				sfree(history[pos]); history[pos] = NULL;
+				if (history[pos]->line) free(history[pos]->line);
+				if (history[pos]->data) free(history[pos]->data);
+				free(history[pos]); history[pos] = NULL;
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -408,9 +408,9 @@
 			if (!history || length == 0) return;
 
 			if (history && position < length && history[position]) {
-				if (history[position]->line) sfree(history[position]->line);
-				if (history[position]->data) sfree(history[position]->data);
-				sfree(history[position]); history[position] = NULL;
+				if (history[position]->line) free(history[position]->line);
+				if (history[position]->data) free(history[position]->data);
+				free(history[position]); history[position] = NULL;
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
@@ -438,12 +438,12 @@
 
 			for (size_t i = 0; i < length; ++i) {
 				if (history && history[i]) {
-					if (history[i]->line) sfree(history[i]->line);
-					if (history[i]->data) sfree(history[i]->data);
-					sfree(history[i]); history[i] = NULL;
+					if (history[i]->line) free(history[i]->line);
+					if (history[i]->data) free(history[i]->data);
+					free(history[i]); history[i] = NULL;
 				}
 			}
-			if (history) { sfree(history); history = NULL; }
+			if (history) { free(history); history = NULL; }
 			position = 0; length = 0; capacity = 10;
 		}
 
@@ -459,7 +459,7 @@
 		HIST_ENTRY **history_clone() {
 			if (!history) return (NULL);
 
-			HIST_ENTRY **copy = smalloc((length + 1) * sizeof(HIST_ENTRY *));
+			HIST_ENTRY **copy = malloc((length + 1) * sizeof(HIST_ENTRY *));
 
 			for (size_t i = 0; i < length && history[i]; ++i)
 				copy[i] = history[i];
@@ -625,7 +625,7 @@
 	int history_initialize() {
 		char *home = get_home();
 		if (home) home = ft_strjoin_sep(home, "/", ".42sh_history", 1);
-		history_file_set(home); sfree(home);
+		history_file_set(home); free(home);
 		history_read(NULL);
 
 		return (0);

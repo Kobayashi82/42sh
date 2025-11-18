@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,11 +70,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("shopt", opts->invalid, "[-pqsu] [-o] [optname ...]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("shopt", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("shopt", "1.0"));
 
 		int result = 0;
 		char *values = NULL, *invalues = NULL;
@@ -94,10 +94,10 @@
 			}
 		}
 
-		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); sfree(values); }
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); sfree(invalues); }
+		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
+		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
 
-		return (sfree(opts), result);
+		return (free(opts), result);
 	}
 
 #pragma endregion

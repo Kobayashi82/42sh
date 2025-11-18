@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/02 19:36:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:32:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,17 @@
 			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
 				int tty_fd = open("/dev/tty", O_RDWR);
 				if (tty_fd == -1) {
-					sfree(buffer.value);
+					free(buffer.value);
 					write(STDERR_FILENO, "\n", 1);
 					exit_error(STDIN_CLOSED, 1, NULL, true);
 				}
 				tcsetattr(tty_fd, TCSAFLUSH, &terminal.term);
-				sdup2(&tty_fd, STDIN_FILENO, true);
+				dup2(tty_fd, STDIN_FILENO);
+				close(tty_fd);
 				write(STDOUT_FILENO, "\n", 1);
 			} else
 				tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
-			sfree(term_prompt); term_prompt = NULL;
+			free(term_prompt); term_prompt = NULL;
 		}
 	}
 
@@ -90,24 +91,26 @@
 		if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
 			int tty_fd = open("/dev/tty", O_RDWR);
 			if (tty_fd == -1) {
-				sfree(buffer.value);
+				free(buffer.value);
 				disable_raw_mode();
 				write(STDERR_FILENO, "\n", 1);
 				exit_error(STDIN_CLOSED, 1, NULL, true);
 			}
-			sdup2(&tty_fd, STDIN_FILENO, true);
+			dup2(tty_fd, STDIN_FILENO);
+			close(tty_fd);
 			return (1);
 		}
 		
 		if (fcntl(STDOUT_FILENO, F_GETFD) == -1) {
 			int tty_fd = open("/dev/tty", O_WRONLY);
 			if (tty_fd != -1) {
-				sfree(buffer.value);
+				free(buffer.value);
 				disable_raw_mode();
 				write(STDERR_FILENO, "\n", 1);
 				exit_error(STDOUT_CLOSED, 1, NULL, true);
 			}
-			sdup2(&tty_fd, STDOUT_FILENO, true);
+			dup2(tty_fd, STDOUT_FILENO);
+			close(tty_fd);
 		}
 
 		return (0);
@@ -126,7 +129,7 @@
 
 		enable_raw_mode();
 
-		sfree(term_prompt);
+		free(term_prompt);
 		term_prompt = ft_strdup(prompt);
 
 		if (term_prompt) write(STDOUT_FILENO, term_prompt, ft_strlen(term_prompt));

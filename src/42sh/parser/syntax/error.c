@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:18:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:34:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@
 			print(STDERR_FILENO, ft_strjoin(pname, "syntax error: invalid subshell ", 0), FREE_JOIN);
 
 		print(STDERR_FILENO, "\n", PRINT);
-		sfree(pname); sfree(value);
+		free(pname); free(value);
 	}
 
 #pragma endregion

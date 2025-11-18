@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:26:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:28:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:36:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 	#pragma region "Push"
 
 		t_stack *stack_push(t_stack **top, t_type type) {
-			t_stack *new_node = smalloc(sizeof(t_stack));
+			t_stack *new_node = malloc(sizeof(t_stack));
 			
 			new_node->type = type;
 			new_node->value[0] = '\0';
@@ -41,7 +41,7 @@
 			if (*top) {
 				t_stack *temp = *top;
 				*top = (*top)->prev;
-				sfree(temp);
+				free(temp);
 			}
 		}
 

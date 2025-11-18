@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 09:29:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@
 		context_copy(&ctx_history, &ctx_alias);
 
 		if (syntax_check(input, &ctx_syntax, line)) {
-			sfree(input); sfree(input_hist);
+			free(input); free(input_hist);
 			stack_clear(&ctx_history.stack);
 			stack_clear(&ctx_syntax.stack);
 			stack_clear(&ctx_alias.stack);
@@ -61,7 +61,7 @@
 
 			char *cont_line = readinput(prompt_PS2);
 			if (!cont_line) {
-				sfree(input); sfree(input_hist);
+				free(input); free(input_hist);
 				stack_clear(&ctx_history.stack);
 				stack_clear(&ctx_syntax.stack);
 				stack_clear(&ctx_alias.stack);
@@ -69,7 +69,7 @@
 			}
 
 			if (!*cont_line && nsignal == 2) {
-				sfree(input); sfree(input_hist);
+				free(input); free(input_hist);
 				stack_clear(&ctx_history.stack);
 				stack_clear(&ctx_syntax.stack);
 				stack_clear(&ctx_alias.stack);
@@ -92,7 +92,7 @@
 			context_copy(&ctx_history, &ctx_alias);
 
 			if (syntax_check(cont_line, &ctx_syntax, line)) {
-				sfree(input); sfree(cont_line); sfree(input_hist);
+				free(input); free(cont_line); free(input_hist);
 				stack_clear(&ctx_history.stack);
 				stack_clear(&ctx_syntax.stack);
 				stack_clear(&ctx_alias.stack);
@@ -111,7 +111,7 @@
 		}
 
 		if (shell.interactive) history_add(input_hist, false);
-		sfree(input_hist);
+		free(input_hist);
 		stack_clear(&ctx_history.stack);
 		stack_clear(&ctx_syntax.stack);
 		stack_clear(&ctx_alias.stack);
@@ -131,7 +131,7 @@
 			size_t bytes_to_read = size - bytes_read;
 			ssize_t read_now = read(STDIN_FILENO, value + bytes_read, bytes_to_read);
 			
-			if (read_now == -1) { sfree(value); return (NULL); }
+			if (read_now == -1) { free(value); return (NULL); }
 			
 			bytes_read += read_now;
 			value[bytes_read] = '\0';

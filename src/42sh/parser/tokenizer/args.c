@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:00:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 		args_copy(args, *new_args);
 		args->next = (*new_args)->next;
 
-		sfree(*new_args);
+		free(*new_args);
 		*new_args = NULL;
 	
 		return (0);
@@ -68,7 +68,7 @@
 	int args_copy(t_arg *dst, t_arg *src) {
 		if (!dst || !src) return (1);
 
-		sfree(dst->value);
+		free(dst->value);
 
 		dst->value = src->value;
 
@@ -171,8 +171,8 @@ t_arg *args_sort(t_arg *args) {
 
 		while (current) {
 			next = current->next;
-			sfree(current->value);
-			sfree(current);
+			free(current->value);
+			free(current);
 			current = next;
 		} *args = NULL;
 	}

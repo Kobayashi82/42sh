@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:34:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@
 					
 					while ((*input)[end] && !is_not_separator((*input)[end])) end++;
 					char *alias_name  = ft_strndup(*input + start, end - start);
-					char *alias_value = ft_strdup(alias_find_value(alias_name)); sfree(alias_name);
+					char *alias_value = ft_strdup(alias_find_value(alias_name)); free(alias_name);
 					char *tmp = ft_strjoin_sep("|", alias_value, "|", 0);
 					
 					if (alias_value && (!alias_list || !ft_strstr(alias_list, tmp))) {
@@ -155,12 +155,12 @@
 						size_t alias_len = ft_strlen(alias_value);
 						
 						char* new_input = replace_substring(*input, start, end - start, alias_value);
-						sfree(alias_value); alias_value = NULL;
-						sfree(alias_list); alias_list = NULL;
+						free(alias_value); alias_value = NULL;
+						free(alias_list); alias_list = NULL;
 						
 						is_separator(*input, &i, last_token);
 						if (new_input) {
-							sfree(*input);
+							free(*input);
 							*input = new_input;
 							i = start + alias_len;
 							current_expansion = 0;
@@ -170,8 +170,8 @@
 
 					is_separator(*input, &i, last_token);
 					current_expansion = 0;
-					sfree(tmp); sfree(alias_value);
-					sfree(alias_list); alias_list = NULL;
+					free(tmp); free(alias_value);
+					free(alias_list); alias_list = NULL;
 					if (!(*input)[end]) break;
 					i = end;
 					command_start = false;

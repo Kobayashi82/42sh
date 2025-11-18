@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 14:31:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,11 +67,11 @@
 
 		if (*opts->invalid) {
 			invalid_option("history", opts->invalid, "[-c] [-d offset] [n] or history -rw [filename]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("history", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("history", "1.0"));
 		
 		int result = 0;
 		if (!*opts->valid) {
@@ -125,7 +125,7 @@
 					opts->args = opts->args->next;
 				}
 				if (line) history_add(line, false);
-				sfree(line);
+				free(line);
 			} else if (ft_strchr(opts->valid, 'p')) {
 				history_remove_last_if_added(true);
 				print(STDOUT_FILENO, NULL, RESET);
@@ -160,7 +160,7 @@
 			}
 		}
 
-		return (sfree(opts), result);
+		return (free(opts), result);
 	}
 
 #pragma endregion

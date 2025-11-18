@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/30 13:02:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:35:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
 						if (!ft_strcmp(path, tmp->path)) {
-							sclose(tmp->fd);
+							close(tmp->fd);
 							tmp->fd = -1;
 							return;
 						}
@@ -176,7 +176,7 @@
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
 						if (tmp->fd == fd) {
-							sclose(tmp->fd);
+							close(tmp->fd);
 							tmp->fd = -1;
 							return;
 						}
@@ -195,13 +195,13 @@
 
 			t_tmp *new_tmp = tmp_find_path_node(path);
 			if (new_tmp) {
-				sfree(new_tmp->path);
-				sclose(new_tmp->fd);
+				free(new_tmp->path);
+				close(new_tmp->fd);
 				new_tmp->path = path;
 				new_tmp->fd = fd;
 			} else {
 				unsigned int index = hash_index(path) % TMP_HASH_SIZE;
-				t_tmp *new_node = smalloc(sizeof(t_tmp));
+				t_tmp *new_node = malloc(sizeof(t_tmp));
 
 				new_node->path = path;
 				new_node->fd = fd;
@@ -225,16 +225,16 @@
 				if (tmp->path == path) {
 					if (prev)	prev->next = tmp->next;
 					else		tmp_table[index] = tmp->next;
-					sclose(tmp->fd);
+					close(tmp->fd);
 					unlink (tmp->path);
-					sfree(tmp->path);
-					sfree(tmp);
+					free(tmp->path);
+					free(tmp);
 					return;
 				}
 				prev = tmp;
 				tmp = tmp->next;
 			}
-			sfree(path);
+			free(path);
 		}
 
 		void tmp_delete_fd(int fd) {
@@ -248,10 +248,10 @@
 						if (tmp->fd == fd) {
 							if (prev)	prev->next = tmp->next;
 							else		tmp_table[index] = tmp->next;
-							sclose(tmp->fd);
+							close(tmp->fd);
 							unlink (tmp->path);
-							sfree(tmp->path);
-							sfree(tmp);
+							free(tmp->path);
+							free(tmp);
 							return;
 						}
 						prev = tmp;
@@ -271,10 +271,10 @@
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
 						t_tmp *next = tmp->next;
-						sclose(tmp->fd);
+						close(tmp->fd);
 						unlink (tmp->path);
-						sfree(tmp->path);
-						sfree(tmp);
+						free(tmp->path);
+						free(tmp);
 						tmp = next;
 					}
 					tmp_table[index] = NULL;
@@ -294,7 +294,7 @@
 			struct timeval tv; gettimeofday(&tv, NULL);
 			unsigned int seed = (unsigned int)(tv.tv_sec ^ tv.tv_usec);
 
-			char *template = smalloc(TEMPLATE_SIZE + 1);
+			char *template = malloc(TEMPLATE_SIZE + 1);
 			unsigned int r = seed;
 			for (int j = 0; j < TEMPLATE_SIZE; ++j, r /= 36)
 				template[j] = TEMPLATE_CHARS[r % ft_strlen(TEMPLATE_CHARS)];
@@ -339,8 +339,8 @@
 			char *fullpath = ft_strjoin_sep(path, name, template, 6);
 
 
-			int fd = sopen(fullpath, O_RDWR | O_CREAT | O_EXCL, 0600);
-			if (fd == -1) { sfree(fullpath); return (NULL); }
+			int fd = open(fullpath, O_RDWR | O_CREAT | O_EXCL, 0600);
+			if (fd == -1) { free(fullpath); return (NULL); }
 			tmp_add(fullpath, fd);
 
 			return (fullpath);

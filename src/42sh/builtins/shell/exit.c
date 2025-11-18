@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/04/27 11:56:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@
 	int bt_exit(t_arg *args) {
 		t_opt *opts = parse_options(args->next, "", '-', false);
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("builtin", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("builtin", "1.0"));
 
 		int result = 0;
 
@@ -60,9 +60,9 @@
 		} else if (opts->args && opts->args->value)
 			result = ft_atol(opts->args->value);
 		
-		sfree(opts);
+		free(opts);
 		args_clear(&args);
-		sfree(terminal.input);
+		free(terminal.input);
 		exit_error(NOTHING, result, NULL, true);
 
 		return (result);

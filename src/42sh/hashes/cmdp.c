@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/27 12:27:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:36:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@
 
 			t_cmdp *new_cmdp = cmdp_find(name, true);
 			if (new_cmdp) {
-				sfree(new_cmdp->path);
+				free(new_cmdp->path);
 				new_cmdp->path = ft_strdup(path);
 
 				return (0);
@@ -126,7 +126,7 @@
 			}
 
 			if (i == 0) return (NULL);
-			char **array = smalloc((i + 1) * sizeof(char *));
+			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
@@ -201,7 +201,7 @@
 				if (!ft_strcmp(cmdp->name, name)) {
 					if (prev)	prev->next = cmdp->next;
 					else		cmdp_table[index] = cmdp->next;
-					sfree(cmdp->name); sfree(cmdp->path); sfree(cmdp);
+					free(cmdp->name); free(cmdp->path); free(cmdp);
 					return (0);
 				}
 				prev = cmdp;
@@ -221,9 +221,9 @@
 					t_cmdp *cmdp = cmdp_table[index];
 					while (cmdp) {
 						t_cmdp *next = cmdp->next;
-						sfree(cmdp->name);
-						sfree(cmdp->path);
-						sfree(cmdp);
+						free(cmdp->name);
+						free(cmdp->path);
+						free(cmdp);
 						cmdp = next;
 					}
 					cmdp_table[index] = NULL;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/04/27 12:39:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@
 
 				if (ft_strlen(home) + ft_strlen(path) >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
-					sfree(home);
+					free(home);
 					return (NULL);
 				}
 
@@ -139,7 +139,7 @@
 					ft_strcpy(abs_path, home);
 					ft_strcat(abs_path, path);
 					path = abs_path;
-					sfree(home);
+					free(home);
 				}
 			}
 
@@ -206,14 +206,14 @@
 				if (*dir || (dir = getcwd(NULL, 0))) {
 					char *fullpath = ft_strjoin_sep(dir, "/", path, 0);
 					char *resolved_path = resolve_path(fullpath);
-					sfree(fullpath); fullpath = resolved_path;
+					free(fullpath); fullpath = resolved_path;
 
 					if (!access(fullpath, X_OK)) {
-						sfree(path_list);
+						free(path_list);
 						return (fullpath);
-					} sfree(fullpath);
+					} free(fullpath);
 				} dir = ft_strtok(NULL, ":", 2);
-			} sfree(path_list);
+			} free(path_list);
 
 			return (ft_strdup(path));
 		}
@@ -231,7 +231,7 @@
 			if (ft_strchr(cmd, '/')) {
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) return (fullpath);
-				return (sfree(fullpath), NULL);
+				return (free(fullpath), NULL);
 			}
 
 			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
@@ -245,13 +245,13 @@
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
-				sfree(fullpath);
+				free(fullpath);
 				if (!resolved_path) break;
 
 				fullpath = resolved_path;
 
 				if (access(fullpath, F_OK) != -1) { final_path = fullpath; break; }
-				sfree(fullpath);
+				free(fullpath);
 			}
 
 			array_free(search_paths);
@@ -271,7 +271,7 @@
 				if (access(fullpath, F_OK) != -1) {
 					final_paths[0] = ft_strdup(fullpath);
 					return (final_paths);
-				} return (sfree(fullpath), NULL);
+				} return (free(fullpath), NULL);
 			}
 
 			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
@@ -291,13 +291,13 @@
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
-				sfree(fullpath);
+				free(fullpath);
 				if (!resolved_path) break;
 
 				fullpath = resolved_path;
 
 				if (access(fullpath, F_OK) != -1) final_paths[j++] = fullpath;
-				else sfree(fullpath);
+				else free(fullpath);
 			} final_paths[j] = NULL;
 
 			array_free(search_paths);
@@ -383,7 +383,7 @@
 					int dist = levenshtein(input, entry->d_name);
 					if (dist < min_distance) {
 						min_distance = dist;
-						sfree(best_match);
+						free(best_match);
 						best_match = ft_strdup(entry->d_name);
 					}
 				}
@@ -391,7 +391,7 @@
 
 			// Return the best match if the distance is small enough
 			if (min_distance < 3)		return (best_match);
-			else { sfree(best_match);	return (NULL); }
+			else { free(best_match);	return (NULL); }
 		}
 
 	#pragma endregion
@@ -407,7 +407,7 @@
 			if (path[0] == '/') ft_strcpy(resolved_path, "/");
 			else {
 				if (getcwd(resolved_path, sizeof(resolved_path)) == NULL) {
-					sfree(temp_path); return (path);
+					free(temp_path); return (path);
 				}
 				size_t len = ft_strlen(resolved_path);
 				if (len == 0 || resolved_path[len - 1] != '/') {
@@ -421,19 +421,19 @@
 				char *corrected = find_closest_dir(token, resolved_path);
 				if (corrected) {
 					ft_strcat(resolved_path, corrected);
-					sfree(corrected);
+					free(corrected);
 				} else ft_strcat(resolved_path, token);
 
 				ft_strcat(resolved_path, "/");
 				token = ft_strtok(NULL, "/", 60);
-			} sfree(temp_path);
+			} free(temp_path);
 
 			// Remove trailing slash if necessary
 			size_t len = ft_strlen(resolved_path);
 			if (len > 1 && resolved_path[len - 1] == '/') resolved_path[len - 1] = '\0';
 
 			// Resolve final path and copy it back
-			sfree(path);
+			free(path);
 			return (resolve_path(resolved_path));
 		}
 

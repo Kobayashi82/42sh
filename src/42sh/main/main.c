@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/04/27 11:42:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:56:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@
 			if (!(terminal.input = get_input())) return (1);
 
 			if (ft_isspace_s(terminal.input)) {
-				sfree(terminal.input);
+				free(terminal.input);
 				return (!shell.interactive);
 			}
 
@@ -107,7 +107,7 @@
 				ft_printf(1, "Input: %s\n", terminal.input);
 
 			execute_commands(terminal.input);
-			sfree(terminal.input);
+			free(terminal.input);
 
 			return (!shell.interactive);
 		}
@@ -154,7 +154,7 @@
 			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
 			terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
-			sfree(terminal.input);
+			free(terminal.input);
 		} else {
 			shell.interactive = isatty(STDIN_FILENO);
 			if (shell.interactive) {
@@ -163,6 +163,8 @@
 			while (!shell.exit && !read_input()) ;
 		}
 
+		write(1, "hola\n", 5);
+		malloc(100);
 		if (nsignal) shell.exit_code = 128 + nsignal;
 		exit_error(END, 0, NULL, true);
 	}

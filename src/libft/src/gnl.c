@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 02:19:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/21 22:34:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@
 					if (readed == 0 && line)	return (line);
 					if (readed < 1) {
 						ft_memset(buffer, '\0', GNL_BUFFER + 1);
-						sfree(line);
+						free(line);
 						return (NULL);
 					}
 				}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/07/16 17:31:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:24:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@
 		cmdp_clear();
 		tmp_clear();
 		prompt_clear(BOTH);
-		sfree(shell.cwd);
-		sclose(terminal.bk_stdin);
-		sclose(terminal.bk_stdout);
-		sclose(terminal.bk_stderr);
-		sexit(shell.exit_code % 256);
+		free(shell.cwd);
+		close(terminal.bk_stdin);
+		close(terminal.bk_stdout);
+		close(terminal.bk_stderr);
+		exit(shell.exit_code % 256);
 	}
 
 	//	Print the error message and exit if required

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@
 		struct stat		stbuf;
 
 		char *tmp = ft_strjoin_sep(fulldir, "/", de->d_name, 0);
-		fulldir = resolve_path(tmp); sfree(tmp);
+		fulldir = resolve_path(tmp); free(tmp);
 
-		if (stat(fulldir, &stbuf) == -1) return (sfree(fulldir), 1);
+		if (stat(fulldir, &stbuf) == -1) return (free(fulldir), 1);
 
 		if (pattern->is_dir && S_ISDIR(stbuf.st_mode)) {
 			if (match_pattern(de->d_name, pattern->value))
@@ -104,7 +104,7 @@
 				files_add(de->d_name, pattern, dir, files, false);
 		}
 
-		return (sfree(fulldir), 0);
+		return (free(fulldir), 0);
 	}
 
 #pragma endregion
@@ -120,7 +120,7 @@
 		t_arg			*files = NULL;
 
 		char *tmp = ft_strjoin_sep(basedir, "/", dir, 0);
-		char *fulldir = resolve_path(tmp); sfree(tmp);
+		char *fulldir = resolve_path(tmp); free(tmp);
 		if (!fulldir) return (NULL);
 
 		dr = opendir(fulldir);
@@ -134,7 +134,7 @@
 		}
 
 		if (dr) closedir(dr);
-		sfree(fulldir);
+		free(fulldir);
 
 		return (files);
 	}

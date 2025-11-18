@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,18 +98,18 @@
 
 		if (*opts->invalid) {
 			invalid_option("hash", opts->invalid, "[-lr] [-p pathname] [-dt] [name ...]");
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (sfree(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (sfree(opts), print_version("hash", "1.0"));
+		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("hash", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 		
 		if ((!*opts->valid || !ft_strcmp(opts->valid, "l")) && !opts->args) {
 			int result = print_hash((ft_strchr(opts->valid, 'l')));
-			return (sfree(opts), result);
+			return (free(opts), result);
 		}
 
 		if ((ft_strchr(opts->valid, 't') || ft_strchr(opts->valid, 'p') || ft_strchr(opts->valid, 'd')) && !opts->args) {
@@ -121,13 +121,13 @@
 			print(STDERR_FILENO, ft_strjoin_sep("hash: -", opt, ": option requires an argument\n", 0), FREE_JOIN);
 			print(STDERR_FILENO, "usage: hash [-lr] [-p pathname] [-dt] [name ...]\n\n", JOIN);
 			print(STDERR_FILENO, "Try 'hash --help' for more information\n", PRINT);
-			return (sfree(opts), 1);
+			return (free(opts), 1);
 		}
 
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);
 
-		return (sfree(opts), 0);
+		return (free(opts), 0);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 12:44:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@
 					start = tmp_pattern;
 					is_dir = true;
 
-					if (!ft_strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { sfree(value); continue; }
-					if (!ft_strcmp(value, "**/") && tmp_list && tmp_list->value && !ft_strcmp(tmp_list->value, "**/")) { sfree(value); continue; }
+					if (!ft_strcmp(value, "/") && tmp_list && tmp_list->value && *tmp_list->value && tmp_list->value[ft_strlen(tmp_list->value) - 1] == '/') { free(value); continue; }
+					if (!ft_strcmp(value, "**/") && tmp_list && tmp_list->value && !ft_strcmp(tmp_list->value, "**/")) { free(value); continue; }
 				} else if (*tmp_pattern) {
 					value = ft_strdup(tmp_pattern);
 					tmp_pattern = NULL;
@@ -106,7 +106,7 @@
 				}
 			}
 
-			return (sfree(pattern), patterns);
+			return (free(pattern), patterns);
 		}
 
 	#pragma endregion
@@ -118,8 +118,8 @@
 
 			while (current) {
 				next = current->next;
-				sfree(current->value);
-				sfree(current);
+				free(current->value);
+				free(current);
 				current = next;
 			} *patterns = NULL;
 		}

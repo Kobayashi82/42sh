@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:41:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,12 +207,12 @@ void first_step() {
 	t_arg *current = tokens.arg;
 	while (current) {
 		t_arg *next = current->next;
-		sfree(current->value);
-		sfree(current);
+		free(current->value);
+		free(current);
 		current = next;
 	}
 	tokens.arg = NULL;
-	sfree(terminal.input);
+	free(terminal.input);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 20:10:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,9 @@
 
 			static int ctrl_d(const int n) {
 				if (n <= 0 || (buffer.c == 4 && !buffer.length)) {
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+					if (tmp_line) { free(tmp_line); tmp_line = NULL; }
 					
-					sfree(buffer.value); buffer.value = NULL;
+					free(buffer.value); buffer.value = NULL;
 					write(STDOUT_FILENO, "\r\n", 2);
 					return (1);
 				} return (0);
@@ -60,7 +60,7 @@
 
 			static int ctrl_c() {
 				if (buffer.c == 3) {
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+					if (tmp_line) { free(tmp_line); tmp_line = NULL; }
 
 					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
 
@@ -78,7 +78,7 @@
 
 			static int enter() {
 				if (buffer.c == '\r' || buffer.c == '\n') {
-					if (tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+					if (tmp_line) { free(tmp_line); tmp_line = NULL; }
 
 					buffer.value[buffer.length] = '\0';
 
@@ -297,7 +297,7 @@
 					buffer.position = buffer.length;
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
 
-					if (free_line && new_line) sfree(new_line);
+					if (free_line && new_line) free(new_line);
 				}
 
 			#pragma endregion
@@ -669,7 +669,7 @@
 		else if (cursor())			result = 0;
 		else if (print_char())		result = 0;
 
-		if (result && clipboard) sfree(clipboard);
+		if (result && clipboard) free(clipboard);
 		return (result);
 	}
 

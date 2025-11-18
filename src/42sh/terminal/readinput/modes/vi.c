@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 13:09:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:33:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 			static int ctrl_d() {
 				if (buffer.c == 4) {
 					if (!buffer.length) {
-						sfree(buffer.value); buffer.value = NULL;
+						free(buffer.value); buffer.value = NULL;
 						write(STDOUT_FILENO, "\r\n", 2);
 					} else {
 						buffer.value[buffer.length] = '\0';
@@ -345,7 +345,7 @@
 						buffer.position = 0;
 					}
 
-					if (free_line && new_line) sfree(new_line);
+					if (free_line && new_line) free(new_line);
 				}
 
 			#pragma endregion
@@ -931,7 +931,7 @@
 
 			static void copy(bool to_end) {
 				if (to_end) {
-					if (clipboard) sfree(clipboard);
+					if (clipboard) free(clipboard);
 					clipboard = ft_strdup(&buffer.value[buffer.position]);
 				}
 			}
@@ -1058,11 +1058,11 @@
 				if (write(fd, buffer.value, buffer.length) == -1) {
 					tmp_delete_fd(fd);
 					return (1);
-				} sclose(fd);
+				} close(fd);
 
 				char *editor = get_fullpath((char *)raw_editor);
 				if (access(editor, X_OK) == -1) {
-					sfree(editor);
+					free(editor);
 					tmp_delete_fd(fd);
 					beep();
 					return (1);
@@ -1072,23 +1072,23 @@
 
 				pid_t pid = fork();
 				if (pid < 0) {
-					sfree(editor);
+					free(editor);
 					tmp_delete_fd(fd);
 					beep();
 					return (1);
 				} else if (pid == 0) {
 					char *const args[] = { editor, tmp_find_path_fd(fd), NULL };
 					char **env = variables_to_array(vars_table, EXPORTED, true);
-					sclose_all();
+					close(-42);
 					execve(editor, args, env);
-					beep(); sexit(1);
+					beep(); exit(1);
 				} else if (pid > 0) {
 					int status;
 					waitpid(pid, &status, 0);
 
-					fd = sopen(tmp_file, O_RDONLY, -1);
+					fd = open(tmp_file, O_RDONLY);
 					if (fd == -1) {
-						sfree(editor);
+						free(editor);
 						tmp_delete_path(tmp_file);
 						beep();
 						return (1);
@@ -1120,14 +1120,14 @@
 							file_size--;
 						}
 
-						sfree(buffer.value);
+						free(buffer.value);
 						buffer.value = file_content;
 						print(STDOUT_FILENO, "\n", RESET);
 						cursor_start_column();
 						print(STDOUT_FILENO, buffer.value, PRINT);
 					}
 
-					sfree(editor);
+					free(editor);
 					tmp_delete_path(tmp_file);
 
 					write(STDOUT_FILENO, "\r\n", 2);
@@ -1196,7 +1196,7 @@
 						number_mode = true;
 						char *prompt = remove_colors(term_prompt);
 						int num_len = chars_width(0, ft_strlen(prompt), prompt);
-						sfree(prompt);
+						free(prompt);
 						num_len += chars_width(0, buffer.position, buffer.value);
 						if (num_len > 0) cursor_left(num_len);
 						num_len += chars_width(buffer.position, buffer.length, buffer.value);
@@ -1381,7 +1381,7 @@
 				else if	(ctrl_c())				result = 1;
 				else if	(enter())				result = 1;
 
-				if (result && clipboard) sfree(clipboard);
+				if (result && clipboard) free(clipboard);
 				return (result);
 			}
 		}
@@ -1403,7 +1403,7 @@
 				}
 			}
 
-			if (result && clipboard) sfree(clipboard);
+			if (result && clipboard) free(clipboard);
 			return (result);
 		} replacement_mode = false;
 
@@ -1415,8 +1415,8 @@
 		else if (print_char())			result = 0;
 
 		if (result) insert_mode(CURSOR);
-		if (result && clipboard) sfree(clipboard);
-		if (result && tmp_line) { sfree(tmp_line); tmp_line = NULL; }
+		if (result && clipboard) free(clipboard);
+		if (result && tmp_line) { free(tmp_line); tmp_line = NULL; }
 		return (result);
 	}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 17:09:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:38:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@
 				if (len > 0) cursor_left(len);
 
 				old_len = chars_width(0, buffer.length, buffer.value);
-				if (!no_match) { sfree(match_show); match_show = NULL; }
+				if (!no_match) { free(match_show); match_show = NULL; }
 			}
 		}
 
@@ -141,7 +141,7 @@
 			if (len > 0) cursor_left(len);
 
 			old_len = chars_width(0, buffer.length, buffer.value);
-			if (!no_match) { sfree(match_show); match_show = NULL; }
+			if (!no_match) { free(match_show); match_show = NULL; }
 			return (1);
 		}
 
@@ -160,7 +160,7 @@
 			old_len = chars_width(0, buffer.length, buffer.value);
 			original_size = buffer.size;
 			original_position = buffer.position;
-			original_buffer = smalloc(buffer.size);
+			original_buffer = malloc(buffer.size);
 			ft_memcpy(original_buffer, buffer.value, buffer.size);
 			
 			hist_searching = true;
@@ -170,7 +170,7 @@
 			search_buffer.value = ft_calloc(search_buffer.size, sizeof(char));
 
 			char *prompt = remove_colors(term_prompt);
-			int len = chars_width(0, ft_strlen(prompt), prompt); sfree(prompt);
+			int len = chars_width(0, ft_strlen(prompt), prompt); free(prompt);
 			len += chars_width(0, buffer.position, buffer.value);
 			if (len > 0) cursor_left(len);
 
@@ -209,9 +209,9 @@
 			len = chars_width(buffer.position, buffer.length, buffer.value);
 			if (len > 0) cursor_left(len);
 
-			sfree(search_buffer.value);
-			sfree(original_buffer);
-			sfree(match_show);
+			free(search_buffer.value);
+			free(original_buffer);
+			free(match_show);
 
 			undo_push(false);
 
@@ -225,10 +225,10 @@
 		static int search_cancel() {
 			old_len = chars_width(0, buffer.length, buffer.value);
 
-			sfree(buffer.value);
+			free(buffer.value);
 			buffer.size = original_size;
 			buffer.position = original_position;
-			buffer.value = smalloc(original_size);
+			buffer.value = malloc(original_size);
 			ft_memcpy(buffer.value, original_buffer, original_size);
 
 			return (search_exit());
@@ -271,7 +271,7 @@
 					if (len > 0) cursor_left(len);
 
 					old_len = chars_width(0, buffer.length, buffer.value);
-					sfree(match_show); match_show = NULL;
+					free(match_show); match_show = NULL;
 				}
 
 				return (1);
@@ -319,10 +319,10 @@
 				
 				beep();
 				if (mode == START) {
-					sfree(buffer.value);
+					free(buffer.value);
 					buffer.size = original_size;
 					buffer.position = original_position;
-					buffer.value = smalloc(original_size);
+					buffer.value = malloc(original_size);
 					ft_memcpy(buffer.value, original_buffer, original_size);
 					no_match = true;
 				}

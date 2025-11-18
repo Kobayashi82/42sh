@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 12:32:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:39:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@
 	void undo_push(bool push) {
 		if (push && !pushed) return;
 		if (stack && !ft_strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
-		t_undo *new = smalloc(sizeof(t_undo));
+		t_undo *new = malloc(sizeof(t_undo));
 		new->size = buffer.size;
 		new->length = buffer.length;
 		new->position = buffer.position;
-		new->value = smalloc(buffer.size);
+		new->value = malloc(buffer.size);
 		ft_memcpy(new->value, buffer.value, buffer.size);
 		new->next = stack;
 		stack = new;
@@ -55,15 +55,15 @@
 		if (!stack) { beep(); return; }
 		t_undo *top = stack;
 
-		sfree(buffer.value);
+		free(buffer.value);
 		buffer.size = top->size;
 		buffer.length = top->length;
 		buffer.position = top->position;
-		buffer.value = smalloc(top->size);
+		buffer.value = malloc(top->size);
 		ft_memcpy(buffer.value, top->value, top->size);
 		stack = top->next;
-		sfree(top->value);
-		sfree(top);
+		free(top->value);
+		free(top);
 		pushed = false;
 	}
 
@@ -75,8 +75,8 @@
 		while (stack && stack->next) {
 			t_undo *tmp = stack;
 			stack = stack->next;
-			sfree(tmp->value);
-			sfree(tmp);
+			free(tmp->value);
+			free(tmp);
 		} undo_pop();
 	}
 
@@ -88,8 +88,8 @@
 		while (stack) {
 			t_undo *tmp = stack;
 			stack = stack->next;
-			sfree(tmp->value);
-			sfree(tmp);
+			free(tmp->value);
+			free(tmp);
 		}
 	}
 

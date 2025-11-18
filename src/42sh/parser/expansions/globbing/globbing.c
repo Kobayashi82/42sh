@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:40:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 		} else							dir = ft_strdup("/");
 
 		t_arg *files = search(patterns, basedir, dir);
-		sfree(basedir); sfree(dir);
+		free(basedir); free(dir);
 		pattern_clear(&patterns);
 
 		return (args_sort(files));
@@ -85,7 +85,7 @@
 			t_arg *files = match(args->value);
 			if (!files) {
 				if (options.nullglob) {
-					sfree(args->value);
+					free(args->value);
 					args->value = NULL;
 					args->nullglob = true;
 				}
