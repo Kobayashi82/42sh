@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:58:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,30 +50,6 @@
 			int		ft_tolower(int c);
 			char	*ft_toupper_s(char *str);
 			char	*ft_tolower_s(char *str);
-
-		#pragma endregion
-
-		#pragma region "CPY"
-
-			char	*ft_strcpy(char *dst, const char *src);
-			char	*ft_strncpy(char *dest, const char *src, int n);
-			int		ft_strlcpy(char *dst, const char *src, int dstsize);
-
-		#pragma endregion
-
-		#pragma region "CAT"
-
-			char	*ft_strcat(char *dest, const char *src);
-			char	*ft_strncat(char *dest, const char *src, int n);
-			int		ft_strlcat(char *dst, const char *src, int dstsize);
-
-
-		#pragma endregion
-
-		#pragma region "CHR"
-
-			char	*ft_strchr(const char *s, int c);
-			char	*ft_strrchr(const char *s, int c);
 
 		#pragma endregion
 

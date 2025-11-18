@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@
 
 	void history_file_set(const char *filename) {
 		if (!filename) return;
-		ft_strcpy(history_file, filename);
+		strcpy(history_file, filename);
 	}
 
 #pragma endregion

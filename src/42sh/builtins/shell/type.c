@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:36:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,13 @@
 		static int check_alias(char *arg, char *opts) {
 			if (!arg) return (0);
 
-			if (!ft_strchr(opts, 'P') && ft_strchr(opts, 't') && alias_find(arg)) {
+			if (!strchr(opts, 'P') && strchr(opts, 't') && alias_find(arg)) {
 				print(STDOUT_FILENO, "alias\n", JOIN);
 				return (1);
-			} if (!ft_strchr(opts, 'p') && !ft_strchr(opts, 'P')) {
+			} if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 				t_alias *alias = alias_find(arg);
 				if (alias) {
-					if (!ft_strchr(opts, 't')) {
+					if (!strchr(opts, 't')) {
 						print(STDOUT_FILENO, alias->name, JOIN);
 						print(STDOUT_FILENO, ft_strjoin_sep(" is aliased to `", alias->value, "'\n", 0), FREE_JOIN);
 					}
@@ -95,13 +95,13 @@
 
 			if ((!opts || !*opts || !strcmp(opts, "t")) && alias_find(arg)) return (0);
 
-			if (!ft_strchr(opts, 'P') && ft_strchr(opts, 't') && builtin_isactive(arg)) {
+			if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
 				print(STDOUT_FILENO, "builtin\n", JOIN);
 				return (1);
-			} else if (!ft_strchr(opts, 'p') && !ft_strchr(opts, 'P')) {
+			} else if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 				t_builtin *builtin = builtin_find(arg);
 				if (builtin && !builtin->disabled) {
-					if (!ft_strchr(opts, 't')) {
+					if (!strchr(opts, 't')) {
 						print(STDOUT_FILENO, builtin->name, JOIN);
 						print(STDOUT_FILENO, " is a shell builtin\n", JOIN);
 					}
@@ -121,13 +121,13 @@
 			
 			if ((!opts || !*opts || !strcmp(opts, "t")) && (alias_find(arg) || builtin_isactive(arg))) return (0);
 
-			// if (!ft_strchr(opts, 'P') && ft_strchr(opts, 't') && builtin_isactive(arg)) {
+			// if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
 			// 	print(STDOUT_FILENO, "builtin\n", JOIN);
 			// 	return (1);
-			// } else if (!ft_strchr(opts, 'p') && !ft_strchr(opts, 'P')) {
+			// } else if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 			// 	t_builtin *builtin = builtin_find(arg);
 			// 	if (builtin && !builtin->disabled) {
-			// 		if (!ft_strchr(opts, 't')) {
+			// 		if (!strchr(opts, 't')) {
 			// 			print(STDOUT_FILENO, builtin->name, JOIN);
 			// 			print(STDOUT_FILENO, " is a shell builtin\n", JOIN);
 			// 		}
@@ -168,18 +168,18 @@
 				return (free(path), 0);
 			}
 
-			if (!ft_strchr(opts, 'P') && !ft_strchr(opts, 'a') && (alias_find(arg) || builtin_isactive(arg))) return (0);
+			if (!strchr(opts, 'P') && !strchr(opts, 'a') && (alias_find(arg) || builtin_isactive(arg))) return (0);
 
 			char **paths = path_find_all(arg, NULL);
-			if ((!paths || !*paths) && ft_strchr(opts, 'a')) return (array_free(paths), 0);
+			if ((!paths || !*paths) && strchr(opts, 'a')) return (array_free(paths), 0);
 			for (int i = 0; paths && paths[i]; ++i) {
-				if (!ft_strchr(opts, 'a') && i > 0) break;
+				if (!strchr(opts, 'a') && i > 0) break;
 
-				if (ft_strchr(opts, 't'))
+				if (strchr(opts, 't'))
 					print(STDOUT_FILENO, "file\n", JOIN);
-				else if (ft_strchr(opts, 'P') || ft_strchr(opts, 'p'))
+				else if (strchr(opts, 'P') || strchr(opts, 'p'))
 					print(STDOUT_FILENO, ft_strjoin(paths[i], "\n", 0), FREE_JOIN);
-				else if (ft_strchr(opts, 'a')) {
+				else if (strchr(opts, 'a')) {
 					print(STDOUT_FILENO, arg, JOIN);
 					print(STDOUT_FILENO, ft_strjoin_sep(" is ", paths[i], "\n", 0), FREE_JOIN);
 				}
@@ -209,8 +209,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
@@ -228,7 +228,7 @@
 					if (tmp_result) result = 2;
 				} else if (!tmp_result) result = 1;
 
-				if (!tmp_result && ft_strchr(opts->valid, 'a'))
+				if (!tmp_result && strchr(opts->valid, 'a'))
 					print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), FREE_JOIN);
 			}
 			opts->args = opts->args->next;

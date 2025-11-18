@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 		if (!arg) return (0);
 		int result = 0;
 
-		if (!ft_strchr(arg, '=')) {
+		if (!strchr(arg, '=')) {
 			if (variables_validate(arg, NULL, "readonly", false, true)) return (1);
 			t_var *var = variables_find(vars_table, arg);
 			if (var) { var->readonly = true; return (0); }
@@ -92,8 +92,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("readonly", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("readonly", "1.0"));
 
 
 		if (!opts->args) {

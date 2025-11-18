@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:50:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 				if (context->in_escape) {
 					i += 1; context->in_escape = false; continue;
 				} else if ((*input)[i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
-					ft_strcpy(last_token, "\\");
+					strcpy(last_token, "\\");
 					i += 1; context->in_escape = true; continue;
 				}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:38:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@
 			!strncmp(&input[*i], ">(", 2)) {			// Process Substitution Out
 			return (false);
 		}	// Check for 1-character operators
-		else if (ft_strchr("|&+-*/%=<>!^", input[*i])) {			
+		else if (strchr("|&+-*/%=<>!^", input[*i])) {			
 			*i += 1; *nvalue = 2; return (true);
 		}
 
@@ -106,7 +106,7 @@
 	}
 
 	static bool is_not_separator_arithmetic(const char *input, size_t *i) {
-		if (ft_strchr("|&+-*/%=<>!^", input[*i]) || ft_isspace(input[*i])) {
+		if (strchr("|&+-*/%=<>!^", input[*i]) || ft_isspace(input[*i])) {
 			return (true);
 		}
 
@@ -130,7 +130,7 @@
 				if (input[*i + 1]) context->stack->nvalue = 1;
 				context->in_escape = false; *i += 1; continue;
 			} else if (input[*i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
-				ft_strcpy(last_token, "\\");
+				strcpy(last_token, "\\");
 				context->in_escape = true; *i += 1; continue;
 			}
 			

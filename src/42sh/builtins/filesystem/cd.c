@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,9 +99,9 @@
 			}
 		}
 
-		if ((!options.cd_resolve && !*opts->valid) || ft_strchr(opts->valid, 'L')) {
+		if ((!options.cd_resolve && !*opts->valid) || strchr(opts->valid, 'L')) {
 			;
-		} else if ((options.cd_resolve && !*opts->valid) || (ft_strchr(opts->valid, 'P'))) {
+		} else if ((options.cd_resolve && !*opts->valid) || (strchr(opts->valid, 'P'))) {
 			char *tmp = strdup(resolve_symlink(path)); free(path);
 			path = tmp;
 		}
@@ -169,8 +169,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("cd", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("cd", "1.0"));
 
 		int result = 0;
 		char *path = NULL;

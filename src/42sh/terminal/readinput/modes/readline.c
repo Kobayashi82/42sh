@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:01:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,7 @@
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
-					ft_strcpy(buffer.value, new_line);
+					strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);
@@ -292,7 +292,7 @@
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
 					}
-					ft_strcpy(buffer.value, new_line);
+					strcpy(buffer.value, new_line);
 					buffer.length = ft_strlen(buffer.value);
 					buffer.position = buffer.length;
 					write_value(STDOUT_FILENO, buffer.value, buffer.length);

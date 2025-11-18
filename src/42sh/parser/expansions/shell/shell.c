@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:38:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@
 			!strncmp(&input[*i], "$(", 2) ||		// Command Substitution
 			!strncmp(&input[*i], "${", 2) || 	// Parameter Expansion
 			!strncmp(&input[*i], "{ ", 2)) { 	// Command Group
-			ft_strncpy(last_token, &input[*i], 2); last_token[2] = '\0';
+			strncpy(last_token, &input[*i], 2); last_token[2] = '\0';
 			*i += 1; return (true);
 		}	// Check for 1-character operators
-		else if (ft_strchr(";|&\n", input[*i])) {
-			ft_strncpy(last_token, &input[*i], 1); last_token[1] = '\0';
+		else if (strchr(";|&\n", input[*i])) {
+			strncpy(last_token, &input[*i], 1); last_token[1] = '\0';
 			return (true);
 		}
 
@@ -76,7 +76,7 @@
 			if (context->in_escape) {
 				*i += 1; context->in_escape = false; is_argument = true; continue;
 			} else if (input[*i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
-				ft_strcpy(last_token, "\\");
+				strcpy(last_token, "\\");
 				*i += 1; context->in_escape = true; is_argument = true; continue;
 			}
 	

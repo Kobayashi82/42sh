@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:52:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@
 				char *value = NULL;
 				bool is_dir = false;
 
-				if ((value = ft_strchr(tmp_pattern, '/'))) {
+				if ((value = strchr(tmp_pattern, '/'))) {
 
 					if (pattern_isescaped(tmp_pattern, value - tmp_pattern, '/')) {
 						tmp_pattern = value;

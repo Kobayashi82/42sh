@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("builtin", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("builtin", "1.0"));
 
 		int result = 0;
 		if (opts->args) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,22 +95,22 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("alias", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("alias", "1.0"));
 
 		int result = 0;
 		char *values = NULL, *invalues = NULL;
 
 		if (opts->args) {
 			while (opts->args) {
-				if (opts->args->value && opts->args->value[0] != '=' && ft_strchr(opts->args->value, '=')) {
+				if (opts->args->value && opts->args->value[0] != '=' && strchr(opts->args->value, '=')) {
 					if (add_alias(opts->args->value)) result = 1;
 				} else print_alias(opts->args->value, &values, &invalues);
 				opts->args = opts->args->next;
 			}
 		} else if (!*opts->valid) alias_print(true);
 		
-		if (ft_strchr(opts->valid, 'p')) alias_print(true);
+		if (strchr(opts->valid, 'p')) alias_print(true);
 
 		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
 		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }

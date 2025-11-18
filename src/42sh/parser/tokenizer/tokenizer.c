@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:38:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@ static size_t handle_separators(const char *input, size_t start, size_t len) {
 static size_t handle_word(const char *input, size_t start, size_t len) {
 	size_t end = start;
 
-	while (end < len && !ft_isspace(input[end]) && !ft_strchr(";|&<>(){}", input[end])) {
+	while (end < len && !ft_isspace(input[end]) && !strchr(";|&<>(){}", input[end])) {
 		if (input[end] == '\\' && end + 1 < len) end += 2;
 		else end++;
 	}
@@ -167,18 +167,18 @@ char *get_next_word(const char *input, size_t *pos, bool only_space) {
 		else if (input[end] == '(')									end = handle_parenthesis(input, end, len);
 		else if (input[end] == '{')									end = handle_braces(input, end, len);
 		else if (input[end] == '$')									end = handle_variables(input, end, len);
-		else if (ft_strchr(";|&<>", input[end]))					end = handle_separators(input, end, len);
+		else if (strchr(";|&<>", input[end]))					end = handle_separators(input, end, len);
 		else {
 			if (ft_isdigit(input[end])) {
 				size_t tmp = end;
 				while(tmp < len && ft_isdigit(input[tmp])) tmp++;
-				if (tmp != len && ft_strchr("<>", input[tmp])) {	end = handle_separators(input, tmp, len); break; }
+				if (tmp != len && strchr("<>", input[tmp])) {	end = handle_separators(input, tmp, len); break; }
 				else												end = handle_word(input, end, len);
 			} else													end = handle_word(input, end, len);
 		}
 
-		if (end > 0 && ft_strchr(";|&", input[end - 1])) break;
-		if (!only_space || ft_strchr(";|&<>", input[end]) || (ft_strchr("{(", input[end]) && !(end > 0 && input[end -1] == '$'))) break;
+		if (end > 0 && strchr(";|&", input[end - 1])) break;
+		if (!only_space || strchr(";|&<>", input[end]) || (strchr("{(", input[end]) && !(end > 0 && input[end -1] == '$'))) break;
 	}
 
 	word = strndup(&input[start], end - start); *pos = end;															// Crear la palabra

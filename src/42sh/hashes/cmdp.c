@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:37:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 
 			if (check_exec && access(path, X_OK) == -1) return (1);
 			if (check_file && access(path, F_OK) == -1) return (1);
-			char *name = ft_strrchr(path, '/');
+			char *name = strrchr(path, '/');
 			if (name && *name) name++;
 			if (ft_isspace_s(name)) return (1);
 

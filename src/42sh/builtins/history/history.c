@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:53:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("history", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("history", "1.0"));
 		
 		int result = 0;
 		if (!*opts->valid) {
@@ -88,9 +88,9 @@
 		}
 
 		if (*opts->valid) {
-			if (ft_strchr(opts->valid, 'c')) {
+			if (strchr(opts->valid, 'c')) {
 				history_clear();
-			} else if (ft_strchr(opts->valid, 'd')) {
+			} else if (strchr(opts->valid, 'd')) {
 				if (!opts->args) {
 					print(STDOUT_FILENO, "history: -d: option requires an argument\n", RESET_PRINT);
 					result = 2;
@@ -116,7 +116,7 @@
 						}
 					}
 				}
-			} else if (ft_strchr(opts->valid, 's')) {
+			} else if (strchr(opts->valid, 's')) {
 				history_remove_last_if_added(true);
 				char *line = NULL;
 				while (opts->args) {
@@ -126,7 +126,7 @@
 				}
 				if (line) history_add(line, false);
 				free(line);
-			} else if (ft_strchr(opts->valid, 'p')) {
+			} else if (strchr(opts->valid, 'p')) {
 				history_remove_last_if_added(true);
 				print(STDOUT_FILENO, NULL, RESET);
 				while (opts->args) {
@@ -138,7 +138,7 @@
 					opts->args = opts->args->next;
 				}
 				print(STDOUT_FILENO, NULL, PRINT);
-			} else if (ft_strchr(opts->valid, 'w')) {
+			} else if (strchr(opts->valid, 'w')) {
 				if (!opts->args) history_write(NULL);
 				else {
 					if (!access(opts->args->value, F_OK) && access(opts->args->value, W_OK)) {
@@ -146,7 +146,7 @@
 						result = 1;
 					} else history_write(opts->args->value);
 				}
-			} else if (ft_strchr(opts->valid, 'r')) {
+			} else if (strchr(opts->valid, 'r')) {
 				if (!opts->args) history_read(NULL);
 				else {
 					if (access(opts->args->value, F_OK)) {

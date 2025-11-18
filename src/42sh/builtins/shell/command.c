@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@
 
 			if (alias_find(arg) || builtin_isactive(arg)) return (0);
 
-			char *path = path_find_first(arg, ft_strchr(opts, 'p') ? PATH : NULL);
+			char *path = path_find_first(arg, strchr(opts, 'p') ? PATH : NULL);
 			if (path) {
 				print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_JOIN);
 				return (free(path), 1);
@@ -137,17 +137,17 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("command", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("command", "1.0"));
 		
 		if (!opts->args || !opts->args->value) return (free(opts), 0);
 		
-		if (ft_strchr(opts->valid, 'V')) {
+		if (strchr(opts->valid, 'V')) {
 			t_arg *arg = opts->args; arg->extra = 1;
 			return (free(opts), type(arg));
 		}
 
-		if (ft_strchr(opts->valid, 'v')) {
+		if (strchr(opts->valid, 'v')) {
 
 			print(STDOUT_FILENO, NULL, RESET);
 			print(STDERR_FILENO, NULL, RESET);
@@ -184,7 +184,7 @@
 				} else {
 					t_arg *cmd = test_create_args(alias_cmd->value);
 					//	Ejecutar comando indicando la ruta default dependiendo de '-p'
-					char *path = path_find_first(cmd->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
+					char *path = path_find_first(cmd->value, strchr(opts->valid, 'p') ? PATH : NULL);
 					if (path) {
 						ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
 						args_clear(&cmd);
@@ -198,7 +198,7 @@
 				//exec_func();
 			} else {
 				//	Ejecutar comando indicando la ruta default dependiendo de '-p'
-				char *path = path_find_first(opts->args->value, ft_strchr(opts->valid, 'p') ? PATH : NULL);
+				char *path = path_find_first(opts->args->value, strchr(opts->valid, 'p') ? PATH : NULL);
 				if (path) {
 					ft_printf(1, "Se ejecuta el comando '%s' con la ruta '%s'\n", opts->args->value, path);
 					return (free(opts), free(path), 1);

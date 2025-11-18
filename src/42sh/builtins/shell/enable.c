@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 11:21:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/18 23:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,29 +65,29 @@
 			return (free(opts), 1);
 		}
 
-		if (ft_strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (ft_strchr(opts->valid, '#')) return (free(opts), print_version("enable", "1.0"));
+		if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		if (strchr(opts->valid, '#')) return (free(opts), print_version("enable", "1.0"));
 
-		if (ft_strchr(opts->valid, 'a')) {
+		if (strchr(opts->valid, 'a')) {
 			builtin_print(2, false, true);
 			return (free(opts), 0);
 		}
 
-		if (ft_strchr(opts->valid, 'n') && ft_strchr(opts->valid, 's')) {
+		if (strchr(opts->valid, 'n') && strchr(opts->valid, 's')) {
 			builtin_print(1, true, true);
 			return (free(opts), 0);
 		}
-		if (ft_strchr(opts->valid, 's')) {
+		if (strchr(opts->valid, 's')) {
 			builtin_print(2, true, true);
 			return (free(opts), 0);
 		}
 
-		if ((ft_strchr(opts->valid, 'n') && !opts->args) || (ft_strchr(opts->valid, 'n') && ft_strchr(opts->valid, 'p'))) {
+		if ((strchr(opts->valid, 'n') && !opts->args) || (strchr(opts->valid, 'n') && strchr(opts->valid, 'p'))) {
 			builtin_print(1, false, true);
 			return (free(opts), 0);
 		}
 
-		if (ft_strchr(opts->valid, 'p')) {
+		if (strchr(opts->valid, 'p')) {
 			builtin_print(0, false, true);
 			return (free(opts), 0);
 		}
@@ -98,7 +98,7 @@
 			while (opts->args) {
 				t_builtin *builtin = builtin_find(opts->args->value);
 				if (builtin) {
-					if (ft_strchr(opts->valid, 'n'))	builtin->disabled = true;
+					if (strchr(opts->valid, 'n'))	builtin->disabled = true;
 					else 								builtin->disabled = false;
 				} else {
 					char *value = ft_strjoin_sep("enable: ", opts->args->value, ": not a shell builtin\n", 0);
