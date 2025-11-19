@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/19 00:04:40 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/19 12:48:21 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -154,18 +154,17 @@ SRCS	=	builtins/alias/alias.c						\
 			terminal/signal.c							\
 														\
 														\
-			utils/paths.c								\
-			utils/times.c								\
-			utils/memsafe.c								\
-			utils/fdsafe.c								\
+			utils/array.c								\
 			utils/execvesafe.c							\
-														\
-			utils/libft/str.c							\
-			utils/libft/num.c							\
-			utils/libft/array.c							\
-			utils/libft/gnl.c							\
-			utils/libft/users.c							\
-			utils/libft/temp.c							\
+			utils/fdsafe.c								\
+			utils/gnl.c									\
+			utils/memsafe.c								\
+			utils/num.c									\
+			utils/paths.c								\
+			utils/str.c									\
+			utils/temp.c								\
+			utils/times.c								\
+			utils/users.c								\
 														\
 														\
 			tests/builtin.c								\
