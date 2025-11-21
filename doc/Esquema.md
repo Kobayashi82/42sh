@@ -1,0 +1,101 @@
+
+# Terminal
+- Input
+	- Readfile
+	- Readinput
+		- Raw Mode Enable
+			- Prompt
+			- Common (Auto Complete, History, History Search, Undo)
+			- Dumb
+			- Emacs
+				- ALT + T		Swap word														(Not working with multi-width chars 漢 🤬)
+				- Up			History prev
+				- Down			History next
+				- Left			Cursor left
+				- Right			Cursor right
+				- Home			Cursor to the start
+				- End			Cursor to the end
+				- Delete		Delete
+				- CTRL + Delete	Delete current word
+				- [BackSpace]	Delete the previous character
+				- [CTRL + A]	Cursor to the start
+				- [CTRL + B]	Cursor left
+				- [CTRL + D]	Delete
+				- [CTRL + E]	Cursor to the end
+				- [CTRL + F]	Cursor right
+				- [CTRL + H]	Delete the previous character
+				- [Tab]			Auto-Complete
+				- [CTRL + J]	Enter
+				- [CTRL + K]	Delete from cursor to end
+				- [CTRL + L]	Clear screen
+				- [CTRL + N]	History prev
+				- [CTRL + P]	History next
+				- [CTRL + R]	History incremental search
+				- [CTRL + T]	Swap the current character with the previous one
+				- [CTRL + U]	Backspace from cursor to the start of the line
+				- [CTRL + _]	Undo last action
+			- Vi
+				- Up			History next
+				- Down			History prev
+				- Left			Cursor left
+				- Right			Cursor right
+				- Home			Cursor to the start
+				- End			Cursor to the end
+				- Del			Delete
+				- CTRL + Del	Delete current word
+				- Esc			Edit mode
+				- [BackSpace]	Delete the previous character									(Only in insertion mode)
+				- [CTRL + H]	Delete the previous character									(Only in insertion mode)
+				- [Tab]			Auto-Complete
+				- [CTRL + J]	Enter
+				- [CTRL + R]	History incremental search
+				- [CTRL + T]	Swap the current character with the previous one
+				- [CTRL + U]	Backspace from cursor to the start of the line
+				- [CTRL + _]	Undo the last change
+				- i				Enter insert mode at the cursor position
+				- I				Enter insert mode at the beginning of the line
+				- a				Enter insert mode after the cursor position
+				- A				Enter insert mode at the end of the line
+				- \* c [n]		Delete up to the specified position and enter insert mode		(0, ^, $ , |, , ;,, fFtTbBeEwW, c)
+				- C				Delete from cursor to the end of the line and enter insert mode
+				- s [n]			Delete the current character and enter insert mode
+				- S				Delete the entire line and enter insert mode
+				- \* d [n]		Delete up to the specified position								(0, ^, $, |, , ;,, fFtTbBeEwW, d)
+				- D				Delete from cursor to the end of the line
+				- x [n]			Delete the current character
+				- X [n]			Delete the previous character
+				- r [n]			Replace the current character with the specified one
+				- R				Enter replace mode: allows replacing characters one by one
+				- \* y [n]		Copy up to the specified position								(0, ^, $, |, , ;,, fFtTbBeEwW, y)
+				- Y				Copy from the current position to the end of the line
+				- p [n]			Paste copied text after the cursor
+				- P [n]			Paste copied text before the cursor
+				- b [n]			Move the cursor to the beginning of the previous word
+				- B [n]			Move the cursor to the beginning of the previous big word
+				- w [n]			Move the cursor to the beginning of the next word
+				- W [n]			Move the cursor to the beginning of the next big word
+				- e [n]			Move the cursor to the end of the current word
+				- E [n]			Move the cursor to the end of the current big word
+				- ^				Move the cursor to the first non-whitespace character in the line
+				- f [n]			Move the cursor forward to the character specified
+				- F [n]			Move the cursor backward to the character specified
+				- t [n]			Move the cursor forward one character before the character specified
+				- T [n]			Move the cursor backward one character after the character specified
+				- ; [n]			Repeat the last character search command						(f, F, t, T)
+				- , [n]			Repeat the last character search command in reverse				(f, F, t, T)
+				- | [n]			Move the cursor to a specific character position				(default is 1)
+				- \- [n]		Move the cursor up
+				- \+ [n]		Move the cursor down
+				- k [n]			Move the cursor up
+				- j [n]			Move the cursor down
+				- h [n]			Move the cursor left
+				- l [n]			Move the cursor right
+				- [Space] [n]	Move the cursor right
+				- $				Move the cursor to the end of the line
+				- u [n]			Undo the last change
+				- U				Undo all changes
+				- v				Edit the input using the default editor and terminate the input
+				- \#			Comment and terminate the input
+				- [n]			Means you can type a number to repeat the command [n] times
+		- Raw Mode Disable
+	- Expand Input
