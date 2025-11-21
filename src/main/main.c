@@ -6,23 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:07:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 18:10:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "TODO"
 
+	// https://www.drawio.com/
+
 	//	Caracteres octal y hexadecimal
-	//	Command -v no es identico a bash
+	//	Command -v no es identico a bash (ni lo tiene que ser, pero lo miraré)
 	//	Hash no se como añadir manualmente
-	//	Realizar testeo completo de builtins (todos las opciones)
 	//	TMOUT close shell after prompt
 	//	interctive variable
-	//	ignoreeof of set "Use "logout" to leave the shell." en stderr
+	//	ignoreeof of set use "logout" to leave the shell." en stderr
 	//	datos por stdin a 42sh se considera script
 	//	cdspell effect only in interactive
-	//	\'"'!!'"\' CTRL + Left / CTRL + Right jodido
-	// Argumentos con "" no llegan a los builtins
+	//	Argumentos con "" no llegan a los builtins
 	// ./42sh -c -cccc "command"
 
 #pragma endregion
