@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:15:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 18:12:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 //
 //	Incomplete support for multi-width characters (missing logic to handle them at column edges).		SOLUTION: Multi-width characters are ignored.
 //	When the input has more lines than the terminal, the cursor movement logic breaks.					SOLUTION: Do not write long lines.
-//	Historial de varias lineas no se pega a la columna 0.
+//	Historial de varias lineas no se pega a la columna 0 (no se a que me referia exactamente).
 
 #pragma region "Includes"
 
