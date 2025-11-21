@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/19 12:48:21 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/21 12:27:13 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -206,7 +206,6 @@ $(NAME): _normal_extra $(OBJS)
 	@$(MAKE) -s _progress
 #	----- REMOVE TO DISABLED TEST -----
 	@if [ "$(TESTING)" -ne 0 ]; then \
-		cp 42sh tester/42sh; \
 		printf "\033[A" && ./leaks test || true; \
 	fi
 #	----- REMOVE TO DISABLED TEST -----

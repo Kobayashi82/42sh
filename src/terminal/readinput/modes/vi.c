@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1276,7 +1276,7 @@
 								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
 								if (seq[1] == 'F')						end();					//	End				Cursor to the end
 								if (seq[1] == '3' && seq[2] == '~')		delete_char(1);			//	Del				Delete
-								if (!strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Del		Delete current word
+								if (!strncmp(seq + 1, "3;5~", 4))	delete_word();				//	CTRL + Del		Delete current word
 							}
 						} else if (!vi_mode) {
 							vi_mode = EDIT;														//	Esc				Edit mode
@@ -1306,7 +1306,7 @@
 				else if (buffer.c >= 1 && buffer.c <= 26)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (buffer.c >= 28 && buffer.c <= 31)	{ ;								}	//	Ignore other CTRL + X commands
 				else if (vi_mode) {
-					if (isdigit(buffer.c))	{ set_n();									}	//	Set the repetition number for commands
+					if (isdigit(buffer.c))	{ set_n();										}	//	Set the repetition number for commands
 
 					else if (buffer.c == 'i')	{ insert_mode(CURSOR);						}	//	Enter insert mode at the cursor position
 					else if (buffer.c == 'I')	{ insert_mode(FIRST);						}	//	Enter insert mode at the beginning of the line

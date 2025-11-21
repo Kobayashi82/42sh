@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 11:07:00 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 22:25:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ static void	mem_delete(void *ptr, int just_node)
 
 	hashtable = (void **)hash_index(NULL);
 	if (!hashtable || !ptr)
-		return ;
+		return;
 	i = (uintptr_t)hash_index(ptr) % MEM_HASH_SIZE;
 	mem = (void **)hashtable[i];
 	prev = NULL;
@@ -78,7 +78,7 @@ static void	mem_delete(void *ptr, int just_node)
 				hashtable[i] = mem[1];
 			if (!just_node) __real_free(mem[0]);
 			__real_free(mem);
-			return ;
+			return;
 		}
 		prev = mem;
 		mem = mem[1];
@@ -191,7 +191,7 @@ void	__wrap_free(void *ptr)
 			}
 			hashtable[i] = NULL;
 		}
-		return ;
+		return;
 	}
 	mem_delete(ptr, 0);
 }
