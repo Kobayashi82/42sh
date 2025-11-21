@@ -14,9 +14,4 @@ doc/42sh\ 4.1.pdf
 !leaks
 !.gitignore
 !README.md
-!tester
-!tester/tests
-!tester/tests/**
-!tester/**/*.sh
-!tester/tester.c
-!tester/tester
+!TODO.md
