@@ -6,10 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 16:54:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// Sintax tests
+//
 //	alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
 //	c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d
 
@@ -130,18 +132,17 @@
 		while (1) {
 			size_t bytes_to_read = size - bytes_read;
 			ssize_t read_now = read(STDIN_FILENO, value + bytes_read, bytes_to_read);
-			
+
 			if (read_now == -1) { free(value); return (NULL); }
-			
+
 			bytes_read += read_now;
 			value[bytes_read] = '\0';
-					
-			// Expand value if necessary
+
 			if (bytes_read == size) {
-				value = realloc(value, (size * 2) + 1);
 				size *= 2;
+				value = realloc(value, size + 1);
 			}
-			
+
 			if (read_now == 0) break;
 		}
 
@@ -156,14 +157,14 @@
 		char *input = NULL;
 
 		if (!shell.interactive) {
-			if (!(input = readfile())) return (NULL);
+			if (!(input = readfile()))				return (NULL);
 		} else {
-			if (!(input = readinput(prompt_PS1))) return (NULL);
+			if (!(input = readinput(prompt_PS1)))	return (NULL);
 		}
 
-		if (ft_isspace_s(input)) return (input);
-
-		return (expand_input(input));
+		// expand_input() debe de expandir alias, historial y hacer una comprobación básica de sintaxis
+		// o si eso, no hacer comprobación y delegar en el lexer/parser
+		return (ft_isspace_s(input) ? input : expand_input(input));
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/19 00:57:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 14:07:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 	//	cdspell effect only in interactive
 	//	\'"'!!'"\' CTRL + Left / CTRL + Right jodido
 	// Argumentos con "" no llegan a los builtins
+	// ./42sh -c -cccc "command"
 
 #pragma endregion
 
@@ -140,8 +141,8 @@
 #pragma region "Main"
 
 	int main(int argc, const char **argv, const char **envp) {
-		if (initialize(argc, argv, envp)) exit_error(NOTHING, 1, NULL, true);
-		if (tests(argc, argv, envp)) exit_error(NOTHING, 0, NULL, true);
+		if (initialize(argc, argv, envp))	exit_error(NOTHING, 1, NULL, true);
+		if (tests(argc, argv, envp))		exit_error(NOTHING, 0, NULL, true);
 
 		if (argc == 2 && !strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);

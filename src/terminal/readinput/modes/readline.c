@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -614,7 +614,7 @@
 								if (seq[1] == 'H') 						home();					//	Home			Cursor to the start
 								if (seq[1] == 'F')						end();					//	End				Cursor to the end
 								if (seq[1] == '3' && seq[2] == '~')		delete_char();			//	Delete			Delete
-								if (!strncmp(seq + 1, "3;5~", 4))	delete_word();			//	CTRL + Delete	Delete current word
+								if (!strncmp(seq + 1, "3;5~", 4))	delete_word();				//	CTRL + Delete	Delete current word
 							}
 						} return (1);
 					} return (0);
