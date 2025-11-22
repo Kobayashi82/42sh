@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:30:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 14:59:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@
 
 		#pragma region "IS"
 
-			int		ft_isspace_s(char *str);
-			int		ft_isalnum_s(char *str);
-			int		ft_isdigit_s(char *str);
+			int		ft_isspace_s(const char *str);
+			int		ft_isalnum_s(const char *str);
+			int		ft_isdigit_s(const char *str);
 			char	*ft_toupper_s(char *str);
 			char	*ft_tolower_s(char *str);
 
@@ -53,6 +53,14 @@
 			char	*ft_strjoin_sep(char *s1, char *sep, char *s2, int frees);
 
 		#pragma endregion
+
+		#pragma region "STRDUP"
+
+			char	*ft_strdup(const char *s1);
+			char	*ft_strndup(const char *s1, size_t n);
+
+		#pragma endregion
+
 
 		#pragma region "LEN"
 

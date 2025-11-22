@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@
 		char *get_fullpath(char *path) {
 			if (!path || strchr(path, '/')) return (resolve_path(path));
 
-			char *path_list = strdup(variables_find_value(vars_table, "PATH"));
+			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
 			if (!path_list) return (strdup(path));
 
 			char *dir = ft_strtok(path_list, ":", 2);
@@ -269,7 +269,7 @@
 				char **final_paths = calloc(2, sizeof (char *));
 				char *fullpath = resolve_path(resolve_symlink(cmd));
 				if (access(fullpath, F_OK) != -1) {
-					final_paths[0] = strdup(fullpath);
+					final_paths[0] = ft_strdup(fullpath);
 					return (final_paths);
 				} return (free(fullpath), NULL);
 			}
@@ -384,7 +384,7 @@
 					if (dist < min_distance) {
 						min_distance = dist;
 						free(best_match);
-						best_match = strdup(entry->d_name);
+						best_match = ft_strdup(entry->d_name);
 					}
 				}
 			} closedir(dir);
@@ -401,7 +401,7 @@
 		// Corrects a potentially misspelled directory path using fuzzy matching
 		char *correct_path(char *path) {
 			char resolved_path[1024] = {0};
-			char *token, *temp_path = strdup(path);
+			char *token, *temp_path = ft_strdup(path);
 
 			// Handle absolute and relative paths
 			if (path[0] == '/') strcpy(resolved_path, "/");

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,9 @@
 		if (value[0] != '/') {
 			char cwd[4096];
 			if (!getcwd(cwd, sizeof(cwd))) return (pattern_clear(&patterns), NULL);
-			if (!strcmp(cwd, "/"))	basedir = strdup(cwd);
+			if (!strcmp(cwd, "/"))	basedir = ft_strdup(cwd);
 			else						basedir = ft_strjoin(cwd, "/", 0);
-		} else							dir = strdup("/");
+		} else							dir = ft_strdup("/");
 
 		t_arg *files = search(patterns, basedir, dir);
 		free(basedir); free(dir);

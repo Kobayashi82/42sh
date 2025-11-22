@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 
 			unsigned int index = hash_index(name);
 			new_builtin = calloc(1, sizeof(t_builtin));
-			new_builtin->name = strdup(name);
+			new_builtin->name = ft_strdup(name);
 			if (disabled != -1) new_builtin->disabled = disabled;
 			if (special != -1) new_builtin->special = special;
 			if (execute) new_builtin->execute = execute;
@@ -122,7 +122,7 @@
 				t_builtin *builtin = builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
-						array[i] = strdup(builtin->name);
+						array[i] = ft_strdup(builtin->name);
 						i++;
 					}
 					builtin = builtin->next;

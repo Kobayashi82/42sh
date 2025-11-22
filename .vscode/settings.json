@@ -33,7 +33,8 @@
 		"initializer_list": "c",
 		"syntax.h": "c",
 		"string.h": "c",
-		"random": "c"
+		"random": "c",
+		"input.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,7 @@
 				length -= 1;
 			}
 			history[length] = malloc(sizeof(HIST_ENTRY));
-			history[length]->line = strdup(line);
+			history[length]->line = ft_strdup(line);
 			history[length]->length = ft_strlen(line);
 			history[length]->event = event++;
 			history[length++]->data = NULL;
@@ -340,7 +340,7 @@
 			if (history && pos < length && history[pos]) {
 				if (history[pos]->line) free(history[pos]->line);
 				if (history[pos]->data) free(history[pos]->data);
-				history[pos]->line = strdup(line);
+				history[pos]->line = ft_strdup(line);
 				history[pos]->length = ft_strlen(line);
 				history[pos]->data = data;
 			}

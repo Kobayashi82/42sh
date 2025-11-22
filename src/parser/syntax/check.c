@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,11 @@
 				syntax_error(IN_TOKEN, NULL, line);
 			} else {
 				char *value = NULL;
-				if (context->stack->type == CTX_QUOTE) value = strdup("'");
-				else if (context->stack->type == CTX_DQUOTE) value = strdup("\"");
-				else if (context->stack->type == CTX_BACKTICK) value = strdup("`");
-				else if (context->stack->type == CTX_BRACE || context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND) value = strdup("}");
-				else value = strdup(")");
+				if (context->stack->type == CTX_QUOTE) value = ft_strdup("'");
+				else if (context->stack->type == CTX_DQUOTE) value = ft_strdup("\"");
+				else if (context->stack->type == CTX_BACKTICK) value = ft_strdup("`");
+				else if (context->stack->type == CTX_BRACE || context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND) value = ft_strdup("}");
+				else value = ft_strdup(")");
 				syntax_error(IN_TOKEN_EOF, value, line);
 			}
 			result = 2;

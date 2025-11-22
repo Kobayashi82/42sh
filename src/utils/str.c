@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@
 #pragma region "STR_STRING"
 
 
-	int	ft_isspace_s(char *str) { while (str && *str) { if (!isspace(*str++)) return (0); } return (1); }
-	int	ft_isalnum_s(char *str) { while (str && *str) { if (!isalnum(*str)) return (0); } return (1); }
+	int	ft_isspace_s(const char *str) { while (str && *str) { if (!isspace(*str++)) return (0); } return (1); }
+	int	ft_isalnum_s(const char *str) { while (str && *str) { if (!isalnum(*str)) return (0); } return (1); }
 
-	int	ft_isdigit_s(char *str) {
+	int	ft_isdigit_s(const char *str) {
 		if (str && (*str == '+' || *str == '-')) str++;
 		if (!str || *str == '\0') return (0);
 		while (*str) {
@@ -130,6 +130,41 @@
 			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) free(str2);
 
 			return (new_str);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "STR_DUP"
+
+	#pragma region "StrDup"
+
+		char	*ft_strdup(const char *s1) {
+			if (!s1) return (NULL);
+
+			char *copy = malloc(ft_strlen(s1) + 1);
+			if (!copy) return (NULL);
+
+			strlcpy(copy, s1, ft_strlen(s1) + 1);
+			return (copy);
+		}
+
+	#pragma endregion
+
+	#pragma region "StrNDup"
+
+		char	*ft_strndup(const char *s1, size_t n) {
+			if (!s1 || n == 0) return (NULL);
+
+			size_t len = 0;
+    		while (len < n && s1[len] != '\0') len++;
+
+			char *copy = malloc(len + 1);
+			if (!copy) return (NULL);
+
+			strlcpy(copy, s1, len + 1);
+			return (copy);
 		}
 
 	#pragma endregion

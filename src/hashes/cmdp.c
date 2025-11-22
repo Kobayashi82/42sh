@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 			t_cmdp *new_cmdp = cmdp_find(name, true);
 			if (new_cmdp) {
 				free(new_cmdp->path);
-				new_cmdp->path = strdup(path);
+				new_cmdp->path = ft_strdup(path);
 
 				return (0);
 			}
@@ -59,8 +59,8 @@
 			unsigned int index = hash_index(name);
 			new_cmdp = calloc(1, sizeof(t_cmdp));
 
-			new_cmdp->name = strdup(name);
-			new_cmdp->path = strdup(path);
+			new_cmdp->name = ft_strdup(name);
+			new_cmdp->path = ft_strdup(path);
 
 			new_cmdp->next = cmdp_table[index];
 			cmdp_table[index] = new_cmdp;
@@ -133,7 +133,7 @@
 				t_cmdp *cmdp = cmdp_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) {
-						array[i] = strdup(cmdp->path);
+						array[i] = ft_strdup(cmdp->path);
 						i++;
 					}
 					cmdp = cmdp->next;

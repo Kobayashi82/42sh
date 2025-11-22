@@ -10,7 +10,7 @@ int		__real_dup2(int fd, int fd2);
 
 void	__wrap_exit(int status)
 {
-	// free((void *)-42);
+	free((void *)-42);
 	// close(-42);
 	__real_exit(status);
 }

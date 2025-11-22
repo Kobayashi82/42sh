@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@
 
 		char *hist_fc_command = NULL;
 		HIST_ENTRY *hist_curr = history_get_last_if_added();
-		if (hist_curr) hist_fc_command = strdup(hist_curr->line);
+		if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
 		history_remove_last_if_added(true);
 
 		if (query) {
@@ -106,7 +106,7 @@
 							break;
 						}
 						if (!strncmp(hist->line, query, ft_strlen(query))) {
-							command = strdup(hist->line);
+							command = ft_strdup(hist->line);
 							break;
 						}
 					}
@@ -121,12 +121,12 @@
 						size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
 						HIST_ENTRY *hist = history_get(pos);
 						if (!hist) result = 1;
-						else command = strdup(hist->line);
+						else command = ft_strdup(hist->line);
 					}
 				} else {
 					HIST_ENTRY *hist = history_event(number);
 					if (!hist) result = 1;
-					else command = strdup(hist->line);
+					else command = ft_strdup(hist->line);
 				}
 			}
 		} else {
@@ -134,7 +134,7 @@
 			if (last_pos--) {
 				HIST_ENTRY *hist = history_get(last_pos);
 				if (!hist) result = 1;
-				else command = strdup(hist->line);
+				else command = ft_strdup(hist->line);
 			} else result = 1;
 		}
 
@@ -310,7 +310,7 @@
 			// Remove fc command from history
 			char *hist_fc_command = NULL;
 			HIST_ENTRY *hist_curr = history_get_last_if_added();
-			if (hist_curr) hist_fc_command = strdup(hist_curr->line);
+			if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
 			history_remove_last_if_added(true);
 
 			// Set first and last

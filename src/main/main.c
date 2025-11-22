@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 18:10:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:10:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
 	#include "terminal/input.h"
+	#include "parser/lexer.h"
 	#include "parser/expansions/globbing.h"
 	#include "parser/tokenizer/args.h"
 	#include "parser/tokenizer/token.h"
@@ -101,6 +102,28 @@
 				free(terminal.input);
 				return (!shell.interactive);
 			}
+
+			t_lx_status status;
+			while ((status = lexer(terminal.input)) == LX_INCOMPLETE) {
+				char *cont_input = get_input(); // PS2
+
+				if (!cont_input) {
+					free(terminal.input);
+					// free lx_tokens;
+					return (!shell.interactive);
+				}
+
+				terminal.input = ft_strjoin(terminal.input, cont_input, 3); // Add newline if necessary (quoted, parenthesis, etc.)
+			}
+
+			if (status == LX_FAILED) {
+				free(terminal.input);
+				// free lx_tokens;
+				return (!shell.interactive);
+			}
+
+			lexer_print();
+			// parser
 
 			if (!strcmp(terminal.input, "$?"))
 				printf("Exit code: %d\n", shell.exit_code);

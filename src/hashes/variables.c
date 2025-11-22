@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 			if (new_var) {
 				if (!new_var->readonly || force) {
 					free(new_var->value);
-					new_var->value = strdup(value);
+					new_var->value = ft_strdup(value);
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
@@ -69,8 +69,8 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = strdup(key);
-			if (value) new_var->value = strdup(value);
+			new_var->name = ft_strdup(key);
+			if (value) new_var->value = ft_strdup(value);
 
 			if (readonly != -1) new_var->readonly = readonly;
 			if (exported != -1) new_var->exported = exported;
@@ -105,9 +105,9 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = strdup(key);
+			new_var->name = ft_strdup(key);
 			new_var->value = NULL;
-			if (value) new_var->value = strdup(value);
+			if (value) new_var->value = ft_strdup(value);
 
 			if (readonly != -1) new_var->readonly = readonly;
 			if (exported != -1) new_var->exported = exported;
@@ -289,7 +289,7 @@
 				while (j < 5) var_type[j++] = ' ';
 				var_type[j] = '\0';
 				
-				if (type == INTERNAL)	array[i] = strdup(var->name);
+				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
 				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
 
 				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
