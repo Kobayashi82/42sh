@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 18:12:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@
 		enable_raw_mode();
 
 		free(term_prompt);
-		term_prompt = strdup(prompt);
+		term_prompt = ft_strdup(prompt);
 		if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
 
 		cursor_get();

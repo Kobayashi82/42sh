@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@
 				print(STDOUT_FILENO, NULL, RESET);
 				while (opts->args) {
 					t_context ctx_history;	memset(&ctx_history, 0, sizeof(t_context));
-					char *line = strdup(opts->args->value);
+					char *line = ft_strdup(opts->args->value);
 					expand_history(&line, &ctx_history, false);
 					print(STDOUT_FILENO, line, FREE_JOIN);
 					print(STDOUT_FILENO, "\n", JOIN);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 		char *delimiter = strchr(line, sep);
 		if (!delimiter) {
-			*key = strdup(line);
+			*key = ft_strdup(line);
 			return (1);
 		}
 
@@ -49,7 +49,7 @@
 		strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
 
-		*value = strdup(delimiter + 1);
+		*value = ft_strdup(delimiter + 1);
 
 		size_t value_len = ft_strlen(*value);
 		while (value_len > 0 && ((*value)[value_len - 1] == '\n' || (*value)[value_len - 1] == '\r')) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
 				free(new_alias->value);
-				if (value)	new_alias->value = strdup(value);
-				else		new_alias->value = strdup("");
+				if (value)	new_alias->value = ft_strdup(value);
+				else		new_alias->value = ft_strdup("");
 
 				return (0);
 			}
@@ -55,10 +55,10 @@
 			unsigned int index = hash_index(key);
 			new_alias = calloc(1, sizeof(t_alias));
 
-			new_alias->name = strdup(key);
+			new_alias->name = ft_strdup(key);
 			new_alias->value = NULL;
-			if (value)	new_alias->value = strdup(value);
-			else		new_alias->value = strdup("");
+			if (value)	new_alias->value = ft_strdup(value);
+			else		new_alias->value = ft_strdup("");
 
 			new_alias->next = alias_table[index];
 			alias_table[index] = new_alias;

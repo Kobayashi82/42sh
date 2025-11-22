@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -932,7 +932,7 @@
 			static void copy(bool to_end) {
 				if (to_end) {
 					if (clipboard) free(clipboard);
-					clipboard = strdup(&buffer.value[buffer.position]);
+					clipboard = ft_strdup(&buffer.value[buffer.position]);
 				}
 			}
 

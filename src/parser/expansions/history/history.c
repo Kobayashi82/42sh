@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 		(*end)++;
 
 		if (is_double) {
-			number = strdup("1");
+			number = ft_strdup("1");
 			pos = 1;
 		} else {
 			while (isdigit(value[*end]) && *end < length) (*end)++;
@@ -190,7 +190,7 @@
 		}
 
 		if (changes) {
-			char *new_value = strdup(value);
+			char *new_value = ft_strdup(value);
 			if (show_expansion) {
 				print(STDOUT_FILENO, new_value, RESET);
 				print(STDOUT_FILENO, "\n", PRINT);

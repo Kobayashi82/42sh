@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,7 +163,7 @@
 			t_userinfo *user = get_userinfo_by_id(uid);
 			char *tmp = NULL;
 			if (user) {
-				tmp = strdup(user->home);
+				tmp = ft_strdup(user->home);
 				free_user(user);
 			}
 
@@ -179,7 +179,7 @@
 			t_userinfo *user = get_userinfo_by_name(name);
 			char *tmp = NULL;
 			if (user) {
-				tmp = strdup(user->home);
+				tmp = ft_strdup(user->home);
 				free_user(user);
 			}
 

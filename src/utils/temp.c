@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -334,7 +334,7 @@
 		char *ft_mkdtemp(char *path, char *name) {
 			if (!path || !is_writable_dir(path)) {
 				if (!(path = get_temp_dir())) return (NULL);
-			} else path = strdup(path);
+			} else path = ft_strdup(path);
 			path = ft_strjoin(path, "/", 1);
 			char *template = random_template();
 			char *fullpath = ft_strjoin_sep(path, name, template, 6);
