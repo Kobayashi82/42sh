@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 20:15:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 20:25:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,12 +162,19 @@ static char	*extract_expansion(const char *input, int *i) {
 		if (c == '(')			paren_depth++;
 		else if (c == ')')		{ paren_depth--; if (paren_depth < 0) paren_depth = 0; }
 		else if (c == '{')		brace_depth++;
-		else if (c == '}')		{ brace_depth--; if (brace_depth < 0) brace_depth = 0; }
+		else if (c == '}')		{ 
+			if (brace_depth > 0) brace_depth--;
+			// Check if we should stop here
+			if (brace_depth == 0 && paren_depth == 0 && bracket_depth == 0 && opening == '{') {
+				j++;
+				break;
+			}
+		}
 		else if (c == '[')		bracket_depth++;
 		else if (c == ']')		{ bracket_depth--; if (bracket_depth < 0) bracket_depth = 0; }
 
-		// Check if we've closed all brackets
-		if (paren_depth == 0 && brace_depth == 0 && bracket_depth == 0) {
+		// Check if we've closed all brackets for non-brace openings
+		if (opening != '{' && paren_depth == 0 && brace_depth == 0 && bracket_depth == 0) {
 			j++;
 			break;
 		}
@@ -180,7 +187,11 @@ static char	*extract_expansion(const char *input, int *i) {
 		if (!expansion) return (NULL);
 		strncpy(expansion, &input[start], j - start);
 		expansion[j - start] = '\0';
-		*i = j - 1;
+		// Ensure j doesn't go beyond string bounds
+		int len = ft_strlen(input);
+		if (j > len) j = len;
+		if (j > 0) *i = j - 1;
+		else *i = 0;
 		return (expansion);
 	}
 
@@ -216,6 +227,7 @@ static t_lx_type	get_token_at_pos(const char *input, int *i, char **token_out) {
 
 	// Standard operators
 	if (c == '&' && next == '&')		{ (*i)++; *token_out = ft_strdup("&&");				return (LX_AND);				}
+	if (c == '&')						{ *token_out = ft_strdup("&");						return (LX_BACKGROND);			}	// background
 	if (c == '|' && next == '|')		{ (*i)++; *token_out = ft_strdup("||");				return (LX_OR);					}
 	if (c == '|')						{ *token_out = ft_strdup("|");						return (LX_PIPE);				}
 	if (c == ';')						{ *token_out = ft_strdup(";");						return (LX_SEMICOLON);			}
@@ -257,7 +269,7 @@ static char	*extract_word(const char *input, int *i) {
 			quote = c;
 			j++; continue;
 		}
-		if (quote == c) {
+		if (quote && c == quote) {
 			quote = 0;
 			j++; continue;
 		}
@@ -274,7 +286,7 @@ static char	*extract_word(const char *input, int *i) {
 			j++; continue;
 		}
 
-		// Outside quotes: stop at operators or whitespace
+		// Outside quotes: stop at operators or whitespace (only if not escaped)
 		if (c == ' ' || c == '\t' || c == '\n' || 
 		    c == '|' || c == '&' || c == ';' || 
 		    c == '>' || c == '<' || c == '(' || c == ')' || 
@@ -357,7 +369,7 @@ int lexer(const char *input) {
 void lexer_print() {
 	t_lx_token *token = lx_tokens;
 	const char *type_names[] = {
-		"WORD", "PIPE", "AND", "OR", "BRACE", "BRACE_GROUP", "VAR", "CMD_SHELL",
+		"WORD", "PIPE", "BACKGROND", "AND", "OR", "BRACE", "BRACE_GROUP", "VAR", "CMD_SHELL",
 		"SHELL", "CMD_ARIT", "ARIT", "SEMICOLON", "REDIR_HEREDOC", "REDIR_IN",
 		"REDIR_OUT", "REDIR_APPEND", "REDIR_HERESTRING"
 	};
@@ -366,51 +378,3 @@ void lexer_print() {
 		token = token->next;
 	}
 }
-
-		// std::string Utils::environment_expand(std::map<std::string, std::string>& env, const std::string& line) {
-		// 	std::string	result;
-		// 	char		quoteChar = 0;
-		// 	bool		escaped = false;
-
-		// 	for (size_t i = 0; i < line.length(); ++i) {
-		// 		char c = line[i];
-
-		// 		if (escaped)								{ escaped = false;	result += c;	continue; }
-		// 		if (quoteChar != '\'' && c == '\\')			{ escaped = true;	result += c;	continue; }
-		// 		if (!quoteChar && (c == '"' || c == '\''))	{ quoteChar = c;	result += c;	continue; }
-		// 		if (quoteChar && c == quoteChar)			{ quoteChar = 0;	result += c;	continue; }
-
-		// 		if (quoteChar != '\'' && c == '$') {
-		// 			if (i + 1 < line.length() && line[i + 1] == '{') {							// ${VAR}
-		// 				size_t	start = i + 2;
-		// 				size_t	end = start;
-
-		// 				while (end < line.length() && line[end] != '}') ++end;
-
-		// 				if (end < line.length()) {
-		// 					std::string var_expr = line.substr(start, end - start);
-		// 					result += environment_expand_expr(env, var_expr); 
-		// 					i = end;															continue;
-		// 				}
-		// 			} else {																	// $VAR
-		// 				size_t	start = i + 1;
-		// 				size_t	end = start;
-
-		// 				while (end < line.length() && (isalnum(static_cast<unsigned char>(line[end])) || line[end] == '_')) ++end;
-
-		// 				if (end > start) {
-		// 					std::string var_name = line.substr(start, end - start);
-		// 					auto it = env.find(var_name);
-		// 					if (it != env.end()) result += it->second;
-		// 					i = end - 1; continue;
-		// 				}
-		// 			}
-		// 		}
-
-		// 		result += c;
-		// 	}
-
-		// 	if (quoteChar || escaped) throw std::runtime_error("unclosed quote or unfinished escape sequence");
-
-		// 	return (result);
-		// }
