@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 20:01:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/22 20:15:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,35 @@ t_lx_token	*lx_tokens;
 static char	*extract_expansion(const char *input, int *i) {
 	int		start = *i;
 	int		j = start;
-	int		depth = 0;
+	int		paren_depth = 0;
+	int		brace_depth = 0;
+	int		bracket_depth = 0;
 	char	quote = 0;
 	bool	escaped = false;
+	char	opening = input[j];
+
+	// Determine what we're expanding
+	if (opening == '$' && j + 1 < (int)ft_strlen(input)) {
+		char next = input[j + 1];
+		if (next == '(') {
+			j += 2;
+			paren_depth = 1;
+			opening = '(';
+		} else if (next == '{') {
+			j += 2;
+			brace_depth = 1;
+			opening = '{';
+		}
+	} else if (opening == '(') {
+		j++;
+		paren_depth = 1;
+	} else if (opening == '{') {
+		j++;
+		brace_depth = 1;
+	} else if (opening == '[') {
+		j++;
+		bracket_depth = 1;
+	}
 
 	while (input[j]) {
 		char c = input[j];
@@ -132,13 +158,18 @@ static char	*extract_expansion(const char *input, int *i) {
 			j++; continue;
 		}
 
-		// Track nesting
-		if (c == '(' || c == '{' || c == '[')
-			depth++;
-		else if (c == ')' || c == '}' || c == ']') {
-			depth--;
-			if (depth < 0) break;
-			if (depth == 0 && (c == ')' || c == '}' || c == ']')) { j++; break; }
+		// Track nesting for each bracket type separately
+		if (c == '(')			paren_depth++;
+		else if (c == ')')		{ paren_depth--; if (paren_depth < 0) paren_depth = 0; }
+		else if (c == '{')		brace_depth++;
+		else if (c == '}')		{ brace_depth--; if (brace_depth < 0) brace_depth = 0; }
+		else if (c == '[')		bracket_depth++;
+		else if (c == ']')		{ bracket_depth--; if (bracket_depth < 0) bracket_depth = 0; }
+
+		// Check if we've closed all brackets
+		if (paren_depth == 0 && brace_depth == 0 && bracket_depth == 0) {
+			j++;
+			break;
 		}
 
 		j++;
@@ -159,13 +190,13 @@ static char	*extract_expansion(const char *input, int *i) {
 static t_lx_type	get_token_at_pos(const char *input, int *i, char **token_out) {
 	int		curr = *i;
 	char	c = input[curr];
-	char	next = input[curr + 1];
-	char	next2 = input[curr + 2];
+	char	next = (input[curr + 1] != '\0') ? input[curr + 1] : '\0';
+	char	next2 = (input[curr + 2] != '\0') ? input[curr + 2] : '\0';
 
 	// $ expansions
 	if (c == '$') {
 		if (next == '(') {
-			if (next2 == '(')			{ *token_out = extract_expansion(input, i);			return (LX_CMD_ARIT);			}	// $(( ... )) - arithmetic substitution
+			if (next2 == '(')			{ (*i)++; *token_out = extract_expansion(input, i);	return (LX_CMD_ARIT);			}	// $(( ... )) - arithmetic substitution
 			else						{ *token_out = extract_expansion(input, i);			return (LX_CMD_SHELL);			}	// $( ... ) - command substitution
 		}
 		else if (next == '{')			{ *token_out = extract_expansion(input, i);			return (LX_VAR);				}	// ${ ... } - parameter expansion
@@ -179,6 +210,7 @@ static t_lx_type	get_token_at_pos(const char *input, int *i, char **token_out) {
 	if (c == '}')						{ *token_out = ft_strdup("}");						return (LX_BRACE);				}	// Handle closing brace
 
 	if (c == '(' && next == '(')		{ (*i)++; *token_out = extract_expansion(input, i);	return (LX_CMD_ARIT);			}	// Handle (( )) - arithmetic
+	if (c == '(')						{ *token_out = ft_strdup("(");						return (LX_CMD_SHELL);			}	// Handle ( - subshell
 
 	if (c == '[' && next == '[')		{ (*i)++; *token_out = extract_expansion(input, i);	return (LX_SHELL);				}	// Handle [[ ]] - conditional
 
@@ -285,6 +317,7 @@ int lexer(const char *input) {
 		if (!new_token) return (LX_FAILED);
 
 		// Get token type and content
+		token_str = NULL;
 		type = get_token_at_pos(input, &i, &token_str);
 
 		if (type != LX_WORD && token_str == NULL) {
@@ -323,8 +356,13 @@ int lexer(const char *input) {
 
 void lexer_print() {
 	t_lx_token *token = lx_tokens;
+	const char *type_names[] = {
+		"WORD", "PIPE", "AND", "OR", "BRACE", "BRACE_GROUP", "VAR", "CMD_SHELL",
+		"SHELL", "CMD_ARIT", "ARIT", "SEMICOLON", "REDIR_HEREDOC", "REDIR_IN",
+		"REDIR_OUT", "REDIR_APPEND", "REDIR_HERESTRING"
+	};
 	while (token) {
-		printf("[%d] %s - %d\n", token->type, token->token, token->status);
+		printf("[%s] %s - %d\n", type_names[token->type], token->token, token->status);
 		token = token->next;
 	}
 }
