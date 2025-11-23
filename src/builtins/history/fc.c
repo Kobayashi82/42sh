@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/23 12:01:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	#include "terminal/print.h"
 	#include "terminal/readinput/history.h"
 	#include "parser/tokenizer/args.h"
-	#include "parser/expansions/history.h"
+	#include "expansion/history.h"
 	#include "parser/syntax/syntax.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"

@@ -6,53 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 20:25:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/23 11:33:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/lexer.h"
 #include "utils/libft.h"
-#include <string.h>
-#include <stdlib.h>
 
 t_lx_token	*lx_tokens;
 
-// ""		double quote
-// ''		single quote
-// $""		translatable string
-// $''		ANSI-C quoting
-// ${		parameter expression
-// {		brace expansion
-// {[space]	command group
-// [space]}	command group close
-// }		brace close
-
-// (		subshell
-// ((		arithmetic
-// $(		command substitution
-// $((		arithmetic substitution
-// )		parenthesis close
-// ))		double parenthesis close
-// ``		command substitution
-// &		background
-// &&		and
-// |		pipe
-// ||		or
-// ;		semicolon
-// >		redirección de salida
-// >>		redirección de salida (append)
-// <		redirección de entrada estándar
-// <<		here-document
-// <<-		here-document con tabs ignorados
-// <<<		here-string
-// <>		abrir archivo para lectura/escritura
-// <&		duplica descriptor de entrada
-// >&		duplica descriptor de salida
-// &>		redirige stdout y stderr
-// &>>		append de stdout y stderr
-// [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
-// >|		sobrescribe incluso con noclobber activado
-// #		comentario
 
 // Esto no
 // $$		PID del shell actual
@@ -62,40 +24,8 @@ t_lx_token	*lx_tokens;
 // $@, $*	todos los argumentos
 // $0		nombre del script
 // $1...	argumentos posicionales
-// $var		expansión simple de variable
+// $VAR		expansión simple de variable
 
-// Palabras reservadas (keywords)
-// No son operadores pero tu lexer probablemente necesita reconocerlos:
-
-// Operadores de control:
-
-// ;; → fin de caso en case statements
-// ;& → fallthrough en case (bash 4+)
-// ;;& → continuar testeando casos (bash 4+)
-// ! → negación de pipeline
-
-// if, then, else, elif, fi
-// case, esac, in
-// while, until, do, done
-// for, select
-// function
-// time
-// ! (cuando es keyword, no operador)
-// [[, ]] (test compuesto en bash)
-// coproc (bash)
-
-// Check if a character needs nesting tracking
-// static int	is_opening_bracket(char c) {
-// 	return (c == '(' || c == '{' || c == '[' || c == '"' || c == '\'' || c == '`');
-// }
-
-// static int	matching_close(char open) {
-// 	if (open == '(') return (')');
-// 	if (open == '{') return ('}');
-// 	if (open == '[') return (']');
-
-// 	return (open);
-// }
 
 // Extract a complex expansion like $() ${{}} ${} etc
 static char	*extract_expansion(const char *input, int *i) {
@@ -374,7 +304,7 @@ void lexer_print() {
 		"REDIR_OUT", "REDIR_APPEND", "REDIR_HERESTRING"
 	};
 	while (token) {
-		printf("[%s] %s - %d\n", type_names[token->type], token->token, token->status);
+		printf("[%s] %s\n", type_names[token->type], token->token);
 		token = token->next;
 	}
 }

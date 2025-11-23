@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/23 12:00:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 	#include "utils/libft.h"
 	#include "terminal/input.h"
-	#include "parser/expansions/arithmetics.h"
-	#include "parser/expansions/shell.h"
+	#include "expansion/arithmetic.h"
+	#include "expansion/command.h"
 	#include "parser/syntax/syntax.h"
 	#include "hashes/alias.h"
 	#include "main/options.h"
