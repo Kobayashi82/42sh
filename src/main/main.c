@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:10:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/23 11:57:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 	#include "hashes/builtin.h"
 	#include "terminal/input.h"
 	#include "parser/lexer.h"
-	#include "parser/expansions/globbing.h"
+	#include "expansion/globbing.h"
 	#include "parser/tokenizer/args.h"
 	#include "parser/tokenizer/token.h"
 	#include "builtins/builtins.h"

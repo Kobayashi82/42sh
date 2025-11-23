@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/21 12:27:13 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/23 11:54:09 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,7 +68,75 @@ NAME	=	42sh
 # ── FILES ── #
 # ─────────── #
 
-SRCS	=	builtins/alias/alias.c						\
+SRCS	=	main/main.c									\
+			main/options.c								\
+			main/shell.c								\
+			main/error.c								\
+														\
+														\
+			terminal/signal.c							\
+			terminal/input.c							\
+			terminal/print.c							\
+														\
+			terminal/readinput/readinput.c				\
+			terminal/readinput/modes/dumb.c				\
+			terminal/readinput/modes/readline.c			\
+			terminal/readinput/modes/vi.c				\
+			terminal/readinput/common/auto_complete.c	\
+			terminal/readinput/common/history_search.c	\
+			terminal/readinput/common/history.c			\
+			terminal/readinput/common/prompt.c			\
+			terminal/readinput/common/termcaps.c		\
+			terminal/readinput/common/undo.c			\
+														\
+														\
+			parser/lexer/lexer.c						\
+			parser/lexer/word.c							\
+			parser/lexer/keyword.c						\
+			parser/lexer/operator.c						\
+			parser/lexer/grouping.c						\
+			parser/lexer/expansion.c					\
+			parser/lexer/redirection.c					\
+														\
+			parser/parser/parser.c						\
+			parser/parser/command.c						\
+			parser/parser/control.c						\
+			parser/parser/arithmetic.c					\
+			parser/parser/expansion.c					\
+			parser/parser/redirection.c					\
+														\
+			parser/ast/ast.c							\
+														\
+			parser/borrar/syntax/check.c				\
+			parser/borrar/syntax/context.c				\
+			parser/borrar/syntax/error.c				\
+			parser/borrar/tokenizer/args.c				\
+			parser/borrar/tokenizer/parser.c			\
+			parser/borrar/tokenizer/tokenizer.c			\
+														\
+														\
+			expansion/history.c							\
+			expansion/alias.c							\
+			expansion/brace.c							\
+			expansion/tilde.c							\
+			expansion/parameter.c						\
+			expansion/command.c							\
+			expansion/arithmetic.c						\
+			expansion/process.c							\
+			expansion/globbing/globbing.c				\
+			expansion/globbing/match.c					\
+			expansion/globbing/pattern.c				\
+			expansion/globbing/brackets.c				\
+														\
+														\
+			hashes/alias.c								\
+			hashes/builtin.c							\
+			hashes/cmdp.c								\
+			hashes/key_value.c							\
+			hashes/variables.c							\
+														\
+														\
+			builtins/alias/alias.c						\
 			builtins/alias/unalias.c					\
 			builtins/env/declare.c						\
 			builtins/env/export.c						\
@@ -102,56 +170,6 @@ SRCS	=	builtins/alias/alias.c						\
 			builtins/shell/type.c						\
 			builtins/utils/executer.c					\
 			builtins/utils/options.c					\
-														\
-														\
-			hashes/alias.c								\
-			hashes/builtin.c							\
-			hashes/cmdp.c								\
-			hashes/key_value.c							\
-			hashes/variables.c							\
-														\
-														\
-			main/error.c								\
-			main/main.c									\
-			main/options.c								\
-			main/shell.c								\
-														\
-														\
-			parser/expansions/alias/alias.c				\
-			parser/expansions/arithmetic/arithmetic.c	\
-			parser/expansions/brace/brace.c				\
-			parser/expansions/globbing/brackets.c		\
-			parser/expansions/globbing/globbing.c		\
-			parser/expansions/globbing/match.c			\
-			parser/expansions/globbing/pattern.c		\
-			parser/expansions/history/history.c			\
-			parser/expansions/parameter/parameter.c		\
-			parser/expansions/shell/shell.c				\
-														\
-			parser/syntax/check.c						\
-			parser/syntax/context.c						\
-			parser/syntax/error.c						\
-														\
-			parser/tokenizer/args.c						\
-			parser/tokenizer/lexer.c					\
-			parser/tokenizer/parser.c					\
-			parser/tokenizer/tokenizer.c				\
-														\
-														\
-			terminal/readinput/common/auto_complete.c	\
-			terminal/readinput/common/history_search.c	\
-			terminal/readinput/common/history.c			\
-			terminal/readinput/common/prompt.c			\
-			terminal/readinput/common/termcaps.c		\
-			terminal/readinput/common/undo.c			\
-			terminal/readinput/modes/dumb.c				\
-			terminal/readinput/modes/readline.c			\
-			terminal/readinput/modes/vi.c				\
-			terminal/readinput/readinput.c				\
-														\
-			terminal/input.c							\
-			terminal/print.c							\
-			terminal/signal.c							\
 														\
 														\
 			utils/array.c								\
