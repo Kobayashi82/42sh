@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:57:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 13:01:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@
 	#include "main/shell.h"
 	#include "main/error.h"
 	#include "tests/tests.h"
+
+	#include "parser/parser.h"
 
 #pragma endregion
 
@@ -103,26 +105,45 @@
 				return (!shell.interactive);
 			}
 
-			t_lx_status status;
-			while ((status = lexer(terminal.input)) == LX_INCOMPLETE) {
-				char *cont_input = get_input(); // PS2
-
-				if (!cont_input) {
-					free(terminal.input);
-					// free lx_tokens;
-					return (!shell.interactive);
-				}
-
-				terminal.input = ft_strjoin(terminal.input, cont_input, 3); // Add newline if necessary (quoted, parenthesis, etc.)
+			lexer_init(terminal.input);
+			
+			ast_node_t *ast = parse();
+			
+			while (!ast && lexer_needs_continuation()) {
+				char *more = get_input(); // ps2
+				lexer_append_input(more);
+				free(more);
+				ast = parse();
 			}
-
-			if (status == LX_FAILED) {
-				free(terminal.input);
-				// free lx_tokens;
-				return (!shell.interactive);
+			
+			if (ast) {
+				print_ast(ast);  // Debug
+				// execute(ast);  // Tu función de ejecución
+				ast_free(ast);
 			}
+			
+			lexer_cleanup();
 
-			lexer_print();
+			// t_lx_status status;
+			// while ((status = lexer(terminal.input)) == LX_INCOMPLETE) {
+			// 	char *cont_input = get_input(); // PS2
+
+			// 	if (!cont_input) {
+			// 		free(terminal.input);
+			// 		// free lx_tokens;
+			// 		return (!shell.interactive);
+			// 	}
+
+			// 	terminal.input = ft_strjoin(terminal.input, cont_input, 3); // Add newline if necessary (quoted, parenthesis, etc.)
+			// }
+
+			// if (status == LX_FAILED) {
+			// 	free(terminal.input);
+			// 	// free lx_tokens;
+			// 	return (!shell.interactive);
+			// }
+
+			// lexer_print();
 			// parser
 
 			if (!strcmp(terminal.input, "$?"))
