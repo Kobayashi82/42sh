@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 14:34:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 20:08:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@
 	//	--------- READINPUT --------
 	void	disable_raw_mode();
 	char	*readinput(char *prompt);
-	char	*get_input();
 
 	//	---------- MODES -----------
 	int		readline(int readed);

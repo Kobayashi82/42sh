@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:54:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 20:05:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,13 +86,15 @@
 
 #pragma region "Input"
 
-	char *get_input() {
+	char *get_input(char *prompt) {
 		char *input = NULL;
 
+		if (!prompt) prompt = prompt_PS1;
+
 		if (!shell.interactive) {
-			if (!(input = readfile()))				return (NULL);
+			if (!(input = readfile()))			return (NULL);
 		} else {
-			if (!(input = readinput(prompt_PS1)))	return (NULL);
+			if (!(input = readinput(prompt)))	return (NULL);
 		}
 
 		// expand_input() debe de expandir alias, historial y hacer una comprobación básica de sintaxis
