@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:00:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:37:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "utils/libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/print.h"
-	#include "parser/tokenizer/args.h"
+	#include "parser/args.h"
 
 	#include <stdio.h>
 

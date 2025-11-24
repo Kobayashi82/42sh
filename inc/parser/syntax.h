@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/06 13:30:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:45:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,8 @@
 #pragma region Methods
 
 	//	--------- CONTEXT ----------
-	t_stack	*stack_push(t_stack **top, t_type type);
-	void	stack_pop(t_stack **top);
+	t_stack	*stack_push_2(t_stack **top, t_type type);
+	void	stack_pop_2(t_stack **top);
 	t_stack	*stack_copy(const t_stack *stack);
 	void	stack_clear(t_stack **stack);
 	int		is_context(t_stack *stack, t_type type);

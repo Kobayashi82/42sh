@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:57:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:39:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "terminal/colors.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/tokenizer/args.h"
+	#include "parser/args.h"
 	#include "expansion/globbing.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"

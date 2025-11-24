@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:58:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:54:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@
 	#include "terminal/signals.h"
 	#include "expansion/alias.h"
 	#include "expansion/history.h"
-	#include "parser/syntax/syntax.h"
 	#include "main/shell.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 
@@ -44,6 +44,7 @@
 		input_hist = ft_strdup(input);
 
 		expand_alias(&input, &ctx_alias);
+		printf("%s\n", input);
 
 		if (shell.interactive) history_add(input_hist, false);
 		free(input_hist);

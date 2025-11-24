@@ -6,10 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 13:48:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:36:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "utils/libft.h"
 #include "parser/parser.h"
 
 // Contexto para comillas, parentesis y llaves
@@ -21,6 +22,6 @@
 // Si error, devolver AST vacío, si más input, devolver NULL
 // Establecer exit_code en error
 
-ast_node_t *parse() {
+t_ast_node *parse() {
 	return (NULL);
 }

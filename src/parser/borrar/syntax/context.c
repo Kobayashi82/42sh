@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 13:26:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:44:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "parser/syntax/syntax.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 
@@ -21,7 +21,7 @@
 
 	#pragma region "Push"
 
-		t_stack *stack_push(t_stack **top, t_type type) {
+		t_stack *stack_push_2(t_stack **top, t_type type) {
 			t_stack *new_node = malloc(sizeof(t_stack));
 			
 			new_node->type = type;
@@ -37,7 +37,7 @@
 
 	#pragma region "Pop"
 
-		void stack_pop(t_stack **top) {
+		void stack_pop_2(t_stack **top) {
 			if (*top) {
 				t_stack *temp = *top;
 				*top = (*top)->prev;
@@ -50,7 +50,7 @@
 	#pragma region "Clear"
 
 		void stack_clear(t_stack **stack) {
-			while (*stack) stack_pop(stack);
+			while (*stack) stack_pop_2(stack);
 		}
 
 	#pragma endregion
@@ -64,7 +64,7 @@
 			t_stack *reversed = NULL;
 			
 			while (current) {
-				stack_push(&reversed, current->type);
+				stack_push_2(&reversed, current->type);
 				strcpy(reversed->value, current->value);
 				current = current->prev;
 			}
