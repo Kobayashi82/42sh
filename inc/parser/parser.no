@@ -22,6 +22,9 @@ typedef struct ast_node {
     // Para palabras y redirects
     char *value;
     int quoted;        // Si estaba entre comillas
+    
+    // Para comandos - almacenan nodos AST, no strings
+    // La expansión ocurre en el executor, no en el parser
     struct ast_node **argv;  // Array de nodos AST (palabras, subshells, expansiones)
     int argc;
     
@@ -37,4 +40,12 @@ typedef struct ast_node {
     struct ast_node *file;      // El archivo para la redirección
 } ast_node_t;
 
+// Estado del parser
+typedef struct {
+    token_t *current_token;
+    int has_error;
+} parser_state_t;
+
 ast_node_t *parse(void);
+void ast_free(ast_node_t *node);
+void print_ast(ast_node_t *node);
