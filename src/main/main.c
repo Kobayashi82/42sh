@@ -111,6 +111,12 @@
 			
 			while (!ast && lexer_needs_continuation()) {
 				char *more = get_input(); // ps2
+				if (!more) {
+					// Usuario canceló con Ctrl+C o EOF
+					lexer_cleanup();
+					free(terminal.input);
+					return (!shell.interactive);
+				}
 				lexer_append_input(more);
 				free(more);
 				ast = parse();
