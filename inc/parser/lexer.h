@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:59:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 23:10:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@
 
 	void	lexer_init(char *input);
 	void	lexer_append_input(char *more_input);
-	int		lexer_needs_more();
+	int		lexer_more_input();
 	void	lexer_free();
 	void	lexer_token_free(t_token *tok);
 	t_token	*lexer_token_next();

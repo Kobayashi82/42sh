@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 20:05:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 23:12:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@
 		input_hist = ft_strdup(input);
 
 		expand_alias(&input, &ctx_alias);
-		printf("%s\n", input);
 
 		if (shell.interactive) history_add(input_hist, false);
 		free(input_hist);
