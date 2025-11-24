@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 13:48:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:32:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,8 @@
 	#include "hashes/builtin.h"
 	#include "terminal/input.h"
 	#include "parser/lexer.h"
+	#include "parser/args.h"
 	#include "expansion/globbing.h"
-	#include "parser/tokenizer/args.h"
-	#include "parser/tokenizer/token.h"
 	#include "builtins/builtins.h"
 	#include "main/options.h"
 	#include "main/shell.h"
@@ -60,29 +59,29 @@
 			if (!input || ft_isspace_s(terminal.input)) return;
 
 			t_arg *args = test_create_args(input);
-			t_arg *current = args;
-			t_arg *next_command = NULL;
-			t_arg *subcommand_args = NULL;
+			// t_arg *current = args;
+			// t_arg *next_command = NULL;
+			// t_arg *subcommand_args = NULL;
 
-			while (current) {
-				if (current->value && current->value[0] == ';') {
-					next_command = current->next;
-					current->next = NULL;
-					args_clear(&args);
-					args = next_command;
-					current = next_command;
-				} else if (current->next && current->next->value && current->next->value[0] == ';') {
-					next_command = current->next;
-					current->next = NULL;
+			// while (current) {
+			// 	if (current->value && current->value[0] == ';') {
+			// 		next_command = current->next;
+			// 		current->next = NULL;
+			// 		args_clear(&args);
+			// 		args = next_command;
+			// 		current = next_command;
+			// 	} else if (current->next && current->next->value && current->next->value[0] == ';') {
+			// 		next_command = current->next;
+			// 		current->next = NULL;
 
-					globbing(args);
-					subcommand_args = args;
-					builtin_exec(subcommand_args);
-					args_clear(&subcommand_args);
-					args = next_command;
-					current = next_command;
-				} else	current = current->next;
-			}
+			// 		globbing(args);
+			// 		subcommand_args = args;
+			// 		builtin_exec(subcommand_args);
+			// 		args_clear(&subcommand_args);
+			// 		args = next_command;
+			// 		current = next_command;
+			// 	} else	current = current->next;
+			// }
 
 			if (args) {
 				globbing(args);
@@ -115,28 +114,28 @@
 
 			lexer_init(terminal.input);
 
-			ast_node_t *ast = parse();
+			// ast_node_t *ast = parse();
 
-			while (!ast && lexer_needs_continuation()) {
-				char *more = get_input(); // ps2
-				if (!more) {
-					// Usuario canceló con Ctrl+C o EOF
-					lexer_cleanup();
-					free(terminal.input);
-					return (!shell.interactive);
-				}
-				lexer_append_input(more);
-				free(more);
-				ast = parse();
-			}
+			// while (!ast && lexer_needs_continuation()) {
+			// 	char *more = get_input(); // ps2
+			// 	if (!more) {
+			// 		// Usuario canceló con Ctrl+C o EOF
+			// 		lexer_free();
+			// 		free(terminal.input);
+			// 		return (!shell.interactive);
+			// 	}
+			// 	lexer_append_input(more);
+			// 	free(more);
+			// 	ast = parse();
+			// }
 			
-			if (ast) {
-				// ast_print(ast);
-				// execute(ast);
-				ast_free(ast);
-			}
+			// if (ast) {
+			// 	// ast_print(ast);
+			// 	// execute(ast);
+			// 	ast_free(ast);
+			// }
 
-			lexer_cleanup();
+			lexer_free();
 
 			// ------------ PARSING ------------
 

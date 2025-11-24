@@ -34,7 +34,9 @@
 		"syntax.h": "c",
 		"string.h": "c",
 		"random": "c",
-		"input.h": "c"
+		"input.h": "c",
+		"cstdlib": "c",
+		"ast.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

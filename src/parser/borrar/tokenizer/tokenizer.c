@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 22:15:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:39:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "terminal/terminal.h"
-	#include "parser/tokenizer/args.h"
+	#include "parser/args.h"
 	#include "parser/tokenizer/token.h"
 
 #pragma endregion

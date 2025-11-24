@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 12:01:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:45:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "expansion/arithmetic.h"
-	#include "parser/syntax/syntax.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 
@@ -86,10 +86,10 @@
 
 				//	'	Handle Single Quotes
 			if (context->stack && context->stack->type == CTX_QUOTE) {
-				if (input[*i] == '\'') stack_pop(&context->stack);
+				if (input[*i] == '\'') stack_pop_2(&context->stack);
 				*i += 1; command_start = false; is_argument = true; continue;
 			} else if (input[*i] == '\'') {
-				if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP)) stack_push(&context->stack, CTX_QUOTE);
+				if (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP)) stack_push_2(&context->stack, CTX_QUOTE);
 				*i += 1; command_start = false; is_argument = true; continue;
 			}
 			
@@ -98,82 +98,82 @@
 
 				//	"	Close Double Quotes
 			if (input[*i] == '"' && context->stack && context->stack->type == CTX_DQUOTE) {
-				*i += 1; stack_pop(&context->stack);
+				*i += 1; stack_pop_2(&context->stack);
 				command_start = false; is_argument = true; continue;
 			}	//	))	Close Arithmetic Expansion or Arithmetic Expression
 			else if (!strncmp(&input[*i], "))", 2) && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_EXPAND)) {
 				is_argument = (context->stack->type == CTX_ARITHMETIC_EXPAND);
-				*i += 2; stack_pop(&context->stack);
+				*i += 2; stack_pop_2(&context->stack);
 				command_start = false; continue;
 			}	//	)	Close Command Substitution or Subshell or Arithmetic Group
 			else if (input[*i] == ')' && context->stack && (context->stack->type == CTX_SUBSHELL_COMMAND || context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_ARITHMETIC_GROUP || context->stack->type == CTX_PROCESS_SUB_IN || context->stack->type == CTX_PROCESS_SUB_OUT)) {
 				if (context->stack->type == CTX_SUBSHELL && starting == *i) return (syntax_error(TOKEN_NEAR, strdup("empty subshell"), *line), 2);
-				*i += 1; stack_pop(&context->stack);
+				*i += 1; stack_pop_2(&context->stack);
 				if (context->stack && context->stack->type != CTX_ARITHMETIC_GROUP) return (0);
 				command_start = false; is_argument = true; continue;
 			}	//	`	Close Backtick
 			else if (input[*i] == '`' && is_context(context->stack, CTX_BACKTICK)) {
-				while (context->stack && context->stack->type != CTX_BACKTICK) stack_pop(&context->stack);
-				*i += 1; stack_pop(&context->stack);
+				while (context->stack && context->stack->type != CTX_BACKTICK) stack_pop_2(&context->stack);
+				*i += 1; stack_pop_2(&context->stack);
 				command_start = false; is_argument = true; continue;
 			}	//	}	Close Parameter Expansion or Command Group
 			else if (input[*i] == '}' && context->stack && (context->stack->type == CTX_BRACE_PARAM || context->stack->type == CTX_BRACE_COMMAND)) {
 				is_argument = (context->stack->type == CTX_BRACE_PARAM);
-				*i += 1; stack_pop(&context->stack);
+				*i += 1; stack_pop_2(&context->stack);
 				command_start = false; continue;
 			}
 	
 			//	"	Open Double Quotes
 			if (input[*i] == '"' && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-				*i += 1; stack_push(&context->stack, CTX_DQUOTE);
+				*i += 1; stack_push_2(&context->stack, CTX_DQUOTE);
 				command_start = false; is_argument = true; continue;
 			}	//	$((	Open Arithmetic Expansion
 			else if (!strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
-				*i += 3; stack_push(&context->stack, CTX_ARITHMETIC_EXPAND);
+				*i += 3; stack_push_2(&context->stack, CTX_ARITHMETIC_EXPAND);
 				command_start = false; is_argument = true; continue;
 			}	//	((	Open Arithmetic Expression
 			else if (!strncmp(&input[*i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&input[*i + 2])) {
 				if (!command_start) return (syntax_error(ARGS_ARITHMETIC, NULL, *line), 2);
-				*i += 2; stack_push(&context->stack, CTX_ARITHMETIC);
+				*i += 2; stack_push_2(&context->stack, CTX_ARITHMETIC);
 				command_start = false; is_argument = false; continue;
 			}	//	$(	Open Command Substitution
 			else if (!strncmp(&input[*i], "$(", 2)) {
-				*i += 2; stack_push(&context->stack, CTX_SUBSHELL_COMMAND);
+				*i += 2; stack_push_2(&context->stack, CTX_SUBSHELL_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = true; continue;
 			}	//	<(	Open Process Substitution In
 			else if (!strncmp(&input[*i], "<(", 2)) {
-				*i += 2; stack_push(&context->stack, CTX_PROCESS_SUB_IN);
+				*i += 2; stack_push_2(&context->stack, CTX_PROCESS_SUB_IN);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = true; continue;
 			}	//	>(	Open Process Substitution Out
 			else if (!strncmp(&input[*i], ">(", 2)) {
-				*i += 2; stack_push(&context->stack, CTX_PROCESS_SUB_OUT);
+				*i += 2; stack_push_2(&context->stack, CTX_PROCESS_SUB_OUT);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = true; continue;	
 			}	//	(	Open Arithmetic Group
 			else if (input[*i] == '(' && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_GROUP)) {
-				*i += 1; stack_push(&context->stack, CTX_ARITHMETIC_GROUP);
+				*i += 1; stack_push_2(&context->stack, CTX_ARITHMETIC_GROUP);
 				command_start = false; is_argument = false; continue;
 			}	//	(	Open Subshell
 			else if (input[*i] == '(' && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 				if (!command_start) return (syntax_error(ARGS_SUBSHELL, NULL, *line), 2);
-				*i += 1; stack_push(&context->stack, CTX_SUBSHELL);
+				*i += 1; stack_push_2(&context->stack, CTX_SUBSHELL);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = false; continue;	
 			}	//	`	Open Backtick
 			else if (input[*i] == '`' && !is_context(context->stack, CTX_BACKTICK)) {
-				*i += 1; stack_push(&context->stack, CTX_BACKTICK);
+				*i += 1; stack_push_2(&context->stack, CTX_BACKTICK);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = true; continue;
 			}	//	${	Open Parameter Expansion
 			else if (!strncmp(&input[*i], "${", 2)) {
-				*i += 2; stack_push(&context->stack, CTX_BRACE_PARAM);
+				*i += 2; stack_push_2(&context->stack, CTX_BRACE_PARAM);
 				command_start = false; is_argument = true; continue;
 			}	//	{ 	Open Command Group
 			else if (input[*i] == '{' && isspace(input[*i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 				if (!command_start) return (syntax_error(TOKEN_NEAR, strdup("invalid subshell"), *line), 2);
-				*i += 1; stack_push(&context->stack, CTX_BRACE_COMMAND);
+				*i += 1; stack_push_2(&context->stack, CTX_BRACE_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = false; continue;
 			}	//	;	&	&&	|	||	\n	Command Separator

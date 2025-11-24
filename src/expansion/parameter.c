@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:44:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 12:01:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:38:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "expansion/parameter.h"
-	#include "parser/syntax/syntax.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 

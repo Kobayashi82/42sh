@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/23 11:54:09 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/24 19:46:14 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -107,12 +107,9 @@ SRCS	=	main/main.c									\
 														\
 			parser/ast/ast.c							\
 														\
-			parser/borrar/syntax/check.c				\
+			parser/borrar/tokenizer/args.c				\
 			parser/borrar/syntax/context.c				\
 			parser/borrar/syntax/error.c				\
-			parser/borrar/tokenizer/args.c				\
-			parser/borrar/tokenizer/parser.c			\
-			parser/borrar/tokenizer/tokenizer.c			\
 														\
 														\
 			expansion/history.c							\

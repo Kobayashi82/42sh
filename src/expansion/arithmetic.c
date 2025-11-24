@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 12:00:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:45:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 	#include "expansion/arithmetic.h"
 	#include "expansion/parameter.h"
 	#include "expansion/command.h"
-	#include "parser/syntax/syntax.h"
+	#include "parser/syntax.h"
 
 #pragma endregion
 
@@ -149,13 +149,13 @@
 				//	))	Close Arithmetic Expansion or Arithmetic Expression
 			if (!strncmp(&input[*i], "))", 2) && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_EXPAND)) {
 				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, strdup("end with operator"), *line), 2);
-				*i += 2; stack_pop(&context->stack);
+				*i += 2; stack_pop_2(&context->stack);
 				if (context->stack) context->stack->nvalue = 1;
 				return(0);
 			}	//	)	Close Command Substitution or Subshell or Arithmetic Group
 			else if (input[*i] == ')' && context->stack && context->stack->type == CTX_ARITHMETIC_GROUP) {
 				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, strdup("end with operator"), *line), 2);
-				*i += 1; stack_pop(&context->stack);
+				*i += 1; stack_pop_2(&context->stack);
 				if (context->stack) context->stack->nvalue = 1;
 				return(0);
 			}
@@ -163,19 +163,19 @@
 				//	$((	Open Arithmetic Expansion
 			else if (!strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 3; stack_push(&context->stack, CTX_ARITHMETIC_EXPAND);
+				*i += 3; stack_push_2(&context->stack, CTX_ARITHMETIC_EXPAND);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	((	Open Arithmetic Expression
 			else if (!strncmp(&input[*i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&input[*i + 2])) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 2; stack_push(&context->stack, CTX_ARITHMETIC);
+				*i += 2; stack_push_2(&context->stack, CTX_ARITHMETIC);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	(	Open Arithmetic Group
 			else if (input[*i] == '(') {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 1; stack_push(&context->stack, CTX_ARITHMETIC_GROUP);
+				*i += 1; stack_push_2(&context->stack, CTX_ARITHMETIC_GROUP);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}
@@ -183,13 +183,13 @@
 				//	$(	Open Command Substitution
 			else if (!strncmp(&input[*i], "$(", 2)) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 2; stack_push(&context->stack, CTX_SUBSHELL_COMMAND);
+				*i += 2; stack_push_2(&context->stack, CTX_SUBSHELL_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	`	Open Backtick
 			else if (input[*i] == '`' && !is_context(context->stack, CTX_BACKTICK)) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 1; stack_push(&context->stack, CTX_BACKTICK);
+				*i += 1; stack_push_2(&context->stack, CTX_BACKTICK);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (result);
 				continue;
 			}
@@ -197,7 +197,7 @@
 				//	${	Open Parameter Expansion
 			else if (!strncmp(&input[*i], "${", 2)) {
 				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
-				*i += 2; stack_push(&context->stack, CTX_BRACE_PARAM);
+				*i += 2; stack_push_2(&context->stack, CTX_BRACE_PARAM);
 				if ((result = syntax_parameter(input, i, context, last_token, line))) return (result);
 				continue;
 			}

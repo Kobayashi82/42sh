@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 12:01:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 19:40:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 	#include "utils/libft.h"
 	#include "terminal/print.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/tokenizer/args.h"
+	#include "parser/args.h"
 	#include "expansion/history.h"
-	#include "parser/syntax/syntax.h"
+	#include "parser/syntax.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"
 	#include "builtins/builtins.h"
