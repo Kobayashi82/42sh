@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 13:01:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 13:48:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,10 +105,18 @@
 				return (!shell.interactive);
 			}
 
+			// ------------ PARSING ------------
+
+			// Parsear input
+			// Solicitar input
+			// Liberar AST en caso de error (en input)
+			// Si AST vacío, libera AST y termina el comando
+			// Manejar señales correctamente durante el parseo
+
 			lexer_init(terminal.input);
-			
+
 			ast_node_t *ast = parse();
-			
+
 			while (!ast && lexer_needs_continuation()) {
 				char *more = get_input(); // ps2
 				if (!more) {
@@ -123,34 +131,14 @@
 			}
 			
 			if (ast) {
-				print_ast(ast);  // Debug
-				// execute(ast);  // Tu función de ejecución
+				// ast_print(ast);
+				// execute(ast);
 				ast_free(ast);
 			}
-			
+
 			lexer_cleanup();
 
-			// t_lx_status status;
-			// while ((status = lexer(terminal.input)) == LX_INCOMPLETE) {
-			// 	char *cont_input = get_input(); // PS2
-
-			// 	if (!cont_input) {
-			// 		free(terminal.input);
-			// 		// free lx_tokens;
-			// 		return (!shell.interactive);
-			// 	}
-
-			// 	terminal.input = ft_strjoin(terminal.input, cont_input, 3); // Add newline if necessary (quoted, parenthesis, etc.)
-			// }
-
-			// if (status == LX_FAILED) {
-			// 	free(terminal.input);
-			// 	// free lx_tokens;
-			// 	return (!shell.interactive);
-			// }
-
-			// lexer_print();
-			// parser
+			// ------------ PARSING ------------
 
 			if (!strcmp(terminal.input, "$?"))
 				printf("Exit code: %d\n", shell.exit_code);

@@ -6,23 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 13:28:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 13:49:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "parser/lexer.h"
 #include "utils/libft.h"
 
+// Procesar comillas abiertas
+// Append del input
+// Next token (o advance y peek)
+// Comprobación modular de tipos de token
+// Determinar si espacio antes/despues y si esta en comillas dobles
+// Liberacion de estructura si es necesario
+
 token_t *lexer_next_token() {
-    return (NULL);
+	return (NULL);
 }
-
-// void lexer_print() {
-// 	const char *type_names[] = { "WORD", "PIPE", "BACKGROND", "AND", "OR", "BRACE", "BRACE_GROUP", "VAR", "CMD_SHELL", "SHELL", "CMD_ARIT", "ARIT", "SEMICOLON", "REDIR_HEREDOC", "REDIR_IN", "REDIR_OUT", "REDIR_APPEND", "REDIR_HERESTRING" };
-// 	t_lx_token *token = lx_tokens;
-
-// 	while (token) {
-// 		printf("[%s] %s\n", type_names[token->type], token->token);
-// 		token = token->next;
-// 	}
-// }
