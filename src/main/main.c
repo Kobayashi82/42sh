@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:32:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/24 20:17:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 	#include "tests/tests.h"
 
 	#include "parser/parser.h"
+	#include "terminal/colors.h"
 
 #pragma endregion
 
@@ -96,8 +97,7 @@
 
 		int read_input() {
 			signals_set();
-
-			if (!(terminal.input = get_input())) return (1);
+			if (!(terminal.input = get_input(prompt_PS1))) return (1);
 
 			if (ft_isspace_s(terminal.input)) {
 				free(terminal.input);
