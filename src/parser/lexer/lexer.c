@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:30:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 20:44:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,18 +27,7 @@
 
 #pragma region "Variables"
 
-	typedef struct s_lexer {
-		char	*input;
-		size_t	pos;
-		size_t	len;
-		int		more_input;
-
-		char	*stack;
-		size_t	stack_size;
-		size_t	stack_capacity;
-	} t_lexer;
-
-	static t_lexer lexer;
+	t_lexer lexer;
 
 #pragma endregion
 
@@ -62,7 +51,7 @@
 		if (lexer.stack) free(lexer.stack);
 		lexer.stack_capacity = 64;
 		lexer.stack_size = 0;
-		lexer.stack = malloc(lexer.stack_capacity);
+		lexer.stack = calloc(1, lexer.stack_capacity);
 	}
 
 	void stack_push(char delim) {
@@ -75,7 +64,9 @@
 
 	char stack_pop() {
 		if (!lexer.stack_size) return ('\0');
-		return (lexer.stack[--lexer.stack_size]);
+		lexer.stack[lexer.stack_size] = '\0';
+		lexer.stack_size -= 1;
+		return (lexer.stack[lexer.stack_size]);
 	}
 
 	char stack_top() {
@@ -121,6 +112,14 @@
 
 #pragma region "Navigation"
 
+	size_t lexer_pos() {
+		return (lexer.pos);
+	}
+
+	size_t lexer_len() {
+		return (lexer.len);
+	}
+
 	char peek(size_t n) {
 		if (lexer.pos + n >= lexer.len) return ('\0');
 		return (lexer.input[lexer.pos + n]);
@@ -131,8 +130,9 @@
 		return (lexer.input[lexer.pos - n]);
 	}
 
-	void advance(size_t n) {
+	char advance(size_t n) {
 		lexer.pos = (lexer.pos + n <= lexer.len) ? lexer.pos + n : lexer.len;
+		return (lexer.input[lexer.pos]);
 	}
 
 	int skip_whitespace() {
@@ -179,7 +179,9 @@
 	}
 
 	t_token *lexer_token_next() {
-		int had_left_space = skip_whitespace();
+		// int had_left_space = skip_whitespace();
+
+		skip_whitespace();
 
 		char c = peek(0);
 		char next = peek(1);
@@ -195,20 +197,21 @@
 		}
 
 		t_token *token = NULL;
-		if ((token = expansion()))		return (token);
-		if ((token = grouping()))		return (token);
-		if ((token = operator()))		return (token);
-		if ((token = redirection()))	return (token);
-		if ((token = keyword()))		return (token);
+		// if ((token = expansion()))		return (token);
+		// if ((token = grouping()))		return (token);
+		// if ((token = operator()))		return (token);
+		// if ((token = redirection()))	return (token);
+		// if ((token = keyword()))		return (token);
 		if ((token = word()))			return (token);
 
-		int start = lexer.pos;
-		while ((c != ' ' && c != '\t' && c != '\0')) {
-			advance(1);
-			c = peek(0);
-		}
+		// int start = lexer.pos;
+		// while ((c != ' ' && c != '\t' && c != '\0')) {
+		// 	advance(1);
+		// 	c = peek(0);
+		// }
 
-		return (lexer_token_create(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
+		// return (lexer_token_create(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
+		return (lexer_token_create(TOKEN_EOF, NULL, false, false));
 	}
 
 #pragma endregion

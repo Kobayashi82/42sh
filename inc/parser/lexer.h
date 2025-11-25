@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:48:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 19:40:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,21 @@
 			int				had_right_space;
 			int				quoted;
 		} t_token;
+	
+		typedef struct s_lexer {
+			char	*input;
+			size_t	pos;
+			size_t	len;
+			int		more_input;
+
+			char	*stack;
+			size_t	stack_size;
+			size_t	stack_capacity;
+		} t_lexer;
 
 	#pragma endregion
+
+	extern t_lexer lexer;
 
 #pragma endregion
 
@@ -106,9 +119,11 @@
 	char stack_pop();
 	char stack_top();
 
+	size_t lexer_pos();
+	size_t lexer_len();
 	char peek(size_t n);
 	char peek_back(size_t n);
-	void advance(size_t n);
+	char advance(size_t n);
 	int skip_whitespace();
 	int is_space(int n);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:56:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 20:54:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ t_parser_state parse(t_ast_node **ast) {
 	if (current && current->child) current = current->child;
 
 	while ((token = lexer_token_next())) {
-
 		if (token->type == TOKEN_INPUT) {
 			lexer_token_free(token);
 			return (PARSER_INPUT);
