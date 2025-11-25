@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 23:10:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:40:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,8 @@
 			TOKEN_AND,					// &&
 			TOKEN_OR,					// ||
 			TOKEN_SEMICOLON,			// ;
-			TOKEN_EOF
+			TOKEN_EOF,					// End of input
+			TOKEN_INPUT					// Needs more input
 		} t_token_type;
 
 	#pragma endregion
@@ -76,5 +77,12 @@
 	void	lexer_free();
 	void	lexer_token_free(t_token *tok);
 	t_token	*lexer_token_next();
+
+	t_token *expansion();
+	t_token *grouping();
+	t_token *operator();
+	t_token *redirection();
+	t_token *keyword();
+	t_token *word();
 
 #pragma endregion

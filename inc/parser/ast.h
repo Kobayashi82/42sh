@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/24 20:00:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 00:34:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 11:50:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,16 +17,17 @@
 	#pragma region "Enumerators"
 
 		typedef enum e_ast_type {
-			AST_COMMAND,        // comando simple: echo hello
-			AST_PIPE,           // pipe: cmd1 | cmd2
-			AST_AND,            // and: cmd1 && cmd2
-			AST_OR,             // or: cmd1 || cmd2
-			AST_REDIRECT_IN,    // redirect input: cmd < file
-			AST_REDIRECT_OUT,   // redirect output: cmd > file
-			AST_REDIRECT_APPEND,// append: cmd >> file
-			AST_SUBSHELL,       // subshell: $(cmd)
-			AST_PARAM_EXP,      // parameter expansion: ${var}
-			AST_WORD,           // palabra literal
+			AST_COMMAND,			// comando simple: echo hello
+			AST_PIPE,				// pipe: cmd1 | cmd2
+			AST_AND,				// and: cmd1 && cmd2
+			AST_OR,					// or: cmd1 || cmd2
+			AST_REDIRECT_IN,		// redirect input: cmd < file
+			AST_REDIRECT_OUT,		// redirect output: cmd > file
+			AST_REDIRECT_APPEND,	// append: cmd >> file
+			AST_SUBSHELL,			// subshell: $(cmd)
+			AST_PARAM_EXP,			// parameter expansion: ${var}
+			AST_WORD,				// palabra literal
+			AST_EOF,				// end of input
 		} t_ast_type;
 
 	#pragma endregion

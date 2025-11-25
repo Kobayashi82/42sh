@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 00:12:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:38:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,12 +108,12 @@
 
 #pragma region "Navigation"
 
-static char peek() {
-	if (lexer.pos >= lexer.len) return ('\0');
-	return (lexer.input[lexer.pos]);
-}
+// static char peek() {
+// 	if (lexer.pos >= lexer.len) return ('\0');
+// 	return (lexer.input[lexer.pos]);
+// }
 
-static char peek_ahead(size_t n) {
+static char peek(size_t n) {
 	if (lexer.pos + n >= lexer.len) return ('\0');
 	return (lexer.input[lexer.pos + n]);
 }
@@ -123,11 +123,11 @@ char peek_back(size_t n) {
 	return (lexer.input[lexer.pos - n]);
 }
 
-static void advance() {
-	if (lexer.pos < lexer.len) lexer.pos++;
-}
+// static void advance(1) {
+// 	if (lexer.pos < lexer.len) lexer.pos++;
+// }
 
-void advance_ahead(size_t n) {
+void advance(size_t n) {
 	lexer.pos += (lexer.pos + n < lexer.len) ? n : (lexer.len - 1) - lexer.pos;
 }
 
@@ -136,9 +136,9 @@ static int skip_whitespace() {
 
 	if (stack_top() == '"' || stack_top() == '\'') return (false);
 
-	while (peek() == ' ' || peek() == '\t') {
+	while (peek(0) == ' ' || peek(0) == '\t') {
 		had_space = true;
-		advance();
+		advance(1);
 	}
 
 	return (had_space);
@@ -170,23 +170,31 @@ static int skip_whitespace() {
 	t_token *lexer_token_next() {
 		int had_left_space = skip_whitespace();
 
-		char c = peek();
-		char next = peek_ahead(1);
+		char c = peek(0);
+		char next = peek(1);
 
 		if (((c == '\\' && (next == '\n' || next == '\0')) || (c == '\n' && next == '\0')) || c == '\0') {
 			if (lexer.stack_size > 0 || c == '\\') {
-				advance();
+				advance(1);
 				lexer.more_input = true;
-				return (NULL);
+				return (create_token(TOKEN_INPUT, NULL, had_left_space, false));
 			}
-			if (c == '\n') advance();
+			if (c == '\n') advance(1);
 			return (create_token(TOKEN_EOF, NULL, had_left_space, false));
 		}
 
+		t_token *token = NULL;
+		if ((token = expansion()))		return (token);
+		if ((token = grouping()))		return (token);
+		if ((token = operator()))		return (token);
+		if ((token = redirection()))	return (token);
+		if ((token = keyword()))		return (token);
+		if ((token = word()))			return (token);
+
 		int start = lexer.pos;
 		while ((c != ' ' && c != '\t' && c != '\0')) {
-			advance();
-			c = peek();
+			advance(1);
+			c = peek(0);
 		}
 
 		return (create_token(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
