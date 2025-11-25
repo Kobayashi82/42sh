@@ -36,7 +36,8 @@
 		"random": "c",
 		"input.h": "c",
 		"cstdlib": "c",
-		"ast.h": "c"
+		"ast.h": "c",
+		"lexer.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

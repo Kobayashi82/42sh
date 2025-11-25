@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:33:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:38:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,3 +28,10 @@
 // &>>		append de stdout y stderr
 // [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
 // >|		sobrescribe incluso con noclobber activado
+
+t_token *redirection() {
+	t_token *token = NULL;
+	char	c = peek(0);
+
+	return (token);
+}

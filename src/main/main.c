@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 00:32:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 11:53:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,9 @@
 			lexer_init(terminal.input);
 
 			t_ast_node *ast = NULL;
-			while (!parse(&ast) && lexer_more_input()) {
+			t_parser_state parser_state;
+
+			while ((parser_state = parse(&ast)) == PARSER_INPUT) {
 				char *more = get_input(prompt_PS2);
 				if (!more) {
 					// Usuario canceló con Ctrl+C o EOF
@@ -127,8 +129,14 @@
 				free(more);
 			}
 
+			lexer_free();
 			ast_print(ast);
 			ast_free(&ast);
+
+			if (parser_state == PARSER_ERROR) {
+				free(terminal.input);
+				return (!shell.interactive);
+			}
 
 			// while (!ast && lexer_needs_continuation()) {
 			// 	char *more = get_input(); // ps2
@@ -148,8 +156,6 @@
 			// 	// execute(ast);
 			// 	ast_free(ast);
 			// }
-
-			lexer_free();
 
 			// ------------ PARSING ------------
 

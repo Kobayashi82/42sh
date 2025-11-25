@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:34:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 12:38:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,3 +24,10 @@
 // ;;		case terminator
 // ;&		case fallthrough
 // ;;&		case continue
+
+t_token *operator() {
+	t_token *token = NULL;
+	char	c = peek(0);
+
+	return (token);
+}
