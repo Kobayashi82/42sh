@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 12:38:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:04:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 t_token *redirection() {
 	t_token *token = NULL;
 	char	c = peek(0);
+	(void) c;
 
 	return (token);
 }

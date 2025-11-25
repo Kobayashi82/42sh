@@ -6,11 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 12:40:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:06:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include <stddef.h>
 
 #pragma region "Variables"
 
@@ -77,6 +79,14 @@
 	void	lexer_free();
 	void	lexer_token_free(t_token *tok);
 	t_token	*lexer_token_next();
+
+	void stack_push(char delim);
+	char stack_pop();
+	char stack_top();
+
+	char peek(size_t n);
+	char peek_back(size_t n);
+	void advance(size_t n);
 
 	t_token *expansion();
 	t_token *grouping();

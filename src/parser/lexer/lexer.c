@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 12:38:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 15:12:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@
 // 	return (lexer.input[lexer.pos]);
 // }
 
-static char peek(size_t n) {
+char peek(size_t n) {
 	if (lexer.pos + n >= lexer.len) return ('\0');
 	return (lexer.input[lexer.pos + n]);
 }
@@ -123,12 +123,12 @@ char peek_back(size_t n) {
 	return (lexer.input[lexer.pos - n]);
 }
 
-// static void advance(1) {
+// static void advance() {
 // 	if (lexer.pos < lexer.len) lexer.pos++;
 // }
 
 void advance(size_t n) {
-	lexer.pos += (lexer.pos + n < lexer.len) ? n : (lexer.len - 1) - lexer.pos;
+	lexer.pos = (lexer.pos + n <= lexer.len) ? lexer.pos + n : lexer.len;
 }
 
 static int skip_whitespace() {
@@ -161,7 +161,7 @@ static int skip_whitespace() {
 		token->type = type;
 		token->value = value;
 		token->had_left_space = left_space;
-		token->had_right_space = (peek() == ' ' || peek() == '\t');
+		token->had_right_space = (peek(0) == ' ' || peek(0) == '\t');
 		token->quoted = is_quoted;
 
 		return (token);
