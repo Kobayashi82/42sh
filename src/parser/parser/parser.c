@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 12:16:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 18:56:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_ast_node *parse_word(t_token *token) {
 
 	new_node->value = token->value;
 	new_node->child = NULL;
-	new_node->type = AST_WORD;
+	new_node->type = (int)token->type;
 	token->value = NULL;
 
 	lexer_token_free(token);

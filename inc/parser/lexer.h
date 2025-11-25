@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 15:06:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 18:48:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,27 +20,21 @@
 
 		typedef enum e_token_type {
 			TOKEN_WORD,
-			TOKEN_CMD_SUB_START,		// $(
-			TOKEN_CMD_SUB_END,			// )
-			TOKEN_ARITH_SUB_START,		// $((
-			TOKEN_ARITH_SUB_END,		// ))
-			TOKEN_PARAM_EXP_START,		// ${
-			TOKEN_PARAM_EXP_END,		// }
-			TOKEN_BRACE_START,			// {
-			TOKEN_BRACE_END,			// }
-			TOKEN_SHELL_START,			// (
-			TOKEN_SHELL_END,			// )
-			TOKEN_ARITH_START,			// ((
-			TOKEN_ARITH_END,			// ))
+			TOKEN_CMD_SUB,				// $(
+			TOKEN_ARITH_SUB,			// $((
+			TOKEN_PARAM_EXP,			// ${
+			TOKEN_BRACE,				// {
+			TOKEN_SHELL,				// (
+			TOKEN_ARITH,				// ((
 
 			TOKEN_REDIRECT_IN,			// <	(accept fd number)
 			TOKEN_REDIRECT_HEREDOC,		// <<	(accept fd number)
 			TOKEN_REDIRECT_HERESTRING,	// <<<	(accept fd number)
+			TOKEN_REDIRECT_IN_OUT,		// <>	(accept fd number)
+			TOKEN_REDIRECT_DUP_IN,		// <&	(accept fd number)
 			TOKEN_REDIRECT_OUT,			// >	(accept fd number)
 			TOKEN_REDIRECT_APPEND,		// >>	(accept fd number)
 			TOKEN_REDIRECT_FORCE_OUT,	// >|	(accept fd number)
-			TOKEN_REDIRECT_IN_OUT,		// <>	(accept fd number)
-			TOKEN_REDIRECT_DUP_IN,		// <&	(accept fd number)
 			TOKEN_REDIRECT_DUP_OUT,		// >&	(accept fd number)
 			TOKEN_REDIRECT_OUT_ALL,		// &>
 			TOKEN_REDIRECT_APPEND_ALL,	// &>>
@@ -51,6 +45,32 @@
 			TOKEN_AND,					// &&
 			TOKEN_OR,					// ||
 			TOKEN_SEMICOLON,			// ;
+
+			TOKEN_IF,					// 
+			TOKEN_THEN,					// 
+			TOKEN_ELSE,					// 
+			TOKEN_ELIF,					// 
+			TOKEN_FI,					// 
+
+			TOKEN_CASE,					// 
+			TOKEN_ESAC,					// 
+			TOKEN_IN,					// 
+			TOKEN_TERMINATOR,			// ;;
+			TOKEN_FALLTHROUGH,			// ;&
+			TOKEN_CONTINUE,				// ;;&
+
+			TOKEN_WHILE,				// 
+			TOKEN_UNTIL,				// 
+			TOKEN_DO,					// 
+			TOKEN_DONE,					// 
+
+			TOKEN_FOR,					// 
+			TOKEN_FUNCTION,				// 
+
+			TOKEN_NEGATE,				// !
+			TOKEN_LBRACKET2,			// [[
+			TOKEN_RBRACKET2,			// ]]
+
 			TOKEN_EOF,					// End of input
 			TOKEN_INPUT					// Needs more input
 		} t_token_type;
@@ -77,7 +97,9 @@
 	void	lexer_append_input(char *more_input);
 	int		lexer_more_input();
 	void	lexer_free();
+
 	void	lexer_token_free(t_token *tok);
+	t_token *lexer_token_create(t_token_type type, char *value, int left_space, int right_space);
 	t_token	*lexer_token_next();
 
 	void stack_push(char delim);
@@ -87,6 +109,8 @@
 	char peek(size_t n);
 	char peek_back(size_t n);
 	void advance(size_t n);
+	int skip_whitespace();
+	int is_space(int n);
 
 	t_token *expansion();
 	t_token *grouping();

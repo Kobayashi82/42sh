@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   lexer.no.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 13:01:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 18:30:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static int skip_whitespace(void) {
 
 // === FUNCIONES DE TOKENS ===
 
-static token_t *create_token(token_type_t type, char *value, int left_space, int is_quoted) {
+static token_t *lexer_token_create(token_type_t type, char *value, int left_space, int is_quoted) {
     token_t *tok = malloc(sizeof(token_t));
     tok->type = type;
     tok->value = value ? strdup(value) : NULL;
@@ -174,46 +174,46 @@ static token_t *read_operator(int had_left_space) {
     if (c == '|') {
         if (peek_ahead(1) == '|') {
             advance(); advance();
-            return create_token(TOKEN_OR, "||", had_left_space, false);
+            return lexer_token_create(TOKEN_OR, "||", had_left_space, false);
         }
         advance();
-        return create_token(TOKEN_PIPE, "|", had_left_space, false);
+        return lexer_token_create(TOKEN_PIPE, "|", had_left_space, false);
     }
     
     if (c == '&' && peek_ahead(1) == '&') {
         advance(); advance();
-        return create_token(TOKEN_AND, "&&", had_left_space, false);
+        return lexer_token_create(TOKEN_AND, "&&", had_left_space, false);
     }
     
     if (c == '>') {
         if (peek_ahead(1) == '>') {
             advance(); advance();
-            return create_token(TOKEN_REDIRECT_APPEND, ">>", had_left_space, false);
+            return lexer_token_create(TOKEN_REDIRECT_APPEND, ">>", had_left_space, false);
         }
         advance();
-        return create_token(TOKEN_REDIRECT_OUT, ">", had_left_space, false);
+        return lexer_token_create(TOKEN_REDIRECT_OUT, ">", had_left_space, false);
     }
     
     if (c == '<') {
         advance();
-        return create_token(TOKEN_REDIRECT_IN, "<", had_left_space, false);
+        return lexer_token_create(TOKEN_REDIRECT_IN, "<", had_left_space, false);
     }
     
     if (c == ';') {
         advance();
-        return create_token(TOKEN_SEMICOLON, ";", had_left_space, false);
+        return lexer_token_create(TOKEN_SEMICOLON, ";", had_left_space, false);
     }
     
     if (c == '(') {
         advance();
-        return create_token(TOKEN_LPAREN, "(", had_left_space, false);
+        return lexer_token_create(TOKEN_LPAREN, "(", had_left_space, false);
     }
     
     if (c == ')') {
         // Solo si NO es cierre de subshell/param_exp
         if (top_delim() != ')') {
             advance();
-            return create_token(TOKEN_RPAREN, ")", had_left_space, false);
+            return lexer_token_create(TOKEN_RPAREN, ")", had_left_space, false);
         }
     }
     
@@ -333,7 +333,7 @@ static token_t *read_word(int had_left_space) {
     }
     
     buffer[len] = '\0';
-    token_t *tok = create_token(TOKEN_WORD, buffer, had_left_space, was_quoted);
+    token_t *tok = lexer_token_create(TOKEN_WORD, buffer, had_left_space, was_quoted);
     free(buffer);
     return tok;
 }
@@ -355,7 +355,7 @@ token_t *lexer_next_token(void) {
         }
         if (c == '\n')
             advance();
-        return create_token(TOKEN_EOF, NULL, had_left_space, false);
+        return lexer_token_create(TOKEN_EOF, NULL, had_left_space, false);
     }
     
     // === MANEJO DE COMILLAS (sin devolver tokens) ===
@@ -377,7 +377,7 @@ token_t *lexer_next_token(void) {
             push_delim(')');
         }
         
-        token_t *tok = create_token(TOKEN_SUBSHELL_START, "$(", had_left_space, was_quoted);
+        token_t *tok = lexer_token_create(TOKEN_SUBSHELL_START, "$(", had_left_space, was_quoted);
         tok->had_right_space = (peek() == ' ' || peek() == '\t');
         return tok;
     }
@@ -387,7 +387,7 @@ token_t *lexer_next_token(void) {
         int was_quoted = in_double_quote();
         pop_delim();
         advance();
-        token_t *tok = create_token(TOKEN_SUBSHELL_END, ")", had_left_space, was_quoted);
+        token_t *tok = lexer_token_create(TOKEN_SUBSHELL_END, ")", had_left_space, was_quoted);
         tok->had_right_space = (peek() == ' ' || peek() == '\t');
         return tok;
     }
@@ -397,7 +397,7 @@ token_t *lexer_next_token(void) {
         int was_quoted = in_double_quote();
         advance(); advance();
         push_delim('}');
-        token_t *tok = create_token(TOKEN_PARAM_EXP_START, "${", had_left_space, was_quoted);
+        token_t *tok = lexer_token_create(TOKEN_PARAM_EXP_START, "${", had_left_space, was_quoted);
         tok->had_right_space = (peek() == ' ' || peek() == '\t');
         return tok;
     }
@@ -407,7 +407,7 @@ token_t *lexer_next_token(void) {
         int was_quoted = in_double_quote();
         pop_delim();
         advance();
-        token_t *tok = create_token(TOKEN_PARAM_EXP_END, "}", had_left_space, was_quoted);
+        token_t *tok = lexer_token_create(TOKEN_PARAM_EXP_END, "}", had_left_space, was_quoted);
         tok->had_right_space = (peek() == ' ' || peek() == '\t');
         return tok;
     }

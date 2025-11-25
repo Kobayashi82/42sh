@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 15:12:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/25 18:30:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 // Comprobación modular de tipos de token
 // Determinar si espacio antes/despues y si esta en comillas dobles
 // Liberacion de estructura si es necesario
-
 // Dentro de {} no se parsea hasta la ejecucion
 
 #pragma region "Variables"
@@ -34,7 +33,7 @@
 		size_t	len;
 		int		more_input;
 
-		char	*stack;				// ", ', ), }
+		char	*stack;
 		size_t	stack_size;
 		size_t	stack_capacity;
 	} t_lexer;
@@ -44,6 +43,20 @@
 #pragma endregion
 
 #pragma region "Stack"
+
+	// stack contains the token context, with the following meanings:
+	//
+	// "	""					double quoted
+	// '	''					single quoted
+	// t	$""					translatable string
+	// q	$''					ANSI-C quoting
+	// `	``					command substitution
+	// s	$(...)				command substitution
+	// a	$((...))			arithmetic substitution
+	// p	${...}				parameter expression
+	// S	(...)				subshell
+	// A	((...)	)			arithmetic
+	// B	{ ...; } or {...}	braces (command group or brace expansion)
 
 	static void stack_init() {
 		if (lexer.stack) free(lexer.stack);
@@ -108,41 +121,40 @@
 
 #pragma region "Navigation"
 
-// static char peek() {
-// 	if (lexer.pos >= lexer.len) return ('\0');
-// 	return (lexer.input[lexer.pos]);
-// }
-
-char peek(size_t n) {
-	if (lexer.pos + n >= lexer.len) return ('\0');
-	return (lexer.input[lexer.pos + n]);
-}
-
-char peek_back(size_t n) {
-	if (lexer.pos < n) return ('\0');
-	return (lexer.input[lexer.pos - n]);
-}
-
-// static void advance() {
-// 	if (lexer.pos < lexer.len) lexer.pos++;
-// }
-
-void advance(size_t n) {
-	lexer.pos = (lexer.pos + n <= lexer.len) ? lexer.pos + n : lexer.len;
-}
-
-static int skip_whitespace() {
-	int had_space = false;
-
-	if (stack_top() == '"' || stack_top() == '\'') return (false);
-
-	while (peek(0) == ' ' || peek(0) == '\t') {
-		had_space = true;
-		advance(1);
+	char peek(size_t n) {
+		if (lexer.pos + n >= lexer.len) return ('\0');
+		return (lexer.input[lexer.pos + n]);
 	}
 
-	return (had_space);
-}
+	char peek_back(size_t n) {
+		if (lexer.pos < n) return ('\0');
+		return (lexer.input[lexer.pos - n]);
+	}
+
+	void advance(size_t n) {
+		lexer.pos = (lexer.pos + n <= lexer.len) ? lexer.pos + n : lexer.len;
+	}
+
+	int skip_whitespace() {
+		int had_space = false;
+
+		if (stack_top() == '"' || stack_top() == '\'') return (false);
+
+		while (peek(0) == ' ' || peek(0) == '\t') {
+			had_space = true;
+			advance(1);
+		}
+
+		return (had_space);
+	}
+
+	int is_space(int n) {
+		if (n < 0 && (int)lexer.pos < n) return (false);
+		if (lexer.pos + n >= lexer.len) return (true);
+
+		char c = lexer.input[lexer.pos + n];
+		return (c == ' ' || c == '\t' || c == '\n' || c == '\0');
+	}
 
 #pragma endregion
 
@@ -155,14 +167,13 @@ static int skip_whitespace() {
 		}
 	}
 
-	static t_token *create_token(t_token_type type, char *value, int left_space, int is_quoted) {
+	t_token *lexer_token_create(t_token_type type, char *value, int left_space, int right_space) {
 		t_token *token = malloc(sizeof(t_token));
 
 		token->type = type;
 		token->value = value;
 		token->had_left_space = left_space;
-		token->had_right_space = (peek(0) == ' ' || peek(0) == '\t');
-		token->quoted = is_quoted;
+		token->had_right_space = right_space;
 
 		return (token);
 	}
@@ -177,10 +188,10 @@ static int skip_whitespace() {
 			if (lexer.stack_size > 0 || c == '\\') {
 				advance(1);
 				lexer.more_input = true;
-				return (create_token(TOKEN_INPUT, NULL, had_left_space, false));
+				return (lexer_token_create(TOKEN_INPUT, NULL, false, false));
 			}
 			if (c == '\n') advance(1);
-			return (create_token(TOKEN_EOF, NULL, had_left_space, false));
+			return (lexer_token_create(TOKEN_EOF, NULL, false, false));
 		}
 
 		t_token *token = NULL;
@@ -197,7 +208,7 @@ static int skip_whitespace() {
 			c = peek(0);
 		}
 
-		return (create_token(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
+		return (lexer_token_create(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
 	}
 
 #pragma endregion
