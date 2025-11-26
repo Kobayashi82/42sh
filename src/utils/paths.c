@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@
 				if (i < index - 1) strcat(final_path, "/");
 			}
 
-			return (strdup(final_path));
+			return (ft_strdup(final_path));
 		}
 
 	#pragma endregion
@@ -199,7 +199,7 @@
 			if (!path || strchr(path, '/')) return (resolve_path(path));
 
 			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
-			if (!path_list) return (strdup(path));
+			if (!path_list) return (ft_strdup(path));
 
 			char *dir = ft_strtok(path_list, ":", 2);
 			while (dir) {
@@ -215,7 +215,7 @@
 				} dir = ft_strtok(NULL, ":", 2);
 			} free(path_list);
 
-			return (strdup(path));
+			return (ft_strdup(path));
 		}
 
 	#pragma endregion
@@ -325,7 +325,7 @@
 			return (NULL);
 		}
 
-		return (strdup(cwd));
+		return (ft_strdup(cwd));
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@
 			int		i = 0;
 
 			if (!word) return (NULL);
-			if (finish - start == 1 && str[start] == c) return (free(word), strdup(""));
+			if (finish - start == 1 && str[start] == c) return (free(word), ft_strdup(""));
 			while (start < finish) word[i++] = str[start++];
 			word[i] = '\0';
 

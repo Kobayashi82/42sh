@@ -12,3 +12,7 @@
 - cdspell effect only in interactive
 - \'"'!!'"\' CTRL + Left / CTRL + Right jodido y leaks
 - Argumentos con "" no llegan a los builtins
+
+## Builtins
+
+- fc no guarda comando en historial al ejecutar (el modificado, no fc en sí)

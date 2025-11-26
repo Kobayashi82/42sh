@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 		char *delimiter = strchr(key, sep);
 		if (!delimiter) return (NULL);
 
-		return (strdup(delimiter + 1));
+		return (ft_strdup(delimiter + 1));
 	}
 
 #pragma endregion

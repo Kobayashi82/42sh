@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:40:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:21:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -317,12 +317,12 @@
 			history_set_pos_end();
 			last_pos = history_get_pos();
 			last_pos = ft_max(last_pos, 0);
-		
+
 			if (!opts->args) {
 				end_pos = last_pos;
 				start_pos = last_pos;
 			}
-			
+
 			if (opts->args) {
 				start_pos = fc_list_getpos(opts->args->value, false);
 				opts->args = opts->args->next;
@@ -377,7 +377,6 @@
 				} else if (pid == 0) {
 					char *const args[] = { editor, tmp_file, NULL};
 					char **env = variables_to_array(vars_table, EXPORTED, true);
-					close(-42);
 					execve(editor, args, env);
 					exit(1);
 				} else if (pid > 0) {
@@ -421,11 +420,11 @@
 					}
 				}
 			}
-			
+
 			if (result == 1) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
 			if (result == 2) print(STDOUT_FILENO, "fc: crear\n", RESET_PRINT);
 			if (result == 3) print(STDOUT_FILENO, "fc: leer\n", RESET_PRINT);
-			
+
 			free(editor);
 			tmp_delete_path(tmp_file);
 

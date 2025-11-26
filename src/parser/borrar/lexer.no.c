@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:30:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void lexer_init(char *input) {
     if (g_lexer.input)
         free(g_lexer.input);
     
-    g_lexer.input = strdup(input);
+    g_lexer.input = ft_strdup(input);
     g_lexer.pos = 0;
     g_lexer.len = strlen(input);
     g_lexer.needs_more_input = false;
@@ -149,7 +149,7 @@ static int skip_whitespace(void) {
 static token_t *lexer_token_create(token_type_t type, char *value, int left_space, int is_quoted) {
     token_t *tok = malloc(sizeof(token_t));
     tok->type = type;
-    tok->value = value ? strdup(value) : NULL;
+    tok->value = value ? ft_strdup(value) : NULL;
     tok->had_left_space = left_space;
     tok->had_right_space = false;
     tok->quoted = is_quoted;

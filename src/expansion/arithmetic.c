@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:45:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@
 			if (input[*i] == '"') { *i += 1; continue; }
 
 			if (context->stack->nvalue == 2 && is_separator_arithmetic(input, i, &context->stack->nvalue)) {
-				return (syntax_error(TOKEN_NEAR, strdup("two operators"), *line), 2);
+				return (syntax_error(TOKEN_NEAR, ft_strdup("two operators"), *line), 2);
 			}
 			else if (is_separator_arithmetic(input, i, &context->stack->nvalue)) {
 				continue;
@@ -148,13 +148,13 @@
 			
 				//	))	Close Arithmetic Expansion or Arithmetic Expression
 			if (!strncmp(&input[*i], "))", 2) && context->stack && (context->stack->type == CTX_ARITHMETIC || context->stack->type == CTX_ARITHMETIC_EXPAND)) {
-				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, strdup("end with operator"), *line), 2);
+				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, ft_strdup("end with operator"), *line), 2);
 				*i += 2; stack_pop_2(&context->stack);
 				if (context->stack) context->stack->nvalue = 1;
 				return(0);
 			}	//	)	Close Command Substitution or Subshell or Arithmetic Group
 			else if (input[*i] == ')' && context->stack && context->stack->type == CTX_ARITHMETIC_GROUP) {
-				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, strdup("end with operator"), *line), 2);
+				if (context->stack->nvalue == 2) return (syntax_error(TOKEN_NEAR, ft_strdup("end with operator"), *line), 2);
 				*i += 1; stack_pop_2(&context->stack);
 				if (context->stack) context->stack->nvalue = 1;
 				return(0);
@@ -162,19 +162,19 @@
 
 				//	$((	Open Arithmetic Expansion
 			else if (!strncmp(&input[*i], "$((", 3) && is_arithmetic(&input[*i + 3])) {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 3; stack_push_2(&context->stack, CTX_ARITHMETIC_EXPAND);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	((	Open Arithmetic Expression
 			else if (!strncmp(&input[*i], "((", 2) && (!context->stack || context->stack->type != CTX_DQUOTE) && is_arithmetic(&input[*i + 2])) {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 2; stack_push_2(&context->stack, CTX_ARITHMETIC);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	(	Open Arithmetic Group
 			else if (input[*i] == '(') {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 1; stack_push_2(&context->stack, CTX_ARITHMETIC_GROUP);
 				if ((result = syntax_arithmetic(input, i, context, last_token, line))) return (result);
 				continue;
@@ -182,13 +182,13 @@
 
 				//	$(	Open Command Substitution
 			else if (!strncmp(&input[*i], "$(", 2)) {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 2; stack_push_2(&context->stack, CTX_SUBSHELL_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (result);
 				continue;
 			}	//	`	Open Backtick
 			else if (input[*i] == '`' && !is_context(context->stack, CTX_BACKTICK)) {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 1; stack_push_2(&context->stack, CTX_BACKTICK);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (result);
 				continue;
@@ -196,7 +196,7 @@
 
 				//	${	Open Parameter Expansion
 			else if (!strncmp(&input[*i], "${", 2)) {
-				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, strdup("expected operator"), *line), 2);
+				if (context->stack->nvalue == 1) return (syntax_error(TOKEN_NEAR, ft_strdup("expected operator"), *line), 2);
 				*i += 2; stack_push_2(&context->stack, CTX_BRACE_PARAM);
 				if ((result = syntax_parameter(input, i, context, last_token, line))) return (result);
 				continue;
@@ -206,18 +206,18 @@
 
 				//	<(	Open Process Substitution In/Out
 			else if (!strncmp(&input[*i], "<(", 2) || !strncmp(&input[*i], ">(", 2)) {
-				return (syntax_error(TOKEN_NEAR, strdup("Process Subtitution"), *line), 2);
+				return (syntax_error(TOKEN_NEAR, ft_strdup("Process Subtitution"), *line), 2);
 			}	//	{ 	Open Command Group
 			else if (input[*i] == '{' && input[*i + 1] && isspace(input[*i + 1])) {
-				return (syntax_error(TOKEN_NEAR, strdup("{ cmd; }"), *line), 2);
+				return (syntax_error(TOKEN_NEAR, ft_strdup("{ cmd; }"), *line), 2);
 			}	//	{	Open Brace Expansion
 			else if (input[*i] == '{') {
-				return (syntax_error(TOKEN_NEAR, strdup("{a,b,c}"), *line), 2);
+				return (syntax_error(TOKEN_NEAR, ft_strdup("{a,b,c}"), *line), 2);
 			}
 
 				//	Two operands togethers
 			if (context->stack->nvalue == 1) {
-				return (syntax_error(TOKEN_NEAR, strdup("two numbers"), *line), 2);
+				return (syntax_error(TOKEN_NEAR, ft_strdup("two numbers"), *line), 2);
 			}
 
 			while (input[*i] && (input[*i] == '"' || !is_not_separator_arithmetic(input, i))) *i += 1;

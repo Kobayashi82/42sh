@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 11:53:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,7 +210,7 @@
 			shell.interactive = false;
 			shell.as_argument = true;
 			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
-			terminal.input = expand_input(strdup(argv[2]));
+			terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
 			free(terminal.input);
 		} else {
