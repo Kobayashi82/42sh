@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 20:54:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:52:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 // Impresión de AST
 // Si error, devolver AST vacío, si más input, devolver NULL
 // Establecer exit_code en error
+
+// Si no es interactivo, no debe pedir más input
 
 t_ast_node *parse_word(t_token *token) {
 	t_ast_node *new_node = malloc(sizeof(t_ast_node));
