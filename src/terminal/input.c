@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 23:12:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:44:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,32 +28,26 @@
 	#include "main/shell.h"
 	#include "parser/syntax.h"
 
+	#include "parser/parser.h"
+
 #pragma endregion
 
-#pragma region "Expand"
+#pragma region "Expand Input"
 
-	char *expand_input(char *input) {
-		if (!input || ft_isspace_s(input)) return (input);
-
-		char *input_hist = NULL;
-
+	static char *expand_input(char *input) {
 		t_context ctx_history;	memset(&ctx_history, 0, sizeof(t_context));
 		t_context ctx_alias;	memset(&ctx_alias, 0, sizeof(t_context));
 
 		expand_history(&input, &ctx_history, true);
-		input_hist = ft_strdup(input);
-
 		expand_alias(&input, &ctx_alias);
 
-		if (shell.interactive) history_add(input_hist, false);
-		free(input_hist);
 		stack_clear(&ctx_history.stack);
 		stack_clear(&ctx_alias.stack);
 
 		return (input);
 	}
 
-	#pragma endregion
+#pragma endregion
 
 #pragma region "Readfile"
 
@@ -85,20 +79,43 @@
 
 #pragma region "Input"
 
-	char *get_input(char *prompt) {
+	int get_input() {
 		char *input = NULL;
 
-		if (!prompt) prompt = prompt_PS1;
+		if (shell.interactive)				input = readinput(prompt_PS1);
+		if (!shell.interactive)				input = readfile();
+		if (!input)							return(1);
+		if (ft_isspace_s(input))			return(free(input), !shell.interactive);
 
-		if (!shell.interactive) {
-			if (!(input = readfile()))			return (NULL);
-		} else {
-			if (!(input = readinput(prompt)))	return (NULL);
+		lexer_init(expand_input(input));
+
+		// Liberar AST en caso de error (en input)
+		// Si AST vacío, libera AST y termina el comando
+		// Manejar señales correctamente durante el parseo
+
+		t_parser_state	state;
+		while ((state = parse(&shell.ast)) == PARSER_INPUT) {
+			char *more = readinput(prompt_PS2);
+			if (!more) {	// Usuario canceló con Ctrl+C o EOF
+				lexer_free();
+				ast_free(&shell.ast);
+				return (1);
+			}
+			lexer_append_input(expand_input(more));
 		}
 
-		// expand_input() debe de expandir alias, historial y hacer una comprobación básica de sintaxis
-		// o si eso, no hacer comprobación y delegar en el lexer/parser
-		return (ft_isspace_s(input) ? input : expand_input(input));
+		if (shell.interactive) history_add(lexer.input, false);
+		// lexer_free(); // comentado porque todavia no se usa el arbol AST
+
+		if (state == PARSER_ERROR) {
+			ast_free(&shell.ast);
+			return (1);
+		}
+
+		ast_print(shell.ast);
+		printf("\n");
+
+		return (!shell.interactive);
 	}
 
 #pragma endregion

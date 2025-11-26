@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/03 12:43:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:13:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region "Includes"
+
+	#include "parser/parser.h"
 
 	#include <time.h>
 	#include <stdbool.h>
@@ -44,6 +46,7 @@
 			t_process	process;
 			bool		interactive;
 			bool		as_argument;
+			t_ast_node	*ast;
 			bool		exit;
 			int			exit_code;
 		} t_shell;

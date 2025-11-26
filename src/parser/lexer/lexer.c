@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 20:44:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 19:45:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,24 +81,32 @@
 	void lexer_init(char *input) {
 		stack_init();
 		if (lexer.input) free(lexer.input);
-		lexer.input = ft_strdup(input);
+		lexer.input = input;
 		lexer.pos = 0;
 		lexer.len = ft_strlen(input);
-		lexer.more_input = false;
+		lexer.append_inline = false;
 	}
 
 	void lexer_append_input(char *input) {
 		size_t new_len = ft_strlen(input);
 
-		lexer.input = realloc(lexer.input, lexer.len + new_len + 2);
-		lexer.input[lexer.len] = '\n';
-		strcpy(lexer.input + lexer.len + 1, input);
-		lexer.len += new_len + 1;
-		lexer.more_input = false;
-	}
+		if (lexer.append_inline) {
+			lexer.append_inline = false;
+			if (lexer.input && lexer.input[lexer.len - 1] == '\\') {
+				lexer.input[lexer.len - 1] = '\0';
+				lexer.len--;
+			}
+			lexer.input = realloc(lexer.input, lexer.len + new_len + 1);
+			strcpy(lexer.input + lexer.len, input);
+			lexer.len += new_len;
+		} else {
+			lexer.input = realloc(lexer.input, lexer.len + new_len + 2);
+			lexer.input[lexer.len] = '\n';
+			strcpy(lexer.input + lexer.len + 1, input);
+			lexer.len += new_len + 1;
+		}
 
-	int lexer_more_input() {
-		return (lexer.more_input);
+		free(input);
 	}
 
 	void lexer_free() {
@@ -188,8 +196,7 @@
 
 		if (((c == '\\' && (next == '\n' || next == '\0')) || (c == '\n' && next == '\0')) || c == '\0') {
 			if (lexer.stack_size > 0 || c == '\\') {
-				advance(1);
-				lexer.more_input = true;
+				if (c == '\\') lexer.append_inline = true; else advance(1);
 				return (lexer_token_create(TOKEN_INPUT, NULL, false, false));
 			}
 			if (c == '\n') advance(1);

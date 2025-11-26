@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:44:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,11 @@
 	#pragma region "Execute Commands (for tester)"
 
 		void execute_commands(char *input) {
-			if (!input || ft_isspace_s(terminal.input)) return;
+			if (!input || ft_isspace_s(input)) return;
 
 			t_arg *args = test_create_args(input);
+			lexer_free();	// Temporal porque no se usa el arbol AST
+
 			// t_arg *current = args;
 			// t_arg *next_command = NULL;
 			// t_arg *subcommand_args = NULL;
@@ -89,6 +91,7 @@
 				builtin_exec(args);
 				args_clear(&args);
 			}
+			ast_free(&shell.ast);
 		}
 
 	#pragma endregion
@@ -97,75 +100,18 @@
 
 		int read_input() {
 			signals_set();
-			if (!(terminal.input = get_input(prompt_PS1))) return (1);
 
-			if (ft_isspace_s(terminal.input)) {
-				free(terminal.input);
-				return (!shell.interactive);
+			if (get_input())	return (1);
+
+			if (!lexer.input)	return (!shell.interactive);	// esto sobra
+			// if ast no está vacío
+
+			if (lexer.input) {
+				if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+				else							printf("Input: %s\n", lexer.input);
+				
+				execute_commands(lexer.input);
 			}
-
-			// ------------ PARSING ------------
-
-			// Parsear input
-			// Solicitar input
-			// Liberar AST en caso de error (en input)
-			// Si AST vacío, libera AST y termina el comando
-			// Manejar señales correctamente durante el parseo
-
-			lexer_init(terminal.input);
-
-			t_ast_node *ast = NULL;
-			t_parser_state parser_state;
-
-			while ((parser_state = parse(&ast)) == PARSER_INPUT) {
-				char *more = get_input(prompt_PS2);
-				if (!more) {
-					// Usuario canceló con Ctrl+C o EOF
-					lexer_free();
-					free(terminal.input);
-					return (!shell.interactive);
-				}
-				lexer_append_input(more);
-				free(more);
-			}
-
-			lexer_free();
-			ast_print(ast);
-			ast_free(&ast);
-
-			if (parser_state == PARSER_ERROR) {
-				free(terminal.input);
-				return (!shell.interactive);
-			}
-
-			// while (!ast && lexer_needs_continuation()) {
-			// 	char *more = get_input(); // ps2
-			// 	if (!more) {
-			// 		// Usuario canceló con Ctrl+C o EOF
-			// 		lexer_free();
-			// 		free(terminal.input);
-			// 		return (!shell.interactive);
-			// 	}
-			// 	lexer_append_input(more);
-			// 	free(more);
-			// 	ast = parse();
-			// }
-			
-			// if (ast) {
-			// 	// ast_print(ast);
-			// 	// execute(ast);
-			// 	ast_free(ast);
-			// }
-
-			// ------------ PARSING ------------
-
-			if (!strcmp(terminal.input, "$?"))
-				printf("Exit code: %d\n", shell.exit_code);
-			else
-				printf("Input: %s\n", terminal.input);
-
-			execute_commands(terminal.input);
-			free(terminal.input);
 
 			return (!shell.interactive);
 		}
@@ -210,7 +156,7 @@
 			shell.interactive = false;
 			shell.as_argument = true;
 			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
-			terminal.input = expand_input(ft_strdup(argv[2]));
+			// terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
 			free(terminal.input);
 		} else {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 19:40:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:22:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@
 			char	*input;
 			size_t	pos;
 			size_t	len;
-			int		more_input;
+			int		append_inline;
 
 			char	*stack;
 			size_t	stack_size;
@@ -108,7 +108,6 @@
 
 	void	lexer_init(char *input);
 	void	lexer_append_input(char *more_input);
-	int		lexer_more_input();
 	void	lexer_free();
 
 	void	lexer_token_free(t_token *tok);
