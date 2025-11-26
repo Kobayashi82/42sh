@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:39:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:39:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 	#include "builtins/options.h"
 	#include "main/shell.h"
 	#include "main/error.h"
+
+	#include "parser/parser.h"
 
 #pragma endregion
 
@@ -62,7 +64,6 @@
 		
 		free(opts);
 		args_clear(&args);
-		free(terminal.input);
 		exit_error(NOTHING, result, NULL, true);
 
 		return (result);

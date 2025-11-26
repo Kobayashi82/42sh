@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/19 00:41:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:39:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@
 		cmdp_clear();
 		tmp_clear();
 		prompt_clear(BOTH);
+		ast_free(&shell.ast);
 		free(shell.cwd);
 		close(terminal.bk_stdin);
 		close(terminal.bk_stdout);
