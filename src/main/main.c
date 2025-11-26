@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 20:44:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:51:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,30 +61,6 @@
 
 			t_arg *args = test_create_args(input);
 			lexer_free();	// Temporal porque no se usa el arbol AST
-
-			// t_arg *current = args;
-			// t_arg *next_command = NULL;
-			// t_arg *subcommand_args = NULL;
-
-			// while (current) {
-			// 	if (current->value && current->value[0] == ';') {
-			// 		next_command = current->next;
-			// 		current->next = NULL;
-			// 		args_clear(&args);
-			// 		args = next_command;
-			// 		current = next_command;
-			// 	} else if (current->next && current->next->value && current->next->value[0] == ';') {
-			// 		next_command = current->next;
-			// 		current->next = NULL;
-
-			// 		globbing(args);
-			// 		subcommand_args = args;
-			// 		builtin_exec(subcommand_args);
-			// 		args_clear(&subcommand_args);
-			// 		args = next_command;
-			// 		current = next_command;
-			// 	} else	current = current->next;
-			// }
 
 			if (args) {
 				globbing(args);
@@ -155,7 +131,7 @@
 			signals_set();
 			shell.interactive = false;
 			shell.as_argument = true;
-			//terminal.input = expand_input(ft_strjoin((char *) argv[2], "\n", 0));
+			// Aqui tiene que crear el arbol AST sin abrir contextos, error si estan sin cerrar
 			// terminal.input = expand_input(ft_strdup(argv[2]));
 			execute_commands(terminal.input);
 			free(terminal.input);
