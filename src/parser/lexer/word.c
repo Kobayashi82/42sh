@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 20:59:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:12:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,13 +90,13 @@ t_token *word() {
 				return (lexer_token_create(TOKEN_INPUT, NULL, false, false));
 			}
 			if (peek(1) == '\0') advance(1);
+			free(stack_copy);
 			return (lexer_token_create(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), is_space(lexer.pos - start), is_space(0)));
 		}
 
 		c = advance(1);
 	}
 
-	printf("WTF 9\n");
 	if (lexer.stack_size > 0 && c == '\0') return (lexer_token_create(TOKEN_INPUT, NULL, false, false));
 	return (lexer_token_create(TOKEN_EOF, NULL, false, false));
 }

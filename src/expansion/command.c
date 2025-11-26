@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:29:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:45:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,8 @@
 				*i += 1; command_start = false; is_argument = true; continue;
 			}
 			
-			if (input[*i] == ')' && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_SUBSHELL_COMMAND && context->stack->type != CTX_SUBSHELL && context->stack->type != CTX_PROCESS_SUB_IN && context->stack->type != CTX_PROCESS_SUB_OUT))) return (syntax_error(TOKEN_NEAR, strdup("invalid close"), *line), 2);
-			if (input[*i] == '}' && (!context->stack || (context->stack->type != CTX_BRACE_PARAM && context->stack->type != CTX_BRACE_COMMAND))) return (syntax_error(TOKEN_NEAR, strdup("invalid close"), *line), 2);
+			if (input[*i] == ')' && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_SUBSHELL_COMMAND && context->stack->type != CTX_SUBSHELL && context->stack->type != CTX_PROCESS_SUB_IN && context->stack->type != CTX_PROCESS_SUB_OUT))) return (syntax_error(TOKEN_NEAR, ft_strdup("invalid close"), *line), 2);
+			if (input[*i] == '}' && (!context->stack || (context->stack->type != CTX_BRACE_PARAM && context->stack->type != CTX_BRACE_COMMAND))) return (syntax_error(TOKEN_NEAR, ft_strdup("invalid close"), *line), 2);
 
 				//	"	Close Double Quotes
 			if (input[*i] == '"' && context->stack && context->stack->type == CTX_DQUOTE) {
@@ -107,7 +107,7 @@
 				command_start = false; continue;
 			}	//	)	Close Command Substitution or Subshell or Arithmetic Group
 			else if (input[*i] == ')' && context->stack && (context->stack->type == CTX_SUBSHELL_COMMAND || context->stack->type == CTX_SUBSHELL || context->stack->type == CTX_ARITHMETIC_GROUP || context->stack->type == CTX_PROCESS_SUB_IN || context->stack->type == CTX_PROCESS_SUB_OUT)) {
-				if (context->stack->type == CTX_SUBSHELL && starting == *i) return (syntax_error(TOKEN_NEAR, strdup("empty subshell"), *line), 2);
+				if (context->stack->type == CTX_SUBSHELL && starting == *i) return (syntax_error(TOKEN_NEAR, ft_strdup("empty subshell"), *line), 2);
 				*i += 1; stack_pop_2(&context->stack);
 				if (context->stack && context->stack->type != CTX_ARITHMETIC_GROUP) return (0);
 				command_start = false; is_argument = true; continue;
@@ -172,17 +172,17 @@
 				command_start = false; is_argument = true; continue;
 			}	//	{ 	Open Command Group
 			else if (input[*i] == '{' && isspace(input[*i + 1]) && (!context->stack || (context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-				if (!command_start) return (syntax_error(TOKEN_NEAR, strdup("invalid subshell"), *line), 2);
+				if (!command_start) return (syntax_error(TOKEN_NEAR, ft_strdup("invalid subshell"), *line), 2);
 				*i += 1; stack_push_2(&context->stack, CTX_BRACE_COMMAND);
 				if ((result = syntax_shell(input, i, context, last_token, line))) return (2);
 				command_start = false; is_argument = false; continue;
 			}	//	;	&	&&	|	||	\n	Command Separator
 			else if (is_separator(input, i, last_token) && (!context->stack || (context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
-				if (command_start && *last_token) return (syntax_error(TOKEN_NEAR, strdup("two separators"), *line), 2);
+				if (command_start && *last_token) return (syntax_error(TOKEN_NEAR, ft_strdup("two separators"), *line), 2);
 				*i += 1; command_start = true; continue;
 			}
 
-			if (!command_start && !is_argument) return (syntax_error(TOKEN_NEAR, strdup("invalid comand"), *line), 2);
+			if (!command_start && !is_argument) return (syntax_error(TOKEN_NEAR, ft_strdup("invalid comand"), *line), 2);
 			
 			if (command_start && (!context->stack || (context->stack->type != CTX_QUOTE && context->stack->type != CTX_DQUOTE && context->stack->type != CTX_ARITHMETIC && context->stack->type != CTX_ARITHMETIC_EXPAND && context->stack->type != CTX_ARITHMETIC_GROUP))) {
 				while (input[*i] && !is_not_separator(input[*i])) *i += 1;

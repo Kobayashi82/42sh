@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,9 +194,9 @@
 
 		char *get_home_by_var() {
 			char *home = getenv("XDG_CONFIG_HOME");
-			if (home) return strdup(home);
+			if (home) return ft_strdup(home);
 			home = getenv("HOME");
-			if (home) return (strdup(home));
+			if (home) return (ft_strdup(home));
 
 			home = get_home_by_id(getuid());
 			if (home) return (home);

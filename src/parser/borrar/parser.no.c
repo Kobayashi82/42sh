@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   parser.no.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 12:56:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@ static ast_node_t *parse_word(void) {
     if (check_token(TOKEN_WORD)) {
         token_t *tok = expect_token(TOKEN_WORD);
         ast_node_t *node = create_node(AST_WORD);
-        node->value = strdup(tok->value);
+        node->value = ft_strdup(tok->value);
         node->quoted = tok->quoted;
         token_free(tok);
         return node;
@@ -283,7 +283,7 @@ static ast_node_t *parse_word(void) {
         // Dentro de ${...} debería haber una palabra (nombre de variable)
         token_t *var_tok = expect_token(TOKEN_WORD);
         if (var_tok) {
-            node->value = strdup(var_tok->value);
+            node->value = ft_strdup(var_tok->value);
             token_free(var_tok);
         }
         

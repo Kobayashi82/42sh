@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:39:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/26 11:18:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ static char *extract_word(char *line, int *index) {
     int start = *index;
 	int quoted = 0, move = 0;
 
-	if (line[*index] == '#')		{ (*index) += ft_strlen(&line[*index]); return (strdup(&line[*index])); }
-	if (line[*index] == ';')		{ (*index)++; return (strdup(";")); }
-	if (line[*index] == '\n')		{ (*index)++; return (strdup("\n")); }
+	if (line[*index] == '#')		{ (*index) += ft_strlen(&line[*index]); return (ft_strdup(&line[*index])); }
+	if (line[*index] == ';')		{ (*index)++; return (ft_strdup(";")); }
+	if (line[*index] == '\n')		{ (*index)++; return (ft_strdup("\n")); }
 
 	if (line[*index] == '\\')		{ quoted = 1; move = true; }
 	else if (line[*index] == '\'')	{ quoted = 2; move = true; }
@@ -43,8 +43,8 @@ static char *extract_word(char *line, int *index) {
 		else (*index)++;
 	}
 
-	if (start == *index) return (strdup(""));
-    return (strndup(&line[start], *index - start));
+	if (start == *index) return (ft_strdup(""));
+    return (ft_strndup(&line[start], *index - start));
 }
 
 static t_arg *add_arg(t_arg **head, char *value) {
