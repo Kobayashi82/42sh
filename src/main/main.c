@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 20:51:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:51:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,47 +52,69 @@
 
 #pragma endregion
 
-#pragma region "Varios"
+#pragma region "Read Input"
 
-	#pragma region "Execute Commands (for tester)"
+	int read_input() {
+		signals_set();
 
-		void execute_commands(char *input) {
-			if (!input || ft_isspace_s(input)) return;
+		if (interactive_input())	return (1);
+		if (!lexer.input)			return (1);		// esto sobra
 
-			t_arg *args = test_create_args(input);
-			lexer_free();	// Temporal porque no se usa el arbol AST
+		if (!shell.ast || shell.ast->type == TOKEN_EOF) {
+			lexer_free();							// esto sobra
+			ast_free(&shell.ast);
+		}
+
+		if (lexer.input) {
+			if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else							printf("Input: %s\n", lexer.input);
+			
+			t_arg *args = test_create_args(lexer.input);
+			lexer_free();							// temporal porque no se usa el arbol AST
+			ast_free(&shell.ast);
 
 			if (args) {
 				globbing(args);
 				builtin_exec(args);
 				args_clear(&args);
 			}
+		}
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "Read Input"
+
+	int read_input_arg(char *value) {
+		signals_set();
+
+		if (no_interactive_input(value))	return (1);
+		if (!lexer.input)					return (1);		// esto sobra
+
+		if (!shell.ast || shell.ast->type == TOKEN_EOF) {
+			lexer_free();							// esto sobra
 			ast_free(&shell.ast);
 		}
 
-	#pragma endregion
+		if (lexer.input) {
+			if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else							printf("Input: %s\n", lexer.input);
+			
+			t_arg *args = test_create_args(lexer.input);
+			lexer_free();							// temporal porque no se usa el arbol AST
+			ast_free(&shell.ast);
 
-	#pragma region "Read Input"
-
-		int read_input() {
-			signals_set();
-
-			if (get_input())	return (1);
-
-			if (!lexer.input)	return (!shell.interactive);	// esto sobra
-			// if ast no está vacío
-
-			if (lexer.input) {
-				if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-				else							printf("Input: %s\n", lexer.input);
-				
-				execute_commands(lexer.input);
+			if (args) {
+				globbing(args);
+				builtin_exec(args);
+				args_clear(&args);
 			}
-
-			return (!shell.interactive);
 		}
 
-	#pragma endregion
+		return (0);
+	}
 
 #pragma endregion
 
@@ -125,21 +147,24 @@
 
 		if (argc == 2 && !strcmp(argv[1], "-c"))
 			exit_error(START_ARGS, 2, NULL, true);
-		else if (argc > 1 && strcmp(argv[1], "-c")) ;
+		else if (argc > 1 && strcmp(argv[1], "-c")) {
 			//argument_error(&data, argv[1]);
-		else if (argc > 2 && !strcmp(argv[1], "-c")) {
+			exit_error(END, 0, NULL, true);
+		} else if (argc > 2 && !strcmp(argv[1], "-c")) {
 			signals_set();
-			shell.interactive = false;
-			shell.as_argument = true;
+			shell.source = SRC_ARGUMENT;
+			read_input_arg((char *)argv[2]);
 			// Aqui tiene que crear el arbol AST sin abrir contextos, error si estan sin cerrar
 			// terminal.input = expand_input(ft_strdup(argv[2]));
-			execute_commands(terminal.input);
-			free(terminal.input);
+			// execute_commands(terminal.input);
+			// free(terminal.input);
 		} else {
-			shell.interactive = isatty(STDIN_FILENO);
-			if (shell.interactive) {
-				//t_arg arg = { .value = "banner" }; builtin_exec(&arg);
+			shell.source = SRC_INTERACTIVE;
+			if (!isatty(STDIN_FILENO)) {
+				// error, no stdin
+				exit_error(END, 0, NULL, true);
 			}
+			//t_arg arg = { .value = "banner" }; builtin_exec(&arg);
 			while (!shell.exit && !read_input()) ;
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:18:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:40:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:47:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 
 	void syntax_error(t_syntax_error error, char *value, int line) {
 		char *pname = ft_strjoin(PROYECTNAME, ": ", 0);
-		if (shell.as_argument) pname = ft_strjoin(pname, "-c: ", 1);
-		if (!shell.interactive && line >= 0) { 
+		if (shell.source == SRC_ARGUMENT) pname = ft_strjoin(pname, "-c: ", 1);
+		if (shell.source == SRC_NO_INTERACTIVE  && line >= 0) { 
 			pname = ft_strjoin_sep(pname, "line ", ft_itoa(line), 6);
 			pname = ft_strjoin(pname, ": ", 1);
 		}

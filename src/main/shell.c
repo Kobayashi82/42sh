@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/19 00:42:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:43:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int shell_time() { return (time(NULL) - shell.started); }
 #pragma region "Initialize"
 
 	int shell_initialize() {
-		shell.interactive = false;
+		shell.source = SRC_NO_INTERACTIVE;
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
 		shell.subshell_level = 0;

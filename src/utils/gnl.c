@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 02:19:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 22:09:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,15 @@
 
 	#include "utils/libft.h"
 
+	#define GNL_BUFFER 256
+
 #pragma endregion
 
 #pragma region "Get Next Line"
 
-	#pragma region "Variables"
-
-		#define GNL_BUFFER 256
-
-	#pragma endregion
-
 	#pragma region "Get Line"
 
-		static char	*get_line(char *line, char *newline, char *buffer) {
+		static char *get_line(char *line, char *newline, char *buffer) {
 			int	len = ft_strlen(line);
 			int	blen = newline - buffer;
 
@@ -45,7 +41,7 @@
 
 	#pragma region "Get Buffer"
 
-		static char	*get_buffer(char *line, char *buffer) {
+		static char *get_buffer(char *line, char *buffer) {
 			int	len = ft_strlen(line);
 			int	blen = ft_strlen(buffer);
 
@@ -63,10 +59,11 @@
 
 	#pragma region "Get Next Line"
 
-		char	*get_next_line(int fd) {
+		char *get_next_line(int fd) {
 			static char	buffer[GNL_BUFFER + 1];
 			char		*newline, *line = NULL;
 
+			if (fd == -1) memset(buffer, 0, GNL_BUFFER + 1);
 			if (fd < 0) {
 				memset(buffer, '\0', GNL_BUFFER + 1);
 				return (NULL);
