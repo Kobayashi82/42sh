@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/27 20:03:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:24:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@
 			bool	histexpand;			//	1 = Expand history													0 = Disabled
 
 			//	ALIAS
-			bool	expand_aliases;		//	1 = Globbing disabled												0 = Enabled
+			bool	expand_aliases;		//	1 = Expand alias													0 = Disabled
 
 			//	GLOBBING
 			bool	noglob;				//	1 = Globbing disabled												0 = Enabled
@@ -58,11 +58,11 @@
 			bool	cdspell;			//	1 = Automatically correct minor errors in directory names			0 = Disabled
 			bool	dirspell;			//	1 = Correct minor errors in the first segment of an absolute path	0 = Disabled
 
-		}	t_options;
+		} t_options;
 
 	#pragma endregion
 
-	extern t_options	options;
+	extern t_options options;
 
 #pragma endregion
 

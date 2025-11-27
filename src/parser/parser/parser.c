@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 20:52:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:57:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@
 // Establecer exit_code en error
 
 // Si no es interactivo, no debe pedir más input
+// Detectar contexto abierto cuando llega a EOF
 
 t_ast_node *parse_word(t_token *token) {
 	t_ast_node *new_node = malloc(sizeof(t_ast_node));

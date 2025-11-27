@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/27 23:23:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,12 @@
 			if (value) options.emacs = !value;
 			options.vi = value;		return (0);
 		}
-		if (!strcmp("hide_ctrl_chars", option)) 		{ options.hide_ctrl_chars = value;	return (0); }
+		if (!strcmp("hide_ctrl_chars", option)) 	{ options.hide_ctrl_chars = value;	return (0); }
 		if (!strcmp("multiwidth_chars", option)) 	{ options.multiwidth_chars = value;	return (0); }
 
 		//	HISTORY
 		if (!strcmp("hist_local", option)) 			{ options.hist_local = value;		return (0); }
-		if (!strcmp("hist_on", option)) 				{ options.history = value;			return (0); }
+		if (!strcmp("hist_on", option)) 			{ options.history = value;			return (0); }
 		if (!strcmp("histexpand", option)) 			{ options.histexpand = value;		return (0); }
 
 		//	ALIAS
@@ -70,13 +70,13 @@
 
 		//	GLOBBING
 		if (!strcmp("noglob", option)) 				{ options.noglob = value;			return (0); }
-		if (!strcmp("dotglob", option)) 				{ options.dotglob = value;			return (0); }
+		if (!strcmp("dotglob", option)) 			{ options.dotglob = value;			return (0); }
 		if (!strcmp("nullglob", option)) 			{ options.nullglob = value;			return (0); }
 		if (!strcmp("failglob", option)) 			{ options.failglob = value;			return (0); }
 		if (!strcmp("nocaseglob", option)) 			{ options.nocaseglob = value;		return (0); }
 
 		//	CD
-		if (!strcmp("cdable_vars", option)) 			{ options.cdable_vars = value;		return (0); }
+		if (!strcmp("cdable_vars", option)) 		{ options.cdable_vars = value;		return (0); }
 		if (!strcmp("autocd", option)) 				{ options.autocd = value;			return (0); }
 		if (!strcmp("dirspell", option)) 			{ options.dirspell = value;			return (0); }
 
