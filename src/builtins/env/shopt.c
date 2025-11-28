@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:13:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "main/options.h"
@@ -65,7 +65,7 @@
 #pragma region "Unset"
 
 	int shopt(t_arg *args) {
-		t_opt *opts = parse_options(args, "pqsuo", '-', false);
+		t_opt *opts = parse_options(args, "pqsuo", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("shopt", opts->invalid, "[-pqsu] [-o] [optname ...]");

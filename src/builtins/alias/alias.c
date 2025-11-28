@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:39:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
@@ -56,7 +56,7 @@
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-		if (alias_validate(key, true)) return (free(key), free(value), 1);
+		if (alias_validate(key, 1)) return (free(key), free(value), 1);
 		alias_add(key, value);
 		return (free(key), free(value), 0);
 	}
@@ -88,7 +88,7 @@
 #pragma region "Alias"
 
 	int alias(t_arg *args) {
-		t_opt *opts = parse_options(args, "p", '-', false);
+		t_opt *opts = parse_options(args, "p", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("alias", opts->invalid, "[-p] [name[=value] ... ]");
@@ -108,9 +108,9 @@
 				} else print_alias(opts->args->value, &values, &invalues);
 				opts->args = opts->args->next;
 			}
-		} else if (!*opts->valid) alias_print(true);
+		} else if (!*opts->valid) alias_print(1);
 		
-		if (strchr(opts->valid, 'p')) alias_print(true);
+		if (strchr(opts->valid, 'p')) alias_print(1);
 
 		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
 		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:59:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
-	#include "terminal/signals.h"
 	#include "main/shell.h"
 	#include "main/options.h"
 
@@ -49,7 +48,7 @@
 					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
 					else							write(STDOUT_FILENO, "^C\r\n", 4);
 
-					shell.exit_code = 130; nsignal = 2;
+					shell.exit_code = 130; terminal.signal = 2;
 					return (1);
 				} return (0);
 			}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:34:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/variables.h"
@@ -54,18 +54,18 @@
 		int result = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "readonly", false, true)) return (1);
+			if (variables_validate(arg, NULL, "readonly", 0, 1)) return (1);
 			t_var *var = variables_find(vars_table, arg);
-			if (var) { var->readonly = true; return (0); }
+			if (var) { var->readonly = 1; return (0); }
 		}
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
 
 		int len = ft_strlen(key);
-		bool concatenate = false;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
-		if (variables_validate(key, value, "readonly", true, true)) return (free(key), free(value), 1);
+		int concatenate = 0;
+		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
+		if (variables_validate(key, value, "readonly", 1, 1)) return (free(key), free(value), 1);
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
@@ -85,7 +85,7 @@
 #pragma region "Readonly"
 
 	int readonly(t_arg *args) {
-		t_opt *opts = parse_options(args, "p", '-', false);
+		t_opt *opts = parse_options(args, "p", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("readonly", opts->invalid, "[name[=value] ...] or readonly -p");
@@ -97,7 +97,7 @@
 
 
 		if (!opts->args) {
-			variables_print(vars_table, READONLY, true);
+			variables_print(vars_table, READONLY, 1);
 			return (free(opts), 0);
 		}
 

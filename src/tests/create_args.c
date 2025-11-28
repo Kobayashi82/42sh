@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 20:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 
 #pragma endregion
 
@@ -25,21 +25,21 @@ static char *extract_word(char *line, int *index) {
 	if (line[*index] == ';')		{ (*index)++; return (ft_strdup(";")); }
 	if (line[*index] == '\n')		{ (*index)++; return (ft_strdup("\n")); }
 
-	if (line[*index] == '\\')		{ quoted = 1; move = true; }
-	else if (line[*index] == '\'')	{ quoted = 2; move = true; }
-	else if (line[*index] == '"')	{ quoted = 3; move = true; }
+	if (line[*index] == '\\')		{ quoted = 1; move = 1; }
+	else if (line[*index] == '\'')	{ quoted = 2; move = 1; }
+	else if (line[*index] == '"')	{ quoted = 3; move = 1; }
 
-	if (move) { memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
+	if (move) { memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = 0; }
 
     while (line[*index] && !(isspace(line[*index]) && !quoted) && !((line[*index] == ';' || line[*index] == '\n') && !quoted) && !(line[*index] == '#' && !quoted)) {
-		if (!quoted && line[*index] == '\\')			{ quoted = 1; move = true; }
+		if (!quoted && line[*index] == '\\')			{ quoted = 1; move = 1; }
 		else if (quoted == 1)							quoted = 0;
-		else if (!quoted && line[*index] == '\'')		{ quoted = 2; move = true; }
-		else if (quoted == 2 && line[*index] == '\'')	{ quoted = 0; move = true; }
-		else if (!quoted && line[*index] == '"')		{ quoted = 3; move = true; }
-		else if (quoted == 3 && line[*index] == '"')	{ quoted = 0; move = true; }
+		else if (!quoted && line[*index] == '\'')		{ quoted = 2; move = 1; }
+		else if (quoted == 2 && line[*index] == '\'')	{ quoted = 0; move = 1; }
+		else if (!quoted && line[*index] == '"')		{ quoted = 3; move = 1; }
+		else if (quoted == 3 && line[*index] == '"')	{ quoted = 0; move = 1; }
 		
-		if (move) { memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = false; }
+		if (move) { memmove(&line[*index], &line[*index + 1], ft_strlen(&line[*index + 1]) + 1); move = 0; }
 		else (*index)++;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:47:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/cmdp.h"
@@ -55,8 +55,8 @@
 
 #pragma region "Print"
 
-	static int print_hash(bool reuse) {
-		bool title = false; int total = 0;
+	static int print_hash(int reuse) {
+		int title = 0; int total = 0;
 		for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
 			t_cmdp *cmdp = cmdp_table[index];
 			while (cmdp) {
@@ -68,7 +68,7 @@
 						print(STDOUT_FILENO, cmdp->name, JOIN);
 						print(STDOUT_FILENO, "\n", JOIN);
 					} else {
-						if (!title) { title = true; print(STDOUT_FILENO, "hits    command\n", JOIN); }
+						if (!title) { title = 1; print(STDOUT_FILENO, "hits    command\n", JOIN); }
 						char *hits = ft_itoa(cmdp->hits);
 						int spaces = 4 - ft_strlen(hits);
 						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
@@ -94,7 +94,7 @@
 #pragma region "Hash"
 
 	int hash(t_arg *args) {
-		t_opt *opts = parse_options(args, "dlprt", '-', false);
+		t_opt *opts = parse_options(args, "dlprt", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("hash", opts->invalid, "[-lr] [-p pathname] [-dt] [name ...]");
@@ -108,7 +108,7 @@
 		print(STDERR_FILENO, NULL, RESET);
 		
 		if ((!*opts->valid || !strcmp(opts->valid, "l")) && !opts->args) {
-			int result = print_hash((strchr(opts->valid, 'l')));
+			int result = print_hash(strchr(opts->valid, 'l') != NULL);
 			return (free(opts), result);
 		}
 

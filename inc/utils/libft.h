@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 18:13:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:32:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 	#include <unistd.h>
 	#include <stdlib.h>
 	#include <limits.h>
-	#include <stdbool.h>
 	#include <errno.h>
 	#include <string.h>
 	#include <ctype.h>

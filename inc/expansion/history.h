@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 09:28:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:25:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@
 #pragma region Methods
 
 	//	------ EXPAND HISTORY ------
-	void	expand_history(char **input, t_context *context, bool show_expansion);
+	void	expand_history(char **input, t_context *context, int show_expansion);
 
 #pragma endregion

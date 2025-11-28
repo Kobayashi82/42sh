@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:15:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:37:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@
 
 	#pragma region "Validate"
 
-		int variables_validate(char *key, char *value, char *name, bool is_asign, bool show_msg) {
+		int variables_validate(char *key, char *value, char *name, int is_asign, int show_msg) {
 			if (!key) return (0);
 			int result = 0;
 
@@ -226,7 +226,7 @@
 
 	#pragma region "Array"
 
-		char **variables_to_array(t_var **table, int type, bool sort) {
+		char **variables_to_array(t_var **table, int type, int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
@@ -301,7 +301,7 @@
 
 		#pragma region "Print"
 
-			int variables_print(t_var **table, int type, bool sort) {
+			int variables_print(t_var **table, int type, int sort) {
 				size_t i = 0;
 
 				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {

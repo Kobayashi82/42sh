@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/22 15:01:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:29:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,14 @@
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
 	#include "main/options.h"
-	#include "main/error.h"
+	#include "main/shell.h"
+	#include "utils/libft.h"
 
 #pragma endregion
 
@@ -39,7 +39,7 @@
 
 	t_buffer	buffer;
 	char		*term_prompt;
-	bool		raw_mode;
+	int			raw_mode;
 	int			vi_mode;
 
 #pragma endregion
@@ -54,13 +54,13 @@
 				if (tty_fd == -1) {
 					free(buffer.value); buffer.value = NULL;
 					disable_raw_mode();
-					exit_error(STDIN_CLOSED, 1, NULL, true);
+					exit_error(STDIN_CLOSED, 1, NULL, 1);
 				}
 				dup2(tty_fd, STDIN_FILENO);
 				close(tty_fd);
 				return ;
 			}
-			raw_mode = true;
+			raw_mode = 1;
 			tcgetattr(STDIN_FILENO, &terminal.term);
 			terminal_initialize();
 
@@ -80,7 +80,7 @@
 
 		void disable_raw_mode() {
 			if (raw_mode) {
-				raw_mode = false;
+				raw_mode = 0;
 				cursor_show();
 				terminal_release();
 				if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
@@ -88,7 +88,7 @@
 					if (tty_fd == -1) {
 						free(buffer.value); buffer.value = NULL;
 						write(STDERR_FILENO, "\n", 1);
-						exit_error(STDIN_CLOSED, 1, NULL, true);
+						exit_error(STDIN_CLOSED, 1, NULL, 1);
 					}
 					tcsetattr(tty_fd, TCSAFLUSH, &terminal.term);
 					dup2(tty_fd, STDIN_FILENO);
@@ -111,7 +111,7 @@
 					free(buffer.value); buffer.value = NULL;
 					disable_raw_mode();
 					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDIN_CLOSED, 1, NULL, true);
+					exit_error(STDIN_CLOSED, 1, NULL, 1);
 				}
 				dup2(tty_fd, STDIN_FILENO);
 				close(tty_fd);
@@ -124,7 +124,7 @@
 					free(buffer.value); buffer.value = NULL;
 					disable_raw_mode();
 					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDOUT_CLOSED, 1, NULL, true);
+					exit_error(STDOUT_CLOSED, 1, NULL, 1);
 				}
 				dup2(tty_fd, STDOUT_FILENO);
 				close(tty_fd);
@@ -144,7 +144,7 @@
 		buffer.size = 1024;
 		buffer.position = buffer.length = vi_mode = 0;
 		buffer.value = calloc(buffer.size, sizeof(char));
-		buffer.CTRL = buffer.ALT = buffer.SHIFT = false;
+		buffer.CTRL = buffer.ALT = buffer.SHIFT = 0;
 
 		enable_raw_mode();
 

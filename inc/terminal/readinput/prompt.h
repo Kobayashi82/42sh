@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:53:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/25 13:59:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:21:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,16 @@
 
 	#pragma region "Enumerators"
 
-		enum e_prompt_type { PS1, PS2, BOTH };
+		enum e_prompt_type {
+			PS1,
+			PS2,
+			BOTH
+		};
 
 	#pragma endregion
 
-	extern char		*prompt_PS1;
-	extern char		*prompt_PS2;
+	extern char	*prompt_PS1;
+	extern char	*prompt_PS2;
 
 #pragma endregion
 

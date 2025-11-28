@@ -6,12 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:35:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:15:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "utils/libft.h"
+#include "parser/lexer.h"
 #include "parser/parser.h"
+
+#include "utils/libft.h"
 
 // Contexto para comillas, parentesis y llaves
 // Analisis sintactico modular
@@ -27,7 +29,7 @@
 
 #pragma region "AST"
 
-	void ast_free(t_ast_node **ast) {
+	void ast_free(t_ast **ast) {
 		if (!ast || !*ast) return;
 		
 		free((*ast)->value);
@@ -36,7 +38,7 @@
 		*ast = NULL;
 	}
 
-	static void print_ast_indent(t_ast_node *node, int indent) {
+	static void print_ast_indent(t_ast *node, int indent) {
 		if (!node) return;
 
 		for (int i = 0; i < indent; i++) printf("  ");
@@ -75,7 +77,7 @@
 		print_ast_indent(node->child, indent + 1);
 	}
 
-	void ast_print(t_ast_node *node) {
+	void ast_print(t_ast *node) {
 		print_ast_indent(node, 0);
 	}
 
@@ -83,8 +85,8 @@
 
 #pragma region "Parser"
 
-t_ast_node *parse_word(t_token *token) {
-	t_ast_node *new_node = malloc(sizeof(t_ast_node));
+t_ast *parse_word(t_token *token) {
+	t_ast *new_node = malloc(sizeof(t_ast));
 
 	new_node->value = token->value;
 	new_node->child = NULL;
@@ -96,8 +98,8 @@ t_ast_node *parse_word(t_token *token) {
 	return (new_node);
 }
 
-t_ast_node *parse() {
-	t_ast_node *ast = NULL, *current = NULL;
+t_ast *parse() {
+	t_ast *ast = NULL, *current = NULL;
 	t_token		*token = NULL;
 
 	while ((token = token_next())) {
@@ -107,7 +109,7 @@ t_ast_node *parse() {
 			return (ast);
 		}
 
-		t_ast_node *new_node = parse_word(token);
+		t_ast *new_node = parse_word(token);
 
 		if (!ast) {
 			ast = new_node;

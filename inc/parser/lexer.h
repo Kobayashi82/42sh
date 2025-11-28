@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:12:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:20:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,15 +90,14 @@
 		typedef char *(*t_input_callback)();
 
 		typedef struct s_lexer {
-			char	*input;
-			size_t	pos;
-			size_t	len;
-			int		append_inline;
+			char				*input;
+			size_t				pos;
+			size_t				len;
+			int					append_inline;
 			t_input_callback	more_input;
-
-			char	*stack;
-			size_t	stack_size;
-			size_t	stack_capacity;
+			char				*stack;
+			size_t				stack_size;
+			size_t				stack_capacity;
 		} t_lexer;
 
 	#pragma endregion
@@ -124,10 +123,10 @@
 	char	peek(size_t n);
 	char	peek_back(size_t n);
 	char	advance(size_t n);
-	int		skip_whitespace();
-	int		is_space(int n);
 
 	char	handle_quotes();
+	int		is_space(int n);
+
 	t_token	*expansion();
 	t_token	*grouping();
 	t_token	*operator();

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 20:08:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:23:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-	#include <stdbool.h>
 
 #pragma endregion
 
@@ -23,7 +22,10 @@
 
 	#pragma region "Enumerators"
 
-		enum e_input_mode { READLINE, VI };
+		enum e_input_mode {
+			READLINE,
+			VI
+		};
 
 	#pragma endregion
 
@@ -33,15 +35,15 @@
 			unsigned char	c;
 			char			*value;
 			size_t			size, position, length;
-			bool			SHIFT, ALT, CTRL;
+			int			SHIFT, ALT, CTRL;
 		}	t_buffer;
 
 	#pragma endregion
 
 	extern t_buffer	buffer;
 	extern char		*term_prompt;
-	extern bool		raw_mode;
-	extern bool		hist_searching;
+	extern int		raw_mode;
+	extern int		hist_searching;
 	extern int		vi_mode;
 
 #pragma endregion
@@ -64,7 +66,7 @@
 	int		history_search();
 
 	//	-------- UNDO/REDO ---------
-	void	undo_push(bool push);
+	void	undo_push(int push);
 	void	undo_pop();
 	void	undo_all();
 	void	undo_clear();

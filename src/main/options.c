@@ -6,21 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:10:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "main/options.h"
+
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "main/options.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
-	t_options	options;
+	t_options options;
 
 	static char *option_names[] = {
 		"autocd", "cdable_vars", "dirspell", "dotglob",
@@ -28,7 +29,7 @@
 		"hist_on", "nocaseglob", "noglob", "nullglob", "vi", "histexpand"
 	};
 
-	static bool *option_values[] = {
+	static int *option_values[] = {
 		&options.autocd, &options.cdable_vars, &options.dirspell, &options.dotglob,
 		&options.emacs, &options.expand_aliases, &options.failglob, &options.hist_local,
 		&options.history, &options.nocaseglob, &options.noglob, &options.nullglob, &options.vi, &options.histexpand
@@ -44,8 +45,7 @@
 
 #pragma region "Set"
 
-	//	Set an option
-	int options_set(const char *option, bool value) {
+	int options_set(const char *option, int value) {
 		if (!option) return (1);
 
 		//	READINPUT
@@ -87,7 +87,6 @@
 
 #pragma region "Print"
 
-	//	Print all options
 	char *options_print(char *value, int type) {
 		int num_options = sizeof(option_names) / sizeof(option_names[0]);
 		char *opt_str = NULL;
@@ -127,33 +126,32 @@
 
 #pragma region "Initialize"
 
-	//	Set all options to their defaults values
 	int options_initialize() {
 		//	READINPUT
-		options.emacs				= false;
-		options.vi					= true;
-		options.hide_ctrl_chars		= false;
-		options.multiwidth_chars	= false;
+		options.emacs				= 0;
+		options.vi					= 1;
+		options.hide_ctrl_chars		= 0;
+		options.multiwidth_chars	= 0;
 
 		//	HISTORY
-		options.history				= true;
-		options.hist_local			= true;
-		options.histexpand			= true;
+		options.history				= 1;
+		options.hist_local			= 1;
+		options.histexpand			= 1;
 
 		//	ALIAS
-		options.expand_aliases		= true;
+		options.expand_aliases		= 1;
 
 		//	GLOBBING
-		options.noglob				= false;
-		options.dotglob				= false;
-		options.nullglob			= false;
-		options.failglob			= false;
-		options.nocaseglob			= false;
+		options.noglob				= 0;
+		options.dotglob				= 0;
+		options.nullglob			= 0;
+		options.failglob			= 0;
+		options.nocaseglob			= 0;
 
 		//	CD
-		options.cdable_vars			= false;
-		options.autocd				= false;
-		options.dirspell			= false;
+		options.cdable_vars			= 0;
+		options.autocd				= 0;
+		options.dirspell			= 0;
 
 		return (0);
 	}

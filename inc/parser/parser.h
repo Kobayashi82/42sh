@@ -1,12 +1,6 @@
 
 #pragma once
 
-#pragma region "Includes"
-
-	#include "parser/lexer.h"
-
-#pragma endregion
-
 #pragma region "Variables"
 
 	#pragma region "Enumerators"
@@ -84,24 +78,24 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_ast_node {
-			t_ast_type			type;
-			char				*value;
-			int					quoted;
-			char **argv;   // Array de nodos AST (palabras, subshells, expansiones)
-			int					argc;
+		typedef struct s_ast {
+			t_ast_type		type;
+			char			*value;
+			int				quoted;
+			char			**argv;   // Array de nodos AST (palabras, subshells, expansiones)
+			int				argc;
 			
 			// Para operadores binarios (pipe, &&, ||)
-			struct s_ast_node *left;
-			struct s_ast_node *right;
+			struct s_ast	*left;
+			struct s_ast	*right;
 			
 			// Para subshells y expansiones
-			struct s_ast_node *child;
+			struct s_ast	*child;
 			
 			// Para redirecciones
-			char *cmd;       // El comando a ejecutar
-			char *file;      // El archivo para la redirección
-		} t_ast_node;
+			char			*cmd;       // El comando a ejecutar
+			char			*file;      // El archivo para la redirección
+		} t_ast;
 
 	#pragma endregion
 
@@ -109,11 +103,11 @@
 
 #pragma region "Methods"
 
-	void		ast_print(t_ast_node *node);
-	void		ast_free(t_ast_node **ast);
+	void	ast_print(t_ast *node);
+	void	ast_free(t_ast **ast);
 
-	t_ast_node *parse();
+	t_ast	*parse();
 
-	t_ast_node *parse_command();
+	t_ast	*parse_command();
 
 #pragma endregion

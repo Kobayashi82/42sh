@@ -6,16 +6,27 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/27 23:43:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:14:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/terminal.h"
+	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/history.h"
+
+	#include "hashes/alias.h"
+	#include "hashes/variables.h"
+	#include "hashes/builtin.h"
+
+	#include "main/options.h"
 	#include "main/shell.h"
+
+	#include "utils/libft.h"
 	#include "utils/paths.h"
+
+	#include <time.h>
 
 #pragma endregion
 
@@ -29,7 +40,17 @@ int shell_time() { return (time(NULL) - shell.started); }
 
 #pragma region "Initialize"
 
-	int shell_initialize() {
+	int initialize(int argc, const char **argv, const char **envp) {
+		(void) argc; (void) argv;
+
+		//	uid, euid
+		//	PS1, PS2
+		//	column, row
+		builtin_initialize();
+		options_initialize();
+		alias_initialize();
+		variables_initialize(vars_table, envp);
+		prompt_initialize();
 		shell.source = SRC_NO_INTERACTIVE;
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
@@ -40,6 +61,8 @@ int shell_time() { return (time(NULL) - shell.started); }
 		terminal.bk_stdin = dup(STDIN_FILENO);
 		terminal.bk_stdout = dup(STDOUT_FILENO);
 		terminal.bk_stderr = dup(STDERR_FILENO);
+		//	Execute ~/.42shrc
+		history_initialize();
 
 		return (0);
 	}

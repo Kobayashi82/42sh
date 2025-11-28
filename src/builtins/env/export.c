@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:33:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/variables.h"
@@ -54,22 +54,22 @@
 		int result = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "export", false, true)) return (1);
+			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
 			t_var *var = variables_find(vars_table, arg);
-			if (var) { var->exported = true; return (0); }
+			if (var) { var->exported = 1; return (0); }
 		}
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
 
 		int len = ft_strlen(key);
-		bool concatenate = false;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
-		if (variables_validate(key, value, "export", true, true)) return (free(key), free(value), 1);
+		int	concatenate = 0;
+		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
+		if (variables_validate(key, value, "export", 1, 1)) return (free(key), free(value), 1);
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			var->exported = true;
+			var->exported = 1;
 			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
 
 			result = 1;
@@ -90,9 +90,9 @@
 		int result = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "export", false, true)) return (1);
+			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
 			t_var *var = variables_find(vars_table, arg);
-			if (var) var->exported = false;
+			if (var) var->exported = 0;
 			return (0);
 		}
 
@@ -100,10 +100,10 @@
 		get_key_value(arg, &key, &value, '=');
 
 		int len = ft_strlen(key);
-		bool concatenate = false;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = true; }
+		int	concatenate = 0;
+		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
 
-		if (variables_validate(key, value, "export", true, true)) return (free(key), free(value), 1);
+		if (variables_validate(key, value, "export", 1, 1)) return (free(key), free(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
 			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
@@ -121,7 +121,7 @@
 #pragma region "Export"
 
 	int export(t_arg *args) {
-		t_opt *opts = parse_options(args, "np", '-', false);
+		t_opt *opts = parse_options(args, "np", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("export", opts->invalid, "[-n] [name[=value] ...] or export -p");
@@ -132,7 +132,7 @@
 		if (strchr(opts->valid, '#')) return (free(opts), print_version("export", "1.0"));
 
 		if (!opts->args) {
-			variables_print(vars_table, EXPORTED_LIST, true);
+			variables_print(vars_table, EXPORTED_LIST, 1);
 			return (free(opts), 0);
 		}
 

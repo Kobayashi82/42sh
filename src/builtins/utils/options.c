@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:28:26 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,23 @@
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "builtins/options.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "main/shell.h"
 
 #pragma endregion
 
 #pragma region "Parse"
 
-	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid) {
+	t_opt *parse_options(t_arg *args, const char *valid_opts, char opt_char, int no_invalid) {
 		t_opt *result = calloc(1, sizeof(t_opt));
 		result->options = valid_opts; result->args = args;
 		if (!args || !valid_opts) return (result);
 
 		int valid_index = 0, invalid_index = 0, done = 0;
-		if (args && args->value && (!strcmp(args->value, "-") || !strcmp(args->value, "+"))) done = true;
+		if (args && args->value && (!strcmp(args->value, "-") || !strcmp(args->value, "+"))) done = 1;
 		while (args && args->value && args->value[0] == opt_char && !done) {
 			if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1) {
-				result->too_many = true;
+				result->too_many = 1;
 				args = args->next; break;
 			}
 
@@ -41,11 +41,11 @@
 			else if (opt_char == '-' && !strcmp(arg, "--version"))	{ if (!strchr(result->valid, '#')) result->valid[valid_index++] = '#'; }
 			else {
 				for (int i = 1; arg[i]; ++i) {
-					if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1)	{ result->too_many = true; break; }
+					if (valid_index >= MAX_OPTIONS - 1 || invalid_index >= MAX_OPTIONS - 1)	{ result->too_many = 1; break; }
 					if (strchr(valid_opts, arg[i])) {
 						if (!strchr(result->valid, arg[i])) result->valid[valid_index++] = arg[i];
 					} else if (no_invalid) {
-						done = true; break;
+						done = 1; break;
 					} else {
 						if (!strchr(result->invalid, arg[i])) result->invalid[invalid_index++] = arg[i];
 					} 

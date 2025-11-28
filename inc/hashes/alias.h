@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/26 17:16:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:31:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-	#include <stdbool.h>
 
 	#define ALIAS_HASH_SIZE 101
 
@@ -41,18 +40,18 @@
 #pragma region "Methods"
 
 	//	---------- IMPORT ----------
-	int				alias_add(const char *key, const char *value);
-	int				alias_validate(char *key, bool show_msg);
+	int		alias_add(const char *key, const char *value);
+	int		alias_validate(char *key, int show_msg);
 	//	---------- EXPORT ----------
-	t_alias			*alias_find(const char *key);
-	char			*alias_find_value(const char *key);
-	char			**alias_to_array(bool sort);
-	int				alias_print(bool sort);
-	size_t			alias_length();
+	t_alias	*alias_find(const char *key);
+	char	*alias_find_value(const char *key);
+	char	**alias_to_array(int sort);
+	int		alias_print(int sort);
+	size_t	alias_length();
 	//	---------- DELETE ----------
-	int				alias_delete(const char *key);
-	void			alias_clear();
+	int		alias_delete(const char *key);
+	void	alias_clear();
 	//	-------- INITIALIZE --------
-	int				alias_initialize();
+	int		alias_initialize();
 
 #pragma endregion

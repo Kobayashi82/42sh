@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/16 12:41:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:22:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-	#include <stdbool.h>
 
 #pragma endregion
 
@@ -52,14 +51,14 @@
 	int			history_read(const char *filename);
 	int			history_write(const char *filename);
 	//	----------- ADD ------------
-	int			history_add(char *line, bool force);
+	int			history_add(char *line, int force);
 	int			history_replace(size_t pos, char *line, void *data);
 	//	--------- DELETE -----------
 	void		history_remove_offset(int offset);
 	void		history_remove(size_t pos);
 	void		history_remove_event(size_t event);
-	void		history_remove_current(bool remove_event);
-	void		history_remove_last_if_added(bool remove_event);
+	void		history_remove_current(int remove_event);
+	void		history_remove_last_if_added(int remove_event);
 	void		history_clear();
 	//	---------- GET -------------
 	HIST_ENTRY	**history_clone();
@@ -77,7 +76,7 @@
 	void		history_set_pos(size_t pos);
 	void		history_set_pos_end();
 	//	---------- PRINT -----------
-	int			history_print(size_t offset, bool hide_events);
+	int			history_print(size_t offset, int hide_events);
 	//	-------- INITIALIZE --------
 	int			history_initialize();
 

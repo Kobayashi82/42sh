@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:48:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "expansion/history.h"
-	#include "parser/context.h"
+	#include "expansion/context.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"
 	#include "builtins/builtins.h"
@@ -94,7 +94,7 @@
 		char *hist_fc_command = NULL;
 		HIST_ENTRY *hist_curr = history_get_last_if_added();
 		if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
-		history_remove_last_if_added(true);
+		history_remove_last_if_added(1);
 
 		if (query) {
 			if (!ft_isdigit_s(query)) {
@@ -168,7 +168,7 @@
 			}
 		}
 
-		if (result && hist_fc_command) history_add(hist_fc_command, false);
+		if (result && hist_fc_command) history_add(hist_fc_command, 0);
 		free(hist_fc_command);
 
 		return (result);
@@ -180,7 +180,7 @@
 
 	#pragma region "Add"
 
-		static void fc_list_add(int i, bool hide_events) {
+		static void fc_list_add(int i, int hide_events) {
 			HIST_ENTRY *hist = history_get(i);
 			if (hist && hist->line) {
 				if (!hide_events) {
@@ -198,7 +198,7 @@
 
 	#pragma region "GetPos"
 
-		static int fc_list_getpos(char *query, bool reduce_one) {
+		static int fc_list_getpos(char *query, int reduce_one) {
 			if (query) {
 				if (!ft_isdigit_s(query)) {
 					int last_pos = history_length();
@@ -232,7 +232,7 @@
 
 		static int fc_list(t_opt *opts) {
 			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
-			bool reduce_one = (history_get_last_if_added());
+			int reduce_one = (history_get_last_if_added() != NULL);
 
 			if (strchr(opts->valid, 'e') && opts->args) {
 				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
@@ -270,7 +270,7 @@
 					end_pos = tmp;
 				}
 				
-				bool hide_events = strchr(opts->valid, 'n');
+				int hide_events = strchr(opts->valid, 'n') != NULL;
 				print(STDOUT_FILENO, NULL, RESET);
 				if (strchr(opts->valid, 'r'))
 					for (int i = end_pos; i >= start_pos; --i) fc_list_add(i, hide_events);
@@ -312,7 +312,7 @@
 			char *hist_fc_command = NULL;
 			HIST_ENTRY *hist_curr = history_get_last_if_added();
 			if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
-			history_remove_last_if_added(true);
+			history_remove_last_if_added(1);
 
 			// Set first and last
 			history_set_pos_end();
@@ -325,7 +325,7 @@
 			}
 
 			if (opts->args) {
-				start_pos = fc_list_getpos(opts->args->value, false);
+				start_pos = fc_list_getpos(opts->args->value, 0);
 				opts->args = opts->args->next;
 				if (start_pos == -2) result = 1;
 				else if (start_pos == -1) start_pos = 0;
@@ -333,7 +333,7 @@
 
 			if (!result) {
 				if (opts->args) {
-					end_pos = fc_list_getpos(opts->args->value, false);
+					end_pos = fc_list_getpos(opts->args->value, 0);
 					if (end_pos == -2) result = 1;
 					else if (end_pos == -1) end_pos = last_pos;
 				} else end_pos = last_pos;
@@ -377,7 +377,7 @@
 					result = 4;
 				} else if (pid == 0) {
 					char *const args[] = { editor, tmp_file, NULL};
-					char **env = variables_to_array(vars_table, EXPORTED, true);
+					char **env = variables_to_array(vars_table, EXPORTED, 1);
 					execve(editor, args, env);
 					exit(1);
 				} else if (pid > 0) {
@@ -430,7 +430,7 @@
 			tmp_delete_path(tmp_file);
 
 			// Add fc command to history
-			if (result && hist_fc_command) history_add(hist_fc_command, false);
+			if (result && hist_fc_command) history_add(hist_fc_command, 0);
 			free(hist_fc_command);
 
 			// Ejecuta
@@ -449,7 +449,7 @@
 #pragma region "FC (Fix Command)"
 
 	int fc(t_arg *args) {
-		t_opt *opts = parse_options(args, "elnrs", '-', false);
+		t_opt *opts = parse_options(args, "elnrs", '-', 0);
 		
 		if (*opts->invalid) {
 			invalid_option("fc", opts->invalid, "[-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]");

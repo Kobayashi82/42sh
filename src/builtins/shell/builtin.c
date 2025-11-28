@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:41:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/builtin.h"
@@ -33,7 +33,7 @@
 		"    as a shell function, but need to execute the builtin within the function.\n\n"
 
 		"    Exit Status:\n"
-		"      Returns the exit status of SHELL-BUILTIN, or false if SHELL-BUILTIN is\n"
+		"      Returns the exit status of SHELL-BUILTIN, or 0 if SHELL-BUILTIN is\n"
 		"      not a shell builtin.\n";
 
 		print(STDOUT_FILENO, msg, RESET_PRINT);
@@ -46,7 +46,7 @@
 #pragma region "Builtin"
 
 	int bt_builtin(t_arg *args) {
-		t_opt *opts = parse_options(args, "", '-', false);
+		t_opt *opts = parse_options(args, "", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("builtin", opts->invalid, "[shell-builtin [arg ...]]");

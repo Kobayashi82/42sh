@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:38:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:39:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "expansion/globbing.h"
 	#include "main/options.h"
 	#include "utils/paths.h"
@@ -87,9 +87,9 @@
 				if (options.nullglob) {
 					free(args->value);
 					args->value = NULL;
-					args->nullglob = true;
+					args->nullglob = 1;
 				}
-				if (options.failglob) args->failglob = true;
+				if (options.failglob) args->failglob = 1;
 			} else args_insert(args, &files);
 		}
 	}

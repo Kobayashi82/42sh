@@ -28,16 +28,14 @@
 		"termcaps.h": "c",
 		"signals.h": "c",
 		"alias.h": "c",
-		"stdbool.h": "c",
 		"initializer_list": "c",
-		"syntax.h": "c",
 		"string.h": "c",
 		"random": "c",
 		"input.h": "c",
 		"cstdlib": "c",
-		"ast.h": "c",
 		"lexer.h": "c",
-		"context.h": "c"
+		"context.h": "c",
+		"tests.h": "c",
 	},
 	"makefile.configureOnOpen": false
 }

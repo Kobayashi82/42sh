@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "expansion/history.h"
-	#include "parser/context.h"
+	#include "expansion/context.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 
@@ -63,7 +63,7 @@
 #pragma region "History"
 
 	int bt_history(t_arg *args) {
-		t_opt *opts = parse_options(args, "cdsprw", '-', false);
+		t_opt *opts = parse_options(args, "cdsprw", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("history", opts->invalid, "[-c] [-d offset] [n] or history -rw [filename]");
@@ -76,13 +76,13 @@
 		int result = 0;
 		if (!*opts->valid) {
 			if (!opts->args) {
-				history_print(history_length(), false);
+				history_print(history_length(), 0);
 			} else {
 				if (opts->args->value && (*opts->args->value == '-' ||  *opts->args->value == '+' ||  !ft_isdigit_s(opts->args->value))) {
 					print(STDOUT_FILENO, ft_strjoin_sep("history: ", opts->args->value, ": numeric argument required\n", 0), FREE_RESET_PRINT);
 					result = 1;
 				} else {
-					history_print(atoi(opts->args->value), false);
+					history_print(atoi(opts->args->value), 0);
 				}
 			}
 		}
@@ -117,22 +117,22 @@
 					}
 				}
 			} else if (strchr(opts->valid, 's')) {
-				history_remove_last_if_added(true);
+				history_remove_last_if_added(1);
 				char *line = NULL;
 				while (opts->args) {
 					line = ft_strjoin(line, opts->args->value, 1);
 					if (opts->args->next) line = ft_strjoin(line, " ", 1);
 					opts->args = opts->args->next;
 				}
-				if (line) history_add(line, false);
+				if (line) history_add(line, 0);
 				free(line);
 			} else if (strchr(opts->valid, 'p')) {
-				history_remove_last_if_added(true);
+				history_remove_last_if_added(1);
 				print(STDOUT_FILENO, NULL, RESET);
 				while (opts->args) {
 					t_context ctx_history;	memset(&ctx_history, 0, sizeof(t_context));
 					char *line = ft_strdup(opts->args->value);
-					expand_history(&line, &ctx_history, false);
+					expand_history(&line, &ctx_history, 0);
 					print(STDOUT_FILENO, line, FREE_JOIN);
 					print(STDOUT_FILENO, "\n", JOIN);
 					opts->args = opts->args->next;

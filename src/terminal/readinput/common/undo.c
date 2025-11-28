@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:28:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
+	#include "utils/libft.h"
 
 #pragma endregion
 
@@ -27,13 +27,13 @@
 	} t_undo;
 
 	static t_undo	*stack;
-	static bool		pushed;
+	static int		pushed;
 
 #pragma endregion
 
 #pragma region "Push"
 
-	void undo_push(bool push) {
+	void undo_push(int push) {
 		if (push && !pushed) return;
 		if (stack && !strcmp(stack->value, buffer.value) && stack->length == buffer.length && stack->size == buffer.size) return;
 		t_undo *new = malloc(sizeof(t_undo));
@@ -64,7 +64,7 @@
 		stack = top->next;
 		free(top->value);
 		free(top);
-		pushed = false;
+		pushed = 0;
 	}
 
 #pragma endregion

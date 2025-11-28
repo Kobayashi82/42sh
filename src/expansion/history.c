@@ -6,24 +6,24 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:16:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:29:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/readinput/history.h"
-	#include "utils/print.h"
-	#include "parser/context.h"
+	#include "expansion/context.h"
 	#include "main/options.h"
 	#include "main/shell.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
 
 #pragma endregion
 
 #pragma region "Position"
 
-	static char *expand_position(char *value, int start, size_t *end, size_t length, bool is_double) {
+	static char *expand_position(char *value, int start, size_t *end, size_t length, int is_double) {
 		char *number = NULL;
 		size_t pos = 0;
 		(*end)++;
@@ -84,7 +84,7 @@
 
 #pragma region "Value"
 
-	static char *expand_value(char *value, int start, size_t *end, size_t length, bool at_start) {
+	static char *expand_value(char *value, int start, size_t *end, size_t length, int at_start) {
 		char *sub_value = NULL;
 
 		if (at_start) {
@@ -129,21 +129,21 @@
 
 #pragma region "Expand"
 
-	void expand_history(char **input, t_context *context, bool show_expansion) {
+	void expand_history(char **input, t_context *context, int show_expansion) {
 		if (!options.history || !options.histexpand || !input || !*input || !context) return;
 
 		char *value = *input;
 		size_t i = 0;
 		size_t length = ft_strlen(value);
-		bool changes = false, in_escape = false, in_quotes = false, in_dquotes = false;
+		int changes = 0, in_escape = 0, in_quotes = 0, in_dquotes = 0;
 		in_quotes = ctx_is_context(context->stack, CTX_QUOTE);
 		in_dquotes = ctx_is_context(context->stack, CTX_DQUOTE);
 		in_escape = context->in_escape;
 
 		while (i < length) {
 			// Handle Escape
-			if (in_escape)							{ in_escape = false;		i++; continue; }
-			if (value[i] == '\\' && !in_quotes)		{ in_escape = true;			i++; continue; }
+			if (in_escape)							{ in_escape = 0;		i++; continue; }
+			if (value[i] == '\\' && !in_quotes)		{ in_escape = 1;			i++; continue; }
 			// Handle Quotes
 			if (value[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
 			if (value[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
@@ -157,19 +157,19 @@
 				char *replacement = NULL;
 
 				if (value[end] == '!') {																						// !!
-					replacement = expand_position(value, start, &end, length, true);
+					replacement = expand_position(value, start, &end, length, 1);
 					if (!replacement) return;
 				} else if (value[end] == '-' && isdigit(value[end + 1])) {													// !-[n]
-					replacement = expand_position(value, start, &end, length, false);
+					replacement = expand_position(value, start, &end, length, 0);
 					if (!replacement) return;
 				} else if (isdigit(value[end])) {																			// ![n]
 					replacement = expand_event(value, start, &end, length);
 					if (!replacement) return;
 				} else if (value[end] == '?' && value[end + 1] != '?' && end + 1 < length && !isspace(value[end + 1]) && value[i + 1] != '"') {		// !?[str], !?[str]?
-					replacement = expand_value(value, start, &end, length, false);
+					replacement = expand_value(value, start, &end, length, 0);
 					if (!replacement) return;
 				} else {																										// ![str]
-					replacement = expand_value(value, start, &end, length, true);
+					replacement = expand_value(value, start, &end, length, 1);
 					if (!replacement) return;
 				}
 
@@ -180,7 +180,7 @@
 						value = new_input;
 						i += ft_strlen(replacement);
 						length = ft_strlen(value);
-						changes = true;
+						changes = 1;
 						continue;
 					}
 				}

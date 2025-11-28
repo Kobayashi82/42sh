@@ -200,9 +200,9 @@
 // int has_more_bytes(int fd) {
 //  int bytes_pending;
 //  if (ioctl(fd, FIONREAD, &bytes_pending) == -1) {
-//   return 0; // Devuelve false si hay error
+//   return 0; // Devuelve 0 si hay error
 //  }
-//  return bytes_pending > 0; // Devuelve true si hay más bytes
+//  return bytes_pending > 0; // Devuelve 1 si hay más bytes
 // }
 
 // -----------------------------------------

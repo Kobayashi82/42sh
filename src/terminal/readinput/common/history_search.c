@@ -6,18 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:28:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
 	#include "main/options.h"
+	#include "utils/libft.h"
 
 #pragma endregion
 
@@ -26,15 +26,15 @@
 	enum		e_mode { START, FORWARD, BACKWARD };
 
 	t_buffer		search_buffer;
-	bool			hist_searching;							//	Indicates whether the terminal is in searching mode
+	int			hist_searching;							//	Indicates whether the terminal is in searching mode
 	
-	static bool		initialized;
+	static int		initialized;
 
 	static size_t	original_size, original_position;
 	static char		*original_buffer;
 
 	static size_t	history_pos, old_len;
-	static bool		no_match;
+	static int		no_match;
 	static char		*match_show;
 
 	static int		search_find(int mode);
@@ -154,17 +154,17 @@
 	#pragma region "Init"
 
 		void search_init() {
-			undo_push(false);
+			undo_push(0);
 			
-			no_match = false;
+			no_match = 0;
 			old_len = chars_width(0, buffer.length, buffer.value);
 			original_size = buffer.size;
 			original_position = buffer.position;
 			original_buffer = malloc(buffer.size);
 			memcpy(original_buffer, buffer.value, buffer.size);
 			
-			hist_searching = true;
-			initialized = true;
+			hist_searching = 1;
+			initialized = 1;
 			search_buffer.size = 1024;
 			search_buffer.position = 0, search_buffer.length = 0;
 			search_buffer.value = calloc(search_buffer.size, sizeof(char));
@@ -187,8 +187,8 @@
 	#pragma region "Exit"
 
 		static int search_exit() {
-			hist_searching = false;
-			initialized = false;
+			hist_searching = 0;
+			initialized = 0;
 
 			int len = chars_width(0, search_buffer.position, search_buffer.value);
 			if (no_match) len += 26; else len += 19;
@@ -213,7 +213,7 @@
 			free(original_buffer);
 			free(match_show);
 
-			undo_push(false);
+			undo_push(0);
 
 			return (0);
 		}
@@ -240,8 +240,8 @@
 
 		#pragma region "Match"
 			
-			static int process_match(HIST_ENTRY *hist, size_t pos, bool update) {
-				no_match = false;
+			static int process_match(HIST_ENTRY *hist, size_t pos, int update) {
+				no_match = 0;
 				match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
 				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
 
@@ -297,7 +297,7 @@
 								char *match = strstr(hist->line, search_buffer.value);
 								if (match) {
 									history_pos = i;
-									return (process_match(hist, match - hist->line, true));
+									return (process_match(hist, match - hist->line, 1));
 								}
 							}
 						}
@@ -324,7 +324,7 @@
 					buffer.position = original_position;
 					buffer.value = malloc(original_size);
 					memcpy(buffer.value, original_buffer, original_size);
-					no_match = true;
+					no_match = 1;
 				}
 				return (0);
 			}

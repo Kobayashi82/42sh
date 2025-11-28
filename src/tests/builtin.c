@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:41:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
 	#include "hashes/cmdp.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "tests/tests.h"
 
@@ -149,11 +149,11 @@
 
 		t_arg *args = test_create_args("enable -n readonly");
 		builtin_exec(args); test_free_args(args);
-		if (!result && builtin_length(1, false) != 1) result = 1;
+		if (!result && builtin_length(1, 0) != 1) result = 1;
 
 		args = test_create_args("enable readonly");
 		builtin_exec(args); test_free_args(args);
-		if (!result && builtin_length(1, false) != 0) result = 1;
+		if (!result && builtin_length(1, 0) != 0) result = 1;
 		
 		return (result);
 	}
@@ -205,8 +205,8 @@
 		return (0);
 		variables_from_array(vars_table, envp);
 		printf("\n");
-		cmdp_add("./42/pipi", false, false);
-		cmdp_add("/usr/bin/date", false, false);
+		cmdp_add("./42/pipi", 0, 0);
+		cmdp_add("/usr/bin/date", 0, 0);
 
 		t_arg *args = test_create_args("hash -t");
 		builtin_exec(args); test_free_args(args);

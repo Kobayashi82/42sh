@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   syntax.h                                           :+:      :+:    :+:   */
+/*   context.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:50:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:25:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,9 @@
 
 		typedef struct s_context {
 			t_stack	*stack;
-			bool	in_escape;
-			bool	in_token;
-			bool	error;
+			int		in_escape;
+			int		in_token;
+			int		error;
 		} t_context;
 
 	#pragma endregion
