@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:31:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:10:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 	#include <stddef.h>
 
-	#define ALIAS_HASH_SIZE 101
+	#define ALIAS_HASH_SIZE	101
 
 #pragma endregion
 
@@ -24,16 +24,15 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_alias	t_alias;
 		typedef struct s_alias {
-			char	*name;
-			char	*value;
-			t_alias	*next;
+			char			*name;
+			char			*value;
+			struct s_alias	*next;
 		}	t_alias;
 
 	#pragma endregion
 
-	extern t_alias	*alias_table[ALIAS_HASH_SIZE];
+	extern t_alias *alias_table[ALIAS_HASH_SIZE];
 
 #pragma endregion
 

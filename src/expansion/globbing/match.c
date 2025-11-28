@@ -6,17 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:36:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:53:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "tests/args.h"
 	#include "expansion/globbing.h"
 	#include "main/options.h"
+	#include "utils/libft.h"
 	#include "utils/paths.h"
+
+	#include "tests/args.h"
 
 	#include <dirent.h>
 	#include <sys/stat.h>

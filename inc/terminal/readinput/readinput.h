@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:23:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:14:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@
 			unsigned char	c;
 			char			*value;
 			size_t			size, position, length;
-			int			SHIFT, ALT, CTRL;
-		}	t_buffer;
+			int				SHIFT, ALT, CTRL;
+		} t_buffer;
 
 	#pragma endregion
 

@@ -6,25 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:25:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:01:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region "Variables"
+#pragma region "Includes"
 
-	#pragma region "Structures"
-
-		typedef struct s_context t_context;
-
-	#pragma endregion
+	#include "expansion/context.h"
 
 #pragma endregion
 
 #pragma region Methods
 
-	//	------ EXPAND HISTORY ------
-	void	expand_history(char **input, t_context *context, int show_expansion);
+	int	expand_history(char **input, t_context *context, int show_expansion);
 
 #pragma endregion

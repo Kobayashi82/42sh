@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:30:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:06:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_arg	t_arg;
+		typedef struct s_arg t_arg;
 		typedef struct s_opt {
 			const char	*options;
 			char		valid[MAX_OPTIONS];
 			char		invalid[MAX_OPTIONS];
-			int		too_many;
+			int			too_many;
 			t_arg		*args;
 		}	t_opt;
 
@@ -36,7 +36,6 @@
 #pragma endregion
 
 #pragma region "Methods"
-
 
 	//	========== UTILS ===========
 	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, int no_invalid);

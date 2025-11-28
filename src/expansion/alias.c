@@ -6,18 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:35:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:05:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "expansion/arithmetic.h"
-	#include "expansion/command.h"
-	#include "expansion/context.h"
+	#include "expansion/alias.h"
 	#include "hashes/alias.h"
 	#include "main/options.h"
+	#include "utils/libft.h"
 
 	#define MAX_ALIAS_EXPANSIONS 50
 

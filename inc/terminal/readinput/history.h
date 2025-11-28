@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:22:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:13:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@
 
 	#pragma region "Enumerators"
 
-		enum e_hist_type { HIST_MEM, HIST_FILE };
+		enum e_hist_type {
+			HIST_MEM,
+			HIST_FILE
+		};
 
 	#pragma endregion
 
@@ -33,7 +36,7 @@
 			void	*data;
 			size_t	event;
 			size_t	length;
-		}	HIST_ENTRY;
+		} HIST_ENTRY;
 
 	#pragma endregion
 

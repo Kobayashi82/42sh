@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:15:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:24:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "parser/parser.h"
 
 #include "utils/libft.h"
+
+#include <stdio.h>	// borrar
 
 // Contexto para comillas, parentesis y llaves
 // Analisis sintactico modular

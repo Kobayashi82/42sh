@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:41:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:27:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 	#include "hashes/builtin.h"
 	#include "utils/paths.h"
 
+	#include <stdio.h>	// quitar dependencias
 	#include "tests/tests.h"
 
 #pragma endregion

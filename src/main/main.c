@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:39:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:24:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 	#include "parser/lexer.h"
 	#include "expansion/globbing.h"
 	#include "builtins/builtins.h"
+	#include <stdio.h>
 
 	int read_input() {
 		signals_set();

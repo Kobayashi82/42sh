@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:41:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:24:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@
 
 	#include "expansion/alias.h"
 	#include "expansion/history.h"
-	#include "expansion/context.h"
 
 	#include "main/options.h"
 	#include "main/shell.h"
@@ -33,6 +32,8 @@
 	#include "parser/parser.h"
 
 	#include "utils/libft.h"
+
+	#include <stdio.h>	// borrar
 
 #pragma endregion
 
