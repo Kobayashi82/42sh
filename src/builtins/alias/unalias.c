@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
@@ -63,7 +63,7 @@
 #pragma region "Unalias"
 
 	int unalias(t_arg *args) {
-		t_opt *opts = parse_options(args, "a", '-', false);
+		t_opt *opts = parse_options(args, "a", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("unalias", opts->invalid, "[-a] name [name ...]");

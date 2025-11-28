@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:39:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,10 @@
 	#include "utils/libft.h"
 	#include "terminal/terminal.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "main/shell.h"
-	#include "main/error.h"
 
 	#include "parser/parser.h"
 
@@ -46,7 +45,7 @@
 #pragma region "Builtin"
 
 	int bt_exit(t_arg *args) {
-		t_opt *opts = parse_options(args->next, "", '-', false);
+		t_opt *opts = parse_options(args->next, "", '-', 0);
 
 		if (strchr(opts->valid, '?')) return (free(opts), print_help());
 		if (strchr(opts->valid, '#')) return (free(opts), print_version("builtin", "1.0"));
@@ -64,7 +63,7 @@
 		
 		free(opts);
 		args_clear(&args);
-		exit_error(NOTHING, result, NULL, true);
+		exit_error(NOTHING, result, NULL, 1);
 
 		return (result);
 	}

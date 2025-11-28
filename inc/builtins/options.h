@@ -6,15 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/01/26 14:56:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:30:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #pragma region "Includes"
-
-	#include <stdbool.h>
 
 	#define MAX_OPTIONS	128
 
@@ -29,7 +27,7 @@
 			const char	*options;
 			char		valid[MAX_OPTIONS];
 			char		invalid[MAX_OPTIONS];
-			bool		too_many;
+			int		too_many;
 			t_arg		*args;
 		}	t_opt;
 
@@ -41,7 +39,7 @@
 
 
 	//	========== UTILS ===========
-	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, bool no_invalid);
+	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, int no_invalid);
 	int			invalid_option(char *name, char *opts, char *usage);
 	int			print_version(char *name, char *version);
 

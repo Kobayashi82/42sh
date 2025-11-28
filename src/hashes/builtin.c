@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:37:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,8 @@
 			return (NULL);
 		}
 
-		bool builtin_isactive(const char *name) {
-			if (!name) return (false);
+		int builtin_isactive(const char *name) {
+			if (!name) return (0);
 
 			unsigned int index = hash_index(name);
 			t_builtin *builtin = builtin_table[index];
@@ -96,14 +96,14 @@
 				builtin = builtin->next;
 			}
 
-			return (false);
+			return (0);
 		}
 
 	#pragma endregion
 
 	#pragma region "Array"
 
-		char **builtin_to_array(int disabled, bool special, bool sort) {
+		char **builtin_to_array(int disabled, int special, int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
@@ -137,7 +137,7 @@
 
 	#pragma region "Print"
 
-		int builtin_print(int disabled, bool special, bool sort) {
+		int builtin_print(int disabled, int special, int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
@@ -186,7 +186,7 @@
 
 	#pragma region "Length"
 
-		size_t builtin_length(int disabled, bool special) {
+		size_t builtin_length(int disabled, int special) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {

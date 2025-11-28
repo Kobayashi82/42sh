@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:38:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
-	#include "terminal/signals.h"
 	#include "main/shell.h"
 	#include "main/options.h"
 
@@ -67,7 +66,7 @@
 					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
 					else							write(STDOUT_FILENO, "^C\r\n", 4);
 
-					shell.exit_code = 130; nsignal = 2;
+					shell.exit_code = 130; terminal.signal = 2;
 					return (1);
 				} return (0);
 			}
@@ -99,7 +98,7 @@
 
 					if (buffer.position > 0) {
 
-						undo_push(false);
+						undo_push(0);
 
 						size_t back_pos = 1;
 
@@ -124,7 +123,7 @@
 				static void backspace_start() {
 					if (!buffer.length || !buffer.position || buffer.position > buffer.length) { beep(); return; }
 
-					undo_push(false);
+					undo_push(0);
 
 					int total_chars = chars_width(buffer.position, 0, buffer.value);
 
@@ -152,7 +151,7 @@
 
 				static void delete_char() {
 					if (buffer.position < buffer.length) {
-						undo_push(false);
+						undo_push(0);
 
 						size_t back_pos = 1;
 						while (buffer.position + back_pos < buffer.length && (buffer.value[buffer.position + back_pos] & 0xC0) == 0x80) back_pos++;
@@ -173,7 +172,7 @@
 				static void delete_word() {
 					if (buffer.position >= buffer.length) return;
 					
-					undo_push(false);
+					undo_push(0);
 
 					size_t end_pos = buffer.position;
 				
@@ -199,10 +198,10 @@
 
 			#pragma region "End"						("C, S, D")
 
-				static void delete_end(bool push) {
+				static void delete_end(int push) {
 					if (!buffer.length || buffer.position > buffer.length) return;
 
-					if (push) undo_push(false);
+					if (push) undo_push(0);
 
 					int total_chars = chars_width(buffer.position, buffer.length, buffer.value);
 
@@ -259,7 +258,7 @@
 					if (!new_line) { beep(); return; }
 					if (!tmp_line) tmp_line = ft_substr(buffer.value, 0, buffer.length);
 
-					home(); delete_end(false);
+					home(); delete_end(0);
 					while (ft_strlen(new_line) >= buffer.size) {
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
@@ -278,16 +277,16 @@
 					if (!history_length()) { beep(); return; }
 
 					char *new_line = history_next();
-					bool free_line = false;
+					int free_line = 0;
 
 					if (!tmp_line && history_get_pos() == history_length() - 1) { beep(); return; }
 					if (!new_line && history_get_pos() == history_length() - 1) {
 						new_line = tmp_line;
 						tmp_line = NULL;
-						free_line = true;
+						free_line = 1;
 					}
 
-					home(); delete_end(false);
+					home(); delete_end(0);
 					while (ft_strlen(new_line) >= buffer.size) {
 						buffer.value = realloc(buffer.value, buffer.size * 2);
 						buffer.size *= 2;
@@ -310,7 +309,7 @@
 				// Any non-alphanumeric character is considered a delimiter or space.
 				// An empty line is also considered to be a word.
 
-				static void arrow_left(bool simple) {
+				static void arrow_left(int simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 						if (buffer.CTRL && !simple) {
 							while (buffer.position > 0 && (isspace(buffer.value[buffer.position - 1]) || ispunct(buffer.value[buffer.position - 1]))) {
@@ -337,7 +336,7 @@
 				// Any non-alphanumeric character is considered a delimiter or space.
 				// An empty line is also considered to be a word.
 
-				static void arrow_right(bool simple) {
+				static void arrow_right(int simple) {
 					if (!buffer.ALT && !buffer.SHIFT && buffer.position < buffer.length) {
 						if (buffer.CTRL && !simple) {
 							while (buffer.position < buffer.length && (isspace(buffer.value[buffer.position]) || ispunct(buffer.value[buffer.position]))) {
@@ -373,7 +372,7 @@
 				//	Ignore multi-space chars
 				if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
-				undo_push(true);
+				undo_push(1);
 
 				// Expand buffer if necessary
 				if (buffer.position + c_size >= buffer.size - 1) {
@@ -408,7 +407,7 @@
 				static void swap_char() {
 					if (buffer.position == 0 || chars_width(0, buffer.length, buffer.value) < 2) { beep(); return; }
 					if (buffer.position > 0) {
-						undo_push(false);
+						undo_push(0);
 						char temp[8];
 						if (buffer.position < buffer.length) {
 							size_t back_pos1 = 1, back_pos2 = 1;
@@ -451,7 +450,7 @@
 			#pragma region "Word"						("ALT + T")
 
 				//	(Not working with multi-width chars 漢 🤬)
-				static t_word get_word(size_t position, size_t len, bool prev_word) {
+				static t_word get_word(size_t position, size_t len, int prev_word) {
 					t_word	word;
 
 					if (prev_word) {
@@ -491,14 +490,14 @@
 
 					if (buffer.position == buffer.length && buffer.position == 0) { beep(); return; }
 
-					undo_push(false);
+					undo_push(0);
 
-					next = get_word(buffer.position, buffer.length, false);
+					next = get_word(buffer.position, buffer.length, 0);
 					if (next.len > sizeof(next.value)) { beep(); return; };
-					if (!next.len) next = get_word(buffer.position, buffer.length, true);
+					if (!next.len) next = get_word(buffer.position, buffer.length, 1);
 					if (!next.len || next.start == 0) { beep(); return; };
 					temp_pos = next.start - 1;
-					prev = get_word(temp_pos, buffer.length, true);
+					prev = get_word(temp_pos, buffer.length, 1);
 					if (!prev.len || prev.len > sizeof(prev.value)) { beep(); return; };
 
 					sep.start = prev.end;
@@ -571,7 +570,7 @@
 					char	key = seq[1];
 					size_t	i = 0;
 
-					buffer.CTRL = false; buffer.ALT = false; buffer.SHIFT = false;
+					buffer.CTRL = 0; buffer.ALT = 0; buffer.SHIFT = 0;
 					if (seq[1] == '3') return (seq[1]);
 					if (seq[0] == '[') { while (seq[i] && seq[i] != ';') i++;
 						if (seq[i] == ';') { i++;
@@ -581,12 +580,12 @@
 						}
 					}
 					if (modifier && key) {
-						if (modifier == 2)		buffer.SHIFT = true;
-						if (modifier == 3)		buffer.ALT   = true;
-						if (modifier == 5)		buffer.CTRL  = true;
-						if (modifier == 6) {	buffer.SHIFT = true; buffer.CTRL = true; }
-						if (modifier == 7) {	buffer.ALT   = true; buffer.CTRL = true; }
-						if (modifier == 8) {	buffer.SHIFT = true; buffer.ALT  = true; buffer.CTRL = true; }
+						if (modifier == 2)		buffer.SHIFT = 1;
+						if (modifier == 3)		buffer.ALT   = 1;
+						if (modifier == 5)		buffer.CTRL  = 1;
+						if (modifier == 6) {	buffer.SHIFT = 1; buffer.CTRL = 1; }
+						if (modifier == 7) {	buffer.ALT   = 1; buffer.CTRL = 1; }
+						if (modifier == 8) {	buffer.SHIFT = 1; buffer.ALT  = 1; buffer.CTRL = 1; }
 					}
 					return (key);
 				}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:19:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:57:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,33 +23,33 @@
 
 	#pragma region Structures
 
-		typedef struct termios	t_termios;
-		typedef struct {
-			t_termios	term;
-			size_t		rows;
-			size_t		cols;
-			char		*input;
+		typedef struct s_terminal {
+			struct termios	term;
+			size_t			rows;
+			size_t			cols;
+			char			*input;
 
-			char 		*PS1;
-			char 		*PS2;
-			char		*prompt;
+			char 			*PS1;
+			char 			*PS2;
+			char			*prompt;
 
-			int			bk_stdin;
-			int			bk_stdout;
-			int			bk_stderr;
+			int				bk_stdin;
+			int				bk_stdout;
+			int				bk_stderr;
 
-			char		quoted;
+			int				signal;
 		} t_terminal;
 
 	#pragma endregion
 
-	extern t_terminal	terminal;
+	extern t_terminal terminal;
 
 #pragma endregion
 
 #pragma region Methods
 
-	int	no_interactive_input(char *value);
-	int	interactive_input();
+	void	signals_set();
+	int		no_interactive_input(char *value);
+	int		interactive_input();
 
 #pragma endregion

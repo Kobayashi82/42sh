@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:37:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 	#pragma region "CMDP"
 
-		int cmdp_add(const char *path, bool check_file, bool check_exec) {
+		int cmdp_add(const char *path, int check_file, int check_exec) {
 			if (!path) return (1);
 
 			if (check_exec && access(path, X_OK) == -1) return (1);
@@ -48,7 +48,7 @@
 			if (name && *name) name++;
 			if (ft_isspace_s(name)) return (1);
 
-			t_cmdp *new_cmdp = cmdp_find(name, true);
+			t_cmdp *new_cmdp = cmdp_find(name, 1);
 			if (new_cmdp) {
 				free(new_cmdp->path);
 				new_cmdp->path = ft_strdup(path);
@@ -76,7 +76,7 @@
 
 	#pragma region "CMDP"
 
-		t_cmdp *cmdp_find(const char *name, bool ninja) {
+		t_cmdp *cmdp_find(const char *name, int ninja) {
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
@@ -93,7 +93,7 @@
 			return (NULL);
 		}
 
-		char *cmdp_find_value(const char *name, bool ninja) {
+		char *cmdp_find_value(const char *name, int ninja) {
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
@@ -114,7 +114,7 @@
 
 	#pragma region "Array"
 
-		char **cmdp_to_array(bool sort) {
+		char **cmdp_to_array(int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
@@ -148,7 +148,7 @@
 
 	#pragma region "Print"
 
-		int cmdp_print(bool sort) {
+		int cmdp_print(int sort) {
 			char **array = cmdp_to_array(sort);
 
 			if (array && array[0]) {

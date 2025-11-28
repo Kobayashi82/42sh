@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/12 13:33:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:32:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,6 @@
 	char	*get_fullpath(char *path);
 	char	*get_cwd(char *sender);
 	char	*correct_path(char *path);
-	bool	is_directory(const char *path);
+	int		is_directory(const char *path);
 
 #pragma endregion

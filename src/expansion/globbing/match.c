@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:38:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:36:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "expansion/globbing.h"
 	#include "main/options.h"
 	#include "utils/paths.h"
@@ -28,7 +28,7 @@
 #pragma region "Match Pattern"
 
 	//	Check if input match a pattern. Support ? * and []
-	static bool	match_pattern(char * input, char *pattern) {
+	static int	match_pattern(char * input, char *pattern) {
 		int i = 0, j = 0, start = -1, match = 0;
 		int input_len = ft_strlen(input);
 		int pattern_len = ft_strlen(pattern);
@@ -50,11 +50,11 @@
 				pattern_char = tolower(pattern_char);
 			}
 
-			if (quoted > 0 && j < pattern_len) { if (input_char == pattern_char) { i++; j++; } else return (false); }
+			if (quoted > 0 && j < pattern_len) { if (input_char == pattern_char) { i++; j++; } else return (0); }
 			else if (j < pattern_len && pattern_char != '*' && (pattern_char == '?' || (pattern_char == '[' && brackets(input, pattern, i, &j)) || pattern_char == input_char)) { i++; j++; }
 			else if (j < pattern_len && pattern_char == '*') { match = i; start = j++; }
 			else if (start != -1) { j = start + 1; i = match++; }
-			else return (false);
+			else return (0);
 			if (quoted == 1) quoted = 0;
 		}
 
@@ -69,7 +69,7 @@
 #pragma region "File Add"
 
 	//	Add the matched input to a list of filenames
-	static void files_add(char *filename, t_pattern *pattern, char *dir, t_arg **files, bool is_dir) {
+	static void files_add(char *filename, t_pattern *pattern, char *dir, t_arg **files, int is_dir) {
 		t_arg *new_node;
 
 		if ((!strcmp(filename, ".") || !strcmp(filename, "..")) && strcmp(filename, pattern->value)) return;
@@ -98,10 +98,10 @@
 
 		if (pattern->is_dir && S_ISDIR(stbuf.st_mode)) {
 			if (match_pattern(de->d_name, pattern->value))
-				files_add(de->d_name, pattern, dir, files, true);
+				files_add(de->d_name, pattern, dir, files, 1);
 		} else if (!pattern->is_dir) {
 			if (match_pattern(de->d_name, pattern->value))
-				files_add(de->d_name, pattern, dir, files, false);
+				files_add(de->d_name, pattern, dir, files, 0);
 		}
 
 		return (free(fulldir), 0);
@@ -127,7 +127,7 @@
 		if (dr && pattern && pattern->value) {
 			de = readdir(dr);
 			while (de) {
-				bool valid = (de->d_name[0] != '.' || options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
+				int valid = (de->d_name[0] != '.' || options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
 				if (valid && match_files(de, pattern, fulldir, dir, &files)) break;
 				de = readdir(dr);
 			}

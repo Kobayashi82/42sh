@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:41:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
@@ -130,7 +130,7 @@
 #pragma region "Command"
 
 	int command(t_arg *args) {
-		t_opt *opts = parse_options(args, "pVv", '-', false);
+		t_opt *opts = parse_options(args, "pVv", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("command", opts->invalid, "[-pVv] command [arg ...]");

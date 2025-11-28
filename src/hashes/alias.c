@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:37:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@
 
 	#pragma region "Validate"
 
-		int alias_validate(char *key, bool show_msg) {
+		int alias_validate(char *key, int show_msg) {
 			if (!key) return (0);
 			int result = 0;
 
@@ -129,7 +129,7 @@
 
 	#pragma region "Array"
 
-		char **alias_to_array(bool sort) {
+		char **alias_to_array(int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
@@ -164,7 +164,7 @@
 
 	#pragma region "Print"
 
-		int alias_print(bool sort) {
+		int alias_print(int sort) {
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {

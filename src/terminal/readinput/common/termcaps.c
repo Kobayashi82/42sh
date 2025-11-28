@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:41:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -369,7 +369,7 @@
 
 	int terminal_initialize() {
 		char *termtype = getenv("TERM");
-		if (!termtype) { termtype = "dumb"; options.emacs = false; options.vi = false; }
+		if (!termtype) { termtype = "dumb"; options.emacs = 0; options.vi = 0; }
 
 		int success = tgetent(NULL, termtype);
 		if (success < 0)	{ write(STDERR_FILENO, "Could not access the termcap data base.\n", 41);	return (1); }

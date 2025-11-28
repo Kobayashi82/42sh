@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "main/shell.h"
@@ -50,7 +50,7 @@
 #pragma region "PWD"
 
 	int pwd(t_arg *args) {
-		t_opt *opts = parse_options(args, "LP", '-', false);
+		t_opt *opts = parse_options(args, "LP", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("pwd", opts->invalid, "[-LP]");

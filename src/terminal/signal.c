@@ -6,34 +6,32 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:39:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
-	#include "terminal/signals.h"
-	#include "main/shell.h"
+
 	#include "main/options.h"
-	#include "main/error.h"
+	#include "main/shell.h"
+
+	#include "utils/libft.h"
 
 	#include <signal.h>
 	#include <sys/ioctl.h>
 
 #pragma endregion
 
-int	nsignal;
-
 #pragma region "SIG_INT"
 
 	//	Handle SIGINT signal
 	static void sigint_handler(int sig) {
 		shell.exit_code = 128 + sig;
-		nsignal = sig;
+		terminal.signal = sig;
 		if (raw_mode) {
 			char byte = 3;
 			ioctl(STDIN_FILENO, TIOCSTI, &byte);
@@ -46,13 +44,13 @@ int	nsignal;
 
 	//	Handle SIGQUIT signal
 	// static void sigquit_handler(int sig) {
-	// 	nsignal = sig;
+	// 	terminal.signal = sig;
 	// 	// if (raw_mode) {
 	// 	// 	disable_raw_mode();
 	// 	// 	write(1, "\n", 1);
 	// 	// 	if (buffer.value) free(buffer.value);
 	// 	// }
-	// 	// exit_error(SEGQUIT, 3, NULL, true);
+	// 	// exit_error(SEGQUIT, 3, NULL, 1);
 	// }
 
 #pragma endregion
@@ -73,13 +71,13 @@ int	nsignal;
 	//	Handle SIGSEGV signal
 	static void sigsegv_handler(int sig) {
 		shell.exit_code = 128 + sig;
-		nsignal = sig;
+		terminal.signal = sig;
 		if (raw_mode) {
 			disable_raw_mode();
 			write(1, "\n", 1);
 			if (buffer.value) free(buffer.value);
 		}
-		exit_error(SEGFAULT, 11, NULL, true);
+		exit_error(SEGFAULT, 11, NULL, 1);
 	}
 
 #pragma endregion
@@ -92,7 +90,7 @@ int	nsignal;
 		signal(SIGQUIT, SIG_IGN);
 		signal(SIGWINCH, sigwinch_handler);
 		signal(SIGSEGV, sigsegv_handler);
-		nsignal = 0;
+		terminal.signal = 0;
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:20:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:41:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,22 @@
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
+	#include "terminal/terminal.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
-	#include "terminal/terminal.h"
-	#include "terminal/signals.h"
+
 	#include "expansion/alias.h"
 	#include "expansion/history.h"
-	#include "main/shell.h"
-	#include "parser/context.h"
+	#include "expansion/context.h"
 
 	#include "main/options.h"
+	#include "main/shell.h"
+
+	#include "parser/lexer.h"
 	#include "parser/parser.h"
+
+	#include "utils/libft.h"
 
 #pragma endregion
 
@@ -41,7 +44,7 @@ static int fd;
 		if (input) {
 			t_context ctx_history;
 			memset(&ctx_history, 0, sizeof(t_context));
-			expand_history(&input, &ctx_history, true);
+			expand_history(&input, &ctx_history, 1);
 			ctx_stack_clear(&ctx_history.stack);
 		}
 			
@@ -140,7 +143,7 @@ static char *interactive_more_input() {
 
 		shell.ast = parse();
 
-		history_add(lexer.input, false);
+		history_add(lexer.input, 0);
 		// lexer_free();	// comentado porque todavia no se usa el arbol AST
 
 		ast_print(shell.ast);

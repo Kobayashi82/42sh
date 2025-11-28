@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/28 22:05:46 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/28 22:48:10 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -105,13 +105,11 @@ SRCS	=	main/main.c									\
 			parser/parser/expansion.c					\
 			parser/parser/redirection.c					\
 														\
-			parser/borrar/tokenizer/args.c				\
-			parser/borrar/syntax/context.c				\
-														\
 														\
 			expansion/history.c							\
 			expansion/alias.c							\
 			expansion/brace.c							\
+			expansion/context.c							\
 			expansion/tilde.c							\
 			expansion/parameter.c						\
 			expansion/group.c							\
@@ -180,6 +178,7 @@ SRCS	=	main/main.c									\
 			utils/users.c								\
 														\
 														\
+			tests/args.c								\
 			tests/builtin.c								\
 			tests/create_args.c							\
 			tests/internal.c							\

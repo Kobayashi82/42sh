@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
@@ -142,12 +142,12 @@
 
 	#pragma region "Command"
 
-		static int check_command(char *arg, char *opts, bool is_command) {
+		static int check_command(char *arg, char *opts, int is_command) {
 			if (!arg) return (0);
 
 			if (!opts || !*opts) {
 				if (alias_find(arg) || builtin_isactive(arg)) return (0);
-				t_cmdp *cmdp = cmdp_find(arg, false);
+				t_cmdp *cmdp = cmdp_find(arg, 0);
 				if (cmdp) {
 					if (access(cmdp->path, F_OK) != -1) {
 						print(STDOUT_FILENO, cmdp->name, JOIN);
@@ -200,9 +200,9 @@
 #pragma region "Type"
 
 	int type(t_arg *args) {
-		bool is_command = false;
+		int is_command = 0;
 		if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
-		t_opt *opts = parse_options(args, "afptP", '-', false);
+		t_opt *opts = parse_options(args, "afptP", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("type", opts->invalid, "[-afptP] name [name ...]");

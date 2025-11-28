@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:13:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:22:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@
 
 	static char			history_file[4096];				//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entry
-	static bool			file_unlimited		= false;	//	Indicates if it is limited by a maximum size
+	static int			file_unlimited		= 0;	//	Indicates if it is limited by a maximum size
 
 	static size_t		mem_max				= 1000;		//	Maximum number of entry
-	static bool			mem_unlimited		= false;	//	Indicates if it is limited by a maximum size
+	static int			mem_unlimited		= 0;	//	Indicates if it is limited by a maximum size
 
 	static size_t		length				= 0;		//	Current number of entry
 	static size_t		capacity			= 10;		//	Array size
@@ -42,9 +42,9 @@
 
 	static size_t		position			= 0;		//	Current position within the array
 
-	static bool			begining			= false;
-	static bool			middle				= false;
-	static bool			added				= false;
+	static int			begining			= 0;
+	static int			middle				= 0;
+	static int			added				= 0;
 
 	static char			**tmp_history		= NULL;		//	Temporary array to store history entry
 	static size_t		tmp_length			= 0;		//	Number of entry currently in the temporary history
@@ -79,8 +79,8 @@
 		void history_set_size(size_t value, int type) {
 			size_t new_size = ft_min(ft_max(0, value), HIST_MAXSIZE);
 
-			if (type == HIST_FILE) { file_max = new_size; file_unlimited = false; }
-			if (type == HIST_MEM)  { mem_max = new_size;  mem_unlimited = false;
+			if (type == HIST_FILE) { file_max = new_size; file_unlimited = 0; }
+			if (type == HIST_MEM)  { mem_max = new_size;  mem_unlimited = 0;
 				if (mem_max < length) {
 					HIST_ENTRY **tmp_history = calloc((mem_max * 2) + 1, sizeof(HIST_ENTRY *));
 					size_t i = 0;
@@ -104,8 +104,8 @@
 
 		//	Remove the size limitation for the history
 		void history_unset_size(int type) {
-			if (type == HIST_MEM)	{  mem_max = INT_MAX;  mem_unlimited = true; }
-			if (type == HIST_FILE)	{ file_max = INT_MAX; file_unlimited = true; }
+			if (type == HIST_MEM)	{  mem_max = INT_MAX;  mem_unlimited = 1; }
+			if (type == HIST_FILE)	{ file_max = INT_MAX; file_unlimited = 1; }
 		}
 
 	#pragma endregion
@@ -113,9 +113,9 @@
 	#pragma region "Resize"
 
 		//	Initialize or resize the history
-		//	- If `initialize` is true or `history` is NULL, it sets up a new buffer with a default capacity
+		//	- If `initialize` is 1 or `history` is NULL, it sets up a new buffer with a default capacity
 		//	- If the buffer is full, it doubles the capacity by a power of 2 and preserves existing entries
-		static void history_resize(bool initialize) {
+		static void history_resize(int initialize) {
 			if (initialize || !history) {
 				if (history) history_clear();
 				capacity = 10; length = 0;
@@ -173,8 +173,8 @@
 
 		//	Add the entries to the history
 		int history_read(const char *filename) {
-			if (read_history_file(filename)) {		 	history_resize(true); return (1); }
-			if (tmp_length < 1) { free(tmp_history);	history_resize(true); return (0); }
+			if (read_history_file(filename)) {		 	history_resize(1); return (1); }
+			if (tmp_length < 1) { free(tmp_history);	history_resize(1); return (0); }
 
 			if (history) history_clear();
 			event = 1;
@@ -267,27 +267,27 @@
 	#pragma region "Add"
 
 		//	Add an entry to the history
-		int history_add(char *line, bool force) {
+		int history_add(char *line, int force) {
 			if (!line || ft_isspace_s(line) || !mem_max) return (1);
 
-			bool ignoredups = false, ignorespace = false, erasedups = false;
+			int ignoredups = 0, ignorespace = 0, erasedups = 0;
 			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (!strcmp(token, "ignoredups"))	ignoredups = true;
-					if (!strcmp(token, "ignorespace"))	ignorespace = true;
-					if (!strcmp(token, "erasedups"))		erasedups = true;
-					if (!strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
+					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
+					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
+					if (!strcmp(token, "erasedups"))		erasedups = 1;
+					if (!strcmp(token, "ignoreboth"))	ignoredups = 1; ignorespace = 1;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
 
-			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = false; return (1); }
-			if (!force && ignorespace && isspace(*line)) { added = false; return (1); }
+			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = 0; return (1); }
+			if (!force && ignorespace && isspace(*line)) { added = 0; return (1); }
 			if (!force && erasedups) erase_dups(line, INT_MAX);
 
-			history_resize(false);
+			history_resize(0);
 			if (length >= mem_max && !mem_unlimited) {
 				free(history[0]->line);
 				free(history[0]->data);
@@ -303,9 +303,9 @@
 			history[length++]->data = NULL;
 			history[length] = NULL;
 			history_set_pos_end();
-			added = true;
+			added = 1;
 
-			begining = middle = false;
+			begining = middle = 0;
 
 			return (0);
 		}
@@ -318,15 +318,15 @@
 		int history_replace(size_t pos, char *line, void *data) {
 			if (!history || !line || ft_isspace_s(line) || !length || !mem_max) return (1);
 
-			bool ignoredups = false, ignorespace = false, erasedups = false;
+			int ignoredups = 0, ignorespace = 0, erasedups = 0;
 			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
 			if (control) {
 				char *token = ft_strtok(control, ":", 30);
 				while (token) {
-					if (!strcmp(token, "ignoredups"))	ignoredups = true;
-					if (!strcmp(token, "ignorespace"))	ignorespace = true;
-					if (!strcmp(token, "erasedups"))		erasedups = true;
-					if (!strcmp(token, "ignoreboth"))	ignoredups = true; ignorespace = true;
+					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
+					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
+					if (!strcmp(token, "erasedups"))		erasedups = 1;
+					if (!strcmp(token, "ignoreboth"))	ignoredups = 1; ignorespace = 1;
 					token = ft_strtok(NULL, ":", 30);
 				}
 			}
@@ -375,7 +375,7 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position == length) { history_set_pos_end(); added = false; }
+				if (length && position == length) { history_set_pos_end(); added = 0; }
 			}
 		}
 
@@ -390,7 +390,7 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position == length) { history_set_pos_end(); added = false; }
+				if (length && position == length) { history_set_pos_end(); added = 0; }
 			}
 		}
 
@@ -403,7 +403,7 @@
 		}
 
 		//	Remove the current entry
-		void history_remove_current(bool remove_event) {
+		void history_remove_current(int remove_event) {
 			if (!history || length == 0) return;
 
 			if (history && position < length && history[position]) {
@@ -413,18 +413,18 @@
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
-				if (length && position >= length) { history_set_pos_end(); added = false; }
+				if (length && position >= length) { history_set_pos_end(); added = 0; }
 				if (remove_event) event--;
 			}
 		}
 
 		//	Remove the last entry
-		void history_remove_last_if_added(bool remove_event) {
+		void history_remove_last_if_added(int remove_event) {
 			if (!history || length == 0 || !added) return;
 
 			history_set_pos_end();
 			history_remove_current(remove_event);
-			added = false;
+			added = 0;
 		}
 
 	#pragma endregion
@@ -539,8 +539,8 @@
 			if (position == length) position = length -1;
 			if (begining) return (NULL);
 			if (position > 0 && middle) position--;
-			if (position == 0) begining = true;
-			middle = true;
+			if (position == 0) begining = 1;
+			middle = 1;
 
 			return (history[position]->line);
 		}
@@ -554,8 +554,8 @@
 			if (!history || !options.history || !mem_max || !length) return (NULL);
 
 			if (position == length) position = length -1;
-			begining = false; middle = true;
-			if (position >= length - 1) { middle = false; return (NULL); }
+			begining = 0; middle = 1;
+			if (position >= length - 1) { middle = 0; return (NULL); }
 			position++;
 
 			return (history[position]->line);
@@ -581,7 +581,7 @@
 
 		//	Set the position in the history to the last entry
 		void history_set_pos_end() {
-			begining = false; middle = false;
+			begining = 0; middle = 0;
 			position = 0;
 			if (length > 0) position = length - 1;
 		}
@@ -593,7 +593,7 @@
 #pragma region "Print"
 
 	//	Print all entries
-	int history_print(size_t offset, bool hide_events) {
+	int history_print(size_t offset, int hide_events) {
 		if (!history || !length) return (1);
 		if (offset > length) offset = length;
 

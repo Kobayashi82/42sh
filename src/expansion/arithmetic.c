@@ -6,18 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:03:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:35:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // #pragma region "Is Separator"
 
-	// static bool is_separator_arithmetic(const char *input, size_t *i, int *nvalue) {
+	// static int is_separator_arithmetic(const char *input, size_t *i, int *nvalue) {
 	// 	// Check for 3-character operators
 	// 	if (!strncmp(&input[*i], "**=", 2) ||		// Power assignment
 	// 		!strncmp(&input[*i], "<<=", 3) ||		// Left shift with assignment
 	// 		!strncmp(&input[*i], ">>=", 3)) {		// Right shift with assignment
-	// 		*i += 3; *nvalue = 2; return (true);
+	// 		*i += 3; *nvalue = 2; return (1);
 	// 	}	// Check for 2-character operators
 	// 	else if (!strncmp(&input[*i], "&&", 2) ||	// Logical AND
 	// 		!strncmp(&input[*i], "||", 2) ||		// Logical OR
@@ -36,25 +36,25 @@
 	// 		!strncmp(&input[*i], "&=", 2) || 		// Bitwise AND assignment
 	// 		!strncmp(&input[*i], "|=", 2) || 		// Bitwise OR assignment
 	// 		!strncmp(&input[*i], "^=", 2)) { 		// Bitwise XOR assignment
-	// 		*i += 2; *nvalue = 2; return (true);
+	// 		*i += 2; *nvalue = 2; return (1);
 	// 	}	// Check for Process Substitution In/Out
 	// 	else if (!strncmp(&input[*i], "<(", 2) ||	// Process Substitution In
 	// 		!strncmp(&input[*i], ">(", 2)) {		// Process Substitution Out
-	// 		return (false);
+	// 		return (0);
 	// 	}	// Check for 1-character operators
 	// 	else if (strchr("|&+-*/%=<>!^", input[*i])) {			
-	// 		*i += 1; *nvalue = 2; return (true);
+	// 		*i += 1; *nvalue = 2; return (1);
 	// 	}
 
-	// 	return (false);
+	// 	return (0);
 	// }
 
-	// static bool is_not_separator_arithmetic(const char *input, size_t *i) {
+	// static int is_not_separator_arithmetic(const char *input, size_t *i) {
 	// 	if (strchr("|&+-*/%=<>!^", input[*i]) || isspace(input[*i])) {
-	// 		return (true);
+	// 		return (1);
 	// 	}
 
-	// 	return (false);
+	// 	return (0);
 	// }
 
 // #pragma endregion
@@ -72,10 +72,10 @@
 // 				//	\	Handle Escape
 // 			if (context->in_escape) {
 // 				if (input[*i + 1]) context->stack->nvalue = 1;
-// 				context->in_escape = false; *i += 1; continue;
+// 				context->in_escape = 0; *i += 1; continue;
 // 			} else if (input[*i] == '\\' && (!context->stack || context->stack->type != CTX_QUOTE)) {
 // 				strcpy(last_token, "\\");
-// 				context->in_escape = true; *i += 1; continue;
+// 				context->in_escape = 1; *i += 1; continue;
 // 			}
 			
 // 			//		Handle Spaces

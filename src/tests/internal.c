@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:39:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "terminal/colors.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "expansion/globbing.h"
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
@@ -45,7 +45,7 @@
 		}
 
 		if (!result) { alias_clear();
-			char **alias = alias_to_array(true);
+			char **alias = alias_to_array(1);
 			if (alias && alias[0])					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
 
@@ -65,14 +65,14 @@
 		int result = 0, envp_count = 0, vars_count = 0;
 		variables_clear(vars_table);
 		variables_from_array(vars_table, envp);
-		char **vars = variables_to_array(vars_table, EXPORTED, true);
+		char **vars = variables_to_array(vars_table, EXPORTED, 1);
 		for (int i = 0; envp[i]; ++i) ++envp_count;
 		for (int i = 0; vars[i]; ++i) ++vars_count;
 		array_free(vars);
 
 		if (envp_count != vars_count)																			{ result = 1; printf(RD"X"RED500" clone\n"NC); }
 		if (!result && !variables_find(vars_table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
-		if (!result) { variables_add(vars_table, "testing", "test", true, false, false, false);
+		if (!result) { variables_add(vars_table, "testing", "test", 1, 0, 0, 0);
 			if (!variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
 		}
 
@@ -80,7 +80,7 @@
 			if (variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
 		if (!result) { variables_clear(vars_table);
-			vars = variables_to_array(vars_table, EXPORTED, true);
+			vars = variables_to_array(vars_table, EXPORTED, 1);
 			if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
 
@@ -123,7 +123,7 @@
 
 		history_clear();
 		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
-		if (!result && !history_add(add_line, false)) {
+		if (!result && !history_add(add_line, 0)) {
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
 			else if (strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
@@ -131,7 +131,7 @@
 			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 			else if (strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 		}
-		if (!result) { size_t length = history_length(); history_remove_current(false);
+		if (!result) { size_t length = history_length(); history_remove_current(0);
 			if (history_length() == length)								{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
 		if (!result) { history_clear();

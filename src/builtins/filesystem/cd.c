@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:13:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:34:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,9 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
-	#include "main/error.h"
 	#include "main/shell.h"
 	#include "main/options.h"
 	#include "hashes/variables.h"
@@ -116,7 +115,7 @@
 
 #pragma region "Check CDPATH"
 
-	int check_CDPATH(char **main_path, t_opt *opts, bool *is_dash) {
+	int check_CDPATH(char **main_path, t_opt *opts, int *is_dash) {
 		char *vars = variables_find_value(vars_table, "CDPATH");
 		if (vars) {
 			char *token = ft_strtok(vars, ":", 61);
@@ -125,7 +124,7 @@
 				if (*token) {
 					char *path = NULL;
 
-					if (!strcmp(token, "-")) { *is_dash = true;
+					if (!strcmp(token, "-")) { *is_dash = 1;
 						path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
 					} else path = ft_strdup(token);
 					
@@ -155,7 +154,7 @@
 			tmp_arg = tmp_arg->next;
 		}
 
-		t_opt *opts = parse_options(args, "LP", '-', false);
+		t_opt *opts = parse_options(args, "LP", '-', 0);
 		
 		tmp_arg = args;
 		while (tmp_arg && tmp_arg->value) {
@@ -173,7 +172,7 @@
 
 		int result = 0;
 		char *path = NULL;
-		bool is_dash = false;
+		int is_dash = 0;
 
 		if (!opts->args) {
 			path = ft_strdup(variables_find_value(vars_table, "HOME"));
@@ -183,7 +182,7 @@
 		} else if (opts->args->value && *opts->args->value) {
 			if (opts->args->next) { result = 2;
 				print(STDERR_FILENO, PROYECTNAME ": cd: too many arguments\n", RESET_PRINT);
-			} else if (!strcmp(opts->args->value, "-")) { is_dash = true;
+			} else if (!strcmp(opts->args->value, "-")) { is_dash = 1;
 				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
 				if (!path) { result = 2;
 					print(STDERR_FILENO, PROYECTNAME ": cd: OLDPWD not set\n", RESET_PRINT);

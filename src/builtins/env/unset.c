@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:17:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:40:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "parser/args.h"
+	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/variables.h"
@@ -69,7 +69,7 @@
 #pragma region "Unset"
 
 	int unset(t_arg *args) {
-		t_opt *opts = parse_options(args, "v", '-', false);
+		t_opt *opts = parse_options(args, "v", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("unset", opts->invalid, "[-v] [name ...]");

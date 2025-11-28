@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:38:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -443,21 +443,21 @@
 
 #pragma region "Is Directory"
 
-	bool is_directory(const char *path) {
+	int is_directory(const char *path) {
 		struct stat path_stat;
 		char *resolved_path;
 
-		if (lstat(path, &path_stat) == -1) return (false);
+		if (lstat(path, &path_stat) == -1) return (0);
 		if (S_ISLNK(path_stat.st_mode)) {
 			resolved_path = resolve_symlink(path);
 			if (*resolved_path) {
-				if (lstat(resolved_path, &path_stat) == -1) return (false);
-				if (S_ISDIR(path_stat.st_mode)) return (true);
+				if (lstat(resolved_path, &path_stat) == -1) return (0);
+				if (S_ISDIR(path_stat.st_mode)) return (1);
 			}
 		}
 
-		if (S_ISDIR(path_stat.st_mode)) return (true);
-		return (false);
+		if (S_ISDIR(path_stat.st_mode)) return (1);
+		return (0);
 	}
 
 #pragma endregion
