@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:38:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "utils/libft.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/input.h"
-	#include "terminal/print.h"
+	#include "utils/print.h"
 	#include "parser/syntax.h"
 	#include "main/options.h"
 	#include "main/project.h"
