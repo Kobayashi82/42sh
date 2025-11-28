@@ -6,17 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:49:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:19:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "terminal/input.h"
 	#include "expansion/arithmetic.h"
 	#include "expansion/command.h"
-	#include "parser/syntax.h"
+	#include "parser/context.h"
 	#include "hashes/alias.h"
 	#include "main/options.h"
 
@@ -28,6 +27,62 @@
 
 	static int	current_expansion;
 	static char	*alias_list;
+
+#pragma endregion
+
+#pragma region "Is Arithmetic"
+
+	bool is_arithmetic(const char *input) {
+		size_t	i = 0;
+		int		parenthesis = 0;
+		bool	in_quotes = false, in_dquotes = false, escape = false;
+
+		while (input[i] && parenthesis >= 0) {
+			// Manejar escapes
+			if (escape)								{ escape = false;			i++; continue; }
+			if (input[i] == '\\' && !in_quotes)		{ escape = true;			i++; continue; }
+
+			// Manejar comillas
+			if (input[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
+			if (input[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
+
+			if (input[i] == ')' && input[i + 1] == ')' && !parenthesis) return (true);
+			if (input[i] == '(') parenthesis++;
+			if (input[i] == ')') parenthesis--;
+			i++;
+	}
+
+	if (!input[i] || input[i] == '\n') return (true);
+
+	return (false);
+}
+
+#pragma endregion
+
+#pragma region "Is Separator"
+	
+	bool is_separator(const char *input, size_t *i, char *last_token) {
+			// Check for 2-character operators
+		if (!strncmp(&input[*i], "&&", 2) ||		// Logical AND
+			!strncmp(&input[*i], "||", 2) ||		// Logical OR
+			!strncmp(&input[*i], "$(", 2) ||		// Command Substitution
+			!strncmp(&input[*i], "${", 2) || 	// Parameter Expansion
+			!strncmp(&input[*i], "{ ", 2)) { 	// Command Group
+			strncpy(last_token, &input[*i], 2); last_token[2] = '\0';
+			*i += 1; return (true);
+		}	// Check for 1-character operators
+		else if (strchr(";|&\n", input[*i])) {
+			strncpy(last_token, &input[*i], 1); last_token[1] = '\0';
+			return (true);
+		}
+
+		last_token[0] = '\0';
+		return (false);
+	}
+
+	bool is_not_separator(char c) {
+		return (c == '$' || c == '`' || c == '(' || c == ')' || c == '\'' || c == '"' || c == '{' || c == '}' || c == ';' || c == '&' || c == '|' || c == '\n' || isspace(c));
+	}
 
 #pragma endregion
 

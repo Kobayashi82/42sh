@@ -6,67 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:10:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:55:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:03:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//	Comprobar si {a,b,c} es válido, si no, no lo cuenta como stack
-//	Comprobar si { cmd; } es válido, si no, no lo cuenta como stack
-//	Básicamente {   } se considera literal
-//	Saber cuando es comando o argumento
-
-
-//	Ignorar comillas en aritmeticas dentro de expand_alias
-
-//	Sintaxis arithmetics, ignorar comillas
-//	Sintaxis arithmetics, numeros negativos.
-
-//	En is_separator_arithmetic() si el char es + o - y está pegado a otro carácter que no es separador arithmetico
-
-//	$(()), (()), ()	- syntax_arithmetics()
-//	$(), `			- syntax_subshell()
-//	${}				- syntax_param()
-
-#pragma region "Includes"
-
-	#include "utils/libft.h"
-	#include "expansion/arithmetic.h"
-	#include "expansion/parameter.h"
-	#include "expansion/command.h"
-	#include "parser/syntax.h"
-
-#pragma endregion
-
-#pragma region "Is Arithmetic"
-
-	bool is_arithmetic(const char *input) {
-		size_t	i = 0;
-		int		parenthesis = 0;
-		bool	in_quotes = false, in_dquotes = false, escape = false;
-
-		while (input[i] && parenthesis >= 0) {
-			// Manejar escapes
-			if (escape)								{ escape = false;			i++; continue; }
-			if (input[i] == '\\' && !in_quotes)		{ escape = true;			i++; continue; }
-
-			// Manejar comillas
-			if (input[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
-			if (input[i] == '"'  && !in_quotes)		{ in_dquotes = !in_dquotes;	i++; continue; }
-
-			if (input[i] == ')' && input[i + 1] == ')' && !parenthesis) return (true);
-			if (input[i] == '(') parenthesis++;
-			if (input[i] == ')') parenthesis--;
-			i++;
-	}
-
-	if (!input[i] || input[i] == '\n') return (true);
-
-	return (false);
-}
-
-#pragma endregion
-
-#pragma region "Is Separator"
+// #pragma region "Is Separator"
 
 	// static bool is_separator_arithmetic(const char *input, size_t *i, int *nvalue) {
 	// 	// Check for 3-character operators
@@ -76,8 +20,8 @@
 	// 		*i += 3; *nvalue = 2; return (true);
 	// 	}	// Check for 2-character operators
 	// 	else if (!strncmp(&input[*i], "&&", 2) ||	// Logical AND
-	// 		!strncmp(&input[*i], "||", 2) ||			// Logical OR
-	// 		!strncmp(&input[*i], "**", 2) ||			// Power
+	// 		!strncmp(&input[*i], "||", 2) ||		// Logical OR
+	// 		!strncmp(&input[*i], "**", 2) ||		// Power
 	// 		!strncmp(&input[*i], "<<", 2) || 		// Left Shift
 	// 		!strncmp(&input[*i], ">>", 2) || 		// Right Shift
 	// 		!strncmp(&input[*i], "==", 2) || 		// Equality
@@ -95,7 +39,7 @@
 	// 		*i += 2; *nvalue = 2; return (true);
 	// 	}	// Check for Process Substitution In/Out
 	// 	else if (!strncmp(&input[*i], "<(", 2) ||	// Process Substitution In
-	// 		!strncmp(&input[*i], ">(", 2)) {			// Process Substitution Out
+	// 		!strncmp(&input[*i], ">(", 2)) {		// Process Substitution Out
 	// 		return (false);
 	// 	}	// Check for 1-character operators
 	// 	else if (strchr("|&+-*/%=<>!^", input[*i])) {			
@@ -113,7 +57,7 @@
 	// 	return (false);
 	// }
 
-	#pragma endregion
+// #pragma endregion
 
 // #pragma region "Arithmetic"
 

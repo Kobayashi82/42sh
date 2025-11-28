@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/04 20:37:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:19:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,12 @@
 	#pragma endregion
 
 	extern t_terminal	terminal;
+
+#pragma endregion
+
+#pragma region Methods
+
+	int	no_interactive_input(char *value);
+	int	interactive_input();
 
 #pragma endregion

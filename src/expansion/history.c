@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:47:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:16:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 	#include "utils/libft.h"
 	#include "terminal/readinput/history.h"
 	#include "utils/print.h"
-	#include "parser/syntax.h"
+	#include "parser/context.h"
 	#include "main/options.h"
-	#include "main/project.h"
+	#include "main/shell.h"
 
 #pragma endregion
 

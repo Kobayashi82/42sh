@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:44:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:38:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:15:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,6 @@
 
 	#include "utils/libft.h"
 	#include "expansion/parameter.h"
-	#include "parser/syntax.h"
-
-#pragma endregion
-
-#pragma region "Parameter"
-
-	int syntax_parameter(const char *input, size_t *i, t_context *context, char *last_token, int *line) {
-		if (!input || !*input || !context) return (0);
-
-		(void) i;
-		(void) last_token;
-		(void) line;
-
-		return (0);
-	}
 
 #pragma endregion
 
