@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:22:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:20:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
 	#include "hashes/variables.h"
 	#include "main/options.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
+
+	#include <limits.h>
 
 #pragma endregion
 

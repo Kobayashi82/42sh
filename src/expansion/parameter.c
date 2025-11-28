@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:44:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:15:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:57:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "expansion/parameter.h"
 
 #pragma endregion
 

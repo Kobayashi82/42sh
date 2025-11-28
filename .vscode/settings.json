@@ -36,6 +36,8 @@
 		"lexer.h": "c",
 		"context.h": "c",
 		"tests.h": "c",
+		"ctype.h": "c",
+		"wait.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

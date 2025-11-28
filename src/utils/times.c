@@ -6,15 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:15:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-
 	#include "utils/times.h"
+
+	#include <sys/time.h>
 
 #pragma endregion
 
@@ -64,7 +65,7 @@
 	#pragma region "Format TimeStamp"
 
 		//	Format a timestamp to a string as ("dd/mm/yyy HH:MM:SS")
-		char *format_timestamp(time_t timestamp) {
+		char *format_timestamp(long timestamp) {
 			if (timestamp == (time_t)-1) return (NULL);
 			int year, month, day, hour, minute, second, i = 0;
 			epoch_to_local(timestamp, &year, &month, &day, &hour, &minute, &second);
@@ -114,7 +115,7 @@
 #pragma region "Get TimeStamp"
 
 	//	Get the timestamp from a date in format ("dd/mm/yyy HH:MM:SS") or from now if date is NULL
-	time_t get_timestamp(const char *date) {
+	long get_timestamp(const char *date) {
 		if (!date) { int gmt = 1;	//	GMT+1 for Spain (i have to do it like this because limitation in functions... thanks 42)
 			struct timeval tv;
 			gettimeofday(&tv, NULL);

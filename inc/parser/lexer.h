@@ -6,13 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:20:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:12:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stddef.h>
+#pragma region "Includes"
+
+	#include <stddef.h>
+
+#pragma endregion
 
 #pragma region "Variables"
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:48:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:26:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 	#include "main/shell.h"
 
 	#include <sys/wait.h>
+	#include <stdio.h>	// Quitar dependencias
 	
 #pragma endregion
 
@@ -142,7 +143,7 @@
 		if (!command) result = 1;
 		if (result) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
 		else {
-			printf("%s\n", command);
+			printf("%s\n", command);	// No se si era debug
 			while (opts->args) {
 				if (opts->args->value && strchr(opts->args->value, '=')) {
 					char *key = NULL, *value = NULL;
@@ -435,7 +436,7 @@
 
 			// Ejecuta
 			if (!result) {
-				printf("%s\n", file_content);
+				printf("%s\n", file_content);	// Porque printf?
 				free(file_content);
 			}
 

@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:29:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:05:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "expansion/context.h"
+	#include "expansion/history.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
@@ -129,8 +129,8 @@
 
 #pragma region "Expand"
 
-	void expand_history(char **input, t_context *context, int show_expansion) {
-		if (!options.history || !options.histexpand || !input || !*input || !context) return;
+	int expand_history(char **input, t_context *context, int show_expansion) {
+		if (!options.history || !options.histexpand || !input || !*input || !context) return (0);
 
 		char *value = *input;
 		size_t i = 0;
@@ -142,7 +142,7 @@
 
 		while (i < length) {
 			// Handle Escape
-			if (in_escape)							{ in_escape = 0;		i++; continue; }
+			if (in_escape)							{ in_escape = 0;			i++; continue; }
 			if (value[i] == '\\' && !in_quotes)		{ in_escape = 1;			i++; continue; }
 			// Handle Quotes
 			if (value[i] == '\'' && !in_dquotes)	{ in_quotes  = !in_quotes;	i++; continue; }
@@ -158,19 +158,19 @@
 
 				if (value[end] == '!') {																						// !!
 					replacement = expand_position(value, start, &end, length, 1);
-					if (!replacement) return;
+					if (!replacement) return (1);
 				} else if (value[end] == '-' && isdigit(value[end + 1])) {													// !-[n]
 					replacement = expand_position(value, start, &end, length, 0);
-					if (!replacement) return;
+					if (!replacement) return (1);
 				} else if (isdigit(value[end])) {																			// ![n]
 					replacement = expand_event(value, start, &end, length);
-					if (!replacement) return;
+					if (!replacement) return (1);
 				} else if (value[end] == '?' && value[end + 1] != '?' && end + 1 < length && !isspace(value[end + 1]) && value[i + 1] != '"') {		// !?[str], !?[str]?
 					replacement = expand_value(value, start, &end, length, 0);
-					if (!replacement) return;
+					if (!replacement) return (1);
 				} else {																										// ![str]
 					replacement = expand_value(value, start, &end, length, 1);
-					if (!replacement) return;
+					if (!replacement) return (1);
 				}
 
 				if (replacement) {
@@ -197,6 +197,8 @@
 			free(value);
 			*input = new_value;
 		}
+
+		return (0);
 	}
 
 #pragma endregion

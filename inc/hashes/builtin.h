@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:31:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 00:09:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,18 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_arg		t_arg;
-		typedef struct s_builtin	t_builtin;
+		typedef struct s_arg t_arg;
 		typedef struct s_builtin{
-			char		*name;
-			int			disabled;
-			int			special;
-		    int         (*execute)(t_arg *args);
-			t_builtin	*next;
-		}	t_builtin;
+			char				*name;
+			int					disabled;
+			int					special;
+		    int         		(*execute)(t_arg *args);
+			struct s_builtin	*next;
+		} t_builtin;
 
 	#pragma endregion
 
-	extern t_builtin	*builtin_table[BUILTIN_HASH_SIZE];
+	extern t_builtin *builtin_table[BUILTIN_HASH_SIZE];
 
 #pragma endregion
 

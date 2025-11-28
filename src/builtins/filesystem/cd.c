@@ -6,21 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:34:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 23:51:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
-	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
-	#include "main/shell.h"
-	#include "main/options.h"
 	#include "hashes/variables.h"
+	#include "main/options.h"
+	#include "main/shell.h"
+	#include "utils/libft.h"
 	#include "utils/paths.h"
+	#include "utils/print.h"
+
+	#include "tests/args.h"
 
 #pragma endregion
 
