@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/24 19:46:14 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/28 16:15:40 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -76,7 +76,6 @@ SRCS	=	main/main.c									\
 														\
 			terminal/signal.c							\
 			terminal/input.c							\
-			terminal/print.c							\
 														\
 			terminal/readinput/readinput.c				\
 			terminal/readinput/modes/dumb.c				\
@@ -176,6 +175,7 @@ SRCS	=	main/main.c									\
 			utils/memsafe.c								\
 			utils/num.c									\
 			utils/paths.c								\
+			utils/print.c								\
 			utils/str.c									\
 			utils/temp.c								\
 			utils/times.c								\
