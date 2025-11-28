@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/27 23:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 17:03:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@
 		signals_set();
 
 		if (interactive_input())	return (1);
-		if (!lexer.input)			return (1);		// esto sobra
 
 		if (!shell.ast || shell.ast->type == TOKEN_EOF) {
 			lexer_free();							// esto sobra
@@ -68,7 +67,7 @@
 		if (lexer.input) {
 			if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
 			else							printf("Input: %s\n", lexer.input);
-			
+
 			t_arg *args = test_create_args(lexer.input);
 			lexer_free();							// temporal porque no se usa el arbol AST
 			ast_free(&shell.ast);

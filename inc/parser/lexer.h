@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 18:22:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:12:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,19 @@
 		typedef struct s_token {
 			t_token_type	type;
 			char			*value;
-			int				had_left_space;
-			int				had_right_space;
+			int				left_space;
+			int				right_space;
 			int				quoted;
 		} t_token;
 	
+		typedef char *(*t_input_callback)();
+
 		typedef struct s_lexer {
 			char	*input;
 			size_t	pos;
 			size_t	len;
 			int		append_inline;
+			t_input_callback	more_input;
 
 			char	*stack;
 			size_t	stack_size;
@@ -106,31 +109,30 @@
 
 #pragma region "Methods"
 
-	void	lexer_init(char *input);
-	void	lexer_append_input(char *more_input);
+	void	lexer_init(char *input, t_input_callback callback);
 	void	lexer_free();
+	void	lexer_append_input();
+	
+	void	token_free(t_token *tok);
+	t_token *token_create(t_token_type type, size_t start);
+	t_token	*token_next();
+	
+	void	stack_push(char delim);
+	char	stack_pop();
+	char	stack_top();
 
-	void	lexer_token_free(t_token *tok);
-	t_token *lexer_token_create(t_token_type type, char *value, int left_space, int right_space);
-	t_token	*lexer_token_next();
+	char	peek(size_t n);
+	char	peek_back(size_t n);
+	char	advance(size_t n);
+	int		skip_whitespace();
+	int		is_space(int n);
 
-	void stack_push(char delim);
-	char stack_pop();
-	char stack_top();
-
-	size_t lexer_pos();
-	size_t lexer_len();
-	char peek(size_t n);
-	char peek_back(size_t n);
-	char advance(size_t n);
-	int skip_whitespace();
-	int is_space(int n);
-
-	t_token *expansion();
-	t_token *grouping();
-	t_token *operator();
-	t_token *redirection();
-	t_token *keyword();
-	t_token *word();
+	char	handle_quotes();
+	t_token	*expansion();
+	t_token	*grouping();
+	t_token	*operator();
+	t_token	*redirection();
+	t_token	*keyword();
+	t_token	*word();
 
 #pragma endregion

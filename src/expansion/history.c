@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:47:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 	#include "utils/libft.h"
 	#include "terminal/readinput/history.h"
-	#include "terminal/input.h"
 	#include "utils/print.h"
 	#include "parser/syntax.h"
 	#include "main/options.h"
@@ -137,8 +136,8 @@
 		size_t i = 0;
 		size_t length = ft_strlen(value);
 		bool changes = false, in_escape = false, in_quotes = false, in_dquotes = false;
-		in_quotes = is_context(context->stack, CTX_QUOTE);
-		in_dquotes = is_context(context->stack, CTX_DQUOTE);
+		in_quotes = ctx_is_context(context->stack, CTX_QUOTE);
+		in_dquotes = ctx_is_context(context->stack, CTX_DQUOTE);
 		in_escape = context->in_escape;
 
 		while (i < length) {

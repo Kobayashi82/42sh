@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:30:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:15:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,64 +30,64 @@
 // >|		sobrescribe incluso con noclobber activado
 
 t_token *redirection() {
-	t_token *token = NULL;
+	size_t	start = lexer.pos;
 	char	c = peek(0);
 
 	if (c == '<' && peek(1) == '<' && peek(2) == '<') {
 		advance(3);
-		return (lexer_token_create(TOKEN_REDIRECT_HERESTRING, NULL, is_space(-4), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_HERESTRING, start));
 	}
 	if (c == '<' && peek(1) == '<') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_HEREDOC, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_HEREDOC, start));
 	}
 	if (c == '<' && peek(1) == '>') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_IN_OUT, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_IN_OUT, start));
 	}
 	if (c == '<' && peek(1) == '&') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_DUP_IN, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_DUP_IN, start));
 	}
 	if (c == '<') {
 		advance(1);
-		return (lexer_token_create(TOKEN_REDIRECT_IN, NULL, is_space(-2), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_IN, start));
 	}
 
 	if (c == '>' && peek(1) == '>') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_APPEND, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_APPEND, start));
 	}
 	if (c == '>' && peek(1) == '|') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_FORCE_OUT, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_FORCE_OUT, start));
 	}
 	if (c == '>' && peek(1) == '&') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_DUP_OUT, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_DUP_OUT, start));
 	}
 	if (c == '>') {
 		advance(1);
-		return (lexer_token_create(TOKEN_REDIRECT_OUT, NULL, is_space(-2), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_OUT, start));
 	}
 
 	if (c == '&' && peek(1) == '>' && peek(1) == '>') {
 		advance(3);
-		return (lexer_token_create(TOKEN_REDIRECT_APPEND_ALL, NULL, is_space(-4), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_APPEND_ALL, start));
 	}
 	if (c == '&' && peek(1) == '>') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_OUT_ALL, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_OUT_ALL, start));
 	}
 
 	if (c == '|' && peek(1) == '&') {
 		advance(2);
-		return (lexer_token_create(TOKEN_REDIRECT_PIPE_ALL, NULL, is_space(-3), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_PIPE_ALL, start));
 	}
 	if (c == '|') {
 		advance(1);
-		return (lexer_token_create(TOKEN_REDIRECT_PIPE, NULL, is_space(-2), is_space(0)));
+		return (token_create(TOKEN_REDIRECT_PIPE, start));
 	}
 
-	return (token);
+	return (NULL);
 }

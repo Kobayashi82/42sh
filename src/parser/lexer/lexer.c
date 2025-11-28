@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 19:45:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:16:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,35 +78,40 @@
 
 #pragma region "Input"
 
-	void lexer_init(char *input) {
+	void lexer_init(char *input, t_input_callback callback) {
 		stack_init();
 		if (lexer.input) free(lexer.input);
 		lexer.input = input;
 		lexer.pos = 0;
 		lexer.len = ft_strlen(input);
-		lexer.append_inline = false;
+		lexer.append_inline = 0;
+		lexer.more_input = callback;
 	}
 
-	void lexer_append_input(char *input) {
-		size_t new_len = ft_strlen(input);
+	void lexer_append_input() {
+		char *input = lexer.more_input();
 
-		if (lexer.append_inline) {
-			lexer.append_inline = false;
-			if (lexer.input && lexer.input[lexer.len - 1] == '\\') {
-				lexer.input[lexer.len - 1] = '\0';
-				lexer.len--;
+		if (input) {
+			size_t new_len = ft_strlen(input);
+
+			if (lexer.append_inline) {
+				lexer.append_inline = 0;
+				if (lexer.input && lexer.input[lexer.len - 1] == '\\') {
+					lexer.input[lexer.len - 1] = '\0';
+					lexer.len--;
+				}
+				lexer.input = realloc(lexer.input, lexer.len + new_len + 1);
+				strcpy(lexer.input + lexer.len, input);
+				lexer.len += new_len;
+			} else {
+				lexer.input = realloc(lexer.input, lexer.len + new_len + 2);
+				lexer.input[lexer.len] = '\n';
+				strcpy(lexer.input + lexer.len + 1, input);
+				lexer.len += new_len + 1;
 			}
-			lexer.input = realloc(lexer.input, lexer.len + new_len + 1);
-			strcpy(lexer.input + lexer.len, input);
-			lexer.len += new_len;
-		} else {
-			lexer.input = realloc(lexer.input, lexer.len + new_len + 2);
-			lexer.input[lexer.len] = '\n';
-			strcpy(lexer.input + lexer.len + 1, input);
-			lexer.len += new_len + 1;
-		}
 
-		free(input);
+			free(input);
+		}
 	}
 
 	void lexer_free() {
@@ -119,14 +124,6 @@
 #pragma endregion
 
 #pragma region "Navigation"
-
-	size_t lexer_pos() {
-		return (lexer.pos);
-	}
-
-	size_t lexer_len() {
-		return (lexer.len);
-	}
 
 	char peek(size_t n) {
 		if (lexer.pos + n >= lexer.len) return ('\0');
@@ -143,82 +140,43 @@
 		return (lexer.input[lexer.pos]);
 	}
 
-	int skip_whitespace() {
-		int had_space = false;
-
-		if (stack_top() == '"' || stack_top() == '\'') return (false);
-
-		while (peek(0) == ' ' || peek(0) == '\t') {
-			had_space = true;
-			advance(1);
-		}
-
-		return (had_space);
-	}
-
-	int is_space(int n) {
-		if (n < 0 && (int)lexer.pos < n) return (false);
-		if (lexer.pos + n >= lexer.len) return (true);
-
-		char c = lexer.input[lexer.pos + n];
-		return (c == ' ' || c == '\t' || c == '\n' || c == '\0');
-	}
-
 #pragma endregion
 
 #pragma region "Token"
 
-	void lexer_token_free(t_token *token) {
+	void token_free(t_token *token) {
 		if (token) {
 			free(token->value);
 			free(token);
 		}
 	}
 
-	t_token *lexer_token_create(t_token_type type, char *value, int left_space, int right_space) {
+	t_token *token_create(t_token_type type, size_t start) {
 		t_token *token = malloc(sizeof(t_token));
 
 		token->type = type;
-		token->value = value;
-		token->had_left_space = left_space;
-		token->had_right_space = right_space;
+		token->value = (type == TOKEN_EOF) ? NULL : ft_substr(lexer.input, start, lexer.pos - start);
+		token->left_space = is_space(lexer.pos - start);
+		token->right_space = is_space(0);
 
 		return (token);
 	}
 
-	t_token *lexer_token_next() {
-		// int had_left_space = skip_whitespace();
+	t_token *token_next() {
 
-		skip_whitespace();
+		if (!stack_top()) while (isspace(peek(0))) advance(1);
 
-		char c = peek(0);
-		char next = peek(1);
-
-		if (((c == '\\' && (next == '\n' || next == '\0')) || (c == '\n' && next == '\0')) || c == '\0') {
-			if (lexer.stack_size > 0 || c == '\\') {
-				if (c == '\\') lexer.append_inline = true; else advance(1);
-				return (lexer_token_create(TOKEN_INPUT, NULL, false, false));
-			}
-			if (c == '\n') advance(1);
-			return (lexer_token_create(TOKEN_EOF, NULL, false, false));
+		if (peek(0)) {
+			t_token *token = NULL;
+			// if ((token = expansion()))		return (token);
+			// if ((token = grouping()))		return (token);
+			// if ((token = operator()))		return (token);
+			// if ((token = redirection()))	return (token);
+			// if ((token = keyword()))		return (token);
+			if ((token = word()))			return (token);
 		}
 
-		t_token *token = NULL;
-		// if ((token = expansion()))		return (token);
-		// if ((token = grouping()))		return (token);
-		// if ((token = operator()))		return (token);
-		// if ((token = redirection()))	return (token);
-		// if ((token = keyword()))		return (token);
-		if ((token = word()))			return (token);
-
-		// int start = lexer.pos;
-		// while ((c != ' ' && c != '\t' && c != '\0')) {
-		// 	advance(1);
-		// 	c = peek(0);
-		// }
-
-		// return (lexer_token_create(TOKEN_WORD, ft_substr(lexer.input, start, lexer.pos - start), had_left_space, false));
-		return (lexer_token_create(TOKEN_EOF, NULL, false, false));
+		return (token_create(TOKEN_EOF, 0));
 	}
 
 #pragma endregion

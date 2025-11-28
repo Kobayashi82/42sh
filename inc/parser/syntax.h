@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:04:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/24 19:45:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:50:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,6 @@
 			CTX_PROCESS_SUB_IN,
 			CTX_PROCESS_SUB_OUT,
 		} t_type;
-
-		typedef enum e_syntax_error {
-			IN_TOKEN,
-			IN_TOKEN_EOF,
-			TOKEN_NEAR,
-			ARGS_ARITHMETIC,
-			ARGS_SUBSHELL,
-		} t_syntax_error;
 
 	#pragma endregion
 
@@ -65,17 +57,9 @@
 #pragma region Methods
 
 	//	--------- CONTEXT ----------
-	t_stack	*stack_push_2(t_stack **top, t_type type);
-	void	stack_pop_2(t_stack **top);
-	t_stack	*stack_copy(const t_stack *stack);
-	void	stack_clear(t_stack **stack);
-	int		is_context(t_stack *stack, t_type type);
-	void	context_copy(t_context *dst, const t_context *src);
-
-	//	---------- ERROR -----------
-	void	syntax_error(t_syntax_error error, char *value, int line);
-
-	//	---------- CHECK -----------
-	int		syntax_check(const char *input, t_context *context, int line);
+	t_stack	*ctx_stack_push(t_stack **top, t_type type);
+	void	ctx_stack_pop(t_stack **top);
+	void	ctx_stack_clear(t_stack **stack);
+	int		ctx_is_context(t_stack *stack, t_type type);
 
 #pragma endregion

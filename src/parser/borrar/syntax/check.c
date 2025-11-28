@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:45:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/27 23:42:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:49:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 	
 		int result = syntax_shell(input, &i, context, last_token, &line);
 
-		context->in_token = !is_context(context->stack, CTX_QUOTE) && !is_context(context->stack, CTX_DQUOTE) && (!strncmp(last_token, "&&", 2) || !strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
+		context->in_token = !ctx_is_context(context->stack, CTX_QUOTE) && !ctx_is_context(context->stack, CTX_DQUOTE) && (!strncmp(last_token, "&&", 2) || !strncmp(last_token, "||", 2) || *last_token == '|' || *last_token == '\\');
 		context->in_escape = context->in_token && *last_token == '\\';
 
 		if (shell.source == SRC_NO_INTERACTIVE && (context->stack || context->in_token)) {
