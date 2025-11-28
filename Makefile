@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/28 21:52:13 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/28 22:05:46 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -114,7 +114,7 @@ SRCS	=	main/main.c									\
 			expansion/brace.c							\
 			expansion/tilde.c							\
 			expansion/parameter.c						\
-			expansion/command.c							\
+			expansion/group.c							\
 			expansion/arithmetic.c						\
 			expansion/process.c							\
 			expansion/globbing/globbing.c				\

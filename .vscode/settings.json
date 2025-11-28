@@ -27,7 +27,6 @@
 		"unistd.h": "c",
 		"termcaps.h": "c",
 		"signals.h": "c",
-		"project.h": "c",
 		"alias.h": "c",
 		"stdbool.h": "c",
 		"initializer_list": "c",
@@ -37,7 +36,8 @@
 		"input.h": "c",
 		"cstdlib": "c",
 		"ast.h": "c",
-		"lexer.h": "c"
+		"lexer.h": "c",
+		"context.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:22:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@
 	}
 
 	//	Print the error message and exit if required
-	int	exit_error(int error, int code, char *value, bool fatal) {
+	int	exit_error(int error, int code, char *value, int fatal) {
 		if (!value) value = "";
 		if (error != NOTHING && error != END) print(2, "42sh: ", RESET);
 		catastrophic_msg(error, value);

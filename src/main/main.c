@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 17:03:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:21:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@
 	#include "hashes/alias.h"
 	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
-	#include "terminal/input.h"
 	#include "parser/lexer.h"
 	#include "parser/args.h"
 	#include "expansion/globbing.h"
@@ -57,7 +56,7 @@
 	int read_input() {
 		signals_set();
 
-		if (interactive_input())	return (1);
+		if (interactive_input()) return (1);
 
 		if (!shell.ast || shell.ast->type == TOKEN_EOF) {
 			lexer_free();							// esto sobra
@@ -84,9 +83,9 @@
 
 #pragma endregion
 
-#pragma region "Read Input"
+#pragma region "Read Input Args"
 
-	int read_input_arg(char *value) {
+	int read_input_args(char *value) {
 		signals_set();
 
 		if (no_interactive_input(value))	return (1);
@@ -152,7 +151,7 @@
 		} else if (argc > 2 && !strcmp(argv[1], "-c")) {
 			signals_set();
 			shell.source = SRC_ARGUMENT;
-			read_input_arg((char *)argv[2]);
+			read_input_args((char *)argv[2]);
 			// Aqui tiene que crear el arbol AST sin abrir contextos, error si estan sin cerrar
 			// terminal.input = expand_input(ft_strdup(argv[2]));
 			// execute_commands(terminal.input);

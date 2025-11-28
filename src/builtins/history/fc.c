@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:17:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,13 @@
 	#include "terminal/readinput/history.h"
 	#include "parser/args.h"
 	#include "expansion/history.h"
-	#include "parser/syntax.h"
+	#include "parser/context.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "utils/paths.h"
+	#include "main/shell.h"
 
 	#include <sys/wait.h>
 	

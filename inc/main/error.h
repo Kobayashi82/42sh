@@ -6,17 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:43:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/02/23 14:36:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:23:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
-
-#pragma region "Includes"
-
-	#include <stdbool.h>
-
-#pragma endregion
 
 #pragma region "Variables"
 
@@ -86,7 +80,6 @@
 
 #pragma region "Methods"
 
-	//	----------- ERROR ----------
-	int		exit_error(int error, int code, char *value, bool fatal);
+	int		exit_error(int error, int code, char *value, int fatal);
 
 #pragma endregion
