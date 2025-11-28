@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/27 23:57:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:47:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,18 @@
 
 #pragma endregion
 
+static int fd;
+
 #pragma region "Expand History"
 
 	static char *expand_input_history(char *input) {
-		t_context ctx_history;
-		memset(&ctx_history, 0, sizeof(t_context));
-		expand_history(&input, &ctx_history, true);
-		stack_clear(&ctx_history.stack);
-
+		if (input) {
+			t_context ctx_history;
+			memset(&ctx_history, 0, sizeof(t_context));
+			expand_history(&input, &ctx_history, true);
+			ctx_stack_clear(&ctx_history.stack);
+		}
+			
 		return (input);
 	}
 
@@ -49,10 +53,12 @@
 #pragma region "Expand Alias"
 
 	static char *expand_input_alias(char *input) {
-		t_context ctx_alias;
-		memset(&ctx_alias, 0, sizeof(t_context));
-		expand_alias(&input, &ctx_alias);
-		stack_clear(&ctx_alias.stack);
+		if (input) {
+			t_context ctx_alias;
+			memset(&ctx_alias, 0, sizeof(t_context));
+			expand_alias(&input, &ctx_alias);
+			ctx_stack_clear(&ctx_alias.stack);
+		}
 
 		return (input);
 	}
@@ -61,8 +67,15 @@
 
 #pragma region "No Interactive"
 
+	static char *no_interactive_more_input() {
+		char *input = get_next_line(fd);
+
+		if (options.expand_aliases) return (expand_input_alias(input));
+		else						return (input);
+	}
+
 	int no_interactive_input(char *value) {
-		int fd = STDIN_FILENO;
+		fd = STDIN_FILENO;
 
 		if (shell.source == SRC_FILE) {
 			if (value) fd = open(value, O_RDONLY);
@@ -91,34 +104,26 @@
 		}
 
 		if (options.expand_aliases) input = expand_input_alias(input);
-		lexer_init(input);
+		lexer_init(input, no_interactive_more_input);
 
-		t_parser_state	state;
-		while ((state = parse(&shell.ast)) == PARSER_INPUT) {
-			char *more = get_next_line(fd);
-			if (!more) {
-				lexer_free();
-				ast_free(&shell.ast);
-				if (shell.source != SRC_STDIN) close(fd);
-				return (1);
-			}
-			if (options.expand_aliases) more = expand_input_alias(more);
-			lexer_append_input(more);
-		}
-
-		if (state == PARSER_ERROR) {
-			lexer_free();
-			ast_free(&shell.ast);
-			if (shell.source != SRC_STDIN) close(fd);
-			return (1);
-		}
+		shell.ast = parse();
 
 		// lexer_free();	// comentado porque todavia no se usa el arbol AST
 		if (shell.source != SRC_STDIN) close(fd);
-		return (0);
+
+		return (!shell.ast);
 	}
 
 #pragma endregion
+
+static char *interactive_more_input() {
+	char *input = readinput(prompt_PS2);
+
+	input = expand_input_history(input);
+	input = expand_input_alias(input);
+
+	return (input);
+}
 
 #pragma region "Interactive"
 
@@ -131,34 +136,17 @@
 
 		input = expand_input_history(input);
 		input = expand_input_alias(input);
-		lexer_init(input);
+		lexer_init(input, interactive_more_input);
 
-		t_parser_state	state;
-		while ((state = parse(&shell.ast)) == PARSER_INPUT) {
-			char *more = readinput(prompt_PS2);
-			if (!more) {	// Usuario canceló con Ctrl+C o EOF
-				lexer_free();
-				ast_free(&shell.ast);
-				return (1);
-			}
-
-			more = expand_input_history(more);
-			more = expand_input_alias(more);
-			lexer_append_input(more);
-		}
+		shell.ast = parse();
 
 		history_add(lexer.input, false);
 		// lexer_free();	// comentado porque todavia no se usa el arbol AST
 
-		if (state == PARSER_ERROR) {
-			ast_free(&shell.ast);
-			return (1);
-		}
-
 		ast_print(shell.ast);
 		printf("\n");
 
-		return (0);
+		return (!shell.ast);
 	}
 
 #pragma endregion

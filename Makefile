@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/28 16:15:40 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/28 21:52:13 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -93,6 +93,7 @@ SRCS	=	main/main.c									\
 			parser/lexer/word.c							\
 			parser/lexer/keyword.c						\
 			parser/lexer/operator.c						\
+			parser/lexer/quoted.c						\
 			parser/lexer/grouping.c						\
 			parser/lexer/expansion.c					\
 			parser/lexer/redirection.c					\
@@ -104,11 +105,8 @@ SRCS	=	main/main.c									\
 			parser/parser/expansion.c					\
 			parser/parser/redirection.c					\
 														\
-			parser/ast/ast.c							\
-														\
 			parser/borrar/tokenizer/args.c				\
 			parser/borrar/syntax/context.c				\
-			parser/borrar/syntax/error.c				\
 														\
 														\
 			expansion/history.c							\

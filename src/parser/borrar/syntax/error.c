@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:18:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:51:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,14 @@
 	#include "main/project.h"
 
 #pragma endregion
+
+typedef enum e_syntax_error {
+	IN_TOKEN,
+	IN_TOKEN_EOF,
+	TOKEN_NEAR,
+	ARGS_ARITHMETIC,
+	ARGS_SUBSHELL,
+} t_syntax_error;
 
 #pragma region "Error"
 

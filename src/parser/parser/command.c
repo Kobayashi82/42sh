@@ -6,7 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/23 11:38:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:14:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "parser/parser.h"
+
+t_ast_node *parse_command() {
+	t_ast_node *node = NULL;
+
+	return (node);
+}
