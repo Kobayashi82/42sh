@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:24:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:31:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@
 
 	void	lexer_init(char *input, t_callback callback);
 	void	lexer_free();
-	void	lexer_append_input();
+	void	lexer_append();
 	
 	void	buffer_push(char *value, char *alias_name);
 	void	buffer_push_user(char *value);
