@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:24:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:33:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,42 +87,47 @@
 
 #pragma region "Parser"
 
-t_ast *parse_word(t_token *token) {
-	t_ast *new_node = malloc(sizeof(t_ast));
+	t_ast *parse_word(t_token *token) {
+		t_ast *new_node = malloc(sizeof(t_ast));
 
-	new_node->value = token->value;
-	new_node->child = NULL;
-	new_node->type = (int)token->type;
-	token->value = NULL;
+		new_node->value = token->value;
+		new_node->child = NULL;
+		new_node->type = (int)token->type;
+		token->value = NULL;
 
-	token_free(token);
+		token_free(token);
 
-	return (new_node);
-}
-
-t_ast *parse() {
-	t_ast *ast = NULL, *current = NULL;
-	t_token		*token = NULL;
-
-	while ((token = token_next())) {
-
-		if (token->type == TOKEN_EOF) {
-			token_free(token);
-			return (ast);
-		}
-
-		t_ast *new_node = parse_word(token);
-
-		if (!ast) {
-			ast = new_node;
-			current = ast;
-		} else {
-			current->child = new_node;
-			current = new_node;
-		}
+		return (new_node);
 	}
 
-	return (ast);
-}
+	t_ast *parse(char *input, t_callback callback) {
+		t_lexer		lexer;
+		t_ast		*ast = NULL;
+		t_ast		*current = NULL;
+		t_token		*token = NULL;
+
+		lexer_init(&lexer, input, callback);
+
+		while ((token = token_next(&lexer))) {
+
+			if (token->type == TOKEN_EOF) {
+				token_free(token);
+				break;
+			}
+
+			t_ast *new_node = parse_word(token);
+
+			if (!ast) {
+				ast = new_node;
+				current = ast;
+			} else {
+				current->child = new_node;
+				current = new_node;
+			}
+		}
+
+		lexer_free(&lexer);
+		return (ast);
+	}
 
 #pragma endregion

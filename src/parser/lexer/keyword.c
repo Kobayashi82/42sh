@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/25 18:25:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:27:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@
 // !		keyword de negación (solo al inicio de pipeline)
 // [[, ]]	test compuesto
 
-t_token *keyword() {
+t_token *keyword(t_lexer *lexer) {
 	t_token *token = NULL;
-	char	c = peek(0);
+	char	c = peek(lexer, 0);
 	(void) c;
 
 	return (token);
