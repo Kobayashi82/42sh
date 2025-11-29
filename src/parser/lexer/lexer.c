@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 20:14:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 21:36:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 	#include "parser/lexer.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
+
+	#include <stdio.h>
 
 #pragma endregion
 
@@ -190,7 +192,7 @@
 		lexer->base_buffer = NULL;
 		buffer_push_user(lexer, input);
 		lexer->append_inline = 0;
-		lexer->command_position = 0;
+		lexer->command_position = 1;
 		lexer->can_expand_alias = 1;
 		lexer->more_input = callback;
 	}

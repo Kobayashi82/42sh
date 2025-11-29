@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 20:13:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 21:47:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 	#include "hashes/alias.h"
 	#include "parser/lexer.h"
 	#include "utils/libft.h"
+
+	#include <stdio.h>
 
 #pragma endregion
 
@@ -34,6 +36,7 @@ t_token *word(t_lexer *lexer) {
 
 	while ((c = peek(lexer, 0))) {
 		int can_advance = !handle_quotes(lexer, &string);
+		c = peek(lexer, 0);
 
 		if (c == ' ' || c == '\t' || c == '\n' || c == '\0' || peek(lexer, 1) == '\0') { // or operator
 			if (peek(lexer, 1) == '\0') string_append(&string, advance(lexer));
@@ -41,12 +44,18 @@ t_token *word(t_lexer *lexer) {
 		    if (should_expand_alias(lexer, string.value)) {
 				char *alias_content = alias_find_value(string.value);
 				if (alias_content) {
+					int expand_next = 0;
+					if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
 					buffer_push(lexer, alias_content, string.value);
 					free(string.value);
-					return token_next(lexer);
+					t_token *token = token_next(lexer);
+					lexer->can_expand_alias = expand_next;
+					return (token);
 				}
 			}
 
+			lexer->can_expand_alias = 0;
+			lexer->command_position = 0;
 			return (token_create(lexer, TOKEN_WORD, string.value));
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:29:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 21:14:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ char handle_quotes(t_lexer *lexer, t_string *string) {
 			if (c == '\'') {
 				stack_pop(lexer);
 				string_append(string, advance(lexer));
+				break;
 			} else if (peek(lexer, 1) == '\0') {
 				string_append(string, advance(lexer));
 				string_append(string, '\n');
@@ -43,10 +44,11 @@ char handle_quotes(t_lexer *lexer, t_string *string) {
 			if (c == '"') {
 				stack_pop(lexer);
 				string_append(string, advance(lexer));
+				break;
 			} else if (peek(lexer, 1) == '\0') {
 				if (c == '\\') {
-					lexer->append_inline = 1;
 					advance(lexer);
+					lexer->append_inline = 1;
 					lexer_append(lexer);
 					continue;
 				} else {
