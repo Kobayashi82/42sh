@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:23:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:59:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,13 +147,13 @@
 	t_token *token_create(t_lexer *lexer, t_token_type type, char *value);
 	t_token	*token_next(t_lexer *lexer);
 
-	char	handle_quotes(t_string *string);
+	char	handle_quotes(t_lexer *lexer, t_string *string);
 
-	t_token	*expansion();
-	t_token	*grouping();
-	t_token	*operator();
-	t_token	*redirection();
-	t_token	*keyword();
-	t_token	*word();
+	t_token	*expansion(t_lexer *lexer);
+	t_token	*grouping(t_lexer *lexer);
+	t_token	*operator(t_lexer *lexer);
+	t_token	*redirection(t_lexer *lexer);
+	t_token	*keyword(t_lexer *lexer);
+	t_token	*word(t_lexer *lexer);
 
 #pragma endregion

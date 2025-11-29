@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:31:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 18:04:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,9 +111,7 @@ static char *more_input() {
 			return(1);
 		}
 
-		shell.ast = parse(input, more_input);
-
-		// lexer_free();	// comentado porque todavia no se usa el arbol AST
+		shell.ast = parse(input, NULL, more_input);
 		if (shell.source != SRC_STDIN) close(fd);
 
 		return (!shell.ast);
@@ -125,15 +123,17 @@ static char *more_input() {
 
 	int interactive_input() {
 		char *input = NULL;
+		char *full_input = NULL;
 
 		input = readinput(prompt_PS1);
 		if (!input)							return(1);
 		if (ft_isspace_s(input))			return(free(input), 0);
 
 		input = expand_input_history(input);
-		shell.ast = parse(input, more_input);
+		shell.ast = parse(input, &full_input, more_input);
+		history_add(full_input, 0);
 
-		// history_add(lexer.full_input, 0);
+		terminal.input = full_input;	// borrar
 
 		ast_print(shell.ast);
 		printf("\n");

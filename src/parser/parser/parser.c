@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:33:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 18:02:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@
 		return (new_node);
 	}
 
-	t_ast *parse(char *input, t_callback callback) {
+	t_ast *parse(char *input, char **full_input, t_callback callback) {
 		t_lexer		lexer;
 		t_ast		*ast = NULL;
 		t_ast		*current = NULL;
@@ -124,6 +124,11 @@
 				current->child = new_node;
 				current = new_node;
 			}
+		}
+
+		if (full_input) {
+			*full_input = lexer.full_input;
+			lexer.full_input = NULL;
 		}
 
 		lexer_free(&lexer);
