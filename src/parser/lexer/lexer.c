@@ -6,13 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 18:11:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 20:14:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Include"
 
+	#include "hashes/alias.h"
 	#include "parser/lexer.h"
+	#include "main/options.h"
 	#include "utils/libft.h"
 
 #pragma endregion
@@ -111,16 +113,18 @@
 		free(old);
 	}
 
-	int is_alias_expanding(t_lexer *lexer, char *alias_name) {
-		if (!alias_name) return (0);
+	int should_expand_alias(t_lexer *lexer, char *alias_name) {
+		if (!alias_name || !lexer->can_expand_alias || !options.expand_aliases) return (0);
 
 		t_buff *buffer = lexer->input;
 		while (buffer) {
-			if (buffer->alias_name && !strcmp(buffer->alias_name, alias_name)) return (1);
+			if (buffer->alias_name && !strcmp(buffer->alias_name, alias_name)) return (0);
 			buffer = buffer->next;
 		}
 
-		return (0);
+		if (!alias_find_value(alias_name)) return (0);
+		
+		return (1);
 	}
 
 #pragma endregion
@@ -186,6 +190,8 @@
 		lexer->base_buffer = NULL;
 		buffer_push_user(lexer, input);
 		lexer->append_inline = 0;
+		lexer->command_position = 0;
+		lexer->can_expand_alias = 1;
 		lexer->more_input = callback;
 	}
 

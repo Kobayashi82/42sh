@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:59:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 20:07:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@
 		typedef char *(*t_callback)();
 
 		typedef struct s_string {
-			char	*value;
-			size_t	len;
-			size_t	capacity;
+			char			*value;
+			size_t			len;
+			size_t			capacity;
 		} t_string;
 		
 		typedef struct s_token {
@@ -112,6 +112,8 @@
 			t_buff			*input;
 			t_buff			*base_buffer;	// Referencia al ultimo buffer de usuario
 			int				append_inline;
+			int				command_position;
+			int				can_expand_alias;
 			t_callback		more_input;
 			char			*stack;
 			size_t			stack_size;
@@ -131,7 +133,7 @@
 	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
 	void	buffer_push_user(t_lexer *lexer, char *value);
 	void	buffer_pop(t_lexer *lexer);
-	int		is_alias_expanding(t_lexer *lexer, char *alias_name);
+	int		should_expand_alias(t_lexer *lexer, char *alias_name);
 
 	void	string_init(t_string *string);
 	void	string_append(t_string *string, char c);
