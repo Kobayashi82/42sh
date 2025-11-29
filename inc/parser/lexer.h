@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:12:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:24:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,8 @@
 	#pragma endregion
 
 	#pragma region "Structures"
+		
+		typedef char *(*t_callback)();
 
 		typedef struct s_token {
 			t_token_type	type;
@@ -90,18 +92,24 @@
 			int				right_space;
 			int				quoted;
 		} t_token;
-	
-		typedef char *(*t_input_callback)();
+
+		typedef struct s_buff {
+			char			*value;
+			size_t			position;
+			char			*alias_name;
+			int				is_user_input;
+			struct s_buff	*next;
+		} t_buff;
 
 		typedef struct s_lexer {
-			char				*input;
-			size_t				pos;
-			size_t				len;
-			int					append_inline;
-			t_input_callback	more_input;
-			char				*stack;
-			size_t				stack_size;
-			size_t				stack_capacity;
+			char			*full_input;
+			t_buff			*input;
+			t_buff			*base_buffer;	// Referencia al ultimo buffer de usuario
+			int				append_inline;
+			t_callback		more_input;
+			char			*stack;
+			size_t			stack_size;
+			size_t			stack_capacity;
 		} t_lexer;
 
 	#pragma endregion
@@ -112,9 +120,14 @@
 
 #pragma region "Methods"
 
-	void	lexer_init(char *input, t_input_callback callback);
+	void	lexer_init(char *input, t_callback callback);
 	void	lexer_free();
 	void	lexer_append_input();
+	
+	void	buffer_push(char *value, char *alias_name);
+	void	buffer_push_user(char *value);
+	void	buffer_pop();
+	int		is_alias_expanding(char *alias_name);
 	
 	void	token_free(t_token *tok);
 	t_token *token_create(t_token_type type, size_t start);
@@ -124,9 +137,8 @@
 	char	stack_pop();
 	char	stack_top();
 
-	char	peek(size_t n);
-	char	peek_back(size_t n);
-	char	advance(size_t n);
+	char	peek(size_t offset);
+	char	advance(size_t offset);
 
 	char	handle_quotes();
 	int		is_space(int n);

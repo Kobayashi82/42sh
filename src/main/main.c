@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:24:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:19:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,11 +55,11 @@
 			ast_free(&shell.ast);
 		}
 
-		if (lexer.input) {
-			if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-			else							printf("Input: %s\n", lexer.input);
+		if (lexer.full_input) {
+			if (!strcmp(lexer.full_input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else									printf("Input: %s\n", lexer.full_input);
 
-			t_arg *args = test_create_args(lexer.input);
+			t_arg *args = test_create_args(lexer.full_input);
 			lexer_free();							// temporal porque no se usa el arbol AST
 			ast_free(&shell.ast);
 
@@ -81,18 +81,18 @@
 		signals_set();
 
 		if (no_interactive_input(value))	return (1);
-		if (!lexer.input)					return (1);		// esto sobra
+		if (!lexer.full_input)				return (1);		// esto sobra
 
 		if (!shell.ast || shell.ast->type == TOKEN_EOF) {
 			lexer_free();							// esto sobra
 			ast_free(&shell.ast);
 		}
 
-		if (lexer.input) {
-			if (!strcmp(lexer.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-			else							printf("Input: %s\n", lexer.input);
+		if (lexer.full_input) {
+			if (!strcmp(lexer.full_input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else									printf("Input: %s\n", lexer.full_input);
 			
-			t_arg *args = test_create_args(lexer.input);
+			t_arg *args = test_create_args(lexer.full_input);
 			lexer_free();							// temporal porque no se usa el arbol AST
 			ast_free(&shell.ast);
 

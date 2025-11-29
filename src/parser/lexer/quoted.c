@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:17:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:24:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 
 char handle_quotes() {
 	char	c = peek(0);
-	size_t	start = lexer.pos;
+	size_t	start = lexer.input->position;
 
 	while (c) {
 		if (stack_top() == '\'') {
@@ -76,13 +76,13 @@ char handle_quotes() {
 		break;
 	}
 
-	return (start != lexer.pos);
+	return (start != lexer.input->position);
 }
 
 int is_space(int n) {
-	if (n < 0 && (int)lexer.pos < n) return (0);
-	if (lexer.pos + n >= lexer.len) return (1);
+	if (n < 0 && (int)lexer.input->position < n) return (0);
+	if (lexer.input->position + n >= ft_strlen(lexer.input->value)) return (1);
 
-	char c = lexer.input[lexer.pos + n];
+	char c = lexer.input->value[lexer.input->position + n];
 	return (isspace(c) || c == '\0');
 }
