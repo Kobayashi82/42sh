@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/11/28 22:48:10 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/11/29 21:52:00 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -107,7 +107,6 @@ SRCS	=	main/main.c									\
 														\
 														\
 			expansion/history.c							\
-			expansion/alias.c							\
 			expansion/brace.c							\
 			expansion/context.c							\
 			expansion/tilde.c							\
