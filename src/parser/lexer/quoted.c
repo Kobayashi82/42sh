@@ -6,83 +6,81 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:31:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:47:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils/libft.h"
 #include "parser/lexer.h"
 
-char handle_quotes() {
-	char	c = peek(0);
-	size_t	start = lexer.input->position;
+char handle_quotes(t_string *string) {
+	t_buff	*start_buffer = lexer.input;
+	size_t	start_position = (lexer.input) ? lexer.input->position : 0;
+	char	c;
 
-	while (c) {
+	while ((c = peek(0))) {
 		if (stack_top() == '\'') {
 			if (c == '\'') {
 				stack_pop();
-				c = advance(1);
+				string_append(string, advance());
 			} else if (peek(1) == '\0') {
-				c = advance(1);
+				string_append(string, advance());
+				string_append(string, '\n');
 				lexer_append();
 				continue;
 			} else {
-				c = advance(1);
+				string_append(string, advance());
 				continue;
 			}
 		}
 		if (c == '\'') {
 			stack_push('\'');
-			c = advance(1);
+			string_append(string, advance());
 			continue;
 		}
 
 		if (stack_top() == '"') {
 			if (c == '"') {
 				stack_pop();
-				c = advance(1);
+				string_append(string, advance());
 			} else if (peek(1) == '\0') {
 				if (c == '\\') {
 					lexer.append_inline = 1;
+					advance();
 					lexer_append();
 					continue;
 				} else {
-					c = advance(1);
+					string_append(string, advance());
+					string_append(string, '\n');
 					lexer_append();
 					continue;
 				}
 			} else {
-				if (c == '\\') c = advance(1);
-				c = advance(1);
+				if (c == '\\') string_append(string, advance());
+				string_append(string, advance());
 				continue;
 			}
 		}
 		if (c == '"') {
 			stack_push('"');
-			c = advance(1);
+			string_append(string, advance());
 			continue;
 		}
 
 		if (c == '\\') {
 			if (peek(1) == '\0') {
 				lexer.append_inline = 1;
+				advance();
 				lexer_append();
 				continue;
 			}
-			c = advance(2);
+			string_append(string, advance());
+			string_append(string, advance());
 			continue;
 		}
 
 		break;
 	}
 
-	return (start != lexer.input->position);
-}
-
-int is_space(int n) {
-	if (n < 0 && (int)lexer.input->position < n) return (0);
-	if (lexer.input->position + n >= ft_strlen(lexer.input->value)) return (1);
-
-	char c = lexer.input->value[lexer.input->position + n];
-	return (isspace(c) || c == '\0');
+	return (lexer.input != start_buffer || (lexer.input && lexer.input->position != start_position));
 }
