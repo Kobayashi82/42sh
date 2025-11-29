@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:30:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:16:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,26 @@ t_lexer lexer;
 
 #pragma endregion
 
+#pragma region "String"
+
+	void string_init(t_string *string) {
+		string->capacity = 32;
+		string->value = malloc(string->capacity);
+		string->value[0] = '\0';
+		string->len = 0;
+	}
+
+	void string_append(t_string *string, char c) {
+		if (string->len + 1 >= string->capacity) {
+			string->capacity *= 2;
+			string->value = realloc(string->value, string->capacity);
+		}
+		string->value[string->len++] = c;
+		string->value[string->len] = '\0';
+	}
+
+#pragma endregion
+
 #pragma region "Input"
 
 	void lexer_append() {
@@ -204,15 +224,15 @@ t_lexer lexer;
 		return ('\0');
 	}
 
-	char advance(size_t offset) {
-		for (size_t i = 0; i < offset; ++i) {
-			if (!lexer.input) return ('\0');
+	char advance() {
+		while (lexer.input && (!lexer.input->value || lexer.input->position >= ft_strlen(lexer.input->value))) buffer_pop();
+		if (!lexer.input) return ('\0');
 
-			lexer.input->position++;
-			if (lexer.input->position >= ft_strlen(lexer.input->value))	buffer_pop();
-		}
+		char c = lexer.input->value[lexer.input->position];
+		lexer.input->position++;
+		if (lexer.input->position >= ft_strlen(lexer.input->value))	buffer_pop();
 
-		return (peek(0));
+		return (c);
 	}
 
 #pragma endregion
@@ -226,20 +246,19 @@ t_lexer lexer;
 		}
 	}
 
-	t_token *token_create(t_token_type type, size_t start) {
+	t_token *token_create(t_token_type type, char *value) {
 		t_token *token = malloc(sizeof(t_token));
 
 		token->type = type;
-		token->value = (type == TOKEN_EOF) ? NULL : ft_substr(lexer.input->value, start, lexer.input->position - start);
-		token->left_space = is_space(lexer.input->position - start);
-		token->right_space = is_space(0);
+		token->value = value;
+		token->right_space = isspace(peek(0)) || peek(0) == '\0';
 
 		return (token);
 	}
 
 	t_token *token_next() {
 
-		if (!stack_top()) while (isspace(peek(0))) advance(1);
+		if (!stack_top()) while (isspace(peek(0))) advance();
 
 		if (peek(0)) {
 			t_token *token = NULL;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:25:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:21:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,18 +22,20 @@
 // {...}	brace expansion
 
 t_token *word() {
-	size_t	start = lexer.input->position;
-	char	c = peek(0);
+	t_string	string;
+	char		c;
+	
+	string_init(&string);
 
-	while (c) {
-		int can_advance = !handle_quotes();
+	while ((c = peek(0))) {
+		int can_advance = !handle_quotes(&string);
 
 		if (c == ' ' || c == '\t' || c == '\n' || c == '\0' || peek(1) == '\0') { // or operator
-			if (peek(1) == '\0') advance(1);
-			return (token_create(TOKEN_WORD, start));
+			if (peek(1) == '\0') string_append(&string, advance());
+			return (token_create(TOKEN_WORD, string.value));
 		}
 
-		if (can_advance) c = advance(1);
+		if (can_advance) string_append(&string, advance());
 	}
 
 	if (stack_top()) {
@@ -41,5 +43,5 @@ t_token *word() {
 		return (NULL);
 	}
 
-	return (token_create(TOKEN_EOF, 0));
+	return (token_create(TOKEN_EOF, NULL));
 }

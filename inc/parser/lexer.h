@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:31:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:17:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,12 @@
 		
 		typedef char *(*t_callback)();
 
+		typedef struct s_string {
+			char	*value;
+			size_t	len;
+			size_t	capacity;
+		} t_string;
+		
 		typedef struct s_token {
 			t_token_type	type;
 			char			*value;
@@ -120,28 +126,30 @@
 
 #pragma region "Methods"
 
-	void	lexer_init(char *input, t_callback callback);
-	void	lexer_free();
-	void	lexer_append();
-	
-	void	buffer_push(char *value, char *alias_name);
-	void	buffer_push_user(char *value);
-	void	buffer_pop();
-	int		is_alias_expanding(char *alias_name);
-	
-	void	token_free(t_token *tok);
-	t_token *token_create(t_token_type type, size_t start);
-	t_token	*token_next();
-	
 	void	stack_push(char delim);
 	char	stack_pop();
 	char	stack_top();
 
-	char	peek(size_t offset);
-	char	advance(size_t offset);
+	void	buffer_push(char *value, char *alias_name);
+	void	buffer_push_user(char *value);
+	void	buffer_pop();
+	int		is_alias_expanding(char *alias_name);
 
-	char	handle_quotes();
-	int		is_space(int n);
+	void	string_init(t_string *string);
+	void	string_append(t_string *string, char c);
+
+	void	lexer_init(char *input, t_callback callback);
+	void	lexer_free();
+	void	lexer_append();
+
+	char	peek(size_t offset);
+	char	advance();
+
+	void	token_free(t_token *tok);
+	t_token *token_create(t_token_type type, char *value);
+	t_token	*token_next();
+
+	char	handle_quotes(t_string *string);
 
 	t_token	*expansion();
 	t_token	*grouping();

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:25:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:25:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,40 +26,47 @@
 // ;;&		case continue
 
 t_token *operator() {
-	size_t	start = lexer.input->position;
-	char	c = peek(0);
+	t_string	string;
+	char		c = peek(0);
+	
+	string_init(&string);
 
 	if (c == '&' && peek(1) == '&') {
-		advance(2);
-		return (token_create(TOKEN_AND, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_AND, string.value));
 	}
 	if (c == '&') {
-		advance(1);
-		return (token_create(TOKEN_BACKGROUND, start));
+		string_append(&string, advance());
+		return (token_create(TOKEN_BACKGROUND, string.value));
 	}
 
 	if (c == '|' && peek(1) == '|') {
-		advance(2);
-		return (token_create(TOKEN_OR, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_OR, string.value));
 	}
 
 	if (c == ';' && peek(1) == ';' && peek(1) == '&') {
-		advance(3);
-		return (token_create(TOKEN_CONTINUE, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_CONTINUE, string.value));
 	}
 	if (c == ';' && peek(1) == '&') {
-		advance(2);
-		return (token_create(TOKEN_FALLTHROUGH, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_FALLTHROUGH, string.value));
 	}
 	if (c == ';' && peek(1) == ';') {
-		advance(2);
-		return (token_create(TOKEN_TERMINATOR, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_TERMINATOR, string.value));
 	}
 	if (c == ';') {
-		advance(1);
-		return (token_create(TOKEN_SEMICOLON, start));
+		string_append(&string, advance());
+		return (token_create(TOKEN_SEMICOLON, string.value));
 	}
-
 
 	return (NULL);
 }

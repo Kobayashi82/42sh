@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:25:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 16:27:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,63 +30,77 @@
 // >|		sobrescribe incluso con noclobber activado
 
 t_token *redirection() {
-	size_t	start = lexer.input->position;
-	char	c = peek(0);
+	t_string	string;
+	char		c = peek(0);
+	
+	string_init(&string);
 
 	if (c == '<' && peek(1) == '<' && peek(2) == '<') {
-		advance(3);
-		return (token_create(TOKEN_REDIRECT_HERESTRING, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_HERESTRING, string.value));
 	}
 	if (c == '<' && peek(1) == '<') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_HEREDOC, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_HEREDOC, string.value));
 	}
 	if (c == '<' && peek(1) == '>') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_IN_OUT, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_IN_OUT, string.value));
 	}
 	if (c == '<' && peek(1) == '&') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_DUP_IN, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_DUP_IN, string.value));
 	}
 	if (c == '<') {
-		advance(1);
-		return (token_create(TOKEN_REDIRECT_IN, start));
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_IN, string.value));
 	}
 
 	if (c == '>' && peek(1) == '>') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_APPEND, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_APPEND, string.value));
 	}
 	if (c == '>' && peek(1) == '|') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_FORCE_OUT, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_FORCE_OUT, string.value));
 	}
 	if (c == '>' && peek(1) == '&') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_DUP_OUT, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_DUP_OUT, string.value));
 	}
 	if (c == '>') {
-		advance(1);
-		return (token_create(TOKEN_REDIRECT_OUT, start));
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_OUT, string.value));
 	}
 
 	if (c == '&' && peek(1) == '>' && peek(1) == '>') {
-		advance(3);
-		return (token_create(TOKEN_REDIRECT_APPEND_ALL, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_APPEND_ALL, string.value));
 	}
 	if (c == '&' && peek(1) == '>') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_OUT_ALL, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_OUT_ALL, string.value));
 	}
 
 	if (c == '|' && peek(1) == '&') {
-		advance(2);
-		return (token_create(TOKEN_REDIRECT_PIPE_ALL, start));
+		string_append(&string, advance());
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_PIPE_ALL, string.value));
 	}
 	if (c == '|') {
-		advance(1);
-		return (token_create(TOKEN_REDIRECT_PIPE, start));
+		string_append(&string, advance());
+		return (token_create(TOKEN_REDIRECT_PIPE, string.value));
 	}
 
 	return (NULL);
