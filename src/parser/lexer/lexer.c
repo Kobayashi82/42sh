@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:18:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:27:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@
 // Determinar si espacio antes/despues y si esta en comillas dobles
 // Liberacion de estructura si es necesario
 // Dentro de {} no se parsea hasta la ejecucion
+
+// ATENCION
+//
+// Cambiar lexer como global
+// Cambiar substring por otro sistema, ya que un word puede formar parte de dos buffers
 
 #pragma region "Variables"
 
@@ -76,48 +81,118 @@
 
 #pragma endregion
 
-#pragma region "Input"
+#pragma region "Buffer"
 
-	void lexer_init(char *input, t_input_callback callback) {
-		stack_init();
-		if (lexer.input) free(lexer.input);
-		lexer.input = input;
-		lexer.pos = 0;
-		lexer.len = ft_strlen(input);
-		lexer.append_inline = 0;
-		lexer.more_input = callback;
+	// Push alias buffer en el tope (LIFO para alias)
+	void buffer_push(char *value, char *alias_name) {
+		t_buff *new_buffer;
+
+		new_buffer = malloc(sizeof(t_buff));
+		new_buffer->value = ft_strdup(value);
+		new_buffer->position = 0;
+		new_buffer->alias_name = ft_strdup(alias_name);
+		new_buffer->is_user_input = 0;
+		new_buffer->next = lexer.input;
+
+		lexer.input = new_buffer;
 	}
+
+	// Push user input buffer al final de la cadena
+	void buffer_push_user(char *value) {
+		t_buff *new_buffer;
+
+		new_buffer = malloc(sizeof(t_buff));
+		new_buffer->value = ft_strdup(value);
+		new_buffer->position = 0;
+		new_buffer->alias_name = NULL;
+		new_buffer->is_user_input = 1;
+		new_buffer->next = NULL;
+
+		if (!lexer.input) {
+			lexer.input = new_buffer;
+			lexer.base_buffer = new_buffer;
+		} else {
+			lexer.base_buffer->next = new_buffer;
+			lexer.base_buffer = new_buffer;
+		}
+	}
+
+	void buffer_pop() {
+		if (!lexer.input) return;
+
+		t_buff *old = lexer.input;
+		lexer.input = lexer.input->next;
+
+		free(old->value);
+		free(old->alias_name);
+		free(old);
+	}
+
+	int is_alias_expanding(char *alias_name) {
+		if (!alias_name) return (0);
+
+		t_buff *buffer = lexer.input;
+		while (buffer) {
+			if (buffer->alias_name && !strcmp(buffer->alias_name, alias_name)) return (1);
+			buffer = buffer->next;
+		}
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "Input"
 
 	void lexer_append_input() {
 		char *input = lexer.more_input();
+		char *new_full = NULL;
 
 		if (input) {
-			size_t new_len = ft_strlen(input);
+			size_t full_len = ft_strlen(lexer.full_input);
+			size_t new_len  = ft_strlen(input);
 
 			if (lexer.append_inline) {
-				lexer.append_inline = 0;
-				if (lexer.input && lexer.input[lexer.len - 1] == '\\') {
-					lexer.input[lexer.len - 1] = '\0';
-					lexer.len--;
+				if (full_len > 0 && lexer.full_input[full_len - 1] == '\\') {
+					lexer.full_input[full_len - 1] = '\0';
+					full_len--;
 				}
-				lexer.input = realloc(lexer.input, lexer.len + new_len + 1);
-				strcpy(lexer.input + lexer.len, input);
-				lexer.len += new_len;
+				new_full = malloc(full_len + new_len + 1);
+				strcpy(new_full, lexer.full_input);
+				strcpy(new_full + full_len, input);
+				lexer.append_inline = 0;
 			} else {
-				lexer.input = realloc(lexer.input, lexer.len + new_len + 2);
-				lexer.input[lexer.len] = '\n';
-				strcpy(lexer.input + lexer.len + 1, input);
-				lexer.len += new_len + 1;
+				new_full = malloc(full_len + new_len + 2);
+				strcpy(new_full, lexer.full_input);
+				new_full[full_len] = '\n';
+				strcpy(new_full + full_len + 1, input);
 			}
 
+			free(lexer.full_input);
+			lexer.full_input = new_full;
+
+			buffer_push_user(input);
 			free(input);
 		}
 	}
 
-	void lexer_free() {
-		free(lexer.input);
-		free(lexer.stack);
+	void lexer_init(char *input, t_callback callback) {
+		lexer.full_input = input;
 		lexer.input = NULL;
+		lexer.base_buffer = NULL;
+		buffer_push_user(input);
+		lexer.append_inline = 0;
+		lexer.more_input = callback;
+		stack_init();
+	}
+
+	void lexer_free() {
+		free(lexer.stack);
+		free(lexer.full_input);
+		while (lexer.input) buffer_pop();
+		lexer.full_input = NULL;
+		lexer.input = NULL;
+		lexer.base_buffer = NULL;
 		lexer.stack = NULL;
 	}
 
@@ -125,19 +200,33 @@
 
 #pragma region "Navigation"
 
-	char peek(size_t n) {
-		if (lexer.pos + n >= lexer.len) return ('\0');
-		return (lexer.input[lexer.pos + n]);
+	char peek(size_t offset) {
+		if (!lexer.input) return ('\0');
+
+		t_buff	*buffer = lexer.input;
+		size_t		remaining = offset;
+		size_t		available;
+
+		while (buffer) {
+			available = ft_strlen(buffer->value) - buffer->position;
+			if (remaining < available) return (buffer->value[buffer->position + remaining]);
+
+			remaining -= available;
+			buffer = buffer->next;
+		}
+
+		return ('\0');
 	}
 
-	char peek_back(size_t n) {
-		if (lexer.pos < n) return ('\0');
-		return (lexer.input[lexer.pos - n]);
-	}
+	char advance(size_t offset) {
+		for (size_t i = 0; i < offset; ++i) {
+			if (!lexer.input) return ('\0');
 
-	char advance(size_t n) {
-		lexer.pos = (lexer.pos + n <= lexer.len) ? lexer.pos + n : lexer.len;
-		return (lexer.input[lexer.pos]);
+			lexer.input->position++;
+			if (lexer.input->position >= ft_strlen(lexer.input->value))	buffer_pop();
+		}
+
+		return (peek(0));
 	}
 
 #pragma endregion
@@ -155,8 +244,8 @@
 		t_token *token = malloc(sizeof(t_token));
 
 		token->type = type;
-		token->value = (type == TOKEN_EOF) ? NULL : ft_substr(lexer.input, start, lexer.pos - start);
-		token->left_space = is_space(lexer.pos - start);
+		token->value = (type == TOKEN_EOF) ? NULL : ft_substr(lexer.input->value, start, lexer.input->position - start);
+		token->left_space = is_space(lexer.input->position - start);
 		token->right_space = is_space(0);
 
 		return (token);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:15:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:25:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 // >|		sobrescribe incluso con noclobber activado
 
 t_token *redirection() {
-	size_t	start = lexer.pos;
+	size_t	start = lexer.input->position;
 	char	c = peek(0);
 
 	if (c == '<' && peek(1) == '<' && peek(2) == '<') {

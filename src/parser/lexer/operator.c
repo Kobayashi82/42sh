@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:16:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:25:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 // ;;&		case continue
 
 t_token *operator() {
-	size_t	start = lexer.pos;
+	size_t	start = lexer.input->position;
 	char	c = peek(0);
 
 	if (c == '&' && peek(1) == '&') {

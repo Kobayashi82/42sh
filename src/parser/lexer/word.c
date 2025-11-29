@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 21:17:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:25:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 // {...}	brace expansion
 
 t_token *word() {
-	size_t	start = lexer.pos;
+	size_t	start = lexer.input->position;
 	char	c = peek(0);
 
 	while (c) {
