@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:24:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 18:11:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@
 	// B	{ ...; } or {...}	braces (command group or brace expansion)
 
 	static void stack_init(t_lexer *lexer) {
-		if (lexer->stack) free(lexer->stack);
 		lexer->stack_capacity = 64;
 		lexer->stack_size = 0;
 		lexer->stack = calloc(1, lexer->stack_capacity);
@@ -181,13 +180,13 @@
 	}
 
 	void lexer_init(t_lexer *lexer, char *input, t_callback callback) {
+		stack_init(lexer);
 		lexer->full_input = input;
 		lexer->input = NULL;
 		lexer->base_buffer = NULL;
 		buffer_push_user(lexer, input);
 		lexer->append_inline = 0;
 		lexer->more_input = callback;
-		stack_init(lexer);
 	}
 
 	void lexer_free(t_lexer *lexer) {
@@ -260,12 +259,12 @@
 
 		if (peek(lexer, 0)) {
 			t_token *token = NULL;
-			// if ((token = expansion()))		return (token);
-			// if ((token = grouping()))		return (token);
-			// if ((token = operator()))		return (token);
-			// if ((token = redirection()))	return (token);
-			// if ((token = keyword()))		return (token);
-			if ((token = word()))			return (token);
+			// if ((token = expansion(lexer)))		return (token);
+			// if ((token = grouping(lexer)))		return (token);
+			// if ((token = operator(lexer)))		return (token);
+			// if ((token = redirection(lexer)))	return (token);
+			// if ((token = keyword(lexer)))		return (token);
+			if ((token = word(lexer)))			return (token);
 		}
 
 		return (token_create(lexer, TOKEN_EOF, NULL));

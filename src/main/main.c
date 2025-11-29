@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:41:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 18:05:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,12 @@
 		if (interactive_input()) return (1);
 
 		if (shell.ast) {
-			if (!strcmp(lexer.full_input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-			else									printf("Input: %s\n", lexer.full_input);
+			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else								printf("Input: %s\n", terminal.input);
 
-			t_arg *args = test_create_args(lexer.full_input);
+			t_arg *args = test_create_args(terminal.input);
+			free(terminal.input);
+			terminal.input = NULL;
 			ast_free(&shell.ast);
 
 			if (args) {
@@ -77,10 +79,12 @@
 		if (no_interactive_input(value))	return (1);
 
 		if (shell.ast) {
-			if (!strcmp(lexer.full_input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-			else									printf("Input: %s\n", lexer.full_input);
+			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
+			else								printf("Input: %s\n", terminal.input);
 
-			t_arg *args = test_create_args(lexer.full_input);
+			t_arg *args = test_create_args(terminal.input);
+			free(terminal.input);
+			terminal.input = NULL;
 			ast_free(&shell.ast);
 
 			if (args) {
