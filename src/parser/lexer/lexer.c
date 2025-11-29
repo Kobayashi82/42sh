@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:27:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:30:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,28 +17,14 @@
 
 #pragma endregion
 
-// Procesar comillas abiertas
-// Append del input
-// Next token (o advance y peek)
-// Comprobación modular de tipos de token
-// Determinar si espacio antes/despues y si esta en comillas dobles
-// Liberacion de estructura si es necesario
-// Dentro de {} no se parsea hasta la ejecucion
-
-// ATENCION
-//
 // Cambiar lexer como global
 // Cambiar substring por otro sistema, ya que un word puede formar parte de dos buffers
 
-#pragma region "Variables"
-
-	t_lexer lexer;
-
-#pragma endregion
+t_lexer lexer;
 
 #pragma region "Stack"
 
-	// stack contains the token context, with the following meanings:
+	// Stack contains the token context, with the following meanings:
 	//
 	// "	""					double quoted
 	// '	''					single quoted
@@ -83,7 +69,7 @@
 
 #pragma region "Buffer"
 
-	// Push alias buffer en el tope (LIFO para alias)
+	// Push alias buffer
 	void buffer_push(char *value, char *alias_name) {
 		t_buff *new_buffer;
 
@@ -97,7 +83,7 @@
 		lexer.input = new_buffer;
 	}
 
-	// Push user input buffer al final de la cadena
+	// Push user buffer
 	void buffer_push_user(char *value) {
 		t_buff *new_buffer;
 
@@ -144,7 +130,7 @@
 
 #pragma region "Input"
 
-	void lexer_append_input() {
+	void lexer_append() {
 		char *input = lexer.more_input();
 		char *new_full = NULL;
 
