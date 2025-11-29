@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 18:04:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 21:56:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 //	alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
 //	c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d
 
+// Mover Expand History a parser
+
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
@@ -22,13 +24,11 @@
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
 
-	#include "expansion/alias.h"
 	#include "expansion/history.h"
 
 	#include "main/options.h"
 	#include "main/shell.h"
 
-	#include "parser/lexer.h"
 	#include "parser/parser.h"
 
 	#include "utils/libft.h"
@@ -37,7 +37,11 @@
 
 #pragma endregion
 
-static int fd;
+#pragma region "Variables"
+
+	static int fd;
+
+#pragma endregion
 
 #pragma region "Expand History"
 
@@ -54,31 +58,20 @@ static int fd;
 
 #pragma endregion
 
-// #pragma region "Expand Alias"
+#pragma region "More Input"
 
-// 	static char *expand_input_alias(char *input) {
-// 		if (input) {
-// 			t_context ctx_alias;
-// 			memset(&ctx_alias, 0, sizeof(t_context));
-// 			expand_alias(&input, &ctx_alias);
-// 			ctx_stack_clear(&ctx_alias.stack);
-// 		}
-
-// 		return (input);
-// 	}
-
-// #pragma endregion
-
-static char *more_input() {
-	if (shell.source == SRC_INTERACTIVE) {
-		char *input = readinput(prompt_PS2);
-		input = expand_input_history(input);
-		return (input);
+	static char *more_input() {
+		if (shell.source == SRC_INTERACTIVE) {
+			char *input = readinput(prompt_PS2);
+			input = expand_input_history(input);
+			return (input);
+		}
+		else {
+			return (get_next_line(fd));
+		}
 	}
-	else {
-		return (get_next_line(fd));
-	}
-}
+
+#pragma endregion
 
 #pragma region "No Interactive"
 
