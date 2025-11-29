@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 16:17:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:23:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,34 +120,32 @@
 
 	#pragma endregion
 
-	extern t_lexer lexer;
-
 #pragma endregion
 
 #pragma region "Methods"
 
-	void	stack_push(char delim);
-	char	stack_pop();
-	char	stack_top();
+	void	stack_push(t_lexer *lexer, char delim);
+	char	stack_pop(t_lexer *lexer);
+	char	stack_top(t_lexer *lexer);
 
-	void	buffer_push(char *value, char *alias_name);
-	void	buffer_push_user(char *value);
-	void	buffer_pop();
-	int		is_alias_expanding(char *alias_name);
+	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
+	void	buffer_push_user(t_lexer *lexer, char *value);
+	void	buffer_pop(t_lexer *lexer);
+	int		is_alias_expanding(t_lexer *lexer, char *alias_name);
 
 	void	string_init(t_string *string);
 	void	string_append(t_string *string, char c);
 
-	void	lexer_init(char *input, t_callback callback);
-	void	lexer_free();
-	void	lexer_append();
+	void	lexer_init(t_lexer *lexer, char *input, t_callback callback);
+	void	lexer_free(t_lexer *lexer);
+	void	lexer_append(t_lexer *lexer);
 
-	char	peek(size_t offset);
-	char	advance();
+	char	peek(t_lexer *lexer, size_t offset);
+	char	advance(t_lexer *lexer);
 
 	void	token_free(t_token *tok);
-	t_token *token_create(t_token_type type, char *value);
-	t_token	*token_next();
+	t_token *token_create(t_lexer *lexer, t_token_type type, char *value);
+	t_token	*token_next(t_lexer *lexer);
 
 	char	handle_quotes(t_string *string);
 

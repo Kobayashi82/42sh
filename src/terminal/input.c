@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 14:21:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/29 17:31:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,18 @@ static int fd;
 
 // #pragma endregion
 
-#pragma region "No Interactive"
-
-	static char *no_interactive_more_input() {
-		char *input = get_next_line(fd);
-
+static char *more_input() {
+	if (shell.source == SRC_INTERACTIVE) {
+		char *input = readinput(prompt_PS2);
+		input = expand_input_history(input);
 		return (input);
 	}
+	else {
+		return (get_next_line(fd));
+	}
+}
+
+#pragma region "No Interactive"
 
 	int no_interactive_input(char *value) {
 		fd = STDIN_FILENO;
@@ -106,10 +111,7 @@ static int fd;
 			return(1);
 		}
 
-		// if (options.expand_aliases) input = expand_input_alias(input);
-		lexer_init(input, no_interactive_more_input);
-
-		shell.ast = parse();
+		shell.ast = parse(input, more_input);
 
 		// lexer_free();	// comentado porque todavia no se usa el arbol AST
 		if (shell.source != SRC_STDIN) close(fd);
@@ -118,14 +120,6 @@ static int fd;
 	}
 
 #pragma endregion
-
-static char *interactive_more_input() {
-	char *input = readinput(prompt_PS2);
-
-	input = expand_input_history(input);
-
-	return (input);
-}
 
 #pragma region "Interactive"
 
@@ -137,11 +131,9 @@ static char *interactive_more_input() {
 		if (ft_isspace_s(input))			return(free(input), 0);
 
 		input = expand_input_history(input);
-		lexer_init(input, interactive_more_input);
+		shell.ast = parse(input, more_input);
 
-		shell.ast = parse();
-
-		history_add(lexer.full_input, 0);
+		// history_add(lexer.full_input, 0);
 
 		ast_print(shell.ast);
 		printf("\n");
