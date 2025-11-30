@@ -16,23 +16,23 @@
 
 
 ## 🎯 Descripción
-42sh es una implementación personalizada de un shell Unix compatible con POSIX.
+`42sh` es una implementación personalizada de un shell Unix compatible con POSIX.
 
 Diseñado como un proyecto educativo, este shell proporciona una interfaz potente para la ejecución de comandos, scripting y manipulación de procesos, con soporte para edición de línea de comandos en modo `readline` y `vi`.
 
-Además, se han implementado características avanzadas como globbing, redirecciones y ejecución de scripts.
+Además, se han implementado características avanzadas como globbing, redirecciones, job control y ejecución de scripts.
 
 ## Características
 
-- **Modo interactivo y no interactivo**: Permite ejecutar comandos de manera interactiva o a través de scripts.
-- **Builtins personalizados**: Implementación de comandos internos esenciales para la funcionalidad del shell.
-- **Edición de línea de comandos**: Soporte para `readline` y `vi`, permitiendo navegación y edición eficiente.
-- **Globbing avanzado**: Soporte para los patrones `**` y `**/` para coincidencias recursivas de archivos y directorios.
-- **Redirecciones**: Manejo de entrada y salida con redirecciones estándar (`>`, `>>`, `<`, etc.).
-- **Pipes**: Soporte para encadenamiento de comandos mediante `|`.
-- **Scripting**: Ejecución de scripts con estructura de control (`if`, `while`, `for`, etc.).
-- **Gestión de señales**: Manejo adecuado de `SIGINT`, `SIGQUIT` y `SIGTSTP`.
-- **Expansión de variables**: Soporte para variables de entorno y sustitución de comandos.
+- `Readline personalizado`: Creado desde cero con historial, búsqueda, autocompletado y edición en tiempo real.
+- `Modos de edición`: Soporte para los modos **emacs** y **vi**, permitiendo navegación y edición eficiente.
+- `Globbing`: Soporte para una gran variedad de patrones.
+- `Redirecciones`: Manejo de entrada y salida con redirecciones todas los tipos de redirecciones.
+- `Pipes`: Soporte para encadenamiento de comandos mediante tuberías.
+- `Builtins`: Gran cantidad de builtins esenciales para la funcionalidad del shell.
+- `Scripting`: Soporte completo para ejecución de scripts.
+- `Señales`: Manejo adecuado de todas las señales.
+- `Variables`: Soporte para variables de shell y de entorno.
 
 ## Builtins Implementados
 
@@ -150,15 +150,7 @@ Para ejecutar un script:
 ./42sh script.sh
 ```
 
-## Futuras Mejoras
-
-- Implementación de autocompletado.
-- Soporte para más patrones de globbing.
-- Mejoras en la gestión de trabajos en segundo plano.
-
 ---
-
-42sh es un proyecto en constante evolución, pensado para aprender y mejorar la comprensión del funcionamiento de un shell Unix desde cero.
 
 ## 📄 Licencia
 
