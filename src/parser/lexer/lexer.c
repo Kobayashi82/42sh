@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 12:55:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 13:21:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@
 	#include <stdio.h>
 
 #pragma endregion
-
-// Cambiar lexer como global
-// Cambiar substring por otro sistema, ya que un word puede formar parte de dos buffers
 
 #pragma region "Stack"
 
@@ -70,7 +67,6 @@
 
 #pragma region "Buffer"
 
-	// Push alias buffer
 	void buffer_push(t_lexer *lexer, char *value, char *alias_name) {
 		t_buff *new_buffer;
 
@@ -84,7 +80,6 @@
 		lexer->input = new_buffer;
 	}
 
-	// Push user buffer
 	void buffer_push_user(t_lexer *lexer, char *value) {
 		t_buff *new_buffer;
 
@@ -158,12 +153,17 @@
 
 		if (input) {
 
-			if (1) { // if (lexer->interactive) {
+			if (lexer->interactive) {
 				char	*new_full = NULL;
 				size_t	full_len = ft_strlen(lexer->full_input);
 				size_t	new_len  = ft_strlen(input);
 
 				if (lexer->append_inline) {
+					if (full_len > 1 && lexer->full_input[full_len - 2] == '\\' && lexer->full_input[full_len - 1] == '\n') {
+						lexer->full_input[full_len - 2] = ' ';
+						lexer->full_input[full_len - 1] = '\0';
+						full_len -= 2;
+					}
 					if (full_len > 0 && lexer->full_input[full_len - 1] == '\\') {
 						lexer->full_input[full_len - 1] = '\0';
 						full_len--;

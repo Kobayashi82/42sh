@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 12:46:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 13:29:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,27 @@ t_token *word(t_lexer *lexer) {
 	while ((c = peek(lexer, 0))) {
 		int can_advance = !handle_quotes(lexer, &string);
 		c = peek(lexer, 0);
+
+		if (c == '\\') {
+			if (peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
+				advance(lexer);
+				advance(lexer);
+				if (!*string.value) {
+					free(full_line);
+					free(string.value);
+					lexer->append_inline = 1;
+					lexer_append(lexer);
+					return (token_next(lexer));
+				}
+			} else if (peek(lexer, 1) == '\0') {
+				lexer->append_inline = 1;
+				advance(lexer);
+				lexer_append(lexer);
+				continue;
+			}
+			string_append(&string, advance(lexer));
+			string_append(&string, advance(lexer));
+		}
 
 		if (c == ' ' || c == '\t' || c == '\0' || peek(lexer, 1) == '\n' || peek(lexer, 1) == '\0') { // or operator
 			if (c == '\n') {
