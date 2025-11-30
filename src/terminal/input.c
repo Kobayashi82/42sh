@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 12:49:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 13:30:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 //
 //	alias echo=date c=lala d=lolo b='lele ' f=lili g=h h='j b d ' j='h'
 //	c ; d ; (g) d d | f $(( (b) $(echo `b g` $((b * 3)) ) + $(b b 3 | wc -l) )) || d
-
-// Mover Expand History a parser
 
 #pragma region "Includes"
 
@@ -108,6 +106,9 @@
 
 		shell.ast = parse(input, more_input, 0, filename, 1);
 		if (shell.source != SRC_STDIN) close(fd);
+
+		ast_print(shell.ast);
+		printf("\n");
 
 		return (!shell.ast);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 21:14:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 13:09:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,18 +65,6 @@ char handle_quotes(t_lexer *lexer, t_string *string) {
 		}
 		if (c == '"') {
 			stack_push(lexer,'"');
-			string_append(string, advance(lexer));
-			continue;
-		}
-
-		if (c == '\\') {
-			if (peek(lexer, 1) == '\0') {
-				lexer->append_inline = 1;
-				advance(lexer);
-				lexer_append(lexer);
-				continue;
-			}
-			string_append(string, advance(lexer));
 			string_append(string, advance(lexer));
 			continue;
 		}
