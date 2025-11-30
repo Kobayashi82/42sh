@@ -15,7 +15,7 @@
 
 
 
-## 🎯 Descripción
+## Descripción
 `42sh` es una implementación personalizada de un shell Unix compatible con POSIX.
 
 Diseñado como un proyecto educativo, este shell proporciona una interfaz potente para la ejecución de comandos, scripting y manipulación de procesos, con soporte para edición de línea de comandos en modo `readline` y `vi`.
