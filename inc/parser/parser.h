@@ -39,7 +39,7 @@
 	void	ast_print(t_ast *node);
 	void	ast_free(t_ast **ast);
 
-	t_ast	*parse(char *input, char **full_input, t_callback callback);
+	t_ast	*parse(char *input, t_callback callback, int interactive, char *filename, int line);
 
 	t_ast	*parse_command();
 

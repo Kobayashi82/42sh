@@ -6,16 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 18:02:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:56:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "terminal/readinput/history.h"
 #include "parser/lexer.h"
 #include "parser/parser.h"
 
 #include "utils/libft.h"
 
-#include <stdio.h>	// borrar
+#include <stdio.h>				// borrar
+#include "terminal/terminal.h"	// borrar
 
 // Contexto para comillas, parentesis y llaves
 // Analisis sintactico modular
@@ -28,6 +30,9 @@
 
 // Si no es interactivo, no debe pedir más input
 // Detectar contexto abierto cuando llega a EOF
+
+// Token lookahead
+// Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente.
 
 #pragma region "AST"
 
@@ -94,19 +99,20 @@
 		new_node->child = NULL;
 		new_node->type = (int)token->type;
 		token->value = NULL;
+		if (token->filename) printf("line: %d - %s", token->line, token->full_line);
 
 		token_free(token);
 
 		return (new_node);
 	}
 
-	t_ast *parse(char *input, char **full_input, t_callback callback) {
+	t_ast *parse(char *input, t_callback callback, int interactive, char *filename, int line) {
 		t_lexer		lexer;
 		t_ast		*ast = NULL;
 		t_ast		*current = NULL;
 		t_token		*token = NULL;
 
-		lexer_init(&lexer, input, callback);
+		lexer_init(&lexer, input, callback, interactive, filename, line);
 
 		while ((token = token_next(&lexer))) {
 
@@ -126,10 +132,8 @@
 			}
 		}
 
-		if (full_input) {
-			*full_input = lexer.full_input;
-			lexer.full_input = NULL;
-		}
+		if (interactive) history_add(lexer.full_input, 0);
+		terminal.input = ft_strdup(lexer.full_input);	// borrar
 
 		lexer_free(&lexer);
 		return (ast);
