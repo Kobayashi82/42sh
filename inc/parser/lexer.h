@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 12:07:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 20:36:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 			TOKEN_ARITH_SUB,			// $((
 			TOKEN_PARAM_EXP,			// ${
 			TOKEN_BRACE,				// {
+			TOKEN_GROUP,				// {[space]
 			TOKEN_SHELL,				// (
 			TOKEN_ARITH,				// ((
 

@@ -6,12 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 17:27:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 21:06:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser/lexer.h"
-#include "utils/libft.h"
+#pragma region "Word"
+
+	#include "parser/lexer.h"
+	#include "utils/libft.h"
+
+#pragma endregion
 
 // KEYWORD (count as WORD)
 //
@@ -23,10 +27,14 @@
 // !		keyword de negación (solo al inicio de pipeline)
 // [[, ]]	test compuesto
 
-t_token *keyword(t_lexer *lexer) {
-	t_token *token = NULL;
-	char	c = peek(lexer, 0);
-	(void) c;
+#pragma region "Keyword"
 
-	return (token);
-}
+	t_token *keyword(t_lexer *lexer) {
+		t_token *token = NULL;
+		char	c = peek(lexer, 0);
+		(void) c;
+
+		return (token);
+	}
+
+#pragma endregion
