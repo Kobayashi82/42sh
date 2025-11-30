@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 18:05:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:48:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 		signals_set();
 
 		if (interactive_input()) return (1);
-
+ 
 		if (shell.ast) {
 			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
 			else								printf("Input: %s\n", terminal.input);
@@ -76,7 +76,7 @@
 	int read_input_args(char *value) {
 		signals_set();
 
-		if (no_interactive_input(value))	return (1);
+		if (no_interactive_input(value)) return (1);
 
 		if (shell.ast) {
 			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
@@ -105,11 +105,8 @@
 		if (initialize(argc, argv, envp))	exit_error(NOTHING, 1, NULL, 1);
 		if (tests(argc, argv, envp))		exit_error(NOTHING, 0, NULL, 1);
 
-		if (argc == 2 && !strcmp(argv[1], "-c"))
+		if (argc == 2 && !strcmp(argv[1], "-c")) {
 			exit_error(START_ARGS, 2, NULL, 1);
-		else if (argc > 1 && strcmp(argv[1], "-c")) {
-			//argument_error(&data, argv[1]);
-			exit_error(END, 0, NULL, 1);
 		} else if (argc > 2 && !strcmp(argv[1], "-c")) {
 			signals_set();
 			shell.source = SRC_ARGUMENT;
@@ -118,6 +115,10 @@
 			// terminal.input = expand_input(ft_strdup(argv[2]));
 			// execute_commands(terminal.input);
 			// free(terminal.input);
+		} else if (argc > 1 && strcmp(argv[1], "-c")) {
+			signals_set();
+			shell.source = SRC_FILE;
+			read_input_args((char *)argv[1]);
 		} else {
 			shell.source = SRC_INTERACTIVE;
 			if (!isatty(STDIN_FILENO)) {

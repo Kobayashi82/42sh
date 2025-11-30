@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 21:56:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:49:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@
 #pragma region "No Interactive"
 
 	int no_interactive_input(char *value) {
+		char *filename = NULL;
 		fd = STDIN_FILENO;
 
 		if (shell.source == SRC_FILE) {
@@ -84,6 +85,7 @@
 				// error
 				return (1);
 			}
+			filename = value;
 		}
 
 		if (shell.source == SRC_ARGUMENT) {
@@ -104,7 +106,7 @@
 			return(1);
 		}
 
-		shell.ast = parse(input, NULL, more_input);
+		shell.ast = parse(input, more_input, 0, filename, 1);
 		if (shell.source != SRC_STDIN) close(fd);
 
 		return (!shell.ast);
@@ -116,18 +118,14 @@
 
 	int interactive_input() {
 		char *input = NULL;
-		char *full_input = NULL;
 
 		input = readinput(prompt_PS1);
 		if (!input)							return(1);
 		if (ft_isspace_s(input))			return(free(input), 0);
 
 		input = expand_input_history(input);
-		shell.ast = parse(input, &full_input, more_input);
-		history_add(full_input, 0);
-
-		terminal.input = full_input;	// borrar
-
+		shell.ast = parse(input, more_input, 1, NULL, 1);
+		
 		ast_print(shell.ast);
 		printf("\n");
 

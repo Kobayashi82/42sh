@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 20:07:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/11/30 12:07:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,8 +75,8 @@
 			TOKEN_LBRACKET2,			// [[
 			TOKEN_RBRACKET2,			// ]]
 
+			TOKEN_NEWLINE,				// New line
 			TOKEN_EOF,					// End of input
-			TOKEN_INPUT					// Needs more input
 		} t_token_type;
 
 	#pragma endregion
@@ -97,6 +97,9 @@
 			int				left_space;
 			int				right_space;
 			int				quoted;
+			char			*filename;
+			int				line;
+			char			*full_line;
 		} t_token;
 
 		typedef struct s_buff {
@@ -110,10 +113,13 @@
 		typedef struct s_lexer {
 			char			*full_input;
 			t_buff			*input;
-			t_buff			*base_buffer;	// Referencia al ultimo buffer de usuario
+			t_buff			*user_buffer;	// Referencia al ultimo buffer de usuario
+			int				interactive;
 			int				append_inline;
 			int				command_position;
 			int				can_expand_alias;
+			char			*filename;
+			int				line;
 			t_callback		more_input;
 			char			*stack;
 			size_t			stack_size;
@@ -138,7 +144,7 @@
 	void	string_init(t_string *string);
 	void	string_append(t_string *string, char c);
 
-	void	lexer_init(t_lexer *lexer, char *input, t_callback callback);
+	void	lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line);
 	void	lexer_free(t_lexer *lexer);
 	void	lexer_append(t_lexer *lexer);
 
@@ -146,7 +152,7 @@
 	char	advance(t_lexer *lexer);
 
 	void	token_free(t_token *tok);
-	t_token *token_create(t_lexer *lexer, t_token_type type, char *value);
+	t_token *token_create(t_lexer *lexer, t_token_type type, char *value, int line, char *full_line);
 	t_token	*token_next(t_lexer *lexer);
 
 	char	handle_quotes(t_lexer *lexer, t_string *string);
