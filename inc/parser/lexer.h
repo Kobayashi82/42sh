@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 20:36:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/01 22:43:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 			TOKEN_PARAM_EXP,			// ${
 			TOKEN_BRACE,				// {
 			TOKEN_GROUP,				// {[space]
-			TOKEN_SHELL,				// (
+			TOKEN_SUBSHELL,				// (
 			TOKEN_ARITH,				// ((
 
 			TOKEN_REDIRECT_IN,			// <	(accept fd number)
@@ -43,9 +43,9 @@
 			TOKEN_REDIRECT_DUP_OUT,		// >&	(accept fd number)
 			TOKEN_REDIRECT_OUT_ALL,		// &>
 			TOKEN_REDIRECT_APPEND_ALL,	// &>>
-			TOKEN_REDIRECT_PIPE_ALL,	// |&
-			TOKEN_REDIRECT_PIPE,		// |
 
+			TOKEN_PIPE,					// |
+			TOKEN_PIPE_ALL,				// |&
 			TOKEN_BACKGROUND,			// &
 			TOKEN_AND,					// &&
 			TOKEN_OR,					// ||
@@ -97,7 +97,6 @@
 			char			*value;
 			int				left_space;
 			int				right_space;
-			int				quoted;
 			char			*filename;
 			int				line;
 			char			*full_line;

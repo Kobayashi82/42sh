@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:39:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/01 20:32:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,8 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
-
 	#include "main/options.h"
 	#include "main/shell.h"
-
 	#include "utils/libft.h"
 
 	#include <signal.h>

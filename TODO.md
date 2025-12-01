@@ -11,6 +11,21 @@
 - cdspell effect only in interactive
 - \'"'!!'"\' CTRL + Left / CTRL + Right jodido y leaks
 
+Lookahead
+Sistema de procesamiento:
+Pipeline
+And_or
+Command 
+...
+
+En command, asignaciones, redirecciones, argumentos
+
+En handle quoted, paréntesis
+Tratar ) fuera de contextos (error)
+
+Subshell y aritmética (no estoy seguro de este, quizás solo operadores y words), si parser
+Operadores como <<- y &<- o <- no se si ponerlos
+
 ## Builtins
 
 - fc no guarda comando en historial al ejecutar (el modificado, no fc en sí)
