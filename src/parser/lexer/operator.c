@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 21:05:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/01 21:51:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,12 @@
 			string_append(&string, advance(lexer));
 			string_append(&string, advance(lexer));
 			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
-			return (token_create(lexer, TOKEN_REDIRECT_PIPE_ALL, string.value, line, full_line));
+			return (token_create(lexer, TOKEN_PIPE_ALL, string.value, line, full_line));
 		}
 		if (c == '|') {
 			string_append(&string, advance(lexer));
 			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
-			return (token_create(lexer, TOKEN_REDIRECT_PIPE, string.value, line, full_line));
+			return (token_create(lexer, TOKEN_PIPE, string.value, line, full_line));
 		}
 
 		if (c == ';' && peek(lexer, 1) == ';' && peek(lexer, 1) == '&') {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 21:04:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/01 23:11:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,7 +232,7 @@
 					lexer->full_input = new_full;
 				}
 
-				lexer->line++;
+				if (lexer->line != -1) lexer->line++;
 				buffer_push_user(lexer, input);
 				free(input);
 			}

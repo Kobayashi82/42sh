@@ -37,7 +37,8 @@
 		"context.h": "c",
 		"tests.h": "c",
 		"ctype.h": "c",
-		"wait.h": "c"
+		"wait.h": "c",
+		"parser.h": "c"
 	},
 	"makefile.configureOnOpen": false
 }
