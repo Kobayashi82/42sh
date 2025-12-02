@@ -6,20 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/01 23:23:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 15:42:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "parser/parser.h"
-	#include "utils/libft.h"
+
+	#include <stdlib.h>
 
 #pragma endregion
 
 #pragma region "Is Redirect"
 
-	int is_redirect(t_token_type type) {
+	int is_redirect(int type) {
 		return (type == TOKEN_REDIRECT_IN ||
 				type == TOKEN_REDIRECT_HEREDOC ||
 				type == TOKEN_REDIRECT_HERESTRING ||
@@ -83,7 +84,7 @@
 
 		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
 
-		next_token();
+		token_advance();
 		t_ast *ast = parse_complete_command();
 
 		token_free(parser.token);
@@ -96,6 +97,8 @@
 
 #pragma endregion
 
+#include <stdio.h>
+
 #pragma region "Parse Simple Command"
 
 	t_ast *parse_simple_command() {
@@ -107,9 +110,8 @@
 				t_args *arg = args_create(g_parser->token->value);
 				g_parser->token->value = NULL;
 				args_append(&node->args, arg);
-				next_token();
-			}
-			else if (is_redirect(g_parser->token->type)) {
+				token_advance();
+			} else if (is_redirect(g_parser->token->type)) {
 				t_redir *redir = parse_redirect();
 				redir_append(&node->redirs, redir);
 			}
@@ -133,7 +135,7 @@
 			t_ast *node = ast_create(TOKEN_SUBSHELL);
 			char *content = g_parser->token->value;
 			g_parser->token->value = NULL;
-			next_token();
+			token_advance();
 
 			node->child = parse_from_string(content);
 			free(content);

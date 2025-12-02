@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/01 22:55:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 13:53:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 
 		while (g_parser->token->type == TOKEN_PIPE || g_parser->token->type == TOKEN_PIPE_ALL) {
 			t_ast *node = ast_create(g_parser->token->type);
-			next_token();
+			token_advance();
 			node->left = left;
 			node->right = parse_command();
 			left = node;
@@ -41,7 +41,7 @@
 
 		while (g_parser->token->type == TOKEN_AND || g_parser->token->type == TOKEN_OR) {
 			t_ast *node = ast_create(g_parser->token->type);
-			next_token();
+			token_advance();
 			node->left = left;
 			node->right = parse_pipeline();
 			left = node;
@@ -59,7 +59,7 @@
 
 		while (g_parser->token->type == TOKEN_SEMICOLON || g_parser->token->type == TOKEN_BACKGROUND) {
 			t_ast *node = ast_create(g_parser->token->type);
-			next_token();
+			token_advance();
 			node->left = left;
 			node->right = parse_and_or();
 			left = node;
