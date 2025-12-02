@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/01 22:43:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 15:21:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,13 @@
 
 	#pragma region "Enumerators"
 
-		typedef enum e_token_type {
+		enum e_token_type {
 			TOKEN_WORD,
 			TOKEN_CMD_SUB,				// $(
 			TOKEN_ARITH_SUB,			// $((
 			TOKEN_PARAM_EXP,			// ${
 			TOKEN_BRACE,				// {
-			TOKEN_GROUP,				// {[space]
+			TOKEN_GROUP,				// {[isspace]
 			TOKEN_SUBSHELL,				// (
 			TOKEN_ARITH,				// ((
 
@@ -50,35 +50,34 @@
 			TOKEN_AND,					// &&
 			TOKEN_OR,					// ||
 			TOKEN_SEMICOLON,			// ;
-
-			TOKEN_IF,					// 
-			TOKEN_THEN,					// 
-			TOKEN_ELSE,					// 
-			TOKEN_ELIF,					// 
-			TOKEN_FI,					// 
-
-			TOKEN_CASE,					// 
-			TOKEN_ESAC,					// 
-			TOKEN_IN,					// 
+			
+			TOKEN_IF,					// if
+			TOKEN_THEN,					// then
+			TOKEN_ELSE,					// else
+			TOKEN_ELIF,					// elif
+			TOKEN_FI,					// fi
+			
+			TOKEN_FUNCTION,				// function
+			TOKEN_CASE,					// case
+			TOKEN_ESAC,					// esac
+			TOKEN_IN,					// in
 			TOKEN_TERMINATOR,			// ;;
 			TOKEN_FALLTHROUGH,			// ;&
 			TOKEN_CONTINUE,				// ;;&
 
-			TOKEN_WHILE,				// 
-			TOKEN_UNTIL,				// 
-			TOKEN_DO,					// 
-			TOKEN_DONE,					// 
-
-			TOKEN_FOR,					// 
-			TOKEN_FUNCTION,				// 
-
+			TOKEN_WHILE,				// while
+			TOKEN_UNTIL,				// until
+			TOKEN_DO,					// do
+			TOKEN_DONE,					// done
+			TOKEN_FOR,					// for
 			TOKEN_NEGATE,				// !
 			TOKEN_LBRACKET2,			// [[
 			TOKEN_RBRACKET2,			// ]]
 
 			TOKEN_NEWLINE,				// New line
 			TOKEN_EOF,					// End of input
-		} t_token_type;
+			TOKEN_ERROR,				// Error
+		};
 
 	#pragma endregion
 
@@ -93,7 +92,7 @@
 		} t_string;
 		
 		typedef struct s_token {
-			t_token_type	type;
+			int				type;
 			char			*value;
 			int				left_space;
 			int				right_space;
@@ -152,8 +151,8 @@
 	char	advance(t_lexer *lexer);
 
 	void	token_free(t_token *tok);
-	t_token *token_create(t_lexer *lexer, t_token_type type, char *value, int line, char *full_line);
-	t_token	*token_next(t_lexer *lexer);
+	t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line);
+	t_token	*token_get(t_lexer *lexer);
 
 	char	handle_quotes(t_lexer *lexer, t_string *string);
 

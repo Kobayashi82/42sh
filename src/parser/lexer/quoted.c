@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 21:05:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 14:04:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 		char	c;
 
 		while ((c = peek(lexer, 0))) {
+			// Single Quoted
 			if (stack_top(lexer) == '\'') {
 				if (c == '\'') {
 					stack_pop(lexer);
@@ -46,6 +47,7 @@
 				continue;
 			}
 
+			// Double Quoted
 			if (stack_top(lexer) == '"') {
 				if (c == '"') {
 					stack_pop(lexer);

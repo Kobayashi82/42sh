@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 20:57:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 15:55:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,11 @@
 			if (peek(lexer, 0) == operators[i][0]) return (1);
 		}
 
-		return (peek(lexer, 0) == '{' && (peek(lexer, 1) == '\0' || isspace(peek(lexer, 1))));
+		int result = 0;
+		if (!result) result = (peek(lexer, 0) == '{' && (peek(lexer, 1) == '\0' || isspace(peek(lexer, 1))));
+		if (!result) result = (peek(lexer, 0) == '$' && (peek(lexer, 1) == '('));
+
+		return (result);
 	}
 
 #pragma endregion
@@ -45,7 +49,7 @@
 		string_init(&string);
 
 		while ((c = peek(lexer, 0))) {
-			int can_advance = !handle_quotes(lexer, &string);
+			handle_quotes(lexer, &string);
 			c = peek(lexer, 0);
 
 			if (c == '\\') {
@@ -57,7 +61,7 @@
 						free(string.value);
 						lexer->append_inline = 1;
 						lexer_append(lexer);
-						return (token_next(lexer));
+						return (token_get(lexer));
 					}
 				} else if (peek(lexer, 1) == '\0') {
 					lexer->append_inline = 1;
@@ -79,7 +83,7 @@
 						if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
 						buffer_push(lexer, alias_content, string.value);
 						free(string.value);
-						t_token *token = token_next(lexer);
+						t_token *token = token_get(lexer);
 						lexer->can_expand_alias = expand_next;
 						free(full_line);
 						return (token);
@@ -91,7 +95,7 @@
 				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
 			}
 
-			if (can_advance) string_append(&string, advance(lexer));
+			string_append(&string, advance(lexer));
 		}
 
 		free(full_line);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/01 23:11:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 15:24:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -337,7 +337,7 @@
 
 	#pragma region "Create"
 
-		t_token *token_create(t_lexer *lexer, t_token_type type, char *value, int line, char *full_line) {
+		t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line) {
 			t_token *token = malloc(sizeof(t_token));
 
 			token->type = type;
@@ -353,7 +353,7 @@
 
 	#pragma region "Next"
 
-		t_token *token_next(t_lexer *lexer) {
+		t_token *token_get(t_lexer *lexer) {
 
 			if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
 
@@ -368,7 +368,7 @@
 
 			if (peek(lexer, 0)) {
 				t_token *token = NULL;
-				// if ((token = expansion(lexer)))		return (token);
+				if ((token = expansion(lexer)))		return (token);
 				if ((token = grouping(lexer)))		return (token);
 				if ((token = operator(lexer)))		return (token);
 				if ((token = redirection(lexer)))	return (token);
@@ -378,7 +378,7 @@
 
 			if (!lexer->interactive || lexer->append_inline) {
 				lexer_append(lexer);
-				if (lexer->input) return (token_next(lexer));
+				if (lexer->input) return (token_get(lexer));
 			}
 			return (token_create(lexer, TOKEN_EOF, NULL, -1, NULL));
 		}
