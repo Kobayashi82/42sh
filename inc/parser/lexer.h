@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:21:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 18:40:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,9 @@
 	t_token	*token_get(t_lexer *lexer);
 
 	char	handle_quotes(t_lexer *lexer, t_string *string);
+	int		is_operator(char c);
 
+	t_token *variables(t_lexer *lexer);
 	t_token	*expansion(t_lexer *lexer);
 	t_token	*grouping(t_lexer *lexer);
 	t_token	*operator(t_lexer *lexer);

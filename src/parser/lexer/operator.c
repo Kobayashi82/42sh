@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:42:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 20:27:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,19 +17,21 @@
 
 #pragma endregion
 
-	// OPERATOR
-	//
-	// &		background
-	// &&		and
-	// ||		or
-	// |		pipe
-	// ;		semicolon
-	// #		comentario
-	// ;;		case terminator
-	// ;&		case fallthrough
-	// ;;&		case continue
+#pragma region "Is operator"
 
-	#include <stdio.h>
+	int is_operator(char c) {
+		const char *operators[] = { " ", "\t", "\n", ">", "<", "&", "|", ";", "(", ")", "{", "}", "$", "\0", NULL};
+
+		for (int i = 0; operators[i]; i++) {
+			if (c == operators[i][0]) return (1);
+		}
+
+		int result = 0;
+
+		return (result);
+	}
+
+#pragma endregion
 
 #pragma region "Operator"
 
@@ -98,3 +100,15 @@
 	}
 
 #pragma endregion
+
+// OPERATOR
+//
+// &		background
+// &&		and
+// ||		or
+// |		pipe
+// ;		semicolon
+// #		comentario
+// ;;		case terminator
+// ;&		case fallthrough
+// ;;&		case continue

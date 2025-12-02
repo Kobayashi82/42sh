@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:42:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 20:27:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,8 +96,6 @@
 	}
 
 #pragma endregion
-
-#include <stdio.h>
 
 #pragma region "Parse Simple Command"
 

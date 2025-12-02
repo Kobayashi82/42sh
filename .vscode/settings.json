@@ -38,7 +38,12 @@
 		"tests.h": "c",
 		"ctype.h": "c",
 		"wait.h": "c",
-		"parser.h": "c"
+		"parser.h": "c",
+		"optional": "c",
+		"system_error": "c",
+		"array": "c",
+		"functional": "c",
+		"tuple": "c"
 	},
 	"makefile.configureOnOpen": false
 }
