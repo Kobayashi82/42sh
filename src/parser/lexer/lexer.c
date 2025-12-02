@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:24:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 19:36:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@
 	// p	${...}				parameter expression
 	// S	(...)				subshell
 	// A	((...)	)			arithmetic
-	// B	{ ...; } or {...}	braces (command group or brace expansion)
+	// G	{ ...; } or {...}	braces (command group or brace expansion)
 
 	#pragma region "Initialize"
 
@@ -368,8 +368,9 @@
 
 			if (peek(lexer, 0)) {
 				t_token *token = NULL;
+				if ((token = variables(lexer)))		return (token);
 				if ((token = expansion(lexer)))		return (token);
-				if ((token = grouping(lexer)))		return (token);
+				// if ((token = grouping(lexer)))		return (token);
 				if ((token = operator(lexer)))		return (token);
 				if ((token = redirection(lexer)))	return (token);
 				// if ((token = keyword(lexer)))		return (token);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:55:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/02 20:18:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,6 @@
 	#include "hashes/alias.h"
 	#include "parser/lexer.h"
 	#include "utils/libft.h"
-
-#pragma endregion
-
-// Tambien tratar como words $(), $(()), 
-
-#pragma region "Is operator"
-
-	int is_operator(t_lexer *lexer) {
-		const char *operators[] = { " ", "\t", "\n", ">", "<", "&", "|", ";", "(", ")", "\0", NULL};
-
-		for (int i = 0; operators[i]; i++) {
-			if (peek(lexer, 0) == operators[i][0]) return (1);
-		}
-
-		int result = 0;
-		if (!result) result = (peek(lexer, 0) == '{' && (peek(lexer, 1) == '\0' || isspace(peek(lexer, 1))));
-		if (!result) result = (peek(lexer, 0) == '$' && (peek(lexer, 1) == '('));
-
-		return (result);
-	}
 
 #pragma endregion
 
@@ -48,33 +28,35 @@
 
 		string_init(&string);
 
-		while ((c = peek(lexer, 0))) {
-			handle_quotes(lexer, &string);
-			c = peek(lexer, 0);
+		while ((c = peek(lexer, 0)) || string.len) {
 
-			if (c == '\\') {
-				if (peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
-					advance(lexer);
-					advance(lexer);
-					if (!*string.value) {
-						free(full_line);
-						free(string.value);
-						lexer->append_inline = 1;
-						lexer_append(lexer);
-						return (token_get(lexer));
-					}
-				} else if (peek(lexer, 1) == '\0') {
-					lexer->append_inline = 1;
-					advance(lexer);
-					lexer_append(lexer);
-					continue;
-				}
-				string_append(&string, advance(lexer));
-				string_append(&string, advance(lexer));
+			if (c == '\'' || c == '"') {
+				handle_quotes(lexer, &string);
+				continue;
 			}
 
-			if (is_operator(lexer) || peek(lexer, 1) == '\0') {
-				if (!is_operator(lexer) && peek(lexer, 1) == '\0') string_append(&string, advance(lexer));
+			if (c == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
+				advance(lexer);
+				advance(lexer);
+				if (string.len) {
+					free(full_line);
+					free(string.value);
+					lexer->append_inline = 1;
+					lexer_append(lexer);
+					return (token_get(lexer));
+				}
+			} else if (c == '\\' && peek(lexer, 1) == '\0') {
+				advance(lexer);
+				lexer->append_inline = 1;
+				lexer_append(lexer);
+				continue;
+			} else if (c == '\\') {
+				string_append(&string, advance(lexer));
+				string_append(&string, advance(lexer));
+				continue;
+			}
+
+			if (is_operator(c)) {
 
 				if (should_expand_alias(lexer, string.value)) {
 					char *alias_content = alias_find_value(string.value);
