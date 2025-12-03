@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 19:36:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:01:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 	#include "parser/lexer.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
-
-	#include <stdio.h>
 
 #pragma endregion
 
@@ -36,6 +34,8 @@
 	// S	(...)				subshell
 	// A	((...)	)			arithmetic
 	// G	{ ...; } or {...}	braces (command group or brace expansion)
+	// i	<(...)				process substitution in
+	// o	>(...)				process substitution out
 
 	#pragma region "Initialize"
 
@@ -186,6 +186,30 @@
 
 #pragma endregion
 
+void remove_comments(char *input) {
+	if (!input) return;
+
+	int quoted = 0;
+	int escaped = 0;
+	int right_space = 1;
+	int i = 0;
+	int c;
+
+	while ((c = input[i])) {
+		if (escaped)				{ escaped = 0; i++; continue; }
+		if (!quoted && c == '\\')	{ escaped = 1; i++; continue; }
+		if (!quoted && (c == '\'' || c == '"'))	{ quoted = c; i++; continue; }
+		if (!quoted && c == '#' && right_space)	{
+			int start = i;
+			while (input[i] != '\n' && input[i] != '\0') ++i;
+			memmove(input + start, input + i, i - start);
+			break;
+		}
+		right_space = (i == 0 || (!quoted && is_operator(c)));
+		i++;
+	}
+}
+
 #pragma region "Input"
 
 	#pragma region "Append"
@@ -194,6 +218,8 @@
 			char *input = lexer->more_input();
 
 			if (input) {
+
+				remove_comments(input);
 
 				if (lexer->interactive) {
 					char	*new_full = NULL;
@@ -246,6 +272,7 @@
 			stack_init(lexer);
 			lexer->input = NULL;
 			lexer->user_buffer = NULL;
+			remove_comments(input);
 			buffer_push_user(lexer, input);
 			lexer->filename = ft_strdup(filename);
 			// lexer->full_input = NULL;
@@ -255,6 +282,7 @@
 			lexer->append_inline = 0;
 			lexer->command_position = 1;
 			lexer->can_expand_alias = 1;
+			lexer->right_space = 1;
 			lexer->line = line;
 			lexer->more_input = callback;
 		}
@@ -340,9 +368,10 @@
 		t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line) {
 			t_token *token = malloc(sizeof(t_token));
 
+			lexer->right_space = isspace(peek(lexer, 0)) || peek(lexer, 0) == '\0';
 			token->type = type;
 			token->value = value;
-			token->right_space = isspace(peek(lexer, 0)) || peek(lexer, 0) == '\0';
+			token->right_space = lexer->right_space;
 			token->filename = ft_strdup(lexer->filename);
 			token->line = line;
 			token->full_line = full_line;
@@ -354,7 +383,6 @@
 	#pragma region "Next"
 
 		t_token *token_get(t_lexer *lexer) {
-
 			if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
 
 			if (peek(lexer, 0) == '\n') {
@@ -381,8 +409,10 @@
 				lexer_append(lexer);
 				if (lexer->input) return (token_get(lexer));
 			}
+
 			return (token_create(lexer, TOKEN_EOF, NULL, -1, NULL));
 		}
+
 	#pragma endregion
 
 #pragma endregion

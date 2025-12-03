@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 15:23:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:25:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,11 +32,11 @@
 #pragma region "Syntax Error"
 
 	void syntax_error(const char *msg) {
-		fprintf(stderr, "42sh: syntax error: %s\n", msg);
+		dprintf(2, "42sh: syntax error: %s\n", msg);
 
 		if (g_parser && g_parser->token) {
-			if (g_parser->token->filename)	fprintf(stderr, "  at %s:%d\n", g_parser->token->filename, g_parser->token->line);
-			if (g_parser->token->full_line)	fprintf(stderr, "  %s\n", g_parser->token->full_line);
+			if (g_parser->token->filename)	dprintf(2, "  at %s:%d\n", g_parser->token->filename, g_parser->token->line);
+			if (g_parser->token->full_line)	dprintf(2, "  %s\n", g_parser->token->full_line);
 		}
 
 		if (!g_parser->interactive) exit(1);
@@ -84,7 +84,7 @@
 		t_ast *ast = parse_complete_command();
 		token_free(g_parser->token);
 
-		if (interactive) history_add(parser.lexer.full_input, 0);
+		if (interactive && ast && ast->type != TOKEN_EOF) history_add(parser.lexer.full_input, 0);
 		terminal.input = ft_strdup(parser.lexer.full_input);	// borrar
 
 		lexer_free(&parser.lexer);

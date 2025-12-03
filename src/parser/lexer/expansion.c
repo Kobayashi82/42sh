@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 20:29:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 16:25:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@
 		int			type;
 		int			group_can_end = 0;
 
-		if (peek(lexer,0) != '`' && !(peek(lexer,0) == '$' && (peek(lexer,1) == '(' || peek(lexer,1) == '{'))) {
+		if (peek(lexer,0) != '`' && !((peek(lexer,0) == '$' || peek(lexer,0) == '<' || peek(lexer,0) == '>') && (peek(lexer,1) == '(' || peek(lexer,1) == '{'))) {
 			free(full_line);
 			return (NULL);
 		}
@@ -123,6 +123,16 @@
 		if (peek(lexer, 0) == '`') {
 			string_append(&string, advance(lexer));
 			stack_push(lexer, '`');
+			type = TOKEN_WORD;
+		} else if (peek(lexer, 0) == '<' && peek(lexer, 1) == '(') {
+			string_append(&string, advance(lexer));
+			string_append(&string, advance(lexer));
+			stack_push(lexer, 'i');
+			type = TOKEN_WORD;
+		} else if (peek(lexer, 0) == '>' && peek(lexer, 1) == '(') {
+			string_append(&string, advance(lexer));
+			string_append(&string, advance(lexer));
+			stack_push(lexer, 'o');
 			type = TOKEN_WORD;
 		} else {
 			string_append(&string, advance(lexer));
@@ -208,6 +218,21 @@
 				continue;
 			}
 
+			// <(
+			if (c == '<' && peek(lexer, 1) == '(') {
+				stack_push(lexer, 'i');
+				string_append(&string, advance(lexer));
+				string_append(&string, advance(lexer));
+				continue;
+			}
+			// >(
+			if (c == '>' && peek(lexer, 1) == '(') {
+				stack_push(lexer, 'o');
+				string_append(&string, advance(lexer));
+				string_append(&string, advance(lexer));
+				continue;
+			}
+
 			// ${
 			if (c == '$' && peek(lexer, 1) == '{') {
 				stack_push(lexer, 'p');
@@ -236,12 +261,12 @@
 
 			// )
 			if (c == ')') {
-				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S') {
+				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
 					stack_pop(lexer);
 					string_append(&string, advance(lexer));
 					if (!lexer->stack_size) break;
 					continue;
-				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S') break;
+				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S' && stack_top(lexer) != 'i' && stack_top(lexer) != 'o') break;
 			}
 
 			// }
@@ -300,3 +325,7 @@
 // $""		translatable string
 // $''		ANSI-C quoting
 // $VAR		variable
+// <()		process substitution in
+// >()		process substitution out
+
+// #
