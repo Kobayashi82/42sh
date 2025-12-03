@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 20:27:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,6 @@
 
 	#include "parser/lexer.h"
 	#include "utils/libft.h"
-
-#pragma endregion
-
-#pragma region "Is operator"
-
-	int is_operator(char c) {
-		const char *operators[] = { " ", "\t", "\n", ">", "<", "&", "|", ";", "(", ")", "{", "}", "$", "\0", NULL};
-
-		for (int i = 0; operators[i]; i++) {
-			if (c == operators[i][0]) return (1);
-		}
-
-		int result = 0;
-
-		return (result);
-	}
 
 #pragma endregion
 

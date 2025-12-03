@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 15:57:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 18:12:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,25 +16,6 @@
 	#include "utils/libft.h"
 
 #pragma endregion
-
-// REDIRECTION
-//
-// >		redirección de salida
-// >>		redirección de salida (append)
-// <		redirección de entrada estándar
-// <<		here-document
-// <<-		here-document con tabs ignorados
-// <<<		here-string
-// <>		abrir archivo para lectura/escritura
-// <&		duplica descriptor de entrada
-// >&		duplica descriptor de salida
-// &>		redirige stdout y stderr
-// &>>		append de stdout y stderr
-// [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
-// >|		sobrescribe incluso con noclobber activado
-
-// Redirs detectar dígitos sin consumir y si hay redirección al final. Si se cumple, es redirección.
-// Tiene que estar separado del anterior token, eso implica diferenciar entre ;, &&, etc. Y " } brace expansión, etc...
 
 #pragma region "Redirection"
 
@@ -110,3 +91,22 @@
 	}
 
 #pragma endregion
+
+// REDIRECTION
+//
+// >		redirección de salida
+// >>		redirección de salida (append)
+// <		redirección de entrada estándar
+// <<		here-document
+// <<-		here-document con tabs ignorados
+// <<<		here-string
+// <>		abrir archivo para lectura/escritura
+// <&		duplica descriptor de entrada
+// >&		duplica descriptor de salida
+// &>		redirige stdout y stderr
+// &>>		append de stdout y stderr
+// [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
+// >|		sobrescribe incluso con noclobber activado
+
+// Redirs detectar dígitos sin consumir y si hay redirección al final. Si se cumple, es redirección.
+// Tiene que estar separado del anterior token, eso implica diferenciar entre ;, &&, etc. Y " } brace expansión, etc...
