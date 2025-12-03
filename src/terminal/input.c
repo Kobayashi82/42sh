@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 13:30:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 21:03:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@
 		if (!input) {
 			// error
 			if (shell.source != SRC_STDIN) close(fd);
-			return(1);
+			return (1);
 		}
 
 		shell.ast = parse(input, more_input, 0, filename, 1);
@@ -110,7 +110,7 @@
 		ast_print(shell.ast);
 		printf("\n");
 
-		return (!shell.ast);
+		return (0);
 	}
 
 #pragma endregion
@@ -126,11 +126,11 @@
 
 		input = expand_input_history(input);
 		shell.ast = parse(input, more_input, 1, NULL, 1);
-		
+
 		ast_print(shell.ast);
 		printf("\n");
-
-		return (!shell.ast);
+		
+		return (0);
 	}
 
 #pragma endregion

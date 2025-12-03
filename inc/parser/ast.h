@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 13:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 19:26:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,6 @@
 	void	ast_print(t_ast *ast);
 	void	ast_free(t_ast **ast);
 	t_ast	*ast_create(int type);
+	const char *type_to_string(int type);
 
 #pragma endregion

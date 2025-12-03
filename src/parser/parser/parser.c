@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 17:25:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 21:05:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 			if (g_parser->token->full_line)	dprintf(2, "  %s\n", g_parser->token->full_line);
 		}
 
-		if (!g_parser->interactive) exit(1);
+		// if (!g_parser->interactive) exit(1);
 	}
 
 #pragma endregion
@@ -62,8 +62,6 @@
 	t_ast *parse_complete_command() {
 		t_ast *result = parse_list();
 
-		if (g_parser->token->type != TOKEN_EOF) syntax_error("unexpected token");
-
 		return (result);
 	}
 
@@ -72,23 +70,50 @@
 #pragma region "Parser"
 
 	t_ast *parse(char *input, t_callback callback, int interactive, char *filename, int line) {
-		t_parser parser;
+		t_parser	parser;
+		t_ast		*full_ast = NULL;
+		t_ast		*current = NULL;
 
 		parser.token = NULL;
 		parser.interactive = interactive;
+		parser.lexer.can_expand_alias = 1;
+		parser.lexer.command_position = 1;
 		g_parser = &parser;
 
 		lexer_init(&parser.lexer, input, callback, interactive, filename, line);
-
 		token_advance();
-		t_ast *ast = parse_complete_command();
+
+		if (!interactive) {
+			while (g_parser->token->type != TOKEN_EOF) {
+				while (g_parser->token->type == TOKEN_NEWLINE) token_advance();
+				if (g_parser->token->type == TOKEN_EOF) break;
+
+				t_ast *ast = parse_list();
+				if (!ast) {
+					ast_free(&full_ast);
+					break;
+				}
+
+				if (!full_ast) {
+					full_ast = ast;
+					current = ast;
+				} else {
+					t_ast *separator = ast_create(TOKEN_SEMICOLON);
+					separator->left = current;
+					separator->right = ast;
+					current = separator;
+					full_ast = current;
+				}
+			}
+		} else full_ast = parse_complete_command();
+
 		token_free(g_parser->token);
 
-		if (interactive && ast && ast->type != TOKEN_EOF) history_add(parser.lexer.full_input, 0);
+		if (interactive && full_ast && full_ast->type != TOKEN_EOF) history_add(parser.lexer.full_input, 0);
 		terminal.input = ft_strdup(parser.lexer.full_input);	// borrar
 
 		lexer_free(&parser.lexer);
-		return (ast);
+		return (full_ast);
 	}
 
 #pragma endregion

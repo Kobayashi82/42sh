@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 13:42:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 20:06:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,11 @@
 				ast_print_recursive(node->child, level + 1);
 				break;
 
+			case TOKEN_NEWLINE:
+				printf("NEWLINE \\n\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+
 			case TOKEN_WORD:
 				printf("COMMAND\n");
 
@@ -163,6 +168,7 @@
 	}
 
 	void ast_print(t_ast *ast) {
+		if (!ast) return;
 		ast_print_recursive(ast, 0);
 	}
 

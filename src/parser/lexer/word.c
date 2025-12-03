@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 17:48:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 20:49:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,13 +57,9 @@
 			if (c == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
 				advance(lexer);
 				advance(lexer);
-				if (string.len) {
-					free(full_line);
-					free(string.value);
-					lexer->append_inline = 1;
-					lexer_append(lexer);
-					return (token_get(lexer));
-				}
+				lexer->append_inline = 1;
+				lexer_append(lexer);
+				continue;
 			} else if (c == '\\' && peek(lexer, 1) == '\0') {
 				advance(lexer);
 				lexer->append_inline = 1;
@@ -76,6 +72,12 @@
 			}
 
 			if (is_operator(c)) {
+
+				if (!string.len) {
+					free(full_line);
+					free(string.value);
+					return (token_get(lexer));
+				}
 
 				if (expand_alias(lexer, string.value)) {
 					char *alias_content = alias_find_value(string.value);

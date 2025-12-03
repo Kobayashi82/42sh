@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quoted.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 17:49:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 20:47:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,9 @@
 					string_append(string, advance(lexer));
 					break;
 				} else if (c == '\0') {
-					string_append(string, '\n');
 					lexer_append(lexer);
+					if (!lexer->input) break;
+					string_append(string, '\n');
 					continue;
 				} else {
 					string_append(string, advance(lexer));
