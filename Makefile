@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/02 13:34:15 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/03 18:20:06 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -89,20 +89,22 @@ SRCS	=	main/main.c									\
 			terminal/readinput/common/undo.c			\
 														\
 														\
-			parser/lexer/lexer.c						\
-			parser/lexer/word.c							\
-			parser/lexer/keyword.c						\
-			parser/lexer/operator.c						\
-			parser/lexer/quoted.c						\
-			parser/lexer/grouping.c						\
+			parser/lexer/container.c					\
 			parser/lexer/expansion.c					\
+			parser/lexer/grouping.c						\
+			parser/lexer/keyword.c						\
+			parser/lexer/lexer.c						\
+			parser/lexer/operator.c						\
 			parser/lexer/redirection.c					\
+			parser/lexer/token.c						\
+			parser/lexer/utils.c						\
+			parser/lexer/word.c							\
 														\
-			parser/parser/ast.c							\
-			parser/parser/parser.c						\
-			parser/parser/command.c						\
 			parser/parser/arithmetic.c					\
+			parser/parser/ast.c							\
+			parser/parser/command.c						\
 			parser/parser/operator.c					\
+			parser/parser/parser.c						\
 			parser/parser/redirection.c					\
 														\
 														\

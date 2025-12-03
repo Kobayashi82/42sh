@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 20:18:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:48:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,26 @@
 
 	#include "hashes/alias.h"
 	#include "parser/lexer.h"
+	#include "main/options.h"
 	#include "utils/libft.h"
+
+#pragma endregion
+
+#pragma region "Expand Alias"
+
+	static int expand_alias(t_lexer *lexer, char *alias_name) {
+		if (!alias_name || !lexer->can_expand_alias || !options.expand_aliases) return (0);
+
+		t_buff *buffer = lexer->input;
+		while (buffer) {
+			if (buffer->alias_name && !strcmp(buffer->alias_name, alias_name)) return (0);
+			buffer = buffer->next;
+		}
+
+		if (!alias_find_value(alias_name)) return (0);
+		
+		return (1);
+	}
 
 #pragma endregion
 
@@ -58,7 +77,7 @@
 
 			if (is_operator(c)) {
 
-				if (should_expand_alias(lexer, string.value)) {
+				if (expand_alias(lexer, string.value)) {
 					char *alias_content = alias_find_value(string.value);
 					if (alias_content) {
 						int expand_next = 0;
