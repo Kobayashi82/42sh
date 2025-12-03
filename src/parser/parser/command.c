@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 20:27:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 17:17:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,11 +113,6 @@
 				t_redir *redir = parse_redirect();
 				redir_append(&node->redirs, redir);
 			}
-		}
-
-		if (!node->args) {
-			ast_free(&node);
-			syntax_error("command expected");
 		}
 
 		return (node);

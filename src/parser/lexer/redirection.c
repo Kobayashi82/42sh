@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/30 21:04:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 15:57:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,9 @@
 // &>>		append de stdout y stderr
 // [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
 // >|		sobrescribe incluso con noclobber activado
+
+// Redirs detectar dígitos sin consumir y si hay redirección al final. Si se cumple, es redirección.
+// Tiene que estar separado del anterior token, eso implica diferenciar entre ;, &&, etc. Y " } brace expansión, etc...
 
 #pragma region "Redirection"
 

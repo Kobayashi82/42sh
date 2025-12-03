@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 18:40:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/03 15:58:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@
 			t_buff			*user_buffer;	// Referencia al ultimo buffer de usuario
 			int				interactive;
 			int				append_inline;
+			int				right_space;
 			int				command_position;
 			int				can_expand_alias;
 			char			*filename;
