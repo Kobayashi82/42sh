@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:14 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/02 13:53:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:36:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 	#include "utils/libft.h"
 
 #pragma endregion
-
-// Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente.
 
 #pragma region "Redirect Append"
 

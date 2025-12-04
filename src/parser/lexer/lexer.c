@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 20:46:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:50:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,22 @@
 				right_space = (i == 0 || (!quoted && is_operator(c)));
 				i++;
 			}
+		}
+
+	#pragma endregion
+
+	#pragma region "Free"
+
+		void lexer_free(t_lexer *lexer) {
+			free(lexer->stack);
+			free(lexer->filename);
+			free(lexer->full_input);
+			while (lexer->input) buffer_pop(lexer);
+			lexer->filename = NULL;
+			lexer->full_input = NULL;
+			lexer->input = NULL;
+			lexer->user_buffer = NULL;
+			lexer->stack = NULL;
 		}
 
 	#pragma endregion
@@ -124,22 +140,6 @@
 			lexer->right_space = 1;
 			lexer->line = line;
 			lexer->more_input = callback;
-		}
-
-	#pragma endregion
-
-	#pragma region "Free"
-
-		void lexer_free(t_lexer *lexer) {
-			free(lexer->stack);
-			free(lexer->filename);
-			free(lexer->full_input);
-			while (lexer->input) buffer_pop(lexer);
-			lexer->filename = NULL;
-			lexer->full_input = NULL;
-			lexer->input = NULL;
-			lexer->user_buffer = NULL;
-			lexer->stack = NULL;
 		}
 
 	#pragma endregion

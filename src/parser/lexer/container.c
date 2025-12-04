@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 18:20:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 18:03:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,24 @@
 
 	// Stack contains the token context, with the following meanings:
 	//
-	// "	""					double quoted
-	// '	''					single quoted
-	// t	$""					translatable string
-	// q	$''					ANSI-C quoting
-	// `	``					command substitution
-	// s	$(...)				command substitution
-	// a	$((...))			arithmetic substitution
-	// p	${...}				parameter expression
-	// S	(...)				subshell
-	// A	((...)	)			arithmetic
-	// G	{ ...; } or {...}	braces (command group or brace expansion)
-	// i	<(...)				process substitution in
-	// o	>(...)				process substitution out
+	// "	""			double quoted
+	// '	''			single quoted
+	// `	``			command substitution
+	// s	$(...)		command substitution
+	// S	(...)		subshell
+	// a	$((...))	arithmetic substitution
+	// A	((...)	)	arithmetic
+	// p	${...}		parameter expression
+	// G	{ ...; }	braces (command group or brace expansion)
+	// i	<(...)		process substitution in
+	// o	>(...)		process substitution out
+	// C	[[...]]		conditional expression
 
-	#pragma region "Push"
+	#pragma region "Top"
 
-		void stack_push(t_lexer *lexer, char delim) {
-			if (lexer->stack_size >= lexer->stack_capacity) {
-				lexer->stack_capacity *= 2;
-				lexer->stack = realloc(lexer->stack, lexer->stack_capacity);
-			}
-			lexer->stack[lexer->stack_size++] = delim;
+		char stack_top(t_lexer *lexer) {
+			if (!lexer->stack_size) return ('\0');
+			return (lexer->stack[lexer->stack_size - 1]);
 		}
 
 	#pragma endregion
@@ -58,11 +54,14 @@
 
 	#pragma endregion
 
-	#pragma region "Top"
+	#pragma region "Push"
 
-		char stack_top(t_lexer *lexer) {
-			if (!lexer->stack_size) return ('\0');
-			return (lexer->stack[lexer->stack_size - 1]);
+		void stack_push(t_lexer *lexer, char c) {
+			if (lexer->stack_size >= lexer->stack_capacity) {
+				lexer->stack_capacity *= 2;
+				lexer->stack = realloc(lexer->stack, lexer->stack_capacity);
+			}
+			lexer->stack[lexer->stack_size++] = c;
 		}
 
 	#pragma endregion
@@ -70,6 +69,21 @@
 #pragma endregion
 
 #pragma region "Buffer"
+
+	#pragma region "Pop"
+
+		void buffer_pop(t_lexer *lexer) {
+			if (!lexer->input) return;
+
+			t_buff *old = lexer->input;
+			lexer->input = lexer->input->next;
+
+			free(old->value);
+			free(old->alias_name);
+			free(old);
+		}
+
+	#pragma endregion
 
 	#pragma region "Push"
 
@@ -111,35 +125,9 @@
 
 	#pragma endregion
 
-	#pragma region "Pop"
-
-		void buffer_pop(t_lexer *lexer) {
-			if (!lexer->input) return;
-
-			t_buff *old = lexer->input;
-			lexer->input = lexer->input->next;
-
-			free(old->value);
-			free(old->alias_name);
-			free(old);
-		}
-
-	#pragma endregion
-
 #pragma endregion
 
 #pragma region "String"
-
-	#pragma region "Initialize"
-
-		void string_init(t_string *string) {
-			string->capacity = 32;
-			string->value = malloc(string->capacity);
-			string->value[0] = '\0';
-			string->len = 0;
-		}
-
-	#pragma endregion
 
 	#pragma region "Append"
 
@@ -150,6 +138,17 @@
 			}
 			string->value[string->len++] = c;
 			string->value[string->len] = '\0';
+		}
+
+	#pragma endregion
+
+	#pragma region "Initialize"
+
+		void string_init(t_string *string) {
+			string->capacity = 32;
+			string->value = malloc(string->capacity);
+			string->value[0] = '\0';
+			string->len = 0;
 		}
 
 	#pragma endregion

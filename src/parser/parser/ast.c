@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 20:06:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:39:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 	#include "parser/parser.h"
 
-	#include <unistd.h>
 	#include <stdlib.h>
-
-	#include <stdio.h>				// borrar
 
 #pragma endregion
 
-#pragma region "Print"
+#pragma region "Print (DEBUG)"
+
+	#include <stdio.h>
 
 	const char *type_to_string(int type) {
 		switch (type) {
@@ -84,7 +83,7 @@
 	}
 
 	void ast_print_indent(int level) {
-		for (int i = 0; i < level; i++) write(1, "  ", 2);
+		for (int i = 0; i < level; i++) printf("  ");
 	}
 
 	void ast_print_recursive(t_ast *node, int level) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:01:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 19:16:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:40:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 
 		return (token);
 	}
+
 #pragma endregion
 
 #pragma region "Get"
