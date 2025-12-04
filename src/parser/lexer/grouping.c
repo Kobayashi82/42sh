@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:52 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 18:18:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:42:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,12 +16,6 @@
 	#include "utils/libft.h"
 
 #pragma endregion
-
-// GROUPING (recursive parsing)
-//
-// ()		subshell
-// (())		arithmetic
-// { ; }	command group (si hay espacio después), close command group (si hay ; o newline antes)
 
 #pragma region "Grouping"
 
@@ -42,3 +36,9 @@
 	}
 
 #pragma endregion
+
+// GROUPING (recursive parsing)
+//
+// ()		subshell
+// (())		arithmetic
+// { ; }	command group (si hay espacio después), close command group (si hay ; o newline antes)

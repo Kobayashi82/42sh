@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 18:17:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:51:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,24 +148,24 @@
 #pragma region "Methods"
 
 	// Containers
-	void	stack_push(t_lexer *lexer, char delim);
-	char	stack_pop(t_lexer *lexer);
 	char	stack_top(t_lexer *lexer);
+	char	stack_pop(t_lexer *lexer);
+	void	stack_push(t_lexer *lexer, char c);
+	void	buffer_pop(t_lexer *lexer);
 	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
 	void	buffer_push_user(t_lexer *lexer, char *value);
-	void	buffer_pop(t_lexer *lexer);
-	void	string_init(t_string *string);
 	void	string_append(t_string *string, char c);
+	void	string_init(t_string *string);
 
 	// Token
-	void	token_free(t_token *tok);
+	void	token_free(t_token *token);
 	t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line);
 	t_token	*token_get(t_lexer *lexer);
 
 	// Input
-	void	lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line);
 	void	lexer_free(t_lexer *lexer);
 	void	lexer_append(t_lexer *lexer);
+	void	lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line);
 
 	// Navigation
 	char	peek(t_lexer *lexer, size_t offset);

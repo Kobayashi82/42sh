@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 18:18:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 15:41:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,6 @@
 	#include "utils/libft.h"
 
 #pragma endregion
-
-// KEYWORD (count as WORD)
-//
-// if, then, else, elif, fi
-// case, esac, in
-// while, until, do, done
-// for
-// function
-// !		keyword de negación (solo al inicio de pipeline)
-// [[, ]]	test compuesto
 
 #pragma region "Keyword"
 
@@ -46,3 +36,13 @@
 	}
 
 #pragma endregion
+
+// KEYWORD (count as WORD)
+//
+// if, then, else, elif, fi
+// case, esac, in
+// while, until, do, done
+// for
+// function
+// !		keyword de negación (solo al inicio de pipeline)
+// [[, ]]	test compuesto
