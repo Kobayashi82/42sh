@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 18:05:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:36:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,66 +17,9 @@
 
 #pragma endregion
 
-#pragma region "Contexts"
+#pragma region "Context"
 
-	#pragma region "Process Substitution"
-
-		static int process_substitution(t_lexer *lexer, t_string *string) {
-			// <(
-			if (peek(lexer, 0) == '<' && peek(lexer, 1) == '(') {
-				stack_push(lexer, 'i');
-				string_append(string, advance(lexer));
-				string_append(string, advance(lexer));
-				return (1);
-			}
-			// >(
-			if (peek(lexer, 0) == '>' && peek(lexer, 1) == '(') {
-				stack_push(lexer, 'o');
-				string_append(string, advance(lexer));
-				string_append(string, advance(lexer));
-				return (1);
-			}
-			// )
-			if (peek(lexer, 0) == ')') {
-				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
-					stack_pop(lexer);
-					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
-					return (1);
-				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S' && stack_top(lexer) != 'i' && stack_top(lexer) != 'o') return (2);
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "Command Substitution"
-
-		static int command_substitution(t_lexer *lexer, t_string *string) {
-			// (
-			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '(') {
-				stack_push(lexer, 's');
-				string_append(string, advance(lexer));
-				string_append(string, advance(lexer));
-				return (1);
-			}
-			// )
-			if (peek(lexer, 0) == ')') {
-				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
-					stack_pop(lexer);
-					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
-					return (1);
-				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S' && stack_top(lexer) != 'i' && stack_top(lexer) != 'o') return (2);
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "Command Substitution (backticks)"
+	#pragma region "Backticks"
 
 		static int backticks(t_lexer *lexer, t_string *string) {
 			// `
@@ -91,30 +34,6 @@
 					string_append(string, advance(lexer));
 					return (1);
 				}
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "Subshell"
-
-		static int subshell(t_lexer *lexer, t_string *string) {
-			// (
-			if (peek(lexer, 0) == '(') {
-				stack_push(lexer, 'S');
-				string_append(string, advance(lexer));
-				return (1);
-			}
-			// )
-			if (peek(lexer, 0) == ')') {
-				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
-					stack_pop(lexer);
-					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
-					return (1);
-				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S' && stack_top(lexer) != 'i' && stack_top(lexer) != 'o') return (2);
 			}
 
 			return (0);
@@ -159,15 +78,38 @@
 				string_append(string, advance(lexer));
 				return (1);
 			}
-			// ))
-			if (peek(lexer, 0) == ')' && peek(lexer, 1) == ')') {
-				if (stack_top(lexer) == 'a' || stack_top(lexer) == 'A') {
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Subshell"
+
+		static int subshell(t_lexer *lexer, t_string *string, int *type) {
+			// (
+			if (peek(lexer, 0) == '(') {
+				stack_push(lexer, 'S');
+				string_append(string, advance(lexer));
+				return (1);
+			}
+			// )
+			if (peek(lexer, 0) == ')') {
+				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
 					stack_pop(lexer);
-					string_append(string, advance(lexer));
 					string_append(string, advance(lexer));
 					if (!lexer->stack_size) return (2);
 					return (1);
-				} else if (stack_top(lexer) != 'a' && stack_top(lexer) != 'A') return (2);
+				} else if (stack_top(lexer) == 'a' || stack_top(lexer) == 'A') {
+					if (stack_top(lexer) == 'A') lexer->stack[lexer->stack_size - 1] = 'S';
+					if (stack_top(lexer) == 'a') lexer->stack[lexer->stack_size - 1] = 's';
+					if (lexer->stack_size == 1) {
+						if (stack_top(lexer) == 'S') *type = TOKEN_SUBSHELL;
+						if (stack_top(lexer) == 's') *type = TOKEN_WORD;
+					}
+					string_append(string, advance(lexer));
+					return (1);
+				} else if (stack_top(lexer) != 's' && stack_top(lexer) != 'S' && stack_top(lexer) != 'i' && stack_top(lexer) != 'o') return (2);
 			}
 
 			return (0);
@@ -175,35 +117,36 @@
 
 	#pragma endregion
 
-	#pragma region "Parameter Expansion"
+	#pragma region "Command Substitution"
 
-		static int parameter_expansion(t_lexer *lexer, t_string *string, int *group_can_end) {
-			// ${
-			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '{') {
-				stack_push(lexer, 'p');
+		static int command_substitution(t_lexer *lexer, t_string *string) {
+			// (
+			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '(') {
+				stack_push(lexer, 's');
 				string_append(string, advance(lexer));
 				string_append(string, advance(lexer));
 				return (1);
 			}
-			// )
-			if (peek(lexer, 0) == '}') {
-				if (stack_top(lexer) == 'p') {
-					stack_pop(lexer);
-					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
-					return (1);
-				} else if (stack_top(lexer) == 'G' && *group_can_end) {
-					stack_pop(lexer);
-					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
-					return (1);
-				}
-			}
-			if (stack_top(lexer) == 'G' && (peek(lexer, 0) == ';' || peek(lexer, 0) == '\n')) {
-				*group_can_end = 1;
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Process Substitution"
+
+		static int process_substitution(t_lexer *lexer, t_string *string) {
+			// <(
+			if (peek(lexer, 0) == '<' && peek(lexer, 1) == '(') {
+				stack_push(lexer, 'i');
+				string_append(string, advance(lexer));
 				string_append(string, advance(lexer));
 				return (1);
-			} else if (stack_top(lexer) == 'G' && isspace(peek(lexer, 0)) && *group_can_end) {
+			}
+			// >(
+			if (peek(lexer, 0) == '>' && peek(lexer, 1) == '(') {
+				stack_push(lexer, 'o');
+				string_append(string, advance(lexer));
 				string_append(string, advance(lexer));
 				return (1);
 			}
@@ -251,6 +194,22 @@
 
 	#pragma endregion
 
+	#pragma region "Parameter Expansion"
+
+		static int parameter_expansion(t_lexer *lexer, t_string *string) {
+			// ${
+			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '{') {
+				stack_push(lexer, 'p');
+				string_append(string, advance(lexer));
+				string_append(string, advance(lexer));
+				return (1);
+			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
 	#pragma region "Conditional Expression"
 
 		static int conditional_expression(t_lexer *lexer, t_string *string) {
@@ -271,6 +230,22 @@
 					return (1);
 				} else if (stack_top(lexer) != ']') return (2);
 			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	
+	#pragma region "Is Expansion"
+
+		static int is_expansion(t_lexer *lexer) {
+
+			if (peek(lexer, 0) == '`')														return (1);
+			if (peek(lexer, 0) == '(')														return (1);
+			if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '(' || peek(lexer, 1) == '{'))	return (1);
+			if ((peek(lexer, 0) == '<' || peek(lexer, 0) == '>') && peek(lexer, 1) == '(')	return (1);
+			if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[')								return (1);
 
 			return (0);
 		}
@@ -298,11 +273,19 @@
 				string_append(string, advance(lexer));
 				string_append(string, advance(lexer));
 				stack_push(lexer, 'A');
-				*type = TOKEN_WORD;
+				*type = TOKEN_ARITH;
+			} else if (peek(lexer, 0) == '(') {
+				string_append(string, advance(lexer));
+				stack_push(lexer, 'S');
+				*type = TOKEN_SUBSHELL;
 			} else if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[') {
 				string_append(string, advance(lexer));
 				string_append(string, advance(lexer));
 				stack_push(lexer, 'C');
+				*type = TOKEN_WORD;
+			} else if (peek(lexer, 0) == '{' && (isspace(peek(lexer, 1)) || peek(lexer, 1) == '\0')) {
+				string_append(string, advance(lexer));
+				stack_push(lexer, 'G');
 				*type = TOKEN_WORD;
 			} else {
 				string_append(string, advance(lexer));
@@ -326,56 +309,51 @@
 
 	#pragma endregion
 
-#pragma endregion
+	#pragma region "Continuation"
 
-#pragma region "Continuation"
+		static int continuation(t_lexer *lexer, t_string *string, int *group_can_end) {
+			if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
+				advance(lexer);
+				advance(lexer);
+				lexer->append_inline = 1;
+				lexer_append(lexer);
+				return (1);
+			} else if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\0') {
+				advance(lexer);
+				lexer->append_inline = 1;
+				lexer_append(lexer);
+				return (1);
+			} else if (peek(lexer, 0) == '\\') {
+				string_append(string, advance(lexer));
+				string_append(string, advance(lexer));
+				return (1);
+			}
 
-	static int continuation(t_lexer *lexer, t_string *string, int *group_can_end) {
-		if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
-			advance(lexer);
-			advance(lexer);
-			lexer->append_inline = 1;
-			lexer_append(lexer);
-			return (1);
-		} else if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\0') {
-			advance(lexer);
-			lexer->append_inline = 1;
-			lexer_append(lexer);
-			return (1);
-		} else if (peek(lexer, 0) == '\\') {
-			string_append(string, advance(lexer));
-			string_append(string, advance(lexer));
-			return (1);
+			if (peek(lexer, 0) == '\0') {
+				if (stack_top(lexer) == 'G') *group_can_end = 1;
+				string_append(string, '\n');
+				lexer_append(lexer);
+				return (1);
+			}
+
+			return (0);
 		}
 
-		if (peek(lexer, 0) == '\0') {
-			if (stack_top(lexer) == 'G') *group_can_end = 1;
-			string_append(string, '\n');
-			lexer_append(lexer);
-			return (1);
-		}
-
-		return (0);
-	}
-
-#pragma endregion
-
-#pragma region "Is Expansion"
-
-	static int is_expansion(t_lexer *lexer) {
-		if (peek(lexer, 0) == '`') return (1);
-
-		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '(' || peek(lexer, 1) == '{'))	return (1);
-		if ((peek(lexer, 0) == '<' || peek(lexer, 0) == '>') && peek(lexer, 1) == '(')	return (1);
-		if (peek(lexer, 0) == '(' && peek(lexer, 1) == '(')								return (1);
-		if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[')								return (1);
-
-		return (0);
-	}
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Expansion"
+
+	// `...`			backticks
+	// ((...))			arithmetic
+	// $((...))			arithmetic substitution
+	// (...)			subshell
+	// $(...)			command substitution
+	// <(...), >(...)	process substitution
+	// { ... ; }		command group
+	// ${...}			parameter expansion
+	// [[...]]			conditional expression
 
 	t_token *expansion(t_lexer *lexer) {
 		t_string	string;
@@ -390,19 +368,19 @@
 
 		while (peek(lexer, 0) || stack_top(lexer)) {
 
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')				{ handle_quotes(lexer, &string); continue; }
-			if (continuation(lexer, &string, &group_can_end))					  continue;
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')			{ handle_quotes(lexer, &string); continue; }
+			if (continuation(lexer, &string, &group_can_end))				  continue;
 
 			int result = 0;
-			if ((result = process_substitution(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_substitution(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = subshell(lexer, &string)))							{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = backticks(lexer, &string)))							{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic_expansion(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic(lexer, &string)))							{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = parameter_expansion(lexer, &string, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_group(lexer, &string, &group_can_end)))		{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = conditional_expression(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = backticks(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic_expansion(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = subshell(lexer, &string, &type)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_substitution(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = process_substitution(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_group(lexer, &string, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = parameter_expansion(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = conditional_expression(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
 
 			string_append(&string, advance(lexer));
 		}
@@ -415,6 +393,10 @@
 #pragma endregion
 
 #pragma region "Variables"
+
+	// $"..."	translatable string
+	// $'...'	ANSI-C quoting
+	// $VAR		variable
 
 	t_token *variables(t_lexer *lexer) {
 		t_string	string;
@@ -491,15 +473,3 @@
 	}
 
 #pragma endregion
-
-// EXPANSION (recursive parsing)
-//
-// ``		command substitution
-// $()		command substitution
-// $(())	arithmetic substitution
-// ${}		parameter expression
-// $""		translatable string
-// $''		ANSI-C quoting
-// $VAR		variable
-// <()		process substitution in
-// >()		process substitution out
