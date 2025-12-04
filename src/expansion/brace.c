@@ -6,8 +6,8 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:52:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:01:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:44:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// Brace expansion
+// brace expansion

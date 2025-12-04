@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:26:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:58:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,20 @@
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
-	#include "tests/args.h"
-	#include "expansion/history.h"
-	#include "expansion/context.h"
 	#include "hashes/variables.h"
 	#include "hashes/key_value.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
-	#include "utils/paths.h"
 	#include "main/shell.h"
+	#include "utils/libft.h"
+	#include "utils/paths.h"
+	#include "utils/print.h"
 
 	#include <sys/wait.h>
+
 	#include <stdio.h>	// Quitar dependencias
+	#include "tests/args.h"
 	
 #pragma endregion
 

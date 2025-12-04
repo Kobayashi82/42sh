@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 21:50:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:56:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "expansion/history.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
@@ -129,16 +128,13 @@
 
 #pragma region "Expand"
 
-	int expand_history(char **input, t_context *context, int show_expansion) {
-		if (!options.history || !options.histexpand || !input || !*input || !context) return (0);
+	int expand_history(char **input, int show_expansion) {
+		if (!options.history || !options.histexpand || !input || !*input) return (0);
 
 		char *value = *input;
 		size_t i = 0;
 		size_t length = ft_strlen(value);
 		int changes = 0, in_escape = 0, in_quotes = 0, in_dquotes = 0;
-		in_quotes = ctx_is_context(context->stack, CTX_QUOTE);
-		in_dquotes = ctx_is_context(context->stack, CTX_DQUOTE);
-		in_escape = context->in_escape;
 
 		while (i < length) {
 			// Handle Escape

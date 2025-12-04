@@ -6,12 +6,11 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:23:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 20:09:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 //	Auto-Complete
-//	Sintaxis
 //	Prompt
 //	Command with char position (los comandos de vi que dependen de una posicion... duh)
 //	Revistar check_tty

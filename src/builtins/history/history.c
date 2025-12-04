@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:40:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:57:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,13 @@
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
-	#include "tests/args.h"
-	#include "expansion/history.h"
-	#include "expansion/context.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
+	
+	#include "tests/args.h"
 
 #pragma endregion
 
@@ -130,9 +129,8 @@
 				history_remove_last_if_added(1);
 				print(STDOUT_FILENO, NULL, RESET);
 				while (opts->args) {
-					t_context ctx_history;	memset(&ctx_history, 0, sizeof(t_context));
 					char *line = ft_strdup(opts->args->value);
-					expand_history(&line, &ctx_history, 0);
+					expand_history(&line, 0);
 					print(STDOUT_FILENO, line, FREE_JOIN);
 					print(STDOUT_FILENO, "\n", JOIN);
 					opts->args = opts->args->next;

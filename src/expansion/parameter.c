@@ -6,23 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/05 13:44:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:57:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:48:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma region "Includes"
-
-	#include "utils/libft.h"
-
-#pragma endregion
+//	parameter expansion
 
 #pragma region "Info"
-
-	//	En parameter expansion:
-
-	//	Primera parte literal
-	//	Pperado literal
-	//	Valor: $(()), $(), `, ${}, globbing
 
 	//	┌──────────────────────────┬──────────────────────────┬─────────────────────────────┬───────────────────────────────────────────────┐
 	//	│         Concepto         │         Sintaxis         │           Ejemplo           │                  Descripción                  │
@@ -61,19 +51,7 @@
 
 	//	Operators Begining:	!	#
 	//	Operators Middle:	:-	:=	:?	:+	:	#	##	%	%%	/	//	,,	^	^^	...
-
-	//	Las operaciones de eliminación de prefijo/sufijo usan sintaxis de globbing, por lo que aceptan comodines como *, ?, [a-z], [!a-z], etc.
-
-	//	Obligados
 	//
-	//	${parameter:-word}
-	//	${parameter:=word}
-	//	${parameter:?word}
-	//	${parameter:+word}
-	//	${#parameter}
-	//	${parameter%}
-	//	${parameter%%}
-	//	${parameter#}
-	//	${parameter##}
+	//	Las operaciones de eliminación de prefijo/sufijo usan sintaxis de globbing, por lo que aceptan comodines como *, ?, [a-z], [!a-z], etc.
 
 #pragma endregion
