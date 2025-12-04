@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/04 19:34:40 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/04 20:00:53 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,122 +68,121 @@ NAME	=	42sh
 # ── FILES ── #
 # ─────────── #
 
-SRCS	=	main/main.c									\
-			main/options.c								\
-			main/shell.c								\
-			main/error.c								\
-														\
-														\
-			terminal/signal.c							\
-			terminal/input.c							\
-														\
-			terminal/readinput/readinput.c				\
-			terminal/readinput/modes/dumb.c				\
-			terminal/readinput/modes/readline.c			\
-			terminal/readinput/modes/vi.c				\
-			terminal/readinput/common/auto_complete.c	\
-			terminal/readinput/common/history_search.c	\
-			terminal/readinput/common/history.c			\
-			terminal/readinput/common/prompt.c			\
-			terminal/readinput/common/termcaps.c		\
-			terminal/readinput/common/undo.c			\
-														\
-														\
-			parser/lexer/container.c					\
-			parser/lexer/expansion.c					\
-			parser/lexer/keyword.c						\
-			parser/lexer/lexer.c						\
-			parser/lexer/operator.c						\
-			parser/lexer/redirection.c					\
-			parser/lexer/token.c						\
-			parser/lexer/utils.c						\
-			parser/lexer/word.c							\
-														\
-			parser/parser/arithmetic.c					\
-			parser/parser/ast.c							\
-			parser/parser/command.c						\
-			parser/parser/operator.c					\
-			parser/parser/parser.c						\
-			parser/parser/redirection.c					\
-														\
-														\
-			expansion/history.c							\
-			expansion/brace.c							\
-			expansion/context.c							\
-			expansion/tilde.c							\
-			expansion/parameter.c						\
-			expansion/group.c							\
-			expansion/arithmetic.c						\
-			expansion/process.c							\
-			expansion/globbing/globbing.c				\
-			expansion/globbing/match.c					\
-			expansion/globbing/pattern.c				\
-			expansion/globbing/brackets.c				\
-														\
-														\
-			hashes/alias.c								\
-			hashes/builtin.c							\
-			hashes/cmdp.c								\
-			hashes/key_value.c							\
-			hashes/variables.c							\
-														\
-														\
-			builtins/alias/alias.c						\
-			builtins/alias/unalias.c					\
-			builtins/env/declare.c						\
-			builtins/env/export.c						\
-			builtins/env/readonly.c						\
-			builtins/env/set.c							\
-			builtins/env/shopt.c						\
-			builtins/env/unset.c						\
-			builtins/filesystem/cd.c					\
-			builtins/filesystem/hash.c					\
-			builtins/filesystem/pwd.c					\
-			builtins/history/fc.c						\
-			builtins/history/history.c					\
-			builtins/jobs/bg.c							\
-			builtins/jobs/fg.c							\
-			builtins/jobs/jobs.c						\
-			builtins/jobs/kill.c						\
-			builtins/jobs/wait.c						\
-			builtins/math/let.c							\
-			builtins/scripting/dot.c					\
-			builtins/scripting/eval.c					\
-			builtins/scripting/exec.c					\
-			builtins/scripting/source.c					\
-			builtins/scripting/test.c					\
-			builtins/shell/banner.c						\
-			builtins/shell/builtin.c					\
-			builtins/shell/command.c					\
-			builtins/shell/echo.c						\
-			builtins/shell/enable.c						\
-			builtins/shell/exit.c						\
-			builtins/shell/help.c						\
-			builtins/shell/type.c						\
-			builtins/utils/executer.c					\
-			builtins/utils/options.c					\
-														\
-														\
-			utils/array.c								\
-			utils/execvesafe.c							\
-			utils/fdsafe.c								\
-			utils/gnl.c									\
-			utils/memsafe.c								\
-			utils/num.c									\
-			utils/paths.c								\
-			utils/print.c								\
-			utils/str.c									\
-			utils/temp.c								\
-			utils/times.c								\
-			utils/users.c								\
-														\
-														\
-			tests/args.c								\
-			tests/builtin.c								\
-			tests/create_args.c							\
-			tests/internal.c							\
-			tests/tests.c								\
-			tests/untests.c								\
+SRCS	=	main/main.c										\
+			main/options.c									\
+			main/shell.c									\
+			main/error.c									\
+															\
+															\
+			terminal/signal.c								\
+			terminal/input.c								\
+															\
+			terminal/readinput/readinput.c					\
+			terminal/readinput/modes/dumb.c					\
+			terminal/readinput/modes/readline.c				\
+			terminal/readinput/modes/vi.c					\
+			terminal/readinput/common/auto_complete.c		\
+			terminal/readinput/common/history_expansion.c	\
+			terminal/readinput/common/history_search.c		\
+			terminal/readinput/common/history.c				\
+			terminal/readinput/common/prompt.c				\
+			terminal/readinput/common/termcaps.c			\
+			terminal/readinput/common/undo.c				\
+															\
+															\
+			parser/lexer/container.c						\
+			parser/lexer/expansion.c						\
+			parser/lexer/keyword.c							\
+			parser/lexer/lexer.c							\
+			parser/lexer/operator.c							\
+			parser/lexer/redirection.c						\
+			parser/lexer/token.c							\
+			parser/lexer/utils.c							\
+			parser/lexer/word.c								\
+															\
+			parser/parser/arithmetic.c						\
+			parser/parser/ast.c								\
+			parser/parser/command.c							\
+			parser/parser/operator.c						\
+			parser/parser/parser.c							\
+			parser/parser/redirection.c						\
+															\
+															\
+			expansion/brace.c								\
+			expansion/tilde.c								\
+			expansion/parameter.c							\
+			expansion/group.c								\
+			expansion/arithmetic.c							\
+			expansion/process.c								\
+			expansion/globbing/globbing.c					\
+			expansion/globbing/match.c						\
+			expansion/globbing/pattern.c					\
+			expansion/globbing/brackets.c					\
+															\
+															\
+			hashes/alias.c									\
+			hashes/builtin.c								\
+			hashes/cmdp.c									\
+			hashes/key_value.c								\
+			hashes/variables.c								\
+															\
+															\
+			builtins/alias/alias.c							\
+			builtins/alias/unalias.c						\
+			builtins/env/declare.c							\
+			builtins/env/export.c							\
+			builtins/env/readonly.c							\
+			builtins/env/set.c								\
+			builtins/env/shopt.c							\
+			builtins/env/unset.c							\
+			builtins/filesystem/cd.c						\
+			builtins/filesystem/hash.c						\
+			builtins/filesystem/pwd.c						\
+			builtins/history/fc.c							\
+			builtins/history/history.c						\
+			builtins/jobs/bg.c								\
+			builtins/jobs/fg.c								\
+			builtins/jobs/jobs.c							\
+			builtins/jobs/kill.c							\
+			builtins/jobs/wait.c							\
+			builtins/math/let.c								\
+			builtins/scripting/dot.c						\
+			builtins/scripting/eval.c						\
+			builtins/scripting/exec.c						\
+			builtins/scripting/source.c						\
+			builtins/scripting/test.c						\
+			builtins/shell/banner.c							\
+			builtins/shell/builtin.c						\
+			builtins/shell/command.c						\
+			builtins/shell/echo.c							\
+			builtins/shell/enable.c							\
+			builtins/shell/exit.c							\
+			builtins/shell/help.c							\
+			builtins/shell/type.c							\
+			builtins/utils/executer.c						\
+			builtins/utils/options.c						\
+															\
+															\
+			utils/array.c									\
+			utils/execvesafe.c								\
+			utils/fdsafe.c									\
+			utils/gnl.c										\
+			utils/memsafe.c									\
+			utils/num.c										\
+			utils/paths.c									\
+			utils/print.c									\
+			utils/str.c										\
+			utils/temp.c									\
+			utils/times.c									\
+			utils/users.c									\
+															\
+															\
+			tests/args.c									\
+			tests/builtin.c									\
+			tests/create_args.c								\
+			tests/internal.c								\
+			tests/tests.c									\
+			tests/untests.c									\
 
 SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
 

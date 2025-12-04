@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 21:03:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 20:13:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,9 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/history.h"
-
-	#include "expansion/history.h"
-
 	#include "main/options.h"
 	#include "main/shell.h"
-
 	#include "parser/parser.h"
-
 	#include "utils/libft.h"
 
 	#include <stdio.h>	// borrar
@@ -41,32 +36,16 @@
 
 #pragma endregion
 
-#pragma region "Expand History"
-
-	static char *expand_input_history(char *input) {
-		if (input) {
-			t_context ctx_history;
-			memset(&ctx_history, 0, sizeof(t_context));
-			expand_history(&input, &ctx_history, 1);
-			ctx_stack_clear(&ctx_history.stack);
-		}
-			
-		return (input);
-	}
-
-#pragma endregion
-
 #pragma region "More Input"
 
 	static char *more_input() {
 		if (shell.source == SRC_INTERACTIVE) {
 			char *input = readinput(prompt_PS2);
-			input = expand_input_history(input);
+			expand_history(&input, 1);
 			return (input);
 		}
-		else {
-			return (get_next_line(fd));
-		}
+		
+		return (get_next_line(fd));
 	}
 
 #pragma endregion
@@ -124,7 +103,7 @@
 		if (!input)							return(1);
 		if (ft_isspace_s(input))			return(free(input), 0);
 
-		input = expand_input_history(input);
+		expand_history(&input, 1);
 		shell.ast = parse(input, more_input, 1, NULL, 1);
 
 		ast_print(shell.ast);

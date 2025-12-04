@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:13:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/04 19:55:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@
 
 #pragma region "Methods"
 
+	//	-------- EXPANSION ---------
+	int			expand_history(char **input, int show_expansion);
 	//	----------- FILE -----------
 	void		history_file_set(const char *filename);
 	//	----------- SIZE -----------
