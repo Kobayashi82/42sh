@@ -9,7 +9,7 @@
 - Asignaciones en comandos
 - Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente.
 - Redirs detectar dígitos sin consumir y si hay redirección al final. Si se cumple, es redirección.
-- Tratar casos como echo popo && ((echo lala) && echo pipi) o (echo lala && (echo pipi))
+- Tratar casos como echo popo && ((echo lala) && echo pipi) o (echo lala && (echo pipi)) - si hay un ) dentro de una aritmetica, se convierte la aritmetica en dos subshell
 
 ### Command
 - Asignation
