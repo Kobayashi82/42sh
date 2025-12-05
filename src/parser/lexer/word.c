@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 20:49:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:51:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@
 				continue;
 			}
 
-			if (is_operator(c)) {
+			if (is_operator(c) && !(c == '{' && (!isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0'))) {
 
 				if (!string.len) {
 					free(full_line);

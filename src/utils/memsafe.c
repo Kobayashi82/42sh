@@ -76,14 +76,14 @@ static void	mem_delete(void *ptr, int just_node)
 				prev[1] = mem[1];
 			else
 				hashtable[i] = mem[1];
-			if (!just_node) __real_free(mem[0]);
+			if (!just_node)
+				__real_free(mem[0]);
 			__real_free(mem);
 			return;
 		}
 		prev = mem;
 		mem = mem[1];
 	}
-	__real_free(ptr);
 }
 
 void	*__wrap_malloc(size_t size)

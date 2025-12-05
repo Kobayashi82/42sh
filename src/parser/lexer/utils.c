@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 20:47:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:29:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,15 +19,13 @@
 #pragma region "Is operator"
 
 	int is_operator(char c) {
-		const char *operators[] = { " ", "\t", "\n", ">", "<", "&", "|", ";", "(", ")", "{", "}", "$", "\0", NULL};
+		const char *operators[] = { " ", "\t", "\n", ">", "<", "&", "|", ";", "(", ")", "{", "$", "\0", NULL};
 
 		for (int i = 0; operators[i]; i++) {
 			if (c == operators[i][0]) return (1);
 		}
 
-		int result = 0;
-
-		return (result);
+		return (0);
 	}
 
 #pragma endregion
