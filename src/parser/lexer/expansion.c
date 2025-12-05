@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 19:36:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/05 20:48:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,8 +158,8 @@
 
 	#pragma region "Command Group"
 
-		static int command_group(t_lexer *lexer, t_string *string, int *group_can_end) {
-			// (
+		static int command_group(t_lexer *lexer, t_string *string, int *type, int *group_can_end) {
+			// {
 			if (peek(lexer, 0) == '{' && (isspace(peek(lexer, 1)) || peek(lexer, 1) == '\0')) {
 				stack_push(lexer, 'G');
 				string_append(string, advance(lexer));
@@ -178,15 +178,19 @@
 					string_append(string, advance(lexer));
 					if (!lexer->stack_size) return (2);
 					return (1);
+				} else if (stack_top(lexer) == 'G') {
+					stack_pop(lexer);
+					string_append(string, advance(lexer));
+					if (!lexer->stack_size) {
+						*type = TOKEN_WORD;
+						return (2);
+					}
 				}
 			}
 			if (stack_top(lexer) == 'G' && (peek(lexer, 0) == ';' || peek(lexer, 0) == '\n')) {
 				*group_can_end = 1;
-				string_append(string, advance(lexer));
-				return (1);
-			} else if (stack_top(lexer) == 'G' && isspace(peek(lexer, 0)) && *group_can_end) {
-				string_append(string, advance(lexer));
-				return (1);
+			} else if (stack_top(lexer) == 'G' && !(*group_can_end)) {
+				*group_can_end = 0;
 			}
 
 			return (0);
@@ -236,16 +240,17 @@
 
 	#pragma endregion
 
-	
+
 	#pragma region "Is Expansion"
 
 		static int is_expansion(t_lexer *lexer) {
 
-			if (peek(lexer, 0) == '`')														return (1);
-			if (peek(lexer, 0) == '(')														return (1);
-			if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '(' || peek(lexer, 1) == '{'))	return (1);
-			if ((peek(lexer, 0) == '<' || peek(lexer, 0) == '>') && peek(lexer, 1) == '(')	return (1);
-			if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[')								return (1);
+			if (peek(lexer, 0) == '`')															return (1);
+			if (peek(lexer, 0) == '(')															return (1);
+			if (peek(lexer, 0) == '{' && (isspace(peek(lexer, 1)) || peek(lexer, 1) == '\0'))	return (1);
+			if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '(' || peek(lexer, 1) == '{'))		return (1);
+			if ((peek(lexer, 0) == '<' || peek(lexer, 0) == '>') && peek(lexer, 1) == '(')		return (1);
+			if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[')									return (1);
 
 			return (0);
 		}
@@ -287,7 +292,7 @@
 				string_append(string, advance(lexer));
 				stack_push(lexer, 'G');
 				*type = TOKEN_WORD;
-			} else {
+			} else if (peek(lexer, 0) == '$') {
 				string_append(string, advance(lexer));
 
 				if (peek(lexer, 0) == '(' && peek(lexer, 1) == '(') {
@@ -368,24 +373,24 @@
 
 		while (peek(lexer, 0) || stack_top(lexer)) {
 
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')			{ handle_quotes(lexer, &string); continue; }
-			if (continuation(lexer, &string, &group_can_end))				  continue;
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, &string); continue; }
+			if (continuation(lexer, &string, &group_can_end))						  continue;
 
 			int result = 0;
-			if ((result = backticks(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic_expansion(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = subshell(lexer, &string, &type)))					{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_substitution(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = process_substitution(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_group(lexer, &string, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = parameter_expansion(lexer, &string)))				{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = conditional_expression(lexer, &string)))			{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = backticks(lexer, &string)))								{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic(lexer, &string)))								{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic_expansion(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = subshell(lexer, &string, &type)))							{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_substitution(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = process_substitution(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_group(lexer, &string, &type, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = parameter_expansion(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = conditional_expression(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
 
 			string_append(&string, advance(lexer));
 		}
 
-		if (!stack_top(lexer))return (token_create(lexer, type, string.value, line, full_line));
+		if (!stack_top(lexer)) return (token_create(lexer, type, string.value, line, full_line));
 
 		return (token_create(lexer, TOKEN_EOF, NULL, line, NULL));
 	}
@@ -411,7 +416,7 @@
 			return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
 		}
 
-		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '$' || !is_operator(peek(lexer, 1)))) {
+		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '$' || (!is_operator(peek(lexer, 1)) && peek(lexer, 1) != '}'))) {
 			string_append(&string, advance(lexer));
 
 			if (peek(lexer, 0) == '$') {
@@ -447,7 +452,7 @@
 				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
 			}
 
-			while (!is_operator(peek(lexer, 0)) && peek(lexer, 0) != '\'' && peek(lexer, 0) != '"') {
+			while (!is_operator(peek(lexer, 0)) && peek(lexer, 0) != '\'' && peek(lexer, 0) != '"' && peek(lexer, 0) != '}') {
 				if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
 					advance(lexer);
 					advance(lexer);
