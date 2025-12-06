@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:37:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:21:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -451,6 +451,8 @@
 		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) READONLY
 		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
+		default_add(table, "PS3", terminal.PS3, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
+		default_add(table, "PS4", terminal.PS4, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
 	
 

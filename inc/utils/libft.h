@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:27:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:42:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 
 			int		ft_isspace_s(const char *str);
 			int		ft_isalnum_s(const char *str);
+			int		ft_isnum_s(const char *str);
 			int		ft_isdigit_s(const char *str);
 			char	*ft_toupper_s(char *str);
 			char	*ft_tolower_s(char *str);

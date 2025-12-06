@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:17:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:42:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,17 @@
 
 
 	int	ft_isspace_s(const char *str) { while (str && *str) { if (!isspace(*str++)) return (0); } return (1); }
-	int	ft_isalnum_s(const char *str) { while (str && *str) { if (!isalnum(*str)) return (0); } return (1); }
+	int	ft_isalnum_s(const char *str) { while (str && *str) { if (!isalnum(*str++)) return (0); } return (1); }
+
+	int	ft_isnum_s(const char *str) {
+		if (!str) return (0);
+
+		while (*str) {
+			if (!isdigit(*str++)) return (0);
+		}
+
+		return (1);
+	}
 
 	int	ft_isdigit_s(const char *str) {
 		if (str && (*str == '+' || *str == '-')) str++;

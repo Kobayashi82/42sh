@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 18:17:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:10:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 		typedef struct s_args {
 			char			*value;
 			int				quoted;	// Tengo que cambiarlo por un enum
+			int				right_space;
 			struct s_args	*prev;
 			struct s_args	*next;
 		} t_args;

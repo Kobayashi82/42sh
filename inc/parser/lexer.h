@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/05 19:48:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:36:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,14 +33,14 @@
 			TOKEN_ARITH,				// ((
 
 			TOKEN_REDIRECT_IN,			// <	(accept fd number)
+			TOKEN_REDIRECT_OUT,			// >	(accept fd number)
 			TOKEN_REDIRECT_HEREDOC,		// <<	(accept fd number)
+			TOKEN_REDIRECT_APPEND,		// >>	(accept fd number)
 			TOKEN_REDIRECT_HERESTRING,	// <<<	(accept fd number)
 			TOKEN_REDIRECT_IN_OUT,		// <>	(accept fd number)
 			TOKEN_REDIRECT_DUP_IN,		// <&	(accept fd number)
-			TOKEN_REDIRECT_OUT,			// >	(accept fd number)
-			TOKEN_REDIRECT_APPEND,		// >>	(accept fd number)
-			TOKEN_REDIRECT_FORCE_OUT,	// >|	(accept fd number)
 			TOKEN_REDIRECT_DUP_OUT,		// >&	(accept fd number)
+			TOKEN_REDIRECT_FORCE_OUT,	// >|	(accept fd number)
 			TOKEN_REDIRECT_OUT_ALL,		// &>
 			TOKEN_REDIRECT_APPEND_ALL,	// &>>
 

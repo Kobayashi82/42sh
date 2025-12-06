@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 18:42:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:31:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@
 					t_redir *redir = node->redirs;
 					while (redir) {
 						ast_print_indent(level + 2);
-						printf("- %s %s (fd: %d)\n", type_to_string(redir->type), redir->file, redir->fd);
+						printf("- %s (file: %s) (fd: %d)\n", type_to_string(redir->type), redir->file, redir->fd);
 						redir = redir->next;
 					}
 				}
