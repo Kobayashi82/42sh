@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:57:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:22:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@
 
 			char 			*PS1;
 			char 			*PS2;
+			char 			*PS3;
+			char 			*PS4;
 			char			*prompt;
 
 			int				bk_stdin;

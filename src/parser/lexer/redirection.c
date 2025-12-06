@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 15:41:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 20:36:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,3 +107,22 @@
 // &>>		append de stdout y stderr
 // [n]>&-	redirige fd 3 a archivo o fd, o si es - lo cierra
 // >|		sobrescribe incluso con noclobber activado
+
+// Operadores de Redirección
+// - [x] `<` - input redirection
+// - [x] `>` - output redirection
+// - [x] `>>` - append output
+// - [x] `<<` - here-document
+// - [ ] `<<<` - here-string
+// - [x] `<&` - duplicate input fd
+// - [x] `>&` - duplicate output fd
+// - [x] `<>` - open for reading and writing
+// - [x] `>|` - force overwrite (noclobber)
+// - [x] `&>` - redirect stdout and stderr
+// - [x] `&>>` - append stdout and stderr
+// - [ ] `[n]<` - numbered input redirection (ej: `3<`)
+// - [ ] `[n]>` - numbered output redirection (ej: `2>`)
+// - [ ] `[n]>>` - numbered append
+// - [ ] `[n]<&` - numbered duplicate input
+// - [ ] `[n]>&` - numbered duplicate output
+// - [ ] `[n]<>` - numbered read/write
