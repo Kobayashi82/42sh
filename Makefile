@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/04 20:00:53 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/06 18:59:17 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -100,12 +100,9 @@ SRCS	=	main/main.c										\
 			parser/lexer/utils.c							\
 			parser/lexer/word.c								\
 															\
-			parser/parser/arithmetic.c						\
 			parser/parser/ast.c								\
 			parser/parser/command.c							\
-			parser/parser/operator.c						\
 			parser/parser/parser.c							\
-			parser/parser/redirection.c						\
 															\
 															\
 			expansion/brace.c								\

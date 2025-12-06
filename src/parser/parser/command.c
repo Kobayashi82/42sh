@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 15:37:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:01:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,122 @@
 	#include "parser/parser.h"
 
 	#include <stdlib.h>
+	#include <string.h>
 
 #pragma endregion
 
-#pragma region "Is Redirect"
+#pragma region "Redirection"
 
-	int is_redirect(int type) {
-		return (type == TOKEN_REDIRECT_IN ||
-				type == TOKEN_REDIRECT_HEREDOC ||
-				type == TOKEN_REDIRECT_HERESTRING ||
-				type == TOKEN_REDIRECT_IN_OUT ||
-				type == TOKEN_REDIRECT_DUP_IN ||
-				type == TOKEN_REDIRECT_OUT ||
-				type == TOKEN_REDIRECT_APPEND ||
-				type == TOKEN_REDIRECT_FORCE_OUT ||
-				type == TOKEN_REDIRECT_DUP_OUT ||
-				type == TOKEN_REDIRECT_OUT_ALL ||
-				type == TOKEN_REDIRECT_APPEND_ALL);
+	#pragma region "Is Redirect"
+
+		int is_redirect(int type) {
+			return (type == TOKEN_REDIRECT_IN ||
+					type == TOKEN_REDIRECT_HEREDOC ||
+					type == TOKEN_REDIRECT_HERESTRING ||
+					type == TOKEN_REDIRECT_IN_OUT ||
+					type == TOKEN_REDIRECT_DUP_IN ||
+					type == TOKEN_REDIRECT_OUT ||
+					type == TOKEN_REDIRECT_APPEND ||
+					type == TOKEN_REDIRECT_FORCE_OUT ||
+					type == TOKEN_REDIRECT_DUP_OUT ||
+					type == TOKEN_REDIRECT_OUT_ALL ||
+					type == TOKEN_REDIRECT_APPEND_ALL);
+		}
+
+	#pragma endregion
+
+	#pragma region "Redir Create"
+
+		void redir_create(t_redir **redirs, int type, char *file) {
+			t_redir *new_redir = malloc(sizeof(t_redir));
+			new_redir->type = type;
+			new_redir->file = file;
+			new_redir->fd = -1;
+
+			if (!*redirs) {
+				*redirs = new_redir;
+				new_redir->prev = NULL;
+				new_redir->next = NULL;
+				return;
+			}
+
+			t_redir *curr = *redirs;
+			while (curr->next)
+				curr = curr->next;
+
+			curr->next = new_redir;
+			new_redir->prev = curr;
+			new_redir->next = NULL;
+		}
+
+	#pragma endregion
+
+	#pragma region "Parse Redirect"
+
+		int parse_redirect(t_redir **redirs) {
+			int type = g_parser->token->type;
+
+			token_advance();
+
+			if (g_parser->token->type != TOKEN_WORD) {
+				syntax_error("archivo necesario... no todas las redirects usan archivo o fd... creo");
+				return (1);
+			}
+
+			char *file = g_parser->token->value;
+			g_parser->token->value = NULL;
+
+			token_advance();
+
+			redir_create(redirs, type, file);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Assign Create"
+
+	void assign_create(t_assign **assign, char *value) {
+		t_assign *new_assign = malloc(sizeof(t_assign));
+		new_assign->value = value;
+
+		if (!*assign) {
+			*assign = new_assign;
+			new_assign->prev = NULL;
+			new_assign->next = NULL;
+			return;
+		}
+
+		t_assign *curr = *assign;
+		while (curr->next)
+			curr = curr->next;
+
+		curr->next = new_assign;
+		new_assign->prev = curr;
+		new_assign->next = NULL;
 	}
 
 #pragma endregion
 
-#pragma region "Args Append"
+#pragma region "Args Create"
 
-	void args_append(t_args **list, t_args *new_arg) {
-		if (!*list) {
-			*list = new_arg;
+	// Aqui habria que redividir dependiendo de lo que haya, comillas, expansion, literal, etc.
+	void args_create(t_args **args, char *value) {
+		t_args *new_arg = malloc(sizeof(t_args));
+		new_arg->value = value;
+		new_arg->quoted = 0;
+
+		if (!*args) {
+			*args = new_arg;
 			new_arg->prev = NULL;
 			new_arg->next = NULL;
 			return;
 		}
 
-		t_args *curr = *list;
+		t_args *curr = *args;
 		while (curr->next)
 			curr = curr->next;
 
@@ -57,65 +141,30 @@
 
 #pragma endregion
 
-#pragma region "Args Create"
-
-	// Aqui habria que redividir dependiendo de lo que haya, comillas, expansion, literal, etc.
-	t_args *args_create(char *value) {
-		t_args *arg = malloc(sizeof(t_args));
-		arg->value = value;
-		arg->quoted = 0;	// Cambiar por un enum
-		arg->prev = NULL;
-		arg->next = NULL;
-		return (arg);
-	}
-
-#pragma endregion
-
-#pragma region "Parse From String"
-
-	// Parsea una cadena (para subshells)
-	t_ast *parse_from_string(char *content) {
-		t_parser	parser;
-		t_parser	*old_parser = g_parser;
-
-		parser.token = NULL;
-		parser.interactive = 0;
-		g_parser = &parser;
-
-		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
-
-		token_advance();
-		t_ast *ast = parse_complete_command();
-
-		token_free(parser.token);
-		lexer_free(&parser.lexer);
-
-		g_parser = old_parser;
-
-		return (ast);
-	}
-
-#pragma endregion
-
 #pragma region "Parse Simple Command"
 
 	t_ast *parse_simple_command() {
 		t_ast *node = ast_create(TOKEN_WORD);
+		int cmd_found = 0;
 
 		while (g_parser->token->type == TOKEN_WORD || is_redirect(g_parser->token->type)) {
 
 			if (g_parser->token->type == TOKEN_WORD) {
-				t_args *arg = args_create(g_parser->token->value);
+				char *equal = strchr(g_parser->token->value, '=');
+				if (!cmd_found && equal && equal != g_parser->token->value)
+					assign_create(&node->assign, g_parser->token->value);
+				else {
+					cmd_found = 1;
+					args_create(&node->args, g_parser->token->value);
+				}
 				g_parser->token->value = NULL;
-				args_append(&node->args, arg);
 				token_advance();
-			} else if (is_redirect(g_parser->token->type)) {
-				t_redir *redir = parse_redirect();
-				redir_append(&node->redirs, redir);
+			} else {
+				parse_redirect(&node->redirs);
 			}
 		}
 
-	    if (g_parser->token->type != TOKEN_EOF && !node->args && !node->redirs) {
+		if (g_parser->token->type != TOKEN_EOF && !node->assign && !node->args && !node->redirs) {
 			syntax_error("expected command");
 			ast_free(&node);
 			return (NULL);
@@ -128,27 +177,6 @@
 		}
 
 		return (node);
-	}
-
-#pragma endregion
-
-#pragma region "Parse Command"
-
-	t_ast *parse_command() {
-
-		if (g_parser->token->type == TOKEN_SUBSHELL) {
-			t_ast *node = ast_create(TOKEN_SUBSHELL);
-			char *content = g_parser->token->value;
-			g_parser->token->value = NULL;
-			token_advance();
-
-			node->child = parse_from_string(content);
-			free(content);
-
-			return (node);
-		}
-
-		return (parse_simple_command());
 	}
 
 #pragma endregion

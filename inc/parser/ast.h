@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 19:26:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 18:17:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 #pragma region "Variables"
 
 	#pragma region "Structures"
+
+		typedef struct s_assign {
+			char			*value;
+			struct s_assign	*prev;
+			struct s_assign	*next;
+		} t_assign;
 
 		typedef struct s_args {
 			char			*value;
@@ -41,6 +47,7 @@
 			// Subshell
 			struct s_ast	*child;
 			// Comandos
+			t_assign		*assign;
 			t_args			*args;
 			t_redir			*redirs;
 		} t_ast;

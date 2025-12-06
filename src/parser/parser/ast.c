@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 15:39:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 18:42:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,18 @@
 			case TOKEN_WORD:
 				printf("COMMAND\n");
 
+				// Assign
+				if (node->assign) {
+					ast_print_indent(level + 1);
+					printf("assign:\n");
+					t_assign *assign = node->assign;
+					while (assign) {
+						ast_print_indent(level + 2);
+						printf("- \"%s\"\n", assign->value);
+						assign = assign->next;
+					}
+				}
+
 				// Args
 				if (node->args) {
 					ast_print_indent(level + 1);
@@ -183,6 +195,17 @@
 		if (node->left)		ast_free(&node->left);
 		if (node->right)	ast_free(&node->right);
 		if (node->child)	ast_free(&node->child);
+
+		// Args
+		if (node->assign) {
+			t_assign *assign = node->assign;
+			while (assign) {
+				t_assign *next = assign->next;
+				if (assign->value) free(assign->value);
+				free(assign);
+				assign = next;
+			}
+		}
 
 		// Args
 		if (node->args) {

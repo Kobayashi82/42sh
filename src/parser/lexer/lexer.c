@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 15:50:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:08:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,8 @@
 			if (!lexer->input) return ('\0');
 
 			t_buff	*buffer = lexer->input;
-			size_t		remaining = offset;
-			size_t		available;
+			size_t	remaining = offset;
+			size_t	available;
 
 			while (buffer) {
 				available = ft_strlen(buffer->value) - buffer->position;

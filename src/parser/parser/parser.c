@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 21:05:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:06:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,6 @@
 #pragma region "Variables"
 
 	t_parser *g_parser;
-
-	t_ast *parse_complete_command();
 
 #pragma endregion
 
@@ -57,12 +55,156 @@
 
 #pragma endregion
 
-#pragma region "Parse Complete Command"
+#pragma region "SubParser"
 
-	t_ast *parse_complete_command() {
-		t_ast *result = parse_list();
+	t_ast *sub_parse(char *content) {
+		t_parser	parser;
+		t_parser	*old_parser = g_parser;
 
-		return (result);
+		parser.token = NULL;
+		parser.interactive = 0;
+		g_parser = &parser;
+
+		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
+
+		token_advance();
+		t_ast *ast = parse_list();
+
+		token_free(parser.token);
+		lexer_free(&parser.lexer);
+
+		g_parser = old_parser;
+
+		return (ast);
+	}
+
+#pragma endregion
+
+#pragma region "Parse Command"
+
+	t_ast *parse_command() {
+
+		if (g_parser->token->type == TOKEN_SUBSHELL) {
+			t_ast *node = ast_create(TOKEN_SUBSHELL);
+			char *content = g_parser->token->value;
+			g_parser->token->value = NULL;
+			token_advance();
+
+			node->child = sub_parse(content);
+
+			return (node);
+		}
+
+		return (parse_simple_command());
+	}
+
+#pragma endregion
+
+#pragma region "Parse Pipeline"
+
+	t_ast *parse_pipeline() {
+		t_ast *left = parse_command();
+		if (!left) return (NULL);
+
+		while (g_parser->token->type == TOKEN_PIPE || g_parser->token->type == TOKEN_PIPE_ALL) {
+			t_ast *node = ast_create(g_parser->token->type);
+			token_advance();
+
+			g_parser->lexer.can_expand_alias = 1;
+			g_parser->lexer.command_position = 1;
+
+			node->left = left;
+			node->right = parse_command();
+			if (!node->right) {
+				ast_free(&node);
+				return (NULL);
+			}
+			left = node;
+		}
+
+		return (left);
+	}
+
+#pragma endregion
+
+#pragma region "Parse And Or"
+
+	t_ast *parse_and_or() {
+		t_ast *left = parse_pipeline();
+		if (!left) return (NULL);
+
+		while (g_parser->token->type == TOKEN_AND || g_parser->token->type == TOKEN_OR) {
+			t_ast *node = ast_create(g_parser->token->type);
+			
+			g_parser->lexer.can_expand_alias = 1;
+			g_parser->lexer.command_position = 1;
+			token_advance();
+
+			while (g_parser->token->type == TOKEN_NEWLINE) {
+				g_parser->lexer.can_expand_alias = 1;
+				g_parser->lexer.command_position = 1;
+				token_advance();
+			}
+
+	        if (g_parser->token->type == TOKEN_AND || 
+				g_parser->token->type == TOKEN_OR ||
+				g_parser->token->type == TOKEN_PIPE ||
+				g_parser->token->type == TOKEN_PIPE_ALL ||
+				g_parser->token->type == TOKEN_SEMICOLON ||
+				g_parser->token->type == TOKEN_BACKGROUND) {
+				ast_free(&left);
+				ast_free(&node);
+				syntax_error("unexpected token after operator");
+				return (NULL);
+			}
+
+			node->left = left;
+			node->right = parse_pipeline();
+			if (!node->right) {
+				ast_free(&node);
+				return (NULL);
+			}
+			left = node;
+		}
+
+		return (left);
+	}
+
+#pragma endregion
+
+#pragma region "Parse List"
+
+	t_ast *parse_list() {
+		t_ast *left = parse_and_or();
+		if (!left) return (NULL);
+
+		while (1) {
+			while (g_parser->token->type == TOKEN_NEWLINE) token_advance();
+
+			if (g_parser->token->type != TOKEN_SEMICOLON && g_parser->token->type != TOKEN_BACKGROUND) break;
+
+			t_ast *node = ast_create(g_parser->token->type);
+
+			g_parser->lexer.can_expand_alias = 1;
+			g_parser->lexer.command_position = 1;
+			token_advance();
+
+			while (g_parser->token->type == TOKEN_NEWLINE) {
+				g_parser->lexer.can_expand_alias = 1;
+				g_parser->lexer.command_position = 1;
+				token_advance();
+			}
+
+			node->left = left;
+			node->right = parse_and_or();
+			if (!node->right) {
+				ast_free(&node);
+				return (NULL);
+			}
+			left = node;
+		}
+
+		return (left);
 	}
 
 #pragma endregion
@@ -105,7 +247,7 @@
 					full_ast = current;
 				}
 			}
-		} else full_ast = parse_complete_command();
+		} else full_ast = parse_list();
 
 		token_free(g_parser->token);
 
@@ -117,10 +259,3 @@
 	}
 
 #pragma endregion
-
-// parse_complete_command()
-//     └─ parse_list()          // ; y &
-//         └─ parse_and_or()    // && y ||
-//             └─ parse_pipeline()   // | y |&
-//                 └─ parse_command()     // (Subshell) y ((Arithmetic))
-//                     └─ parse_simple_command()  // Comando con args, redirs y asignaciones
