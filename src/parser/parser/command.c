@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 21:48:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 21:58:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@
 				g_parser->token->value = NULL;
 			} else {
 				if (parse_redirect(&node->redirs, &node->args)) {
-					syntax_error("archivo necesario... no todas las redirects usan archivo o fd... creo");
+					syntax_error("archivo necesario...");
 					ast_free(&node);
 					return (NULL);
 				}
