@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/03 17:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/06 19:11:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,30 @@
 		if (c == '&' && peek(lexer, 1) == '&') {
 			string_append(&string, advance(lexer));
 			string_append(&string, advance(lexer));
-			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
+			if (ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_AND, string.value, line, full_line));
 		}
 		if (c == '&') {
 			string_append(&string, advance(lexer));
-			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
+			if (ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_BACKGROUND, string.value, line, full_line));
 		}
 
 		if (c == '|' && peek(lexer, 1) == '|') {
 			string_append(&string, advance(lexer));
 			string_append(&string, advance(lexer));
-			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
+			if (ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_OR, string.value, line, full_line));
 		}
 		if (c == '|' && peek(lexer, 1) == '&') {
 			string_append(&string, advance(lexer));
 			string_append(&string, advance(lexer));
-			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
+			if (ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_PIPE_ALL, string.value, line, full_line));
 		}
 		if (c == '|') {
 			string_append(&string, advance(lexer));
-			if ((peek(lexer, 0) == '\n' && peek(lexer, 1) == '\0') || peek(lexer, 0) == '\0') lexer->append_inline = 2;
+			if (ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_PIPE, string.value, line, full_line));
 		}
 
