@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:47:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 20:03:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@
 				cmdp = cmdp->next;
 			}
 		}
-		
+
 		if (!total) { print(STDERR_FILENO, "hash: hash table empty\n", PRINT); return (1); }
 		else print(STDOUT_FILENO, NULL, PRINT);
 
@@ -106,7 +106,7 @@
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
-		
+
 		if ((!*opts->valid || !strcmp(opts->valid, "l")) && !opts->args) {
 			int result = print_hash(strchr(opts->valid, 'l') != NULL);
 			return (free(opts), result);
@@ -123,6 +123,8 @@
 			print(STDERR_FILENO, "Try 'hash --help' for more information\n", PRINT);
 			return (free(opts), 1);
 		}
+
+		// Falta implementar -tpdr
 
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);

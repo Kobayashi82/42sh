@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/07 19:29:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 19:40:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,6 +151,7 @@
 		//	CD
 		options.cdable_vars			= 0;
 		options.autocd				= 0;
+		options.cdspell				= 0;
 		options.dirspell			= 0;
 
 		return (0);

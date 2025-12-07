@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/06 18:59:17 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/07 20:28:55 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -105,16 +105,17 @@ SRCS	=	main/main.c										\
 			parser/parser/parser.c							\
 															\
 															\
-			expansion/brace.c								\
-			expansion/tilde.c								\
-			expansion/parameter.c							\
-			expansion/group.c								\
-			expansion/arithmetic.c							\
-			expansion/process.c								\
+			expansion/globbing/brackets.c					\
 			expansion/globbing/globbing.c					\
 			expansion/globbing/match.c						\
 			expansion/globbing/pattern.c					\
-			expansion/globbing/brackets.c					\
+			expansion/arithmetic.c							\
+			expansion/brace.c								\
+			expansion/group.c								\
+			expansion/parameter.c							\
+			expansion/process.c								\
+			expansion/tilde.c								\
+			expansion/word_split.c							\
 															\
 															\
 			hashes/alias.c									\
