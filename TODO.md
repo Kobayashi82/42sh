@@ -1,26 +1,15 @@
 # 42sh
 
-## Readline
-
-- \'"'!!'"\' CTRL + Left / CTRL + Right jodido y leaks
+## Terminal
+- TMOUT: Si está definido, cerrar la shell automáticamente después de N segundos de inactividad en el prompt (sin input del usuario)
+- set -o ignoreeof: Si está activado, ignorar EOF (Ctrl + D) y muestra 'Use "logout" to leave the shell.' en stderr en lugar de cerrar la shell inmediatamente. Pero si se pulsa (CTRL + D) 11 veces seguidas, tambien se cierra. (No se si logout seria lo correcto en mi caso, porque no es el shell usado para login)
 
 ## Parser
-
-- Asignaciones en comandos
 - Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente.
-- Redirs detectar dígitos sin consumir y si hay redirección al final. Si se cumple, es redirección.
-- Command (Asignation, Redirection, Argument)
 
 ## Builtins
-
-- cdspell effect only in interactive
-- command -v no es identico a bash
-- hash no se como añadir manualmente
-- fc no guarda comando en historial al ejecutar (el modificado, no fc en sí)
-- ignoreeof of set "Use "logout" to leave the shell." en stderr
+- command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
+- hash, implementar opciones -tpdr
 
 ## Others
-
-- Makefile no "recompile"
-- Caracteres octal y hexadecimal
-- TMOUT close shell after prompt
+- Makefile no "recompile" (usar Makefile de taskmaster como referencia)

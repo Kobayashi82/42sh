@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 19:58:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 19:55:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -309,9 +309,9 @@
 			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
 
 			// Remove fc command from history
-			char *hist_fc_command = NULL;
-			HIST_ENTRY *hist_curr = history_get_last_if_added();
-			if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
+			// char *hist_fc_command = NULL;
+			// HIST_ENTRY *hist_curr = history_get_last_if_added();
+			// if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
 			history_remove_last_if_added(1);
 
 			// Set first and last
@@ -409,15 +409,18 @@
 					file_content = NULL;
 					result = 3;
 				} else {
-					file_content[file_size] = '\0';
+					if (file_content) {
 
-					if (file_size > 0 && file_content[file_size - 1] == '\n') {
-						file_content[file_size - 1] = '\0';
-						file_size--;
-					}
-					if (file_size > 0 && file_content[file_size - 1] == '\r') {
-						file_content[file_size - 1] = '\0';
-						file_size--;
+						file_content[file_size] = '\0';
+						
+						if (file_size > 0 && file_content[file_size - 1] == '\n') {
+							file_content[file_size - 1] = '\0';
+							file_size--;
+						}
+						if (file_size > 0 && file_content[file_size - 1] == '\r') {
+							file_content[file_size - 1] = '\0';
+							file_size--;
+						}
 					}
 				}
 			}
@@ -430,13 +433,9 @@
 			tmp_delete_path(tmp_file);
 
 			// Add fc command to history
-			if (result && hist_fc_command) history_add(hist_fc_command, 0);
-			free(hist_fc_command);
-
-			// Ejecuta
-			if (!result) {
-				printf("%s\n", file_content);	// Porque printf?
-				free(file_content);
+			if (!result && file_content) {
+				history_add(file_content, 0);
+				print(STDOUT_FILENO, ft_strjoin(file_content, "\n", 1), FREE_RESET_PRINT);
 			}
 
 			return (result);

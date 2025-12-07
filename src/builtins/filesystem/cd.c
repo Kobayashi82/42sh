@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:51:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 19:40:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@
 			path = tmp;
 		}
 		
-		if (options.cdspell) path = correct_path(path);
+		if (options.cdspell && shell.source == SRC_INTERACTIVE) path = correct_path(path);
 		
 		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
 			char *var_path = variables_find_value(vars_table, original);
@@ -94,7 +94,7 @@
 					path = tmp;
 				}
 
-				if (options.cdspell) path = correct_path(path);
+				if (options.cdspell && shell.source == SRC_INTERACTIVE) path = correct_path(path);
 			}
 		}
 
