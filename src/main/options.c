@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:10:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 19:29:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,8 +128,8 @@
 
 	int options_initialize() {
 		//	READINPUT
-		options.emacs				= 0;
-		options.vi					= 1;
+		options.emacs				= 1;
+		options.vi					= 0;
 		options.hide_ctrl_chars		= 0;
 		options.multiwidth_chars	= 0;
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:23:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/07 19:28:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,15 +365,16 @@
 						if (!buffer.ALT && !buffer.SHIFT && buffer.position > 0) {
 							if (buffer.CTRL) {
 								while (buffer.position > 0 && (isspace(buffer.value[buffer.position - 1]) || ispunct(buffer.value[buffer.position - 1]))) {
-									cursor_left(0); (buffer.position)--;
+									do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+									cursor_left(char_width(buffer.position, buffer.value));
 								}
 								while (buffer.position > 0 && !isspace(buffer.value[buffer.position - 1]) && !ispunct(buffer.value[buffer.position - 1])) {
 									do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-									cursor_left(0);
+									cursor_left(char_width(buffer.position, buffer.value));
 								}
 							} else if (buffer.position) {
 								do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
-								cursor_left(0);
+								cursor_left(char_width(buffer.position, buffer.value));
 							} else beep();
 						} else beep();
 					}
