@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:07:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 22:19:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,9 @@
 
 	//	========== ENABLE ==========
 	int		enable(t_arg *args);
+
+	//	========== ENABLE ==========
+	int		exec(t_arg *args);
 
 	//	========== HISTORY =========
 	int		bt_history(t_arg *args);

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/08 16:58:39 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/08 22:17:41 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -151,6 +151,7 @@ SRCS	=	main/main.c										\
 			builtins/shell/command.c						\
 			builtins/shell/echo.c							\
 			builtins/shell/enable.c							\
+			builtins/shell/exec.c							\
 			builtins/shell/exit.c							\
 			builtins/shell/help.c							\
 			builtins/shell/type.c							\
