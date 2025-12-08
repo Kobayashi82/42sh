@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/05 20:48:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/09 00:25:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@
 		string_init(&string);
 		start_context(lexer, &string, &type);
 
-		while (peek(lexer, 0) || stack_top(lexer)) {
+		while (peek(lexer, 0) || (lexer->input && stack_top(lexer))) {
 
 			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, &string); continue; }
 			if (continuation(lexer, &string, &group_can_end))						  continue;
@@ -390,9 +390,7 @@
 			string_append(&string, advance(lexer));
 		}
 
-		if (!stack_top(lexer)) return (token_create(lexer, type, string.value, line, full_line));
-
-		return (token_create(lexer, TOKEN_EOF, NULL, line, NULL));
+		return (token_create(lexer, type, string.value, line, full_line));
 	}
 
 #pragma endregion

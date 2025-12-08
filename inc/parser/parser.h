@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:57:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 18:57:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 23:18:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 		typedef struct e_parser {
 			t_lexer	lexer;
+			t_token	*prev_token;
 			t_token	*token;
 			int		interactive;
 		} t_parser;
@@ -37,7 +38,7 @@
 
 #pragma region "Methods"
 
-	void	syntax_error(const char *msg);
+	void	syntax_error(int type, const char *msg, const char c);
 	t_token	*token_advance();
 
 	t_ast	*sub_parse(char *content);

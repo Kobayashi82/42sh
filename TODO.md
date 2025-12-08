@@ -23,6 +23,5 @@
 - create_heredoc()
 - Señales en parser
 - Mensajes de error (syntax)
-- exec builtin
 - Funciones de argumentos (unid, dividir, array)
 - Funciones de redirección (aplicar, heredoc)
