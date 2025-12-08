@@ -11,6 +11,9 @@
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
 - hash, implementar opciones -tpdr
 
+## Source
+- Opciones de arranque (mirar Bash_Options.md)
+
 ## 42
 
 - parse_subshell()
@@ -20,7 +23,6 @@
 - create_heredoc()
 - Señales en parser
 - Mensajes de error (syntax)
-- Arreglar MemSafe
 - exec builtin
 - Funciones de argumentos (unid, dividir, array)
 - Funciones de redirección (aplicar, heredoc)

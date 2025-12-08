@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 21:59:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:44:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -252,7 +252,8 @@
 		token_free(g_parser->token);
 
 		if (interactive && full_ast && full_ast->type != TOKEN_EOF) history_add(parser.lexer.full_input, 0);
-		terminal.input = ft_strdup(parser.lexer.full_input);	// borrar
+		if (interactive)	terminal.input = ft_strdup(parser.lexer.full_input);	// borrar
+		else				terminal.input = ft_strdup("");							// borrar
 
 		lexer_free(&parser.lexer);
 		return (full_ast);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 20:09:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:32:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,17 +48,6 @@
 	#pragma region "Enable"
 
 		static void enable_raw_mode() {
-			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
-				int tty_fd = open("/dev/tty", O_RDWR);
-				if (tty_fd == -1) {
-					free(buffer.value); buffer.value = NULL;
-					disable_raw_mode();
-					exit_error(STDIN_CLOSED, 1, NULL, 1);
-				}
-				dup2(tty_fd, STDIN_FILENO);
-				close(tty_fd);
-				return ;
-			}
 			raw_mode = 1;
 			tcgetattr(STDIN_FILENO, &terminal.term);
 			terminal_initialize();
@@ -81,55 +70,9 @@
 			if (raw_mode) {
 				raw_mode = 0;
 				cursor_show();
-				terminal_release();
-				if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
-					int tty_fd = open("/dev/tty", O_RDWR);
-					if (tty_fd == -1) {
-						free(buffer.value); buffer.value = NULL;
-						write(STDERR_FILENO, "\n", 1);
-						exit_error(STDIN_CLOSED, 1, NULL, 1);
-					}
-					tcsetattr(tty_fd, TCSAFLUSH, &terminal.term);
-					dup2(tty_fd, STDIN_FILENO);
-					close(tty_fd);
-					write(STDOUT_FILENO, "\n", 1);
-				} else
-					tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
+				tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminal.term);
 				free(term_prompt); term_prompt = NULL;
 			}
-		}
-
-	#pragma endregion
-
-	#pragma region "Check TTY"
-
-		static int check_tty() {
-			if (fcntl(STDIN_FILENO, F_GETFD) == -1) {
-				int tty_fd = open("/dev/tty", O_RDWR);
-				if (tty_fd == -1) {
-					free(buffer.value); buffer.value = NULL;
-					disable_raw_mode();
-					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDIN_CLOSED, 1, NULL, 1);
-				}
-				dup2(tty_fd, STDIN_FILENO);
-				close(tty_fd);
-				return (1);
-			}
-			
-			if (fcntl(STDOUT_FILENO, F_GETFD) == -1) {
-				int tty_fd = open("/dev/tty", O_WRONLY);
-				if (tty_fd != -1) {
-					free(buffer.value); buffer.value = NULL;
-					disable_raw_mode();
-					write(STDERR_FILENO, "\n", 1);
-					exit_error(STDOUT_CLOSED, 1, NULL, 1);
-				}
-				dup2(tty_fd, STDOUT_FILENO);
-				close(tty_fd);
-			}
-
-			return (0);
 		}
 
 	#pragma endregion
@@ -139,6 +82,7 @@
 #pragma region "ReadInput"
 
 	char *readinput(char *prompt) {
+		if (!isatty(STDIN_FILENO)) return (NULL);
 		int result = 0;
 		buffer.size = 1024;
 		buffer.position = buffer.length = vi_mode = 0;
@@ -155,7 +99,7 @@
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
-			if (check_tty()) continue;
+			if (!isatty(STDIN_FILENO)) return (NULL);
 			cursor_hide();		
 
 			if (hist_searching && history_search()) continue;

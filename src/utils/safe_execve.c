@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/04 23:17:24 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 16:47:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 21:53:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,12 @@ void	__real_exit(int status);
 
 void	__wrap_exit(int status)
 {
-	free((void *)-42);
-	close(-42);
+	// free((void *)-42);
+	// close(-42);
 	__real_exit(status);
 }
 
-static int	process_fds(void)
+int	process_fds(void)
 {
 	int	fdin;
 	int	fdout;
@@ -52,12 +52,12 @@ int	__wrap_execve(const char *path, char *const argv[], char *const envp[])
 {
 	int		result;
 
-	if (process_fds())
-		return (free((void *)-42), 1);
+	// if (process_fds())
+	// 	return (free((void *)-42), 1);
 	result = __real_execve(path, argv, envp);
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
-	free((void *)-42);
+	// free((void *)-42);
 	return (result);
 }
