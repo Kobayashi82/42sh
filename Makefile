@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/08 22:17:41 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/08 22:38:11 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,24 +33,33 @@ BG_CYAN				= \033[40m
 FG_YELLOW			= \033[89m
 COUNTER 			= 0
 
-# ────────── #
-# ── NAME ── #
-# ────────── #
-
-NAME				=	42sh
-
 # ─────────── #
 # ── FLAGS ── #
 # ─────────── #
 
+NAME				= 42sh
 CC					= clang
-# FLAGS				= -Wall -Wextra -Werror -O2							# (for production)
-FLAGS				= -Wall -Wextra -Werror -g -O0 -gdwarf-4			# (for debugging)
-# FLAGS				= -Wall -Wextra -Werror -g -O0 -fsanitize=thread	# (for debugging with sanitize)
-EXTRA_FLAGS			= -ltermcap
-EXTRA_FLAGS_OBJ		=
-LDFLAGS				= -Wl,--wrap=malloc -Wl,--wrap=calloc -Wl,--wrap=realloc -Wl,--wrap=free -Wl,--wrap=open -Wl,--wrap=close -Wl,--wrap=dup -Wl,--wrap=dup2 -Wl,--wrap=pipe -Wl,--wrap=execve -Wl,--wrap,exit	# (for safe functions)
 TESTING				= 1
+
+# FLAGS				= -Wall -Wextra -Werror -O2			# (for production)
+FLAGS				= -Wall -Wextra -Werror -g -O0		# (for debugging)
+
+# LDFLAGS				= -Wl,--wrap=malloc		\
+# 					  -Wl,--wrap=calloc		\
+# 					  -Wl,--wrap=realloc	\
+# 					  -Wl,--wrap=free		\
+# 					  -Wl,--wrap=open		\
+# 					  -Wl,--wrap=close		\
+# 					  -Wl,--wrap=dup		\
+# 					  -Wl,--wrap=dup2		\
+# 					  -Wl,--wrap=pipe		\
+# 					  -Wl,--wrap=execve		\
+# 					  -Wl,--wrap,exit
+# 			utils/safe_execve.c								\
+# 			utils/safe_fd.c									\
+# 			utils/gnl.c										\
+# 			utils/safe_mem.c								\
+# 			utils/safe_xmem.c								\
 
 # ───────────────── #
 # ── DIRECTORIES ── #
@@ -160,11 +169,7 @@ SRCS	=	main/main.c										\
 															\
 															\
 			utils/array.c									\
-			utils/safe_execve.c								\
-			utils/safe_fd.c									\
 			utils/gnl.c										\
-			utils/safe_mem.c								\
-			utils/safe_xmem.c								\
 			utils/num.c										\
 			utils/paths.c									\
 			utils/print.c									\
@@ -200,7 +205,7 @@ _compile: $(OBJS)
 
 #	Compile
 	@printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"
-	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(EXTRA_FLAGS) -o $(NAME)
+	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) -ltermcap -o $(NAME)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 
 	@$(MAKE) -s _progress; printf "\n"
@@ -225,7 +230,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 	BAR=$$(printf "/ — \\ |" | cut -d" " -f$$(($(COUNTER) % 4 + 1))); \
 	printf "\r%50s\r\t$(CYAN)Compiling... $(GREEN)$$BAR  $(YELLOW)$$filename$(NC)"; \
 	$(eval COUNTER=$(shell echo $$(($(COUNTER)+1))))
-	@$(CC) $(FLAGS) $(INC_DIR) $(EXTRA_FLAGS_OBJ) -MMD -o $@ -c $<
+	@$(CC) $(FLAGS) $(INC_DIR) -MMD -o $@ -c $<
 
 # ───────────────── #
 # ── EXTRA RULES ── #
@@ -253,10 +258,6 @@ _show_title:
 		$(MAKE) -s _compile; \
 	fi
 	@$(MAKE) -s _show_cursor
-
-# ───────────────────────────────────────────────────────────── #
-# ────────────────────────── RE-MAKE ────────────────────────── #
-# ───────────────────────────────────────────────────────────── #
 
 # ───────────── #
 # ── RE-MAKE ── #
