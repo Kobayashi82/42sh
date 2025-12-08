@@ -1,6 +1,16 @@
-#include <stdint.h>
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   safe_fd.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/12/08 16:39:14 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/12/08 16:40:00 by vzurera-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdarg.h>
-#include <fcntl.h>
 
 int		__real_open(const char *file, int oflag, ...);
 int		__real_close(int fd);
@@ -10,23 +20,23 @@ int		__real_pipe(int pipedes[2]);
 
 int	__wrap_open(const char *file, int oflag, ...)
 {
-	static int	fd_table[1024];
-	va_list		args;
-	int			fd;
-	int			**out;
-	mode_t		mode;
+	static int		fd_table[1024];
+	va_list			args;
+	int				fd;
+	int				**out;
+	unsigned int	mode;
 
 	va_start(args, oflag);
 	if (oflag == -42)
 	{
-		out = va_arg(args, int**);
+		out = va_arg(args, int **);
 		if (out)
 			*out = fd_table;
 		return (va_end(args), 0);
 	}
-	if (oflag & O_CREAT)
+	if (oflag & 0100)
 	{
-		mode = va_arg(args, mode_t);
+		mode = va_arg(args, unsigned int);
 		fd = __real_open(file, oflag, mode);
 	}
 	else
