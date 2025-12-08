@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:20:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 15:13:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@
 
 	static char			history_file[4096];				//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entry
-	static int			file_unlimited		= 0;	//	Indicates if it is limited by a maximum size
+	static int			file_unlimited		= 0;		//	Indicates if it is limited by a maximum size
 
 	static size_t		mem_max				= 1000;		//	Maximum number of entry
-	static int			mem_unlimited		= 0;	//	Indicates if it is limited by a maximum size
+	static int			mem_unlimited		= 0;		//	Indicates if it is limited by a maximum size
 
 	static size_t		length				= 0;		//	Current number of entry
 	static size_t		capacity			= 10;		//	Array size
