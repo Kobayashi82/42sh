@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:28:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/18 23:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 16:15:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 	int tests(int argc, const char **argv, const char **envp) {
 		if (argc == 1 || (strcmp(argv[1], "test") && strcmp(argv[1], "tests"))) return (0);
 		int failed = 0;
-		printf(W"\t────────────────────────\n"NC);
+		// printf(W"\t────────────────────────\n"NC);
 		printf ("\t\033[7;36m\033[40m          TESTS         \033[7;36m\033[40m\n"NC);
 
 		if (test_options())			failed = 1;

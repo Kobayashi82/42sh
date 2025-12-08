@@ -6,13 +6,9 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/07 20:28:55 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/08 16:16:32 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
-
-# ───────────────────────────────────────────────────────────── #
-# ─────────────────────── CONFIGURATION ─────────────────────── #
-# ───────────────────────────────────────────────────────────── #
 
 # ──────────── #
 # ── COLORS ── #
@@ -37,6 +33,12 @@ BG_CYAN				= \033[40m
 FG_YELLOW			= \033[89m
 COUNTER 			= 0
 
+# ────────── #
+# ── NAME ── #
+# ────────── #
+
+NAME				=	42sh
+
 # ─────────── #
 # ── FLAGS ── #
 # ─────────── #
@@ -55,14 +57,9 @@ TESTING				= 1
 # ───────────────── #
 
 INC_DIR				= $(shell find inc -type d | sed 's/^/-I/')
-OBJ_DIR				= build/obj/
+BLD_DIR				= build/
+OBJ_DIR				= $(BLD_DIR)obj/
 SRC_DIR				= src/
-
-# ────────── #
-# ── NAME ── #
-# ────────── #
-
-NAME	=	42sh
 
 # ─────────── #
 # ── FILES ── #
@@ -182,25 +179,37 @@ SRCS	=	main/main.c										\
 			tests/tests.c									\
 			tests/untests.c									\
 
-SRCS      := $(addprefix $(SRC_DIR), $(SRCS))
+# ───────────────────────────────────────────────────────────── #
+# ─────────────────────────── RULES ─────────────────────────── #
+# ───────────────────────────────────────────────────────────── #
 
-# ────────────────────────────────────────────────────────── #
-# ───────────────────────── NORMAL ───────────────────────── #
-# ────────────────────────────────────────────────────────── #
+all: _show_title
+$(NAME): _show_title
 
-TARGET=$(if $(SRCS),$(NAME),empty)
-TARGET=$(if $(NAME),$(NAME),empty)
-all: $(TARGET)
-
-empty:
-#	Check if NAME is empty
-	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
-
-#all: $(NAME)
-
-OBJS	= $(SRCS:$(SRC_DIR)%.c=$(OBJ_DIR)%.o)
-DEPS	= $(OBJS:.o=.d)
+SRC_PATHS	= $(addprefix $(SRC_DIR), $(SRCS))
+OBJS		= $(SRCS:%.c=$(OBJ_DIR)%.o)
+DEPS		= $(OBJS:.o=.d)
 -include $(DEPS)
+
+_compile: $(OBJS)
+	@$(MAKE) -s _hide_cursor
+#	Create folder
+	@mkdir -p $(BLD_DIR)
+
+#	Compile
+	@printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"
+	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(EXTRA_FLAGS) -o $(NAME)
+	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
+
+	@$(MAKE) -s _progress; printf "\n"
+#	----- REMOVE TO DISABLED TEST -----
+	@if [ "$(TESTING)" -ne 0 ]; then \
+		printf "\033[A" && ./leaks test || true; \
+	fi
+#	----- REMOVE TO DISABLED TEST -----
+	@$(MAKE) -s _show_cursor
+
+
 
 $(NAME): _normal_extra $(OBJS)
 #	Compile program
@@ -227,6 +236,7 @@ $(NAME): _normal_extra $(OBJS)
 # ───────────── #
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@$(MAKE) -s _hide_cursor
 #	Create folder
 	@mkdir -p $(@D)
 #	Compile objects
@@ -240,87 +250,96 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 # ── EXTRA RULES ── #
 # ───────────────── #
 
-_normal_extra:
-#	Check if NAME is empty and source directory exists
-	@if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; rm -f .is_re; exit 1; fi
-#	Hide cursor
+_show_title:
 	@$(MAKE) -s _hide_cursor
-#	Title
-	@if [ ! -f .is_re ]; then clear; $(MAKE) -s _title; fi; rm -f .is_re
-	@printf "\t$(WHITE)────────────────────────\n$(NC)"
-	@printf "\n\t────────────────────────$(NC)\033[1A\r"
+	@$(MAKE) -s _title
+
+#	Check if source exists and needs recompiling
+	@if  [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then \
+        printf "\t$(CYAN)Source files don't exist$(NC)"; \
+		printf "\n\t$(WHITE)────────────────────────$(NC)"; \
+		$(MAKE) -s _progress; printf "\n" \
+		$(MAKE) -s _show_cursor; \
+	elif [ -f "$(NAME)" ] && \
+		[ -z "$$(find $(SRC_PATHS) -newer "$(NAME)" 2>/dev/null; find inc -name '*.h' -newer "$(NAME)" 2>/dev/null)" ] && \
+		[ $$(find $(OBJS) 2>/dev/null | wc -l) -eq $$(echo "$(OBJS)" | wc -w) ]; then \
+        printf "\t$(GREEN)✓ $(YELLOW)$(NAME)$(CYAN) is up to date$(NC)"; \
+		printf "\n\t$(WHITE)────────────────────────$(NC)"; \
+		$(MAKE) -s _progress; printf "\n" \
+		$(MAKE) -s _show_cursor; \
+	else \
+		printf "\n\t$(WHITE)────────────────────────$(NC)\033[1A\r"; \
+		$(MAKE) -s _compile; \
+	fi
+	@$(MAKE) -s _show_cursor
 
 # ───────────────────────────────────────────────────────────── #
 # ────────────────────────── RE-MAKE ────────────────────────── #
 # ───────────────────────────────────────────────────────────── #
 
+# ───────────── #
+# ── RE-MAKE ── #
+# ───────────── #
+
 re:
-#	Check if NAME is empty and source directory exists
-	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
-#	Hide cursor
 	@$(MAKE) -s _hide_cursor
-#	Title
-	@clear; $(MAKE) -s _title
-	@printf "\t$(WHITE)────────────────────────\n$(NC)"
+	@$(MAKE) -s _title
+
+#	Check if source exists and needs recompiling
+	@if  [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ] || [ ! -d "$(SRC_DIR)" ]; then \
+        printf "\t$(CYAN)Source files don't exist$(NC)"; \
+		printf "\n\t$(WHITE)────────────────────────$(NC)"; \
+		$(MAKE) -s _progress; \
+		$(MAKE) -s _show_cursor; \
+	fi
+
 #	Delete objects
 	@$(MAKE) -s _delete_objects
-#	Delete $(NAME)
 	@if [ -f $(NAME) ]; then \
 		printf "\t$(CYAN)Deleting... $(YELLOW)$(NAME)$(NC)"; \
 		rm -f $(NAME); \
 	fi
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 	@$(MAKE) -s _progress; printf "\n"
-	@-find build -type d -empty -delete >/dev/null 2>&1 || true
-#	Create files
-	@touch .is_re; printf "\033[1A\033[1A\r"
-#	Execute $(NAME)
-	@$(MAKE) -s $(NAME)
+	@-find $(BLD_DIR) -type d -empty -delete >/dev/null 2>&1 || true
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
+	@printf "\033[1A\033[1A\r"
 
-# ───────────────────────────────────────────────────────────── #
-# ─────────────────────────── CLEAN ─────────────────────────── #
-# ───────────────────────────────────────────────────────────── #
+#	Compile
+	@$(MAKE) -s _compile
+
+# ─────────── #
+# ── CLEAN ── #
+# ─────────── #
 
 clean:
-#	Check if NAME is empty
-	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
-#	Hide cursor
 	@$(MAKE) -s _hide_cursor
-#	Title
-	@clear; $(MAKE) -s _title
-	@printf "\t$(WHITE)────────────────────────\n$(NC)"
-#	Delete objects
-	@$(MAKE) -s _delete_objects 
+	@$(MAKE) -s _title
+
+	@$(MAKE) -s _delete_objects
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)objects$(NC)\n"
-#	Progress line
+
 	@$(MAKE) -s _progress; printf "\n"
-#	Restore cursor
 	@$(MAKE) -s _show_cursor
 
-# ───────────────────────────────────────────────────────────── #
-# ────────────────────────── F-CLEAN ────────────────────────── #
-# ───────────────────────────────────────────────────────────── #
+# ──────────── #
+# ── FCLEAN ── #
+# ──────────── #
 
 fclean:
-#	Check if NAME is empty
-	@rm -f .is_re; if [ ! -n "$(NAME)" ] || [ ! -n "$(SRCS)" ]; then printf "\n\t$(CYAN)source files doesn't exist\n\n$(NC)"; exit 1; fi
-#	Hide cursor
 	@$(MAKE) -s _hide_cursor
-#	Title
-	@clear; $(MAKE) -s _title
-	@printf "\t$(WHITE)────────────────────────\n$(NC)"
-#	Delete objects
+	@$(MAKE) -s _title
+
 	@$(MAKE) -s _delete_objects
-#	Delete $(NAME)
 	@if [ -f $(NAME) ]; then \
 		printf "\t$(CYAN)Deleting... $(YELLOW)$(NAME)$(NC)"; \
 		rm -f $(NAME); \
 	fi
 	@printf "\r%50s\r\t$(CYAN)Deleted     $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
+	@find $(BLD_DIR) -type d -empty -delete >/dev/null 2>&1 || true
+	@find  -type d -empty -delete >/dev/null 2>&1 || true
+
 	@$(MAKE) -s _progress; printf "\n"
-#	Delete folder and files
-	@-find build -type d -empty -delete >/dev/null 2>&1 || true
-#	Restore cursor
 	@$(MAKE) -s _show_cursor
 
 # ───────────────────────────────────────────────────────────── #
@@ -335,6 +354,7 @@ _title:
 	@printf "\n$(NC)\t$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★\
 	$(INV_CYAN)    $(NC)$(INV_CYAN)$(shell echo $(NAME) | tr a-z A-Z | tr '_' ' ')$(INV_CYAN)    \
 	$(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(NC)\n"
+	@printf "\t$(WHITE)────────────────────────\n$(NC)"
 
 # ───────────── #
 # ── CURSORS ── #
@@ -366,10 +386,11 @@ _delete_objects:
 			fi; \
 		done; \
 	fi; printf "\r%50s\r"
-	@@rm -rf build >/dev/null 2>&1 || true
+	@-find $(BLD_DIR) -type d -empty -delete >/dev/null 2>&1 || true
 
 wipe:
-	@rm -rf build; rm -f .is_re $(NAME)
+	@rm -rf $(BLD_DIR)
+	@rm -rf $(NAME)
 
 # ─────────────────── #
 # ── PROGRESS LINE ── #
@@ -383,4 +404,4 @@ _progress:
 # ── PHONY ── #
 # ─────────── #
 
-.PHONY: all clean fclean re _normal_extra wipe _delete_objects _title _hide_cursor _show_cursor _progress
+.PHONY: all clean fclean re wipe _show_title _title _hide_cursor _show_cursor _delete_objects _progress
