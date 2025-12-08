@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/08 16:16:32 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/08 16:58:39 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -159,10 +159,11 @@ SRCS	=	main/main.c										\
 															\
 															\
 			utils/array.c									\
-			utils/execvesafe.c								\
-			utils/fdsafe.c									\
+			utils/safe_execve.c								\
+			utils/safe_fd.c									\
 			utils/gnl.c										\
-			utils/memsafe.c									\
+			utils/safe_mem.c								\
+			utils/safe_xmem.c								\
 			utils/num.c										\
 			utils/paths.c									\
 			utils/print.c									\
@@ -205,30 +206,9 @@ _compile: $(OBJS)
 #	----- REMOVE TO DISABLED TEST -----
 	@if [ "$(TESTING)" -ne 0 ]; then \
 		printf "\033[A" && ./leaks test || true; \
+		printf "\n"; \
 	fi
 #	----- REMOVE TO DISABLED TEST -----
-	@$(MAKE) -s _show_cursor
-
-
-
-$(NAME): _normal_extra $(OBJS)
-#	Compile program
-	@if [ -f $(NAME) ]; then \
-		printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)"; \
-	else \
-		printf "\r%50s\r\t$(CYAN)Compiling... $(YELLOW)$(NAME)$(NC)"; \
-	fi
-	@$(CC) $(FLAGS) $(LDFLAGS) $(INC_DIR) $(OBJS) $(EXTRA_FLAGS) -o $(NAME)
-	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
-#	Progress line
-	@$(MAKE) -s _progress
-#	----- REMOVE TO DISABLED TEST -----
-	@if [ "$(TESTING)" -ne 0 ]; then \
-		printf "\033[A" && ./leaks test || true; \
-	fi
-#	----- REMOVE TO DISABLED TEST -----
-	@printf "\n"
-#	Restore cursor
 	@$(MAKE) -s _show_cursor
 
 # ───────────── #
@@ -351,6 +331,7 @@ fclean:
 # ─────────── #
 
 _title:
+	@clear;
 	@printf "\n$(NC)\t$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★\
 	$(INV_CYAN)    $(NC)$(INV_CYAN)$(shell echo $(NAME) | tr a-z A-Z | tr '_' ' ')$(INV_CYAN)    \
 	$(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(BG_CYAN)$(FG_YELLOW)★$(INV_CYAN) $(NC)\n"

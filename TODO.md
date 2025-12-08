@@ -11,9 +11,6 @@
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
 - hash, implementar opciones -tpdr
 
-## Others
-- Makefile no "recompile" (usar Makefile de taskmaster como referencia)
-
 ## 42
 
 - parse_subshell()
