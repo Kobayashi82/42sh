@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 21:44:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 23:40:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "terminal/readinput/history.h"
 	#include "parser/parser.h"
+	#include "main/shell.h"
 	#include "utils/libft.h"
 
 	#include <stdio.h>				// borrar
@@ -29,15 +30,20 @@
 
 #pragma region "Syntax Error"
 
-	void syntax_error(const char *msg) {
-		dprintf(2, "42sh: syntax error: %s\n", msg);
-
+	void syntax_error(int type, const char *msg, const char c) {
+		(void) msg;
 		if (g_parser && g_parser->token) {
-			if (g_parser->token->filename)	dprintf(2, "  at %s:%d\n", g_parser->token->filename, g_parser->token->line);
-			if (g_parser->token->full_line)	dprintf(2, "  %s\n", g_parser->token->full_line);
+			if (shell.source == SRC_ARGUMENT) {
+				if (type == 1) {
+					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%c'\n", g_parser->prev_token->line, c);
+					if (g_parser->token) dprintf(2, "42sh: -c: line %d: syntax error: unexpected end of file\n", g_parser->token->line);
+				}
+			}
+			else {
+				if (g_parser->token->filename)	dprintf(2, "  at %s:%d\n", g_parser->token->filename, g_parser->token->line);
+				if (g_parser->token->full_line)	dprintf(2, "  %s\n", g_parser->token->full_line);
+			}
 		}
-
-		// if (!g_parser->interactive) exit(1);
 	}
 
 #pragma endregion
@@ -47,7 +53,8 @@
 	t_token *token_advance() {
 		if (!g_parser) return (NULL);
 
-		token_free(g_parser->token);
+		token_free(g_parser->prev_token);
+		g_parser->prev_token = g_parser->token;
 		g_parser->token = token_get(&g_parser->lexer);
 
 		return (g_parser->token);
@@ -61,6 +68,7 @@
 		t_parser	parser;
 		t_parser	*old_parser = g_parser;
 
+		parser.prev_token = NULL;
 		parser.token = NULL;
 		parser.interactive = 0;
 		g_parser = &parser;
@@ -70,6 +78,7 @@
 		token_advance();
 		t_ast *ast = parse_list();
 
+		token_free(parser.prev_token);
 		token_free(parser.token);
 		lexer_free(&parser.lexer);
 
@@ -154,7 +163,7 @@
 				g_parser->token->type == TOKEN_BACKGROUND) {
 				ast_free(&left);
 				ast_free(&node);
-				syntax_error("unexpected token after operator");
+				syntax_error(0, "unexpected token after operator", 0);
 				return (NULL);
 			}
 
@@ -216,6 +225,7 @@
 		t_ast		*full_ast = NULL;
 		t_ast		*current = NULL;
 
+		parser.prev_token = NULL;
 		parser.token = NULL;
 		parser.interactive = interactive;
 		parser.lexer.can_expand_alias = 1;
@@ -249,6 +259,7 @@
 			}
 		} else full_ast = parse_list();
 
+		token_free(g_parser->prev_token);
 		token_free(g_parser->token);
 
 		if (interactive && full_ast && full_ast->type != TOKEN_EOF) history_add(parser.lexer.full_input, 0);

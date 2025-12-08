@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/05 20:51:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 23:31:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,9 @@
 			string_append(&string, advance(lexer));
 		}
 
-		free(full_line);
+		// free(full_line);
 		free(string.value);
-		return (token_create(lexer, TOKEN_EOF, NULL, line, NULL));
+		return (token_create(lexer, TOKEN_EOF, NULL, line, full_line));
 	}
 
 #pragma endregion
