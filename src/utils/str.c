@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 21:42:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 15:18:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,13 +85,46 @@
 
 			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
-			if (len > 1) { if (!strlcpy(new_str, str + start, len)) new_str[0] = '\0'; }
+			if (len > 1) { if (!ft_strlcpy(new_str, str + start, len)) new_str[0] = '\0'; }
 			else new_str[0] = '\0';
 
 			return (new_str);
 		}
 
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region "StrLCat"
+
+	int	ft_strlcat(char *dst, const char *src, int dstsize) {
+		int src_len = 0, dest_len = 0, i;
+
+		while (dst[dest_len] && dest_len < dstsize) dest_len++;
+		while (src[src_len]) src_len++;
+		if (dstsize == 0 || dest_len >= dstsize) return (dest_len + src_len);
+		i = dest_len - 1;
+		while (++i < dstsize - 1 && src[i - dest_len]) dst[i] = src[i - dest_len];
+		dst[i] = '\0';
+		return (dest_len + src_len);
+	}
+
+#pragma endregion
+
+#pragma region "StrLCpy"
+
+	int	ft_strlcpy(char *dst, const char *src, int dstsize) {
+		int		i = 0, srclen = 0;
+
+		if (!src) return (0);
+		while (src[srclen]) ++srclen;
+		if (dstsize > 0) {
+			while (dstsize > 0 && src[i] && i < dstsize - 1) { dst[i] = src[i]; ++i; }
+			dst[i] = '\0';
+		}
+
+		return (srclen);
+	}
 
 #pragma endregion
 
@@ -106,8 +139,8 @@
 			char *new_str = malloc(len);
 			if (!new_str) return (NULL);
 			if (str1) {
-				strlcpy(new_str, str1, len);
-				if (str2) strlcat(new_str, str2, len);
+				ft_strlcpy(new_str, str1, len);
+				if (str2) ft_strlcat(new_str, str2, len);
 			} else if (str2) strcpy(new_str, str2);
 
 			if (frees == 1 || frees == 3) free(str1);
@@ -127,13 +160,13 @@
 
 			char *new_str = malloc(len + 1);
 			if (str1) {
-				strlcpy(new_str, str1, len + 1);
-				if (sep)  strlcat(new_str, sep, len + 1);
-				if (str2) strlcat(new_str, str2, len + 1);
+				ft_strlcpy(new_str, str1, len + 1);
+				if (sep)  ft_strlcat(new_str, sep, len + 1);
+				if (str2) ft_strlcat(new_str, str2, len + 1);
 			} else if (sep) {
-				strlcpy(new_str, sep, len + 1);
-				if (str2) strlcat(new_str, str2, len + 1);
-			} else if (str2) strlcpy(new_str, str2, len + 1);
+				ft_strlcpy(new_str, sep, len + 1);
+				if (str2) ft_strlcat(new_str, str2, len + 1);
+			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
 
 			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free(str1);
 			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free(sep);
@@ -156,7 +189,7 @@
 			char *copy = malloc(ft_strlen(s1) + 1);
 			if (!copy) return (NULL);
 
-			strlcpy(copy, s1, ft_strlen(s1) + 1);
+			ft_strlcpy(copy, s1, ft_strlen(s1) + 1);
 			return (copy);
 		}
 
@@ -173,7 +206,7 @@
 			char *copy = malloc(len + 1);
 			if (!copy) return (NULL);
 
-			strlcpy(copy, s1, len + 1);
+			ft_strlcpy(copy, s1, len + 1);
 			return (copy);
 		}
 

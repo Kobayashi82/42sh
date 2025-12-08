@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 21:42:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/08 15:12:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,18 @@
 
 			char	*ft_strtrim(char const *s1, char const *set);
 			char	*ft_substr(const char *str, size_t start, int len);
+
+		#pragma endregion
+
+		#pragma region "STRLCPY"
+
+			int		ft_strlcat(char *dst, const char *src, int dstsize);
+
+		#pragma endregion
+
+		#pragma region "STRLCPY"
+
+			int		ft_strlcpy(char *dst, const char *src, int dstsize);
 
 		#pragma endregion
 
