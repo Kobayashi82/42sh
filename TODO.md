@@ -14,3 +14,16 @@
 ## Others
 - Makefile no "recompile" (usar Makefile de taskmaster como referencia)
 
+## 42
+
+- parse_subshell()
+- parse_arithmetic()
+- parser_conditional()
+- process_heredocs()
+- create_heredoc()
+- Señales en parser
+- Mensajes de error (syntax)
+- Arreglar MemSafe
+- exec builtin
+- Funciones de argumentos (unid, dividir, array)
+- Funciones de redirección (aplicar, heredoc)
