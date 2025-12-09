@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 19:08:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:13:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,15 +49,62 @@
 	#pragma region "Free"
 
 		void lexer_free(t_lexer *lexer) {
-			free(lexer->stack);
+			free(lexer->stack.value);
 			free(lexer->filename);
 			free(lexer->full_input);
-			while (lexer->input) buffer_pop(lexer);
+
+			while (lexer->input)
+				buffer_pop(lexer);
+
 			lexer->filename = NULL;
 			lexer->full_input = NULL;
 			lexer->input = NULL;
 			lexer->user_buffer = NULL;
-			lexer->stack = NULL;
+			lexer->stack.value = NULL;
+		}
+
+	#pragma endregion
+
+	#pragma region "Full Line"
+
+		static void full_line_append(t_lexer *lexer, const char *input) {
+			if (!input) return ;
+
+			char	*new_full = NULL;
+			size_t	full_len = ft_strlen(lexer->full_input);
+			size_t	new_len  = ft_strlen(input);
+
+			if (lexer->append_inline == 1) {
+				if (full_len > 1 && lexer->full_input[full_len - 2] == '\\' && lexer->full_input[full_len - 1] == '\n') {
+					lexer->full_input[full_len - 2] = ' ';
+					lexer->full_input[full_len - 1] = '\0';
+					full_len -= 2;
+				}
+				if (full_len > 0 && lexer->full_input[full_len - 1] == '\\') {
+					lexer->full_input[full_len - 1] = '\0';
+					full_len--;
+				}
+				new_full = malloc(full_len + new_len + 1);
+				strcpy(new_full, lexer->full_input);
+				strcpy(new_full + full_len, input);
+				lexer->line--;
+				lexer->append_inline = 0;
+			} else if (lexer->append_inline == 2) {
+				new_full = malloc(full_len + new_len + 2);
+				strcpy(new_full, lexer->full_input);
+				new_full[full_len] = ' ';
+				strcpy(new_full + full_len + 1, input);
+				lexer->append_inline = 0;
+			} else {
+				new_full = malloc(full_len + new_len + 2);
+				strcpy(new_full, lexer->full_input);
+				new_full[full_len] = '\n';
+				strcpy(new_full + full_len + 1, input);
+			}
+
+			free(lexer->full_input);
+			lexer->full_input = new_full;
+
 		}
 
 	#pragma endregion
@@ -65,52 +112,16 @@
 	#pragma region "Append"
 
 		void lexer_append(t_lexer *lexer) {
-			char *input = lexer->more_input();
+			char *input = (lexer->more_input) ? lexer->more_input() : NULL;
 
 			if (input) {
-
 				remove_comments(input);
 
-				if (lexer->interactive) {
-					char	*new_full = NULL;
-					size_t	full_len = ft_strlen(lexer->full_input);
-					size_t	new_len  = ft_strlen(input);
-
-					if (lexer->append_inline == 1) {
-						if (full_len > 1 && lexer->full_input[full_len - 2] == '\\' && lexer->full_input[full_len - 1] == '\n') {
-							lexer->full_input[full_len - 2] = ' ';
-							lexer->full_input[full_len - 1] = '\0';
-							full_len -= 2;
-						}
-						if (full_len > 0 && lexer->full_input[full_len - 1] == '\\') {
-							lexer->full_input[full_len - 1] = '\0';
-							full_len--;
-						}
-						new_full = malloc(full_len + new_len + 1);
-						strcpy(new_full, lexer->full_input);
-						strcpy(new_full + full_len, input);
-						lexer->line--;
-						lexer->append_inline = 0;
-					} else if (lexer->append_inline == 2) {
-						new_full = malloc(full_len + new_len + 2);
-						strcpy(new_full, lexer->full_input);
-						new_full[full_len] = ' ';
-						strcpy(new_full + full_len + 1, input);
-						lexer->append_inline = 0;
-					} else {
-						new_full = malloc(full_len + new_len + 2);
-						strcpy(new_full, lexer->full_input);
-						new_full[full_len] = '\n';
-						strcpy(new_full + full_len + 1, input);
-					}
-
-					free(lexer->full_input);
-					lexer->full_input = new_full;
-				}
+				if (lexer->interactive)
+					full_line_append(lexer, input);
 
 				if (lexer->line != -1) lexer->line++;
 				buffer_push_user(lexer, input);
-				free(input);
 			} else {
 				buffer_pop(lexer);
 			}
@@ -121,18 +132,16 @@
 	#pragma region "Initialize"
 
 		void lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line) {
-			lexer->stack_size = 0;
-			lexer->stack_capacity = 64;
-			lexer->stack = calloc(1, lexer->stack_capacity);
+			lexer->stack.len = 0;
+			lexer->stack.capacity = 64;
+			lexer->stack.value = calloc(1, lexer->stack.capacity);
 
 			lexer->input = NULL;
 			lexer->user_buffer = NULL;
 			remove_comments(input);
 			buffer_push_user(lexer, input);
 			lexer->filename = ft_strdup(filename);
-			// lexer->full_input = NULL;
-			// (interactive) ?	lexer->full_input = input : free(input);
-			lexer->full_input = input;	// borrar
+			lexer->full_input = (interactive) ? ft_strdup(input) : NULL;
 			lexer->interactive = interactive;
 			lexer->append_inline = 0;
 			lexer->command_position = 1;
@@ -178,8 +187,7 @@
 
 			if (!lexer->input) return ('\0');
 
-			char c = lexer->input->value[lexer->input->position];
-			lexer->input->position++;
+			char c = lexer->input->value[lexer->input->position++];
 			if (lexer->input->position >= ft_strlen(lexer->input->value))
 				buffer_pop(lexer);
 
@@ -187,5 +195,40 @@
 		}
 
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Get"
+
+	t_token *token_get(t_lexer *lexer) {
+		if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
+
+		if (peek(lexer, 0) == '\n') {
+			t_string	string;
+			int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
+			char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
+			string_init(&string);
+			string_append(&string, advance(lexer));
+			return (token_create(lexer, TOKEN_NEWLINE, string.value, line, full_line));
+		}
+
+		if (peek(lexer, 0)) {
+			t_token *token = NULL;
+			if ((token = variables(lexer)))		return (token);
+			if ((token = expansion(lexer)))		return (token);
+			// if ((token = grouping(lexer)))		return (token);
+			if ((token = operator(lexer)))		return (token);
+			if ((token = redirection(lexer)))	return (token);
+			// if ((token = keyword(lexer)))		return (token);
+			if ((token = word(lexer)))			return (token);
+		}
+
+		if (!lexer->interactive || lexer->append_inline) {
+			lexer_append(lexer);
+			if (lexer->input) return (token_get(lexer));
+		}
+
+		return (token_create(lexer, TOKEN_EOF, NULL, lexer->line + 1, NULL));
+	}
 
 #pragma endregion

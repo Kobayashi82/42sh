@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 23:40:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:12:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,17 @@
 
 #pragma region "Syntax Error"
 
-	void syntax_error(int type, const char *msg, const char c) {
-		(void) msg;
+	void syntax_error(int type, const char *msg) {
 		if (g_parser && g_parser->token) {
+			if (shell.source == SRC_INTERACTIVE) {
+				if (type == 1) {
+					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%s'\n", g_parser->prev_token->line, msg);
+					if (g_parser->token) dprintf(2, "42sh: -c: line %d: syntax error: unexpected end of file\n", g_parser->token->line);
+				}
+			}
 			if (shell.source == SRC_ARGUMENT) {
 				if (type == 1) {
-					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%c'\n", g_parser->prev_token->line, c);
+					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%s'\n", g_parser->prev_token->line, msg);
 					if (g_parser->token) dprintf(2, "42sh: -c: line %d: syntax error: unexpected end of file\n", g_parser->token->line);
 				}
 			}
@@ -64,7 +69,60 @@
 
 #pragma region "SubParser"
 
-	t_ast *sub_parse(char *content) {
+	static char *get_content(int type, char *value) {
+		switch (type) {
+			case TOKEN_BACKTICK:
+				if (ft_strlen(value) >= 2) {
+					char *content = ft_substr(value, 1, ft_strlen(value) - 2);
+					return (free(value), content);
+				}
+			case TOKEN_ARITH:
+				if (ft_strlen(value) >= 4) {
+					char *content = ft_substr(value, 2, ft_strlen(value) - 4);
+					return (free(value), content);
+				}
+			case TOKEN_ARITH_SUB:
+				if (ft_strlen(value) >= 5) {
+					char *content = ft_substr(value, 3, ft_strlen(value) - 5);
+					return (free(value), content);
+				}
+			case TOKEN_SUBSHELL:
+				if (ft_strlen(value) >= 2) {
+					char *content = ft_substr(value, 1, ft_strlen(value) - 2);
+					return (free(value), content);
+				}
+			case TOKEN_CMD_SUB:
+				if (ft_strlen(value) >= 3) {
+					char *content = ft_substr(value, 2, ft_strlen(value) - 3);
+					return (free(value), content);
+				}
+			case TOKEN_PROCESS_SUB_IN:
+				if (ft_strlen(value) >= 3) {
+					char *content = ft_substr(value, 2, ft_strlen(value) - 3);
+					return (free(value), content);
+				}
+			case TOKEN_PROCESS_SUB_OUT:
+				if (ft_strlen(value) >= 3) {
+					char *content = ft_substr(value, 2, ft_strlen(value) - 3);
+					return (free(value), content);
+				}
+			case TOKEN_GROUP:
+				if (ft_strlen(value) >= 2) {
+					char *content = ft_substr(value, 1, ft_strlen(value) - 2);
+					return (free(value), content);
+				}
+			case TOKEN_CONDITIONAL:
+				if (ft_strlen(value) >= 4) {
+					char *content = ft_substr(value, 2, ft_strlen(value) - 4);
+					return (free(value), content);
+				}
+		}
+
+		free(value);
+		return (NULL);
+	}
+
+	t_ast *sub_parse(int type, char *value) {
 		t_parser	parser;
 		t_parser	*old_parser = g_parser;
 
@@ -72,11 +130,25 @@
 		parser.token = NULL;
 		parser.interactive = 0;
 		g_parser = &parser;
-
+		
+		char *content = get_content(type, value);
+		if (!content) return (NULL);
 		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
 
 		token_advance();
-		t_ast *ast = parse_list();
+
+		t_ast *ast = NULL;
+		switch (type) {
+			case TOKEN_BACKTICK:		ast = parse_list();		break;
+			case TOKEN_ARITH:									break;
+			case TOKEN_ARITH_SUB:								break;
+			case TOKEN_SUBSHELL:		ast = parse_list();		break;
+			case TOKEN_CMD_SUB:			ast = parse_list();		break;
+			case TOKEN_PROCESS_SUB_IN:	ast = parse_list();		break;
+			case TOKEN_PROCESS_SUB_OUT:	ast = parse_list();		break;
+			case TOKEN_GROUP:			ast = parse_list();		break;
+			case TOKEN_CONDITIONAL:								break;
+		}
 
 		token_free(parser.prev_token);
 		token_free(parser.token);
@@ -93,13 +165,14 @@
 
 	t_ast *parse_command() {
 
-		if (g_parser->token->type == TOKEN_SUBSHELL) {
-			t_ast *node = ast_create(TOKEN_SUBSHELL);
+		if (g_parser->token->type >= TOKEN_BACKTICK && g_parser->token->type <= TOKEN_CONDITIONAL) {
+			t_ast *node = ast_create(g_parser->token->type);
 			char *content = g_parser->token->value;
 			g_parser->token->value = NULL;
 			token_advance();
 
-			node->child = sub_parse(content);
+			node->child = sub_parse(g_parser->token->type, content);
+			if (!node->child) ast_free(&node);
 
 			return (node);
 		}
@@ -144,7 +217,7 @@
 
 		while (g_parser->token->type == TOKEN_AND || g_parser->token->type == TOKEN_OR) {
 			t_ast *node = ast_create(g_parser->token->type);
-			
+
 			g_parser->lexer.can_expand_alias = 1;
 			g_parser->lexer.command_position = 1;
 			token_advance();
@@ -163,7 +236,7 @@
 				g_parser->token->type == TOKEN_BACKGROUND) {
 				ast_free(&left);
 				ast_free(&node);
-				syntax_error(0, "unexpected token after operator", 0);
+				syntax_error(0, "unexpected token after operator");
 				return (NULL);
 			}
 

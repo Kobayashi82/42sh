@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 00:24:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/09 17:01:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,7 +173,7 @@
 				g_parser->token->value = NULL;
 			} else {
 				if (parse_redirect(&node->redirs, &node->args)) {
-					syntax_error(0, "archivo necesario...", 0);
+					syntax_error(0, "archivo necesario...");
 					ast_free(&node);
 					return (NULL);
 				}
@@ -183,13 +183,13 @@
 		}
 
 		if (g_parser->token->type != TOKEN_EOF && !node->assign && !node->args && !node->redirs) {
-			syntax_error(1, "expected command", 0);
+			syntax_error(1, "expected command");
 			ast_free(&node);
 			return (NULL);
 		}
 
-		if (stack_top(&g_parser->lexer)) {
-			syntax_error(1, NULL, stack_top(&g_parser->lexer));
+		if (stack_top(&g_parser->lexer) && !g_parser->lexer.input) {
+			syntax_error(1, stack_get(&g_parser->lexer));
 			ast_free(&node);
 			return (NULL);
 		}

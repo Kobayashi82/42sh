@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 15:12:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/09 16:58:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 	#include <stdlib.h>
 	#include <string.h>
 	#include <ctype.h>
+
+	#include <stdio.h>
 
 #pragma endregion
 
