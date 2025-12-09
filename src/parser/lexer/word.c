@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 23:31:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/09 23:34:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,36 @@
 
 #pragma endregion
 
+#pragma region "Return Word"
+
+	t_token *return_word(t_lexer *lexer, t_string *string, char *full_line, int line) {
+		if (!string->len) {
+			free(full_line);
+			free(string->value);
+			return (token_get(lexer));
+		}
+
+		if (expand_alias(lexer, string->value)) {
+			char *alias_content = alias_find_value(string->value);
+			if (alias_content) {
+				int expand_next = 0;
+				if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
+				buffer_push(lexer, alias_content, string->value);
+				free(string->value);
+				t_token *token = token_get(lexer);
+				lexer->can_expand_alias = expand_next;
+				free(full_line);
+				return (token);
+			}
+		}
+
+		lexer->can_expand_alias = 0;
+		lexer->command_position = 0;
+		return (token_create(lexer, TOKEN_WORD, string->value, line, full_line));
+	}
+
+#pragma endregion
+
 #pragma region "Word"
 
 	t_token *word(t_lexer *lexer) {
@@ -50,8 +80,9 @@
 		while ((c = peek(lexer, 0)) || string.len) {
 
 			if (c == '\'' || c == '"') {
-				handle_quotes(lexer, &string);
-				continue;
+				if (handle_quotes(lexer, &string)) {
+					return (return_word(lexer, &string, full_line, line));
+				}
 			}
 
 			if (c == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
@@ -69,33 +100,15 @@
 				string_append(&string, advance(lexer));
 				string_append(&string, advance(lexer));
 				continue;
+			} else if (c == '\0' && stack_top(lexer)) {
+				lexer_append(lexer);
+				if (!lexer->input) break;
+				string_append(&string, '\n');
+				continue;
 			}
 
 			if (is_operator(c) && !(c == '{' && (!isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0'))) {
-
-				if (!string.len) {
-					free(full_line);
-					free(string.value);
-					return (token_get(lexer));
-				}
-
-				if (expand_alias(lexer, string.value)) {
-					char *alias_content = alias_find_value(string.value);
-					if (alias_content) {
-						int expand_next = 0;
-						if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
-						buffer_push(lexer, alias_content, string.value);
-						free(string.value);
-						t_token *token = token_get(lexer);
-						lexer->can_expand_alias = expand_next;
-						free(full_line);
-						return (token);
-					}
-				}
-
-				lexer->can_expand_alias = 0;
-				lexer->command_position = 0;
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (return_word(lexer, &string, full_line, line));
 			}
 
 			string_append(&string, advance(lexer));

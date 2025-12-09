@@ -5,7 +5,8 @@
 - set -o ignoreeof: Si está activado, ignorar EOF (Ctrl + D) y muestra 'Use "logout" to leave the shell.' en stderr en lugar de cerrar la shell inmediatamente. Pero si se pulsa (CTRL + D) 11 veces seguidas, tambien se cierra. (No se si logout seria lo correcto en mi caso, porque no es el shell usado para login)
 
 ## Parser
-- Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente.
+- Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente
+- Controlar cierre de expansiones y mas input en comillas dobles
 
 ## Builtins
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
@@ -25,3 +26,20 @@
 - Mensajes de error (syntax)
 - Funciones de argumentos (unid, dividir, array)
 - Funciones de redirección (aplicar, heredoc)
+
+---
+
+## Casos donde se pide más input:
+
+- Diferenciar entre user input y alias input
+
+### No Interactivo
+
+- Cuando el input llega a EOF y lexer->input no es NULL;
+
+### Interactivo
+
+- Cuando se llega a EOF de input de usuario y hay:
+- Contexto abierto
+- Termina en \
+- Termina en operdor de continuación (&&, ||, |, |&)

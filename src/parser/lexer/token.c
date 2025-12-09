@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:01:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 00:20:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:13:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,51 +34,14 @@
 
 	t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line) {
 		t_token *token = malloc(sizeof(t_token));
-
-		lexer->right_space = isspace(peek(lexer, 0)) || peek(lexer, 0) == '\0';
 		token->type = type;
 		token->value = value;
-		token->right_space = lexer->right_space;
+		token->right_space = lexer->right_space = isspace(peek(lexer, 0)) || peek(lexer, 0) == '\0';
 		token->filename = ft_strdup(lexer->filename);
 		token->line = line;
 		token->full_line = full_line;
 
 		return (token);
-	}
-
-#pragma endregion
-
-#pragma region "Get"
-
-	t_token *token_get(t_lexer *lexer) {
-		if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
-
-		if (peek(lexer, 0) == '\n') {
-			t_string	string;
-			int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
-			char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
-			string_init(&string);
-			string_append(&string, advance(lexer));
-			return (token_create(lexer, TOKEN_NEWLINE, string.value, line, full_line));
-		}
-
-		if (peek(lexer, 0)) {
-			t_token *token = NULL;
-			if ((token = variables(lexer)))		return (token);
-			if ((token = expansion(lexer)))		return (token);
-			// if ((token = grouping(lexer)))		return (token);
-			if ((token = operator(lexer)))		return (token);
-			if ((token = redirection(lexer)))	return (token);
-			// if ((token = keyword(lexer)))		return (token);
-			if ((token = word(lexer)))			return (token);
-		}
-
-		if (!lexer->interactive || lexer->append_inline) {
-			lexer_append(lexer);
-			if (lexer->input) return (token_get(lexer));
-		}
-
-		return (token_create(lexer, TOKEN_EOF, NULL, lexer->line + 1, NULL));
 	}
 
 #pragma endregion

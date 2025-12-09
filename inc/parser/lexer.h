@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 20:36:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:09:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,17 @@
 
 		enum e_token_type {
 			TOKEN_WORD,
-			TOKEN_CMD_SUB,				// $(
+			TOKEN_BACKTICK,				// `
+			TOKEN_ARITH,				// ((
 			TOKEN_ARITH_SUB,			// $((
+			TOKEN_SUBSHELL,				// (
+			TOKEN_CMD_SUB,				// $(
+			TOKEN_PROCESS_SUB_IN,		// <(
+			TOKEN_PROCESS_SUB_OUT,		// >(
+			TOKEN_GROUP,				// {[isspace]
+			TOKEN_CONDITIONAL,			// [[
 			TOKEN_PARAM_EXP,			// ${
 			TOKEN_BRACE,				// {
-			TOKEN_GROUP,				// {[isspace]
-			TOKEN_SUBSHELL,				// (
-			TOKEN_ARITH,				// ((
 
 			TOKEN_REDIRECT_IN,			// <	(accept fd number)
 			TOKEN_REDIRECT_OUT,			// >	(accept fd number)
@@ -88,12 +92,21 @@
 			typedef struct s_token {
 				int				type;
 				char			*value;
-				int				left_space;
 				int				right_space;
+				char			*full_line;
 				char			*filename;
 				int				line;
-				char			*full_line;
 			} t_token;
+
+		#pragma endregion
+
+		#pragma region "Stack"
+		
+			typedef struct s_stack {
+				char			*value;
+				size_t			len;
+				size_t			capacity;
+			} t_stack;
 
 		#pragma endregion
 
@@ -134,9 +147,7 @@
 				char			*filename;
 				int				line;
 				t_callback		more_input;
-				char			*stack;
-				size_t			stack_size;
-				size_t			stack_capacity;
+				t_stack			stack;
 			} t_lexer;
 
 		#pragma endregion
@@ -148,12 +159,15 @@
 #pragma region "Methods"
 
 	// Containers
+	char	*stack_get(t_lexer *lexer);
 	char	stack_top(t_lexer *lexer);
 	char	stack_pop(t_lexer *lexer);
 	void	stack_push(t_lexer *lexer, char c);
+
 	void	buffer_pop(t_lexer *lexer);
 	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
 	void	buffer_push_user(t_lexer *lexer, char *value);
+
 	void	string_append(t_string *string, char c);
 	void	string_init(t_string *string);
 
@@ -172,15 +186,13 @@
 	char	advance(t_lexer *lexer);
 
 	// Utils
-	char	handle_quotes(t_lexer *lexer, t_string *string);
+	int		handle_quotes(t_lexer *lexer, t_string *string);
+	char	handle_quotes2(t_lexer *lexer, t_string *string);
 	int		is_operator(char c);
 
 	// Expansion
 	t_token *variables(t_lexer *lexer);
 	t_token	*expansion(t_lexer *lexer);
-
-	// Grouping
-	t_token	*grouping(t_lexer *lexer);
 
 	// Operator
 	t_token	*operator(t_lexer *lexer);

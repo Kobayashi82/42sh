@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/06 18:57:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 23:18:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/09 12:16:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@
 
 #pragma region "Methods"
 
-	void	syntax_error(int type, const char *msg, const char c);
+	void	syntax_error(int type, const char *msg);
 	t_token	*token_advance();
 
-	t_ast	*sub_parse(char *content);
+	t_ast	*sub_parse(int type, char *content);
 	t_ast	*parse_simple_command();
 	t_ast	*parse_list();
 	t_ast	*parse(char *input, t_callback callback, int interactive, char *filename, int line);

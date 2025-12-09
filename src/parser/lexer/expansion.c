@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 00:25:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 00:05:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 				if (stack_top(lexer) == '`') {
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else {
 					stack_push(lexer, '`');
@@ -57,7 +57,7 @@
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else if (stack_top(lexer) != 'a' && stack_top(lexer) != 'A') return (2);
 			}
@@ -98,12 +98,12 @@
 				if (stack_top(lexer) == 's' || stack_top(lexer) == 'S' || stack_top(lexer) == 'i' || stack_top(lexer) == 'o') {
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else if (stack_top(lexer) == 'a' || stack_top(lexer) == 'A') {
-					if (stack_top(lexer) == 'A') lexer->stack[lexer->stack_size - 1] = 'S';
-					if (stack_top(lexer) == 'a') lexer->stack[lexer->stack_size - 1] = 's';
-					if (lexer->stack_size == 1) {
+					if (stack_top(lexer) == 'A') lexer->stack.value[lexer->stack.len - 1] = 'S';
+					if (stack_top(lexer) == 'a') lexer->stack.value[lexer->stack.len - 1] = 's';
+					if (lexer->stack.len == 1) {
 						if (stack_top(lexer) == 'S') *type = TOKEN_SUBSHELL;
 						if (stack_top(lexer) == 's') *type = TOKEN_WORD;
 					}
@@ -171,17 +171,17 @@
 				if (stack_top(lexer) == 'p') {
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else if (stack_top(lexer) == 'G' && *group_can_end) {
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else if (stack_top(lexer) == 'G') {
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) {
+					if (!lexer->stack.len) {
 						*type = TOKEN_WORD;
 						return (2);
 					}
@@ -230,7 +230,7 @@
 					stack_pop(lexer);
 					string_append(string, advance(lexer));
 					string_append(string, advance(lexer));
-					if (!lexer->stack_size) return (2);
+					if (!lexer->stack.len) return (2);
 					return (1);
 				} else if (stack_top(lexer) != ']') return (2);
 			}
@@ -373,7 +373,7 @@
 
 		while (peek(lexer, 0) || (lexer->input && stack_top(lexer))) {
 
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, &string); continue; }
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes2(lexer, &string); continue; }
 			if (continuation(lexer, &string, &group_can_end))						  continue;
 
 			int result = 0;
@@ -389,6 +389,8 @@
 
 			string_append(&string, advance(lexer));
 		}
+
+		if (stack_top(lexer)) return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
 
 		return (token_create(lexer, type, string.value, line, full_line));
 	}
