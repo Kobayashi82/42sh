@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:47:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:05:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,12 +204,13 @@
 		if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
 
 		if (peek(lexer, 0) == '\n') {
-			t_string	string;
 			int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 			char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
-			string_init(&string);
-			segment_append(segment,advance(lexer));
-			return (token_create(lexer, TOKEN_NEWLINE, string.value, line, full_line));
+			
+			t_segment *segment = segment_new(NULL);
+			segment_append(segment, advance(lexer));
+
+			return (token_create(lexer, TOKEN_NEWLINE, segment, line, full_line));
 		}
 
 		if (peek(lexer, 0)) {

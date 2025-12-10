@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 00:12:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:09:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,8 @@
 
 		if (g_parser->token->type >= TOKEN_BACKTICK && g_parser->token->type <= TOKEN_CONDITIONAL) {
 			t_ast *node = ast_create(g_parser->token->type);
-			char *content = g_parser->token->value;
-			g_parser->token->value = NULL;
+			char *content = g_parser->token->segment->string.value;
+			g_parser->token->segment->string.value = NULL;
 			token_advance();
 
 			node->child = sub_parse(g_parser->token->type, content);
