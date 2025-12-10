@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:09:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:21:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -344,5 +344,3 @@
 	}
 
 #pragma endregion
-
-// Si termina en && u otro parecido, pero no hay mas lineas, error (no interactivo)

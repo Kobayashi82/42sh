@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/08 22:38:11 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/10 16:20:18 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -98,8 +98,8 @@ SRCS	=	main/main.c										\
 															\
 			parser/lexer/container.c						\
 			parser/lexer/expansion.c						\
+			parser/lexer/input.c							\
 			parser/lexer/keyword.c							\
-			parser/lexer/lexer.c							\
 			parser/lexer/operator.c							\
 			parser/lexer/redirection.c						\
 			parser/lexer/token.c							\

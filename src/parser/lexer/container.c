@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:39:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:16:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@
 
 #pragma region "Segment"
 
-	#pragma region "Append"
+	#pragma region "Empty"
 
 		int segment_empty(t_segment *segment) {
 			while (segment) {
@@ -97,6 +97,10 @@
 
 			return (1);
 		}
+
+	#pragma endregion
+
+	#pragma region "Last Value"
 
 		char *segment_last_value(t_segment *segment) {
 			if (!segment) return (NULL);
@@ -108,6 +112,10 @@
 			return (curr->string.value);
 		}
 
+	#pragma endregion
+
+	#pragma region "Free"
+
 		void segment_free(t_segment *segment) {
 			while (segment) {
 				t_segment *curr = segment;
@@ -116,6 +124,10 @@
 				free(curr);
 			}
 		}
+
+	#pragma endregion
+
+	#pragma region "Append"
 
 		void segment_append(t_segment *segment, char c) {
 			if (!segment) return;
@@ -132,6 +144,10 @@
 			curr->string.value[curr->string.len++] = c;
 			curr->string.value[curr->string.len] = '\0';
 		}
+
+	#pragma endregion
+
+	#pragma region "New"
 
 		t_segment *segment_new(t_segment *segment) {
 			t_segment *curr = segment;
