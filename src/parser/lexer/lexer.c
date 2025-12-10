@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 00:13:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 14:47:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,7 +208,7 @@
 			int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 			char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 			string_init(&string);
-			string_append(&string, advance(lexer));
+			segment_append(segment,advance(lexer));
 			return (token_create(lexer, TOKEN_NEWLINE, string.value, line, full_line));
 		}
 

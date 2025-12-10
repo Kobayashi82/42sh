@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 00:07:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 14:39:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,29 +85,70 @@
 
 #pragma endregion
 
-#pragma region "String"
+#pragma region "Segment"
 
 	#pragma region "Append"
 
-		void string_append(t_string *string, char c) {
-			if (string->len + 1 >= string->capacity) {
-				string->capacity *= 2;
-				string->value = realloc(string->value, string->capacity);
+		int segment_empty(t_segment *segment) {
+			while (segment) {
+				if (segment->string.len) return (0);
+				segment = segment->next;
 			}
 
-			string->value[string->len++] = c;
-			string->value[string->len] = '\0';
+			return (1);
 		}
 
-	#pragma endregion
+		char *segment_last_value(t_segment *segment) {
+			if (!segment) return (NULL);
 
-	#pragma region "Initialize"
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
 
-		void string_init(t_string *string) {
-			string->len = 0;
-			string->capacity = 32;
-			string->value = malloc(string->capacity);
-			string->value[0] = '\0';
+			return (curr->string.value);
+		}
+
+		void segment_free(t_segment *segment) {
+			while (segment) {
+				t_segment *curr = segment;
+				segment = segment->next;
+				free(curr->string.value);
+				free(curr);
+			}
+		}
+
+		void segment_append(t_segment *segment, char c) {
+			if (!segment) return;
+
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			if (curr->string.len + 1 >= curr->string.capacity) {
+				curr->string.capacity *= 2;
+				curr->string.value = realloc(curr->string.value, curr->string.capacity);
+			}
+
+			curr->string.value[curr->string.len++] = c;
+			curr->string.value[curr->string.len] = '\0';
+		}
+
+		t_segment *segment_new(t_segment *segment) {
+			t_segment *curr = segment;
+			while (curr && curr->next)
+				curr = curr->next;
+
+			t_segment *new_segment = malloc(sizeof(t_segment));
+			new_segment->prev = curr;
+			new_segment->prev = NULL;
+			new_segment->quoted = 0;
+			new_segment->type = 0;
+			new_segment->string.len = 0;
+			new_segment->string.capacity = 32;
+			new_segment->string.value = malloc(new_segment->string.capacity);
+			new_segment->string.value[0] = '\0';
+
+			return (curr);
 		}
 
 	#pragma endregion
