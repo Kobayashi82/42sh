@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:31:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:06:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:47:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,60 +27,60 @@
 		t_segment *segment = segment_new(NULL);
 
 		if (c == '<' && peek(lexer, 1) == '<' && peek(lexer, 2) == '<') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_HERESTRING, segment, line, full_line));
 		}
 		if (c == '<' && peek(lexer, 1) == '<') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_HEREDOC, segment, line, full_line));
 		}
 		if (c == '<' && peek(lexer, 1) == '>') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_IN_OUT, segment, line, full_line));
 		}
 		if (c == '<' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_DUP_IN, segment, line, full_line));
 		}
 		if (c == '<') {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_IN, segment, line, full_line));
 		}
 
 		if (c == '>' && peek(lexer, 1) == '>') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_APPEND, segment, line, full_line));
 		}
 		if (c == '>' && peek(lexer, 1) == '|') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_FORCE_OUT, segment, line, full_line));
 		}
 		if (c == '>' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_DUP_OUT, segment, line, full_line));
 		}
 		if (c == '>') {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_OUT, segment, line, full_line));
 		}
 
 		if (c == '&' && peek(lexer, 1) == '>' && peek(lexer, 1) == '>') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_APPEND_ALL, segment, line, full_line));
 		}
 		if (c == '&' && peek(lexer, 1) == '>') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_REDIRECT_OUT_ALL, segment, line, full_line));
 		}
 

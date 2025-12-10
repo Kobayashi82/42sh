@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:11:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:24:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,9 @@
 				if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
 				buffer_push(lexer, alias_content, value);
 				segment_free(segment);
+				free(full_line);
 				t_token *token = token_get(lexer);
 				lexer->can_expand_alias = expand_next;
-				free(full_line);
 				return (token);
 			}
 		}
@@ -74,18 +74,19 @@
 #pragma region "Word"
 
 	t_token *word(t_lexer *lexer) {
-		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
-		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
-		char		c;
+		int		line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
+		char	*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
+		char	c;
 
 		t_segment *segment = segment_new(NULL);
 
-		while ((c = peek(lexer, 0)) || !segment_empty(segment)) {
+		while ((c = peek(lexer, 0))) {
 
 			if (c == '\'' || c == '"') {
 				if (stack_top(lexer) != c && !segment_empty(segment))
-					return (return_word(lexer, segment, full_line, line));
+					segment_new(segment);
 				handle_quotes(lexer, segment);
+				if (peek(lexer, 0)) segment_new(segment);
 				continue;
 			}
 
@@ -101,19 +102,23 @@
 				lexer_append(lexer);
 				continue;
 			} else if (c == '\\') {
-				segment_append(segment,advance(lexer));
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
+				segment_append(segment, advance(lexer));
 				continue;
 			}
 
-			if (is_operator(c) && !(c == '{' && (!isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0'))) {
+			if (is_operator(c) && !(c == '{' && !isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0')) {
 				return (return_word(lexer, segment, full_line, line));
 			}
 
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 		}
 
-		// free(full_line);
+		printf("Esto: %c\n", stack_top(lexer));
+		if (!segment_empty(segment)) {
+			return (return_word(lexer, segment, full_line, line));
+		}
+
 		segment_free(segment);
 		return (token_create(lexer, TOKEN_EOF, NULL, line, full_line));
 	}

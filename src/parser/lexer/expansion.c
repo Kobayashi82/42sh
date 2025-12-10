@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:04:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:38:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,7 +243,13 @@
 
 	#pragma region "Is Expansion"
 
-		static int is_expansion(t_lexer *lexer) {
+		static int is_expansion(t_lexer *lexer, int from_quoted) {
+			if (from_quoted) {
+				if (peek(lexer, 0) == '`')															return (1);
+				if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '(' || peek(lexer, 1) == '{'))		return (1);
+
+				return (0);
+			}
 
 			if (peek(lexer, 0) == '`')															return (1);
 			if (peek(lexer, 0) == '(')															return (1);
@@ -360,12 +366,12 @@
 	// ${...}			parameter expansion
 	// [[...]]			conditional expression
 
-	t_token *expansion(t_lexer *lexer) {
+	t_token *expansion(t_lexer *lexer, int from_quoted) {
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 		int			type, group_can_end = 0;
 
-		if (!is_expansion(lexer)) return (free(full_line), NULL);
+		if (!is_expansion(lexer, from_quoted)) return (free(full_line), NULL);
 
 		t_segment *segment = segment_new(NULL);
 		start_context(lexer, segment, &type);
@@ -386,7 +392,7 @@
 			if ((result = parameter_expansion(lexer, segment)))						{ if (result == 1) continue; if (result == 2) break; }
 			if ((result = conditional_expression(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }
 
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 		}
 
 		if (stack_top(lexer)) return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
@@ -402,51 +408,53 @@
 	// $'...'	ANSI-C quoting
 	// $VAR		variable
 
-	t_token *variables(t_lexer *lexer) {
+	t_token *variables(t_lexer *lexer, int from_quoted) {
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 
 		t_segment *segment = segment_new(NULL);
 
- 		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '\'' || peek(lexer, 1) == '"')) {
-			segment_append(segment,advance(lexer));
-			handle_quotes(lexer, segment);
-			return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+		if (!from_quoted) {
+			if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '\'' || peek(lexer, 1) == '"')) {
+				segment_append(segment, advance(lexer));
+				handle_quotes(lexer, segment);
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+			}
 		}
 
 		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '$' || (!is_operator(peek(lexer, 1)) && peek(lexer, 1) != '}'))) {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 
 			if (peek(lexer, 0) == '$') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '#') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '@') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '*') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '!') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '?') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '-') {
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (isdigit(peek(lexer, 0))) {
-				while (isdigit(peek(lexer, 0))) segment_append(segment,advance(lexer));
+				while (isdigit(peek(lexer, 0))) segment_append(segment, advance(lexer));
 				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 
@@ -464,7 +472,7 @@
 					continue;
 				} else if (peek(lexer, 0) == '\\') break;
 
-				segment_append(segment,advance(lexer));
+				segment_append(segment, advance(lexer));
 			}
 
 			return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
