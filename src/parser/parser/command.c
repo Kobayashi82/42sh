@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 17:01:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:09:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@
 
 			if (g_parser->token->type != TOKEN_WORD) return (1);
 
-			char *file = g_parser->token->value;
-			g_parser->token->value = NULL;
+			char *file = g_parser->token->segment->string.value;
+			g_parser->token->segment->string.value = NULL;
 
 			redir_create(redirs, type, fd, file);
 
@@ -163,14 +163,14 @@
 		while (g_parser->token->type == TOKEN_WORD || is_redirect(g_parser->token->type)) {
 
 			if (g_parser->token->type == TOKEN_WORD) {
-				char *equal = strchr(g_parser->token->value, '=');
-				if (!cmd_found && equal && equal != g_parser->token->value)
-					assign_create(&node->assign, g_parser->token->value);
+				char *equal = strchr(g_parser->token->segment->string.value, '=');
+				if (!cmd_found && equal && equal != g_parser->token->segment->string.value)
+					assign_create(&node->assign, g_parser->token->segment->string.value);
 				else {
 					cmd_found = 1;
-					args_create(&node->args, g_parser->token->value, g_parser->token->right_space);
+					args_create(&node->args, g_parser->token->segment->string.value, g_parser->token->right_space);
 				}
-				g_parser->token->value = NULL;
+				g_parser->token->segment->string.value = NULL;
 			} else {
 				if (parse_redirect(&node->redirs, &node->args)) {
 					syntax_error(0, "archivo necesario...");

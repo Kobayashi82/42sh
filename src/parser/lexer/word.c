@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:57:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:11:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,11 @@
 #pragma region "Return Word"
 
 	t_token *return_word(t_lexer *lexer, t_segment *segment, char *full_line, int line) {
+		if (!segment) return (NULL);
+
 		if (!segment->string.len) {
 			free(full_line);
-			free_segment(segment);
+			segment_free(segment);
 			return (token_get(lexer));
 		}
 
@@ -54,7 +56,7 @@
 				int expand_next = 0;
 				if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
 				buffer_push(lexer, alias_content, value);
-				free_segment(segment);
+				segment_free(segment);
 				t_token *token = token_get(lexer);
 				lexer->can_expand_alias = expand_next;
 				free(full_line);

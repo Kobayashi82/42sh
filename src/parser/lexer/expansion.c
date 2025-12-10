@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:51:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:04:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 
 	#pragma region "Backticks"
 
-		static int backticks(t_lexer *lexer, t_string *string) {
+		static int backticks(t_lexer *lexer, t_segment *segment) {
 			// `
 			if (peek(lexer, 0) == '`') {
 				if (stack_top(lexer) == '`') {
@@ -43,7 +43,7 @@
 
 	#pragma region "Arithmetic"
 
-		static int arithmetic(t_lexer *lexer, t_string *string) {
+		static int arithmetic(t_lexer *lexer, t_segment *segment) {
 			// ((
 			if (peek(lexer, 0) == '(' && peek(lexer, 1) == '(') {
 				stack_push(lexer, 'A');
@@ -69,7 +69,7 @@
 
 	#pragma region "Arithmetic Expansion"
 
-		static int arithmetic_expansion(t_lexer *lexer, t_string *string) {
+		static int arithmetic_expansion(t_lexer *lexer, t_segment *segment) {
 			// $((
 			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '(' && peek(lexer, 2) == '(') {
 				stack_push(lexer, 'a');
@@ -86,7 +86,7 @@
 
 	#pragma region "Subshell"
 
-		static int subshell(t_lexer *lexer, t_string *string, int *type) {
+		static int subshell(t_lexer *lexer, t_segment *segment, int *type) {
 			// (
 			if (peek(lexer, 0) == '(') {
 				stack_push(lexer, 'S');
@@ -119,7 +119,7 @@
 
 	#pragma region "Command Substitution"
 
-		static int command_substitution(t_lexer *lexer, t_string *string) {
+		static int command_substitution(t_lexer *lexer, t_segment *segment) {
 			// (
 			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '(') {
 				stack_push(lexer, 's');
@@ -135,7 +135,7 @@
 
 	#pragma region "Process Substitution"
 
-		static int process_substitution(t_lexer *lexer, t_string *string) {
+		static int process_substitution(t_lexer *lexer, t_segment *segment) {
 			// <(
 			if (peek(lexer, 0) == '<' && peek(lexer, 1) == '(') {
 				stack_push(lexer, 'i');
@@ -158,7 +158,7 @@
 
 	#pragma region "Command Group"
 
-		static int command_group(t_lexer *lexer, t_string *string, int *type, int *group_can_end) {
+		static int command_group(t_lexer *lexer, t_segment *segment, int *type, int *group_can_end) {
 			// {
 			if (peek(lexer, 0) == '{' && (isspace(peek(lexer, 1)) || peek(lexer, 1) == '\0')) {
 				stack_push(lexer, 'G');
@@ -200,7 +200,7 @@
 
 	#pragma region "Parameter Expansion"
 
-		static int parameter_expansion(t_lexer *lexer, t_string *string) {
+		static int parameter_expansion(t_lexer *lexer, t_segment *segment) {
 			// ${
 			if (peek(lexer, 0) == '$' && peek(lexer, 1) == '{') {
 				stack_push(lexer, 'p');
@@ -216,7 +216,7 @@
 
 	#pragma region "Conditional Expression"
 
-		static int conditional_expression(t_lexer *lexer, t_string *string) {
+		static int conditional_expression(t_lexer *lexer, t_segment *segment) {
 			// [[
 			if (peek(lexer, 0) == '[' && peek(lexer, 1) == '[') {
 				stack_push(lexer, 'C');
@@ -259,7 +259,7 @@
 
 	#pragma region "Start Context"
 
-		static void start_context(t_lexer *lexer, t_string *string, int *type) {
+		static void start_context(t_lexer *lexer, t_segment *segment, int *type) {
 			if (peek(lexer, 0) == '`') {
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, '`');
@@ -316,7 +316,7 @@
 
 	#pragma region "Continuation"
 
-		static int continuation(t_lexer *lexer, t_string *string, int *group_can_end) {
+		static int continuation(t_lexer *lexer, t_segment *segment, int *group_can_end) {
 			if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\n' && peek(lexer, 2) == '\0') {
 				advance(lexer);
 				advance(lexer);
@@ -361,38 +361,37 @@
 	// [[...]]			conditional expression
 
 	t_token *expansion(t_lexer *lexer) {
-		t_string	string;
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 		int			type, group_can_end = 0;
 
 		if (!is_expansion(lexer)) return (free(full_line), NULL);
 
-		string_init(&string);
-		start_context(lexer, &string, &type);
+		t_segment *segment = segment_new(NULL);
+		start_context(lexer, segment, &type);
 
 		while (peek(lexer, 0) || (lexer->input && stack_top(lexer))) {
 
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, &string); continue; }
-			if (continuation(lexer, &string, &group_can_end))						  continue;
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, segment); continue; }
+			if (continuation(lexer, segment, &group_can_end))						  continue;
 
 			int result = 0;
-			if ((result = backticks(lexer, &string)))								{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic(lexer, &string)))								{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = arithmetic_expansion(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = subshell(lexer, &string, &type)))							{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_substitution(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = process_substitution(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = command_group(lexer, &string, &type, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = parameter_expansion(lexer, &string)))						{ if (result == 1) continue; if (result == 2) break; }
-			if ((result = conditional_expression(lexer, &string)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = backticks(lexer, segment)))								{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic(lexer, segment)))								{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = arithmetic_expansion(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = subshell(lexer, segment, &type)))							{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_substitution(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = process_substitution(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = command_group(lexer, segment, &type, &group_can_end)))	{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = parameter_expansion(lexer, segment)))						{ if (result == 1) continue; if (result == 2) break; }
+			if ((result = conditional_expression(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }
 
 			segment_append(segment,advance(lexer));
 		}
 
-		if (stack_top(lexer)) return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+		if (stack_top(lexer)) return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 
-		return (token_create(lexer, type, string.value, line, full_line));
+		return (token_create(lexer, type, segment, line, full_line));
 	}
 
 #pragma endregion
@@ -404,16 +403,15 @@
 	// $VAR		variable
 
 	t_token *variables(t_lexer *lexer) {
-		t_string	string;
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 
-		string_init(&string);
+		t_segment *segment = segment_new(NULL);
 
  		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '\'' || peek(lexer, 1) == '"')) {
 			segment_append(segment,advance(lexer));
-			handle_quotes(lexer, &string);
-			return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+			handle_quotes(lexer, segment);
+			return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 		}
 
 		if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '$' || (!is_operator(peek(lexer, 1)) && peek(lexer, 1) != '}'))) {
@@ -421,35 +419,35 @@
 
 			if (peek(lexer, 0) == '$') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '#') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '@') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '*') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '!') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '?') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '-') {
 				segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 			if (isdigit(peek(lexer, 0))) {
 				while (isdigit(peek(lexer, 0))) segment_append(segment,advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 			}
 
 			while (!is_operator(peek(lexer, 0)) && peek(lexer, 0) != '\'' && peek(lexer, 0) != '"' && peek(lexer, 0) != '}') {
@@ -469,11 +467,11 @@
 				segment_append(segment,advance(lexer));
 			}
 
-			return (token_create(lexer, TOKEN_WORD, string.value, line, full_line));
+			return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 		}
 
 		free(full_line);
-		free(string.value);
+		segment_free(segment);
 		return (NULL);
 	}
 

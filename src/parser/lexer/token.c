@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:01:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:08:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:07:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,7 @@
 
 	void token_free(t_token *token) {
 		if (token) {
-			if (token->segment) {
-				free(token->segment->value);
-				free(token->segment);
-			}
+			segment_free(token->segment);
 			free(token->filename);
 			free(token->full_line);
 			free(token);

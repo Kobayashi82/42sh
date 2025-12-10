@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 14:40:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:04:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,7 @@
 	char	advance(t_lexer *lexer);
 
 	// Utils
-	char	handle_quotes(t_lexer *lexer, t_string *string);
+	char	handle_quotes(t_lexer *lexer, t_segment *segment);
 	int		is_operator(char c);
 
 	// Expansion

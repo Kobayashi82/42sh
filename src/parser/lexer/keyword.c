@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 15:41:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:03:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,17 @@
 #pragma region "Keyword"
 
 	t_token *keyword(t_lexer *lexer) {
-		t_string	string;
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 		char		c = peek(lexer, 0);
 		
-		string_init(&string);
+		t_segment *segment = segment_new(NULL);
 
 		(void)c;
 		(void)line;
 
 		free(full_line);
-		free(string.value);
+		segment_free(segment);
 		return (NULL);
 	}
 
