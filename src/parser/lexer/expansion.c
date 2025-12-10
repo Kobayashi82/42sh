@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 00:05:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 13:56:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,7 +373,7 @@
 
 		while (peek(lexer, 0) || (lexer->input && stack_top(lexer))) {
 
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes2(lexer, &string); continue; }
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, &string); continue; }
 			if (continuation(lexer, &string, &group_can_end))						  continue;
 
 			int result = 0;
