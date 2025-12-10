@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 13:54:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 14:56:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,31 @@
 
 #pragma region "Handle Quotes"
 
-	char handle_quotes(t_lexer *lexer, t_string *string) {
+	char handle_quotes(t_lexer *lexer, t_segment *segment) {
 		char c;
 
+		segment_new(segment);
 		while ((c = peek(lexer, 0)) || stack_top(lexer)) {
 			// Single Quoted
 			if (stack_top(lexer) == '\'') {
 				if (c == '\'') {
 					stack_pop(lexer);
-					string_append(string, advance(lexer));
+					segment_append(segment, advance(lexer));
+					segment->quoted = '\'';
+					segment->type = 1; // Literal
 					break;
 				} else if (c == '\0') {
 					lexer_append(lexer);
 					if (!lexer->input) break;
-					string_append(string, '\n');
+					segment_append(segment, '\n');
 					continue;
 				} else {
-					string_append(string, advance(lexer));
+					segment_append(segment, advance(lexer));
 					continue;
 				}
 			} else if (c == '\'') {
 				stack_push(lexer,'\'');
-				string_append(string, advance(lexer));
+				segment_append(segment, advance(lexer));
 				continue;
 			}
 
@@ -61,7 +64,7 @@
 			if (stack_top(lexer) == '"') {
 				if (c == '"') {
 					stack_pop(lexer);
-					string_append(string, advance(lexer));
+					segment_append(segment, advance(lexer));
 					break;
 				} else if (c == '\\' && peek(lexer, 1) == '\0') {
 					advance(lexer);
@@ -69,22 +72,22 @@
 					lexer_append(lexer);
 					continue;
 				} else if (c == '\\') {
-					string_append(string, advance(lexer));
-					string_append(string, advance(lexer));
+					segment_append(segment, advance(lexer));
+					segment_append(segment, advance(lexer));
 					continue;
 				} else if (c == '\0') {
-					string_append(string, '\n');
+					segment_append(segment, '\n');
 					lexer_append(lexer);
 					continue;
 				} else {
-					string_append(string, advance(lexer));
+					segment_append(segment, advance(lexer));
 					continue;
 				}
 			} else if (c == '"') {
 				stack_push(lexer,'"');
-				string_append(string, advance(lexer));
+				segment_append(segment, advance(lexer));
 				continue;
-			}		
+			}
 
 			break;
 		}

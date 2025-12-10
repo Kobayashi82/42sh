@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 13:56:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 14:40:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,10 +88,24 @@
 	#pragma region "Structures"
 
 		#pragma region "Token"
-			
+
+			typedef struct s_string {
+				char			*value;
+				size_t			len;
+				size_t			capacity;
+			} t_string;
+
+			typedef struct s_segment {
+				t_string			string;
+				char				quoted;
+				int					type;
+				struct s_segment	*prev;
+				struct s_segment	*next;
+			} t_segment;
+
 			typedef struct s_token {
 				int				type;
-				char			*value;
+				t_segment		*segment;
 				int				right_space;
 				char			*full_line;
 				char			*filename;
@@ -107,16 +121,6 @@
 				size_t			len;
 				size_t			capacity;
 			} t_stack;
-
-		#pragma endregion
-
-		#pragma region "String"
-		
-			typedef struct s_string {
-				char			*value;
-				size_t			len;
-				size_t			capacity;
-			} t_string;
 
 		#pragma endregion
 
@@ -168,12 +172,15 @@
 	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
 	void	buffer_push_user(t_lexer *lexer, char *value);
 
-	void	string_append(t_string *string, char c);
-	void	string_init(t_string *string);
+	int			segment_empty(t_segment *segment);
+	char		*segment_last_value(t_segment *segment);
+	void		segment_free(t_segment *segment);
+	void		segment_append(t_segment *segment, char c);
+	t_segment	*segment_new(t_segment *segment);
 
 	// Token
 	void	token_free(t_token *token);
-	t_token *token_create(t_lexer *lexer, int type, char *value, int line, char *full_line);
+	t_token *token_create(t_lexer *lexer, int type, t_segment *segment, int line, char *full_line);
 	t_token	*token_get(t_lexer *lexer);
 
 	// Input

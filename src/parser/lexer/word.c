@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 13:56:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 14:57:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,20 +39,22 @@
 
 #pragma region "Return Word"
 
-	t_token *return_word(t_lexer *lexer, t_string *string, char *full_line, int line) {
-		if (!string->len) {
+	t_token *return_word(t_lexer *lexer, t_segment *segment, char *full_line, int line) {
+		if (!segment->string.len) {
 			free(full_line);
-			free(string->value);
+			free_segment(segment);
 			return (token_get(lexer));
 		}
 
-		if (expand_alias(lexer, string->value)) {
-			char *alias_content = alias_find_value(string->value);
+		char *value = segment_last_value(segment);
+
+		if (expand_alias(lexer, value)) {
+			char *alias_content = alias_find_value(value);
 			if (alias_content) {
 				int expand_next = 0;
 				if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);
-				buffer_push(lexer, alias_content, string->value);
-				free(string->value);
+				buffer_push(lexer, alias_content, value);
+				free_segment(segment);
 				t_token *token = token_get(lexer);
 				lexer->can_expand_alias = expand_next;
 				free(full_line);
@@ -62,7 +64,7 @@
 
 		lexer->can_expand_alias = 0;
 		lexer->command_position = 0;
-		return (token_create(lexer, TOKEN_WORD, string->value, line, full_line));
+		return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
 	}
 
 #pragma endregion
@@ -70,17 +72,18 @@
 #pragma region "Word"
 
 	t_token *word(t_lexer *lexer) {
-		t_string	string;
 		int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 		char		c;
 
-		string_init(&string);
+		t_segment *segment = segment_new(NULL);
 
-		while ((c = peek(lexer, 0)) || string.len) {
+		while ((c = peek(lexer, 0)) || !segment_empty(segment)) {
 
 			if (c == '\'' || c == '"') {
-				handle_quotes(lexer, &string);
+				if (stack_top(lexer) != c && !segment_empty(segment))
+					return (return_word(lexer, segment, full_line, line));
+				handle_quotes(lexer, segment);
 				continue;
 			}
 
@@ -96,20 +99,20 @@
 				lexer_append(lexer);
 				continue;
 			} else if (c == '\\') {
-				string_append(&string, advance(lexer));
-				string_append(&string, advance(lexer));
+				segment_append(segment,advance(lexer));
+				segment_append(segment,advance(lexer));
 				continue;
 			}
 
 			if (is_operator(c) && !(c == '{' && (!isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0'))) {
-				return (return_word(lexer, &string, full_line, line));
+				return (return_word(lexer, segment, full_line, line));
 			}
 
-			string_append(&string, advance(lexer));
+			segment_append(segment,advance(lexer));
 		}
 
 		// free(full_line);
-		free(string.value);
+		segment_free(segment);
 		return (token_create(lexer, TOKEN_EOF, NULL, line, full_line));
 	}
 
