@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 21:31:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 17:38:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,8 +153,14 @@
 					printf("args:\n");
 					t_args *arg = node->args;
 					while (arg) {
-						ast_print_indent(level + 2);
-						printf("- \"%s\" %s\n", arg->value, arg->quoted ? "(quoted)" : "");
+						t_segment *curr = arg->segment;
+						while (curr) {
+							if (curr->string.value) {
+								ast_print_indent(level + 2);
+								printf("- \"%s\" %s\n", curr->string.value, curr->quoted ? "(quoted)" : "");
+							}
+							curr = curr->next;
+						}
 						arg = arg->next;
 					}
 				}
@@ -212,7 +218,7 @@
 			t_args *arg = node->args;
 			while (arg) {
 				t_args *next = arg->next;
-				if (arg->value) free(arg->value);
+				segment_free(arg->segment);
 				free(arg);
 				arg = next;
 			}

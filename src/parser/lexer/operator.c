@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:06:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:47:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,53 +27,53 @@
 		t_segment *segment = segment_new(NULL);
 
 		if (c == '&' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			if (!lexer->input || ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_AND, segment, line, full_line));
 		}
 		if (c == '&') {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 			if (!lexer->input || ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_BACKGROUND, segment, line, full_line));
 		}
 
 		if (c == '|' && peek(lexer, 1) == '|') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			if (!lexer->input || ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_OR, segment, line, full_line));
 		}
 		if (c == '|' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			if (!lexer->input || ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_PIPE_ALL, segment, line, full_line));
 		}
 		if (c == '|') {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 			if (!lexer->input || ft_isspace_s(lexer->input->value + lexer->input->position)) lexer->append_inline = 2;
 			return (token_create(lexer, TOKEN_PIPE, segment, line, full_line));
 		}
 
 		if (c == ';' && peek(lexer, 1) == ';' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_CONTINUE, segment, line, full_line));
 		}
 		if (c == ';' && peek(lexer, 1) == '&') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_FALLTHROUGH, segment, line, full_line));
 		}
 		if (c == ';' && peek(lexer, 1) == ';') {
-			segment_append(segment,advance(lexer));
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_TERMINATOR, segment, line, full_line));
 		}
 		if (c == ';') {
-			segment_append(segment,advance(lexer));
+			segment_append(segment, advance(lexer));
 			return (token_create(lexer, TOKEN_SEMICOLON, segment, line, full_line));
 		}
 

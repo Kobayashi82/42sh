@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:16:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:09:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,48 @@
 
 	#pragma endregion
 
+	#pragma region "Set Type"
+
+		void segment_set_type(t_segment *segment, int type) {
+			if (!segment) return;
+
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			curr->type = type;
+		}
+
+	#pragma endregion
+
+	#pragma region "Set Quoted"
+
+		void segment_set_quoted(t_segment *segment, char quoted) {
+			if (!segment) return;
+
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			curr->quoted = quoted;
+		}
+
+	#pragma endregion
+
+	void segment_append_token(t_segment *segment, t_token *token, char quoted) {
+		if (!segment || !token || !token->segment) return;
+
+		t_segment *curr = segment;
+		while (curr->next)
+			curr = curr->next;
+
+		curr->next = token->segment;
+		curr->next->prev = curr;
+		curr->next->quoted = quoted;
+		token->segment = NULL;
+		token_free(token);
+	}
+
 	#pragma region "Last Value"
 
 		char *segment_last_value(t_segment *segment) {
@@ -156,13 +198,16 @@
 
 			t_segment *new_segment = malloc(sizeof(t_segment));
 			new_segment->prev = curr;
-			new_segment->prev = NULL;
+			new_segment->next = NULL;
 			new_segment->quoted = 0;
 			new_segment->type = 0;
 			new_segment->string.len = 0;
 			new_segment->string.capacity = 32;
 			new_segment->string.value = malloc(new_segment->string.capacity);
 			new_segment->string.value[0] = '\0';
+
+			if (curr)	curr->next = new_segment;
+			else		curr = new_segment;
 
 			return (curr);
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:04:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 18:17:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,9 @@
 	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
 	void	buffer_push_user(t_lexer *lexer, char *value);
 
+	void		segment_set_type(t_segment *segment, int type);
+	void		segment_set_quoted(t_segment *segment, char quoted);
+	void		segment_append_token(t_segment *segment, t_token *token, char quoted);
 	int			segment_empty(t_segment *segment);
 	char		*segment_last_value(t_segment *segment);
 	void		segment_free(t_segment *segment);
@@ -197,8 +200,8 @@
 	int		is_operator(char c);
 
 	// Expansion
-	t_token *variables(t_lexer *lexer);
-	t_token	*expansion(t_lexer *lexer);
+	t_token *variables(t_lexer *lexer, int from_quoted);
+	t_token	*expansion(t_lexer *lexer, int from_quoted);
 
 	// Operator
 	t_token	*operator(t_lexer *lexer);
