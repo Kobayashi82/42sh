@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 00:09:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 13:56:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,8 +186,7 @@
 	char	advance(t_lexer *lexer);
 
 	// Utils
-	int		handle_quotes(t_lexer *lexer, t_string *string);
-	char	handle_quotes2(t_lexer *lexer, t_string *string);
+	char	handle_quotes(t_lexer *lexer, t_string *string);
 	int		is_operator(char c);
 
 	// Expansion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 17:12:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 13:54:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,54 +32,7 @@
 
 #pragma region "Handle Quotes"
 
-	int handle_quotes(t_lexer *lexer, t_string *string) {
-		char c = peek(lexer, 0);
-
-		if (c == '\'') {
-			while ((c = peek(lexer, 0)) || stack_top(lexer)) {
-				// Single Quoted
-				if (stack_top(lexer) == '\'') {
-					if (c == '\'') {
-						stack_pop(lexer);
-						string_append(string, advance(lexer));
-						break;
-					} else if (c == '\0') {
-						lexer_append(lexer);
-						if (!lexer->input) break;
-						string_append(string, '\n');
-						continue;
-					} else {
-						string_append(string, advance(lexer));
-						continue;
-					}
-				} else if (c == '\'') {
-					stack_push(lexer,'\'');
-					string_append(string, advance(lexer));
-					continue;
-				}
-
-				break;
-			}
-
-			return (1);
-		}
-
-		// Double Quoted
-		if (stack_top(lexer) == '"') {
-			stack_pop(lexer);
-			string_append(string, advance(lexer));
-			return (1);
-		} else if (!string->len) {
-			stack_push(lexer,'"');
-			string_append(string, advance(lexer));
-			return (0);
-		}
-
-		return (1);
-	}
-
-#pragma endregion
-	char handle_quotes2(t_lexer *lexer, t_string *string) {
+	char handle_quotes(t_lexer *lexer, t_string *string) {
 		char c;
 
 		while ((c = peek(lexer, 0)) || stack_top(lexer)) {
@@ -138,3 +91,5 @@
 
 		return (0);
 	}
+
+#pragma endregion
