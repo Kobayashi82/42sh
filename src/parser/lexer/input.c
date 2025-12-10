@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:05:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 16:19:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,41 +195,5 @@
 		}
 
 	#pragma endregion
-
-#pragma endregion
-
-#pragma region "Get"
-
-	t_token *token_get(t_lexer *lexer) {
-		if (!stack_top(lexer)) while (isspace(peek(lexer, 0)) && peek(lexer, 0) != '\n') advance(lexer);
-
-		if (peek(lexer, 0) == '\n') {
-			int			line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
-			char		*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
-			
-			t_segment *segment = segment_new(NULL);
-			segment_append(segment, advance(lexer));
-
-			return (token_create(lexer, TOKEN_NEWLINE, segment, line, full_line));
-		}
-
-		if (peek(lexer, 0)) {
-			t_token *token = NULL;
-			if ((token = variables(lexer)))		return (token);
-			if ((token = expansion(lexer)))		return (token);
-			// if ((token = grouping(lexer)))		return (token);
-			if ((token = operator(lexer)))		return (token);
-			if ((token = redirection(lexer)))	return (token);
-			// if ((token = keyword(lexer)))		return (token);
-			if ((token = word(lexer)))			return (token);
-		}
-
-		if (!lexer->interactive || lexer->append_inline) {
-			lexer_append(lexer);
-			if (lexer->input) return (token_get(lexer));
-		}
-
-		return (token_create(lexer, TOKEN_EOF, NULL, lexer->line + 1, NULL));
-	}
 
 #pragma endregion
