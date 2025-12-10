@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:38:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 22:51:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,11 +328,13 @@
 				advance(lexer);
 				lexer->append_inline = 1;
 				lexer_append(lexer);
+				if (!lexer->input) return (2);
 				return (1);
 			} else if (peek(lexer, 0) == '\\' && peek(lexer, 1) == '\0') {
 				advance(lexer);
 				lexer->append_inline = 1;
 				lexer_append(lexer);
+				if (!lexer->input) return (2);
 				return (1);
 			} else if (peek(lexer, 0) == '\\') {
 				segment_append(segment, advance(lexer));
@@ -344,6 +346,7 @@
 				if (stack_top(lexer) == 'G') *group_can_end = 1;
 				segment_append(segment, '\n');
 				lexer_append(lexer);
+				if (!lexer->input) return (2);
 				return (1);
 			}
 
@@ -376,12 +379,11 @@
 		t_segment *segment = segment_new(NULL);
 		start_context(lexer, segment, &type);
 
-		while (peek(lexer, 0) || (lexer->input && stack_top(lexer))) {
-
-			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, segment); continue; }
-			if (continuation(lexer, segment, &group_can_end))						  continue;
-
+		while (peek(lexer, 0) || stack_top(lexer)) {
 			int result = 0;
+			if (peek(lexer, 0) == '\'' || peek(lexer, 0) == '"')					{ handle_quotes(lexer, segment); continue; }
+
+			if ((result = continuation(lexer, segment, &group_can_end)))			{ if (result == 1) continue; if (result == 2) break; }
 			if ((result = backticks(lexer, segment)))								{ if (result == 1) continue; if (result == 2) break; }
 			if ((result = arithmetic(lexer, segment)))								{ if (result == 1) continue; if (result == 2) break; }
 			if ((result = arithmetic_expansion(lexer, segment)))					{ if (result == 1) continue; if (result == 2) break; }

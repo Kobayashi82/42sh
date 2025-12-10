@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:29:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 22:29:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,11 +164,19 @@
 #pragma region "Parse Command"
 
 	t_ast *parse_command() {
+		if (!g_parser->token) return (NULL);
+
 		if (g_parser->token->type >= TOKEN_BACKTICK && g_parser->token->type <= TOKEN_CONDITIONAL) {
 			t_ast *node = ast_create(g_parser->token->type);
 			char *content = g_parser->token->segment->string.value;
 			g_parser->token->segment->string.value = NULL;
 			token_advance();
+
+			if (stack_top(&g_parser->lexer) && !g_parser->lexer.input) {
+				syntax_error(1, stack_get(&g_parser->lexer));
+				ast_free(&node);
+				return (NULL);
+			}
 
 			node->child = sub_parse(g_parser->token->type, content);
 			if (!node->child) ast_free(&node);

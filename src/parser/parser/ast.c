@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 17:38:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 23:54:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@
 						while (curr) {
 							if (curr->string.value) {
 								ast_print_indent(level + 2);
-								printf("- \"%s\" %s\n", curr->string.value, curr->quoted ? "(quoted)" : "");
+								printf("- %c%s%c\n", curr->quoted, curr->string.value, curr->quoted);
 							}
 							curr = curr->next;
 						}
