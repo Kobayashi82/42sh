@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 17:25:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 22:31:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,11 +173,11 @@
 				}
 				g_parser->token->segment = NULL;
 			} else {
-				if (parse_redirect(&node->redirs, &node->args)) {
-					syntax_error(0, "archivo necesario...");
-					ast_free(&node);
-					return (NULL);
-				}
+				// if (parse_redirect(&node->redirs, &node->args)) {
+				// 	syntax_error(0, "archivo necesario...");
+				// 	ast_free(&node);
+				// 	return (NULL);
+				// }
 			}
 
 			token_advance();

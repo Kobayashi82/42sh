@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:09:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 23:48:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@
 
 		int segment_empty(t_segment *segment) {
 			while (segment) {
-				if (segment->string.len) return (0);
+				if (segment->string.len || segment->quoted) return (0);
 				segment = segment->next;
 			}
 
@@ -135,9 +135,30 @@
 		while (curr->next)
 			curr = curr->next;
 
-		curr->next = token->segment;
-		curr->next->prev = curr;
-		curr->next->quoted = quoted;
+		if (!curr->prev && !curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
+			free(curr->string.value);
+			curr->string.value = token->segment->string.value;
+			curr->string.len = token->segment->string.len;
+			curr->string.capacity = token->segment->string.capacity;
+			curr->next = token->segment->next;
+			curr->quoted = quoted;
+			curr->type = 1;
+			free(token->segment);
+		} else if (!curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
+			t_segment *tmp = curr;
+			token->segment->prev = curr->prev;
+			curr->prev->next = token->segment;
+			curr = token->segment;
+			curr->quoted = quoted;
+			curr->type = 1;
+			segment_free(tmp);
+		} else {
+			curr->next = token->segment;
+			curr->next->prev = curr;
+			curr->next->quoted = quoted;
+			curr->next->type = 1;
+		}
+
 		token->segment = NULL;
 		token_free(token);
 	}

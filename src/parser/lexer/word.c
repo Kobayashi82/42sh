@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:24:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/10 23:26:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@
 	t_token *return_word(t_lexer *lexer, t_segment *segment, char *full_line, int line) {
 		if (!segment) return (NULL);
 
-		if (!segment->string.len) {
+		if (!segment->string.len && !segment->quoted) {
 			free(full_line);
 			segment_free(segment);
+			if (is_operator(peek(lexer, 0))) return (token_create(lexer, TOKEN_EOF, NULL, lexer->line + 1, NULL));;
 			return (token_get(lexer));
 		}
 
@@ -83,7 +84,7 @@
 		while ((c = peek(lexer, 0))) {
 
 			if (c == '\'' || c == '"') {
-				if (stack_top(lexer) != c && !segment_empty(segment))
+				if (*segment_last_value(segment))
 					segment_new(segment);
 				handle_quotes(lexer, segment);
 				if (peek(lexer, 0)) segment_new(segment);
@@ -114,7 +115,6 @@
 			segment_append(segment, advance(lexer));
 		}
 
-		printf("Esto: %c\n", stack_top(lexer));
 		if (!segment_empty(segment)) {
 			return (return_word(lexer, segment, full_line, line));
 		}
@@ -124,3 +124,5 @@
 	}
 
 #pragma endregion
+
+// ""''"popo$USER$(hola)$HOME'lala"pipi
