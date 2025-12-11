@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 23:26:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/11 13:29:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,9 @@
 		while ((c = peek(lexer, 0))) {
 
 			if (c == '\'' || c == '"') {
-				if (*segment_last_value(segment))
-					segment_new(segment);
+				if (*segment_last_value(segment)) segment_new(segment);
 				handle_quotes(lexer, segment);
-				if (peek(lexer, 0)) segment_new(segment);
+				if (!is_operator(peek(lexer, 0)) || (peek(lexer, 0) == '{' && !isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0')) segment_new(segment);
 				continue;
 			}
 
@@ -103,8 +102,11 @@
 				lexer_append(lexer);
 				continue;
 			} else if (c == '\\') {
+				if (*segment_last_value(segment)) segment_new(segment);
+				advance(lexer);
 				segment_append(segment, advance(lexer));
-				segment_append(segment, advance(lexer));
+				segment_set_quoted(segment, '\'');
+				if (!is_operator(peek(lexer, 0)) || (peek(lexer, 0) == '{' && !isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0')) segment_new(segment);
 				continue;
 			}
 
@@ -125,4 +127,3 @@
 
 #pragma endregion
 
-// ""''"popo$USER$(hola)$HOME'lala"pipi
