@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/11 13:29:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/12 00:25:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #pragma region "Is operator"
 
 	int is_operator(char c) {
-		const char *operators[] = { ">", "<", "&", "|", ";", "(", ")", "{", "$", "\0", NULL};
+		const char *operators[] = { ">", "<", "&", "|", ";", "(", ")", "{", "\0", NULL};
 
 		for (int i = 0; operators[i]; i++) {
 			if (c == operators[i][0]) return (1);
@@ -45,7 +45,6 @@
 					if (c == '\'') {
 						stack_pop(lexer);
 						advance(lexer);
-						segment->type = 1; // Literal
 						return (0);
 					} else if (c == '\0') {
 						lexer_append(lexer);
@@ -73,7 +72,6 @@
 					if (c == '"') {
 						stack_pop(lexer);
 						advance(lexer);
-						segment->type = 2;
 						return (0);
 					} else if (c == '\\' && peek(lexer, 1) == '\0') {
 						advance(lexer);

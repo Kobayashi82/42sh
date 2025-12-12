@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 23:48:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/11 13:50:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@
 			curr->string.capacity = token->segment->string.capacity;
 			curr->next = token->segment->next;
 			curr->quoted = quoted;
-			curr->type = 1;
+			curr->type = token->type;
 			free(token->segment);
 		} else if (!curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
 			t_segment *tmp = curr;
@@ -150,13 +150,13 @@
 			curr->prev->next = token->segment;
 			curr = token->segment;
 			curr->quoted = quoted;
-			curr->type = 1;
+			curr->type = token->type;
 			segment_free(tmp);
 		} else {
 			curr->next = token->segment;
 			curr->next->prev = curr;
 			curr->next->quoted = quoted;
-			curr->next->type = 1;
+			curr->next->type = token->type;
 		}
 
 		token->segment = NULL;
