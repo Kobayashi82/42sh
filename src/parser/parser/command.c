@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 22:31:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/12 00:08:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@
 
 	void assign_create(t_assign **assign, t_segment *segment) {
 		t_assign *new_assign = malloc(sizeof(t_assign));
-		new_assign->value = segment->string.value;
+		new_assign->segment = segment;
 
 		if (!*assign) {
 			*assign = new_assign;
@@ -129,13 +129,10 @@
 
 #pragma region "Args Create"
 
-	// echo popo"lala"$USER
-	// Aqui habria que redividir dependiendo de lo que haya, comillas, expansion, literal, etc.
 	void args_create(t_args **args, t_segment *segment, int right_space) {
 		t_args *new_arg = malloc(sizeof(t_args));
 		new_arg->segment = segment;
 		new_arg->right_space = right_space;
-		new_arg->quoted = 0;
 
 		if (!*args) {
 			*args = new_arg;
@@ -161,9 +158,10 @@
 		t_ast *node = ast_create(TOKEN_WORD);
 		int cmd_found = 0;
 
-		while (g_parser->token->type == TOKEN_WORD || is_redirect(g_parser->token->type)) {
+		int is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_VAR);
+		while (is_word || is_redirect(g_parser->token->type)) {
 
-			if (g_parser->token->type == TOKEN_WORD) {
+			if (is_word) {
 				char *equal = strchr(g_parser->token->segment->string.value, '=');
 				if (!cmd_found && equal && equal != g_parser->token->segment->string.value)
 					assign_create(&node->assign, g_parser->token->segment);
@@ -172,7 +170,8 @@
 					args_create(&node->args, g_parser->token->segment, g_parser->token->right_space);
 				}
 				g_parser->token->segment = NULL;
-			} else {
+			}
+			else {
 				// if (parse_redirect(&node->redirs, &node->args)) {
 				// 	syntax_error(0, "archivo necesario...");
 				// 	ast_free(&node);

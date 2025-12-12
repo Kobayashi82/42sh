@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 16:59:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/12 00:06:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@
 	#pragma region "Structures"
 
 		typedef struct s_assign {
-			char			*value;
+			t_segment		*segment;
+			int				right_space;
 			struct s_assign	*prev;
 			struct s_assign	*next;
 		} t_assign;
 
 		typedef struct s_args {
 			t_segment		*segment;
-			int				quoted;	// Tengo que cambiarlo por un enum
 			int				right_space;
 			struct s_args	*prev;
 			struct s_args	*next;

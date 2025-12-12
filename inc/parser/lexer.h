@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:17:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/12 00:25:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 
 		enum e_token_type {
 			TOKEN_WORD,
+			TOKEN_ANSI_QUOTE,			// $''
+			TOKEN_LOCATE_QUOTE,			// $""
+			TOKEN_VAR,					// $VAR
+
 			TOKEN_BACKTICK,				// `
 			TOKEN_ARITH,				// ((
 			TOKEN_ARITH_SUB,			// $((

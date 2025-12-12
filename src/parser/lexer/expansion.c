@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 22:51:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/11 13:56:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -418,9 +418,10 @@
 
 		if (!from_quoted) {
 			if (peek(lexer, 0) == '$' && (peek(lexer, 1) == '\'' || peek(lexer, 1) == '"')) {
+				int type = (peek(lexer, 1) == '\'') ? TOKEN_ANSI_QUOTE : TOKEN_LOCATE_QUOTE;
 				segment_append(segment, advance(lexer));
 				handle_quotes(lexer, segment);
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, type, segment, line, full_line));
 			}
 		}
 
@@ -429,35 +430,35 @@
 
 			if (peek(lexer, 0) == '$') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '#') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '@') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '*') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '!') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '?') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (peek(lexer, 0) == '-') {
 				segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 			if (isdigit(peek(lexer, 0))) {
 				while (isdigit(peek(lexer, 0))) segment_append(segment, advance(lexer));
-				return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+				return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 			}
 
 			while (!is_operator(peek(lexer, 0)) && peek(lexer, 0) != '\'' && peek(lexer, 0) != '"' && peek(lexer, 0) != '}') {
@@ -477,7 +478,7 @@
 				segment_append(segment, advance(lexer));
 			}
 
-			return (token_create(lexer, TOKEN_WORD, segment, line, full_line));
+			return (token_create(lexer, TOKEN_VAR, segment, line, full_line));
 		}
 
 		free(full_line);
