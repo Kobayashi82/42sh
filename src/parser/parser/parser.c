@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 14:55:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 19:31:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@
 			else {
 				if (g_parser->token->filename)	dprintf(2, "  at %s:%d\n", g_parser->token->filename, g_parser->token->line);
 				if (g_parser->token->full_line)	dprintf(2, "  %s\n", g_parser->token->full_line);
+				dprintf(2, "  Error: %s\n", msg);
 			}
 		}
 	}
@@ -136,8 +137,6 @@
 			g_parser = old_parser;
 			return (NULL);
 		}
-
-		printf("esto: %s\n", content);
 
 		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
 

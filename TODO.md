@@ -6,6 +6,7 @@
 
 ## Parser
 - Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente
+- Pasar process_substitution a expansion
 
 ## Builtins
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)

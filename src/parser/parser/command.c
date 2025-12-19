@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 14:45:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 19:35:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 
 	#pragma region "Redir Create"
 
-		void redir_create(t_redir **redirs, int type, int fd, char *file) {
+		void redir_create(t_redir **redirs, int type, int fd, t_segment *file) {
 			t_redir *new_redir = malloc(sizeof(t_redir));
 			new_redir->type = type;
 			new_redir->file = file;
@@ -77,7 +77,7 @@
 						fd = atoi(curr->segment->string.value);
 						if (curr->prev)	curr->prev->next = NULL;
 						else			*args = NULL;
-						free(curr->segment);
+						segment_free(curr->segment);
 						free(curr);
 					}
 				}
@@ -85,10 +85,10 @@
 
 			token_advance();
 
-			if (g_parser->token->type != TOKEN_WORD) return (1);
+			if (g_parser->token->type != TOKEN_WORD && g_parser->token->type != TOKEN_PROCESS_SUB_IN && g_parser->token->type != TOKEN_PROCESS_SUB_OUT) return (1);
 
-			char *file = g_parser->token->segment->string.value;
-			g_parser->token->segment->string.value = NULL;
+			t_segment *file = g_parser->token->segment;
+			g_parser->token->segment = NULL;
 
 			redir_create(redirs, type, fd, file);
 
@@ -172,11 +172,11 @@
 				g_parser->token->segment = NULL;
 			}
 			else {
-				// if (parse_redirect(&node->redirs, &node->args)) {
-				// 	syntax_error(0, "archivo necesario...");
-				// 	ast_free(&node);
-				// 	return (NULL);
-				// }
+				if (parse_redirect(&node->redirs, &node->args)) {
+					syntax_error(0, "archivo necesario...");
+					ast_free(&node);
+					return (NULL);
+				}
 			}
 
 			token_advance();
@@ -191,6 +191,12 @@
 
 		if (stack_top(&g_parser->lexer) && !g_parser->lexer.input) {
 			syntax_error(1, stack_get(&g_parser->lexer));
+			ast_free(&node);
+			return (NULL);
+		}
+
+		if (g_parser->token->type == TOKEN_SUBSHELL || g_parser->token->type == TOKEN_PROCESS_SUB_IN) {
+			syntax_error(1, "(");
 			ast_free(&node);
 			return (NULL);
 		}

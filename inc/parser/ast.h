@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/12 00:06:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:40:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 
 		typedef struct s_redir {
 			int				type;
-			char			*file;
+			t_segment		*file;
 			int				fd;
 			int				expand;
 			struct s_redir	*prev;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:57:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 19:06:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,15 @@
 		int		line = (lexer->input == lexer->user_buffer) ? lexer->line : -1;
 		char	*full_line = (lexer->input) ? ft_strdup(lexer->input->value) : NULL;
 		char	c;
+		int		create_new = 0;
 
 		t_segment *segment = segment_new(NULL);
 
 		while ((c = peek(lexer, 0))) {
+			if (create_new) {
+				create_new = 0;
+				segment_new(segment);
+			}
 
 			if (c == '\'' || c == '"') {
 				if (*segment_last_value(segment)) segment_new(segment);
@@ -107,6 +112,24 @@
 				segment_append(segment, advance(lexer));
 				segment_set_quoted(segment, '\'');
 				if (!is_operator(peek(lexer, 0)) || (peek(lexer, 0) == '{' && !isspace(peek(lexer, 1)) && peek(lexer, 1) != '\0')) segment_new(segment);
+				continue;
+			}
+
+			t_token *token = NULL;
+			if (!token) token = variable(lexer);
+			if (!token) token = expansion(lexer);
+			if (token) {
+				if (*segment_last_value(segment)) segment_new(segment);
+				char *value = segment_flatten(token->segment);
+
+				t_segment *curr = segment_last(segment);
+				free(curr->string.value);
+				curr->type = token->type;
+				curr->string.value = value;
+				curr->string.len = ft_strlen(curr->string.value);
+				curr->string.capacity = (value) ? curr->string.len + 1 : 0;
+				token_free(token);
+				if (!is_operator(peek(lexer, 0))) create_new = 1;
 				continue;
 			}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 14:34:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:57:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,17 @@
 					t_redir *redir = node->redirs;
 					while (redir) {
 						ast_print_indent(level + 2);
-						printf("- %s (file: %s) (fd: %d)\n", type_to_string(redir->type), redir->file, redir->fd);
+						printf("%s (fd: %d)\n", type_to_string(redir->type), redir->fd);
+						ast_print_indent(level + 2);
+						printf("file:\n");
+						t_segment *curr = redir->file;
+						while (curr) {
+							if (curr->string.value) {
+								ast_print_indent(level + 3);
+								printf("- %c%s%c\n", curr->quoted, curr->string.value, curr->quoted);
+							}
+							curr = curr->next;
+						}
 						redir = redir->next;
 					}
 				}
@@ -239,7 +249,7 @@
 		if (node->right)	ast_free(&node->right);
 		if (node->child)	ast_free(&node->child);
 
-		// Args
+		// Assign
 		if (node->assign) {
 			t_assign *assign = node->assign;
 			while (assign) {
@@ -266,7 +276,7 @@
 			t_redir *redir = node->redirs;
 			while (redir) {
 				t_redir *next = redir->next;
-				if (redir->file) free(redir->file);
+				segment_free(redir->file);
 				free(redir);
 				redir = next;
 			}
