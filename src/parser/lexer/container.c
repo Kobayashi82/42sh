@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 15:50:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 18:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 	// s	$(...)		command substitution
 	// S	(...)		subshell
 	// a	$((...))	arithmetic substitution
-	// A	((...)	)	arithmetic
+	// A	((...))		arithmetic
 	// p	${...}		parameter expression
 	// G	{ ...; }	braces (command group or brace expansion)
 	// i	<(...)		process substitution in
@@ -40,7 +40,18 @@
 			if (!lexer->stack.len) return ("");
 
 			switch (lexer->stack.value[lexer->stack.len - 1]) {
+				case '\'':	return ("'");
+				case '"':	return ("\"");
+				case '`':	return ("`");
+				case 's':	return (")");
+				case 'S':	return (")");
+				case 'a':	return ("))");
 				case 'A':	return ("))");
+				case 'p':	return ("}");
+				case 'G':	return ("}");
+				case 'i':	return (")");
+				case 'o':	return (")");
+				case 'C':	return ("]]");
 			}
 
 			return ("");
