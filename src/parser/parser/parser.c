@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:19:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 14:55:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,13 @@
 		g_parser = &parser;
 		
 		char *content = get_content(type, value);
-		if (!content) return (NULL);
+		if (!content) {
+			g_parser = old_parser;
+			return (NULL);
+		}
+
+		printf("esto: %s\n", content);
+
 		lexer_init(&parser.lexer, content, NULL, 0, NULL, -1);
 
 		token_advance();
@@ -153,7 +159,6 @@
 		token_free(parser.prev_token);
 		token_free(parser.token);
 		lexer_free(&parser.lexer);
-
 		g_parser = old_parser;
 
 		return (ast);
@@ -169,18 +174,9 @@
 		if (g_parser->token->type >= TOKEN_BACKTICK && g_parser->token->type <= TOKEN_CONDITIONAL) {
 			// Flatten segments (will be process again in subparser, fuck optimization XD)
 			char *value = segment_flatten(g_parser->token->segment);
-			segment_free(g_parser->token->segment);
-			if (!value) return (NULL);
-			t_segment *segment = segment_new(NULL);
-			free(segment->string.value);
-			segment->type = g_parser->token->type;
-			segment->string.value = value;
-			segment->string.len = ft_strlen(segment->string.value);
-			segment->string.capacity = segment->string.len + 1;
+			int type = g_parser->token->type;
 
 			t_ast *node = ast_create(g_parser->token->type);
-			char *content = g_parser->token->segment->string.value;
-			g_parser->token->segment->string.value = NULL;
 			token_advance();
 
 			if (stack_top(&g_parser->lexer) && !g_parser->lexer.input) {
@@ -189,7 +185,7 @@
 				return (NULL);
 			}
 
-			node->child = sub_parse(g_parser->token->type, content);
+			node->child = sub_parse(type, value);
 			if (!node->child) ast_free(&node);
 
 			return (node);
@@ -297,10 +293,6 @@
 
 			node->left = left;
 			node->right = parse_and_or();
-			if (!node->right) {
-				ast_free(&node);
-				return (NULL);
-			}
 			left = node;
 		}
 

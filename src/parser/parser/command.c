@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:15:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 14:45:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,11 +159,11 @@
 		t_ast *node = ast_create(TOKEN_WORD);
 		int cmd_found = 0;
 
-		int is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_VAR);
+		int is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_PARAM_EXP);
 		while (is_word || is_redirect(g_parser->token->type)) {
 			if (is_word) {
 				char *equal = strchr(g_parser->token->segment->string.value, '=');
-				if (!cmd_found && equal && equal != g_parser->token->segment->string.value)
+				if (g_parser->token->type == TOKEN_WORD && !cmd_found && equal && equal != g_parser->token->segment->string.value)
 					assign_create(&node->assign, g_parser->token->segment);
 				else {
 					cmd_found = 1;
@@ -180,7 +180,7 @@
 			}
 
 			token_advance();
-			is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_VAR);
+			is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_PARAM_EXP);
 		}
 
 		if (g_parser->token->type != TOKEN_EOF && !node->assign && !node->args && !node->redirs) {

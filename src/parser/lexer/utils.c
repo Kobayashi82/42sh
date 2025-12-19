@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:56:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 14:38:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@
 						if (!token) token = expansion(lexer);
 						stack_push(lexer, '"');
 						if (token) {
+							if (*segment_last_value(segment)) segment_new(segment);
 							char *value = segment_flatten(token->segment);
 
 							t_segment *curr = segment_last(segment);

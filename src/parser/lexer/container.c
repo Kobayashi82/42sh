@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:57:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:50:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,6 +200,28 @@
 				curr = curr->next;
 
 			return (curr);
+		}
+
+	#pragma endregion
+
+	#pragma region "Needs Semicolon"
+
+		int segment_needs_semicolon(t_segment *segment) {
+			if (!segment) return (0);
+
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			const char *value = curr->string.value;
+			if (!value || !*value || ft_isspace_s(value + 1)) return (0);
+
+			const char *end = value + ft_strlen(value) - 1;
+			while (end >= value && isspace(*end)) end--;
+
+			if (end >= value && *end != ';' && *end != '&' && *end != '|') return (1);
+
+			return (0);
 		}
 
 	#pragma endregion

@@ -6,7 +6,6 @@
 
 ## Parser
 - Para heredoc open, unlink, lseek, así cuando cierre el fd se elimina automáticamente
-- Controlar cierre de expansiones y mas input en comillas dobles
 
 ## Builtins
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)

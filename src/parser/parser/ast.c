@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:21:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 14:34:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,20 @@
 
 		switch (node->type) {
 			case TOKEN_PIPE:
-				printf("PIPE\n");
+				printf("PIPE (|)\n");
 				ast_print_recursive(node->left, level + 1);
 				ast_print_recursive(node->right, level + 1);
 				break;
-
+			case TOKEN_PIPE_ALL:
+				printf("PIPE ALL (|&)\n");
+				ast_print_recursive(node->left, level + 1);
+				ast_print_recursive(node->right, level + 1);
+				break;
+			case TOKEN_BACKGROUND:
+				printf("BACKGROUND (&)\n");
+				ast_print_recursive(node->left, level + 1);
+				ast_print_recursive(node->right, level + 1);
+				break;
 			case TOKEN_AND:
 				printf("AND (&&)\n");
 				ast_print_recursive(node->left, level + 1);
@@ -109,21 +118,43 @@
 				ast_print_recursive(node->left, level + 1);
 				ast_print_recursive(node->right, level + 1);
 				break;
-
 			case TOKEN_SEMICOLON:
 				printf("SEQUENCE (;)\n");
 				ast_print_recursive(node->left, level + 1);
 				ast_print_recursive(node->right, level + 1);
 				break;
 
-			case TOKEN_BACKGROUND:
-				printf("BACKGROUND (&)\n");
-				ast_print_recursive(node->left, level + 1);
-				ast_print_recursive(node->right, level + 1);
+			case TOKEN_BACKTICK:
+				printf("BACKTICK ``\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+			case TOKEN_ARITH_SUB:
+				printf("ARITHMETIC EXPANSION $(())\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+			case TOKEN_CMD_SUB:
+				printf("COMMAND SUBSTITUTION $()\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+			case TOKEN_PARAM_EXP:
+				printf("PARAMETER EXPANSION ${}\n");
+				ast_print_recursive(node->child, level + 1);
 				break;
 
+			case TOKEN_ARITH:
+				printf("ARITHMETIC EXPRESSION (())\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
 			case TOKEN_SUBSHELL:
 				printf("SUBSHELL ()\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+			case TOKEN_GROUP:
+				printf("COMMAND GROUP {  ; }\n");
+				ast_print_recursive(node->child, level + 1);
+				break;
+			case TOKEN_CONDITIONAL:
+				printf("CONDITIONAL EXPRESSION [[]]\n");
 				ast_print_recursive(node->child, level + 1);
 				break;
 

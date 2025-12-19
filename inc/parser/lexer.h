@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:58:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:45:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,7 @@
 	char		*segment_flatten(t_segment *segment);
 	int			segment_empty(t_segment *segment);
 	t_segment	*segment_last(t_segment *segment);
+	int			segment_needs_semicolon(t_segment *segment);
 	char		*segment_last_value(t_segment *segment);
 	void		segment_free(t_segment *segment);
 	void		segment_append(t_segment *segment, char c);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/19 10:53:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:57:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 15:45:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,12 +190,12 @@
 				segment_append(segment, advance(lexer));
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, 'i');
-				*type = TOKEN_WORD;
+				*type = TOKEN_PROCESS_SUB_IN;
 			} else if (peek(lexer, 0) == '>' && peek(lexer, 1) == '(') {
 				segment_append(segment, advance(lexer));
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, 'o');
-				*type = TOKEN_WORD;
+				*type = TOKEN_PROCESS_SUB_OUT;
 			} else if (peek(lexer, 0) == '(' && peek(lexer, 1) == '(') {
 				segment_append(segment, advance(lexer));
 				segment_append(segment, advance(lexer));
@@ -209,11 +209,11 @@
 				segment_append(segment, advance(lexer));
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, 'C');
-				*type = TOKEN_WORD;
+				*type = TOKEN_CONDITIONAL;
 			} else if (peek(lexer, 0) == '{' && (isspace(peek(lexer, 1)) || peek(lexer, 1) == '\0')) {
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, 'G');
-				*type = TOKEN_WORD;
+				*type = TOKEN_GROUP;
 			}
 		}
 
@@ -242,8 +242,12 @@
 			}
 
 			if (peek(lexer, 0) == '\0') {
-				if (stack_top(lexer) == 'G') *group_can_end = 1;
-				segment_append(segment, '\n');
+				if (stack_top(lexer) == 'G') {
+					*group_can_end = 1;
+					if (segment_needs_semicolon(segment)) segment_append(segment, ';');
+				} else {
+					segment_append(segment, '\n');
+				}
 				lexer_append(lexer);
 				if (!lexer->input) return (2);
 				return (1);

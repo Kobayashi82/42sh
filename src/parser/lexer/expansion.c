@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 12:59:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 14:29:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@
 			if (peek(lexer, 0) == '`') {
 				segment_append(segment, advance(lexer));
 				stack_push(lexer, '`');
-				*type = TOKEN_WORD;
+				*type = TOKEN_BACKTICK;
 			} else if (peek(lexer, 0) == '$') {
 				segment_append(segment, advance(lexer));
 
@@ -116,15 +116,15 @@
 					segment_append(segment, advance(lexer));
 					segment_append(segment, advance(lexer));
 					stack_push(lexer, 'a');
-					*type = TOKEN_WORD;
+					*type = TOKEN_ARITH_SUB;
 				} else if (peek(lexer, 0) == '(') {
 					segment_append(segment, advance(lexer));
 					stack_push(lexer, 's');
-					*type = TOKEN_WORD;
+					*type = TOKEN_CMD_SUB;
 				} else if (peek(lexer, 0) == '{') {
 					segment_append(segment, advance(lexer));
 					stack_push(lexer, 'p');
-					*type = TOKEN_WORD;
+					*type = TOKEN_PARAM_EXP;
 				}
 			}
 		}
