@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 18:01:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 18:19:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:12:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,11 @@
 
 		if (peek(lexer, 0)) {
 			t_token *token = NULL;
-			// if ((token = variables(lexer)))		return (token, 0);
-			// if ((token = expansion(lexer)))		return (token, 0);
-			// if ((token = operator(lexer)))		return (token);
-			// if ((token = redirection(lexer)))	return (token);
+			if ((token = variable(lexer)))		return (token);
+			if ((token = expansion(lexer)))		return (token);
+			if ((token = group(lexer)))			return (token);
+			if ((token = operator(lexer)))		return (token);
+			if ((token = redirection(lexer)))	return (token);
 			// if ((token = keyword(lexer)))		return (token);
 			if ((token = word(lexer)))			return (token);
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/28 20:35:54 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/12 00:25:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:56:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 
 #pragma region "Handle Quotes"
 
-	char handle_quotes(t_lexer *lexer, t_segment *segment) {
+	char handle_quotes(t_lexer *lexer, t_segment *segment, int add_quote) {
 		char c = peek(lexer, 0);
 
 		segment_set_quoted(segment, c);
@@ -71,7 +71,8 @@
 				if (stack_top(lexer) == '"') {
 					if (c == '"') {
 						stack_pop(lexer);
-						advance(lexer);
+						if (add_quote)	segment_append(segment, advance(lexer));
+						else			advance(lexer);
 						return (0);
 					} else if (c == '\\' && peek(lexer, 1) == '\0') {
 						advance(lexer);
@@ -98,15 +99,25 @@
 					} else {
 						t_token *token = NULL;
 						stack_pop(lexer);
-						if (!token) token = variables(lexer, 1);
-						if (!token) token = expansion(lexer, 1);
+						if (!token) token = variable(lexer);
+						if (!token) token = expansion(lexer);
 						stack_push(lexer, '"');
 						if (token) {
-							segment_append_token(segment, token, '"');
-						if (peek(lexer, 0) && peek(lexer, 0) != '"') {
-							segment_new(segment);
-							segment_set_quoted(segment, '"');
-						}
+							char *value = segment_flatten(token->segment);
+
+							t_segment *curr = segment_last(segment);
+							free(curr->string.value);
+							curr->type = token->type;
+							curr->string.value = value;
+							curr->string.len = ft_strlen(curr->string.value);
+							curr->string.capacity = (value) ? curr->string.len + 1 : 0;
+							segment_set_quoted(curr, '"');
+							token_free(token);
+
+							if (peek(lexer, 0) != '"') {
+								segment_new(segment);
+								segment_set_quoted(segment, '"');
+							}
 						} else {
 							segment_append(segment, advance(lexer));
 						}
@@ -115,7 +126,8 @@
 					}
 				} else if (c == '"') {
 					stack_push(lexer,'"');
-					advance(lexer);
+					if (add_quote)	segment_append(segment, advance(lexer));
+					else			advance(lexer);
 					continue;
 				}
 
@@ -127,3 +139,14 @@
 	}
 
 #pragma endregion
+// echo "hola $(como estas $(
+// "
+// popo
+// "
+// cierro)
+// adios
+// $USER"
+// vale"
+// cierro 2)
+// $USER
+// y falta comillas"

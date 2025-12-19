@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 12:14:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/12 00:25:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:58:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@
 			TOKEN_VAR,					// $VAR
 
 			TOKEN_BACKTICK,				// `
-			TOKEN_ARITH,				// ((
 			TOKEN_ARITH_SUB,			// $((
-			TOKEN_SUBSHELL,				// (
 			TOKEN_CMD_SUB,				// $(
+			TOKEN_PARAM_EXP,			// ${
+
+			TOKEN_ARITH,				// ((
+			TOKEN_SUBSHELL,				// (
 			TOKEN_PROCESS_SUB_IN,		// <(
 			TOKEN_PROCESS_SUB_OUT,		// >(
 			TOKEN_GROUP,				// {[isspace]
 			TOKEN_CONDITIONAL,			// [[
-			TOKEN_PARAM_EXP,			// ${
 			TOKEN_BRACE,				// {
 
 			TOKEN_REDIRECT_IN,			// <	(accept fd number)
@@ -167,56 +168,70 @@
 #pragma region "Methods"
 
 	// Containers
-	char	*stack_get(t_lexer *lexer);
-	char	stack_top(t_lexer *lexer);
-	char	stack_pop(t_lexer *lexer);
-	void	stack_push(t_lexer *lexer, char c);
+	char		*stack_get(t_lexer *lexer);
+	char		stack_top(t_lexer *lexer);
+	char		stack_pop(t_lexer *lexer);
+	void		stack_push(t_lexer *lexer, char c);
 
-	void	buffer_pop(t_lexer *lexer);
-	void	buffer_push(t_lexer *lexer, char *value, char *alias_name);
-	void	buffer_push_user(t_lexer *lexer, char *value);
+	void		buffer_pop(t_lexer *lexer);
+	void		buffer_push(t_lexer *lexer, char *value, char *alias_name);
+	void		buffer_push_user(t_lexer *lexer, char *value);
 
 	void		segment_set_type(t_segment *segment, int type);
 	void		segment_set_quoted(t_segment *segment, char quoted);
 	void		segment_append_token(t_segment *segment, t_token *token, char quoted);
+	char		*segment_flatten(t_segment *segment);
 	int			segment_empty(t_segment *segment);
+	t_segment	*segment_last(t_segment *segment);
 	char		*segment_last_value(t_segment *segment);
 	void		segment_free(t_segment *segment);
 	void		segment_append(t_segment *segment, char c);
 	t_segment	*segment_new(t_segment *segment);
 
 	// Token
-	void	token_free(t_token *token);
-	t_token *token_create(t_lexer *lexer, int type, t_segment *segment, int line, char *full_line);
-	t_token	*token_get(t_lexer *lexer);
+	void		token_free(t_token *token);
+	t_token 	*token_create(t_lexer *lexer, int type, t_segment *segment, int line, char *full_line);
+	t_token		*token_get(t_lexer *lexer);
 
 	// Input
-	void	lexer_free(t_lexer *lexer);
-	void	lexer_append(t_lexer *lexer);
-	void	lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line);
+	void		lexer_free(t_lexer *lexer);
+	void		lexer_append(t_lexer *lexer);
+	void		lexer_init(t_lexer *lexer, char *input, t_callback callback, int interactive, char *filename, int line);
 
 	// Navigation
-	char	peek(t_lexer *lexer, size_t offset);
-	char	advance(t_lexer *lexer);
+	char		peek(t_lexer *lexer, size_t offset);
+	char		advance(t_lexer *lexer);
 
 	// Utils
-	char	handle_quotes(t_lexer *lexer, t_segment *segment);
-	int		is_operator(char c);
+	char		handle_quotes(t_lexer *lexer, t_segment *segment, int add_quote);
+	int			is_operator(char c);
 
 	// Expansion
-	t_token *variables(t_lexer *lexer, int from_quoted);
-	t_token	*expansion(t_lexer *lexer, int from_quoted);
+	t_token 	*variable(t_lexer *lexer);
+	t_token		*expansion(t_lexer *lexer);
+	int			backticks(t_lexer *lexer, t_segment *segment);
+	int			arithmetic_expansion(t_lexer *lexer, t_segment *segment);
+	int			command_substitution(t_lexer *lexer, t_segment *segment);
+	int			parameter_expansion(t_lexer *lexer, t_segment *segment);
+
+	// Group
+	t_token 	*group(t_lexer *lexer);
+	int			arithmetic(t_lexer *lexer, t_segment *segment);
+	int			subshell(t_lexer *lexer, t_segment *segment, int *type);
+	int			process_substitution(t_lexer *lexer, t_segment *segment);
+	int			command_group(t_lexer *lexer, t_segment *segment, int *type, int *group_can_end);
+	int			conditional_expression(t_lexer *lexer, t_segment *segment);
 
 	// Operator
-	t_token	*operator(t_lexer *lexer);
+	t_token		*operator(t_lexer *lexer);
 
 	// Redirection
-	t_token	*redirection(t_lexer *lexer);
+	t_token		*redirection(t_lexer *lexer);
 
 	// Keyword
-	t_token	*keyword(t_lexer *lexer);
+	t_token		*keyword(t_lexer *lexer);
 
 	// Word
-	t_token	*word(t_lexer *lexer);
+	t_token		*word(t_lexer *lexer);
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 22:29:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:19:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,9 +164,20 @@
 #pragma region "Parse Command"
 
 	t_ast *parse_command() {
-		if (!g_parser->token) return (NULL);
+		if (!g_parser->token || !g_parser->token->segment) return (NULL);
 
 		if (g_parser->token->type >= TOKEN_BACKTICK && g_parser->token->type <= TOKEN_CONDITIONAL) {
+			// Flatten segments (will be process again in subparser, fuck optimization XD)
+			char *value = segment_flatten(g_parser->token->segment);
+			segment_free(g_parser->token->segment);
+			if (!value) return (NULL);
+			t_segment *segment = segment_new(NULL);
+			free(segment->string.value);
+			segment->type = g_parser->token->type;
+			segment->string.value = value;
+			segment->string.len = ft_strlen(segment->string.value);
+			segment->string.capacity = segment->string.len + 1;
+
 			t_ast *node = ast_create(g_parser->token->type);
 			char *content = g_parser->token->segment->string.value;
 			g_parser->token->segment->string.value = NULL;

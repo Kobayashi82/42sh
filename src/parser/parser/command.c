@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/12 00:08:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:15:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,6 +108,7 @@
 	void assign_create(t_assign **assign, t_segment *segment) {
 		t_assign *new_assign = malloc(sizeof(t_assign));
 		new_assign->segment = segment;
+		new_assign->right_space = 0;
 
 		if (!*assign) {
 			*assign = new_assign;
@@ -160,7 +161,6 @@
 
 		int is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_VAR);
 		while (is_word || is_redirect(g_parser->token->type)) {
-
 			if (is_word) {
 				char *equal = strchr(g_parser->token->segment->string.value, '=');
 				if (!cmd_found && equal && equal != g_parser->token->segment->string.value)
@@ -180,6 +180,7 @@
 			}
 
 			token_advance();
+			is_word = (g_parser->token->type >= TOKEN_WORD && g_parser->token->type <= TOKEN_VAR);
 		}
 
 		if (g_parser->token->type != TOKEN_EOF && !node->assign && !node->args && !node->redirs) {

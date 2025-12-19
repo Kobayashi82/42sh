@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/12 00:07:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:21:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,18 +141,10 @@
 					printf("assign:\n");
 					t_assign *assign = node->assign;
 					while (assign) {
-						t_segment *curr = assign->segment;
-						while (curr) {
-							if (curr->string.value) {
-								ast_print_indent(level + 2);
-								printf("- %c%s%c\n", curr->quoted, curr->string.value, curr->quoted);
-							}
-							curr = curr->next;
-						}
-						if (assign->right_space) {
-							ast_print_indent(level + 2);
-							printf("[space]\n");
-						}
+						ast_print_indent(level + 2);
+						char *value = segment_flatten(assign->segment);
+						printf("- %c%s%c\n", assign->segment->quoted, value, assign->segment->quoted);
+						free(value);
 						assign = assign->next;
 					}
 				}

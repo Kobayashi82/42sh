@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/03 17:57:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/11 13:50:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/19 12:57:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,40 +128,81 @@
 
 	#pragma endregion
 
-	void segment_append_token(t_segment *segment, t_token *token, char quoted) {
-		if (!segment || !token || !token->segment) return;
+	#pragma region "Append Token"
 
-		t_segment *curr = segment;
-		while (curr->next)
-			curr = curr->next;
+		void segment_append_token(t_segment *segment, t_token *token, char quoted) {
+			if (!segment || !token || !token->segment) return;
 
-		if (!curr->prev && !curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
-			free(curr->string.value);
-			curr->string.value = token->segment->string.value;
-			curr->string.len = token->segment->string.len;
-			curr->string.capacity = token->segment->string.capacity;
-			curr->next = token->segment->next;
-			curr->quoted = quoted;
-			curr->type = token->type;
-			free(token->segment);
-		} else if (!curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
-			t_segment *tmp = curr;
-			token->segment->prev = curr->prev;
-			curr->prev->next = token->segment;
-			curr = token->segment;
-			curr->quoted = quoted;
-			curr->type = token->type;
-			segment_free(tmp);
-		} else {
-			curr->next = token->segment;
-			curr->next->prev = curr;
-			curr->next->quoted = quoted;
-			curr->next->type = token->type;
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			if (!curr->prev && !curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
+				free(curr->string.value);
+				curr->string.value = token->segment->string.value;
+				curr->string.len = token->segment->string.len;
+				curr->string.capacity = token->segment->string.capacity;
+				curr->next = token->segment->next;
+				curr->quoted = quoted;
+				curr->type = token->type;
+				free(token->segment);
+			} else if (!curr->string.len && (!curr->quoted || curr->quoted == quoted)) {
+				t_segment *tmp = curr;
+				token->segment->prev = curr->prev;
+				curr->prev->next = token->segment;
+				curr = token->segment;
+				curr->quoted = quoted;
+				curr->type = token->type;
+				segment_free(tmp);
+			} else {
+				curr->next = token->segment;
+				curr->next->prev = curr;
+				curr->next->quoted = quoted;
+				curr->next->type = token->type;
+			}
+
+			token->segment = NULL;
+			token_free(token);
 		}
 
-		token->segment = NULL;
-		token_free(token);
-	}
+	#pragma endregion
+
+	#pragma region "Flatten"
+
+		char *segment_flatten(t_segment *segment) {
+			char	*value = NULL;
+			size_t	len = 0;
+
+			while (segment) {
+				t_segment *curr = segment;
+				segment = segment->next;
+
+				size_t	add_len = curr->string.len + ((curr->quoted) ? 2 : 0);
+				value = realloc(value, len + add_len + 1);
+				memcpy(value + len, curr->string.value, curr->string.len);
+				len += curr->string.len;
+			}
+
+			if (value) value[len] = '\0';
+
+			return (value);
+		}
+
+	#pragma endregion
+
+	#pragma region "Last"
+
+		t_segment *segment_last(t_segment *segment) {
+			if (!segment) return (NULL);
+
+			t_segment *curr = segment;
+			while (curr->next)
+				curr = curr->next;
+
+			return (curr);
+		}
+
+	#pragma endregion
 
 	#pragma region "Last Value"
 
