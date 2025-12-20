@@ -1,13 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   help
-                                            :+:      :+:    :+:   */
+/*   true.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 11:00:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/20 11:00:32 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/12/20 19:37:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,55 +17,12 @@
 
 #pragma endregion
 
-// banner
-// builtin
-// declare, typeset
-// enable
-// help
-// let
-// shopt
+#pragma region "True"
 
-// alias
-// unalias
-// bg
-// fg
-// jobs
-// cd
-// command
-// echo
-// false
-// fc
-// getopts
-// hash
-// history
-// kill
-// local
-// logout
-// mapfile, readarray
-// printf
-// pwd
-// read
-// test, [
-// true
-// type
-// ulimit
-// umask
-// wait
+	int bt_true(t_arg *args) {
+		(void) args;
 
-// ., source
-// :
-// break
-// continue
-// eval
-// exec
-// exit
-// export
-// readonly
-// return
-// set
-// shift
-// times
-// trap
-// unset
+		return (0);
+	}
 
-//	Total: 48 + 4 alias
+#pragma endregion

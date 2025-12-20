@@ -1,9 +1,44 @@
 
 # Builtins
 
+
+## 42sh
+- `banner` - displays 42sh banner
+- `builtin` - executes builtin ignoring functions with same name
+- `declare`, `typeset` - declares variables with attributes (alias)
+- `enable` - enables/disables builtins
+- `help` - help about builtins
+- `let` - arithmetic evaluation
+- `shopt` - configures 42sh-specific options
+
+## Regular
+- `alias`, `unalias` - manages aliases
+- `bg`, `fg`, `jobs` - job control
+- `cd` - changes directory
+- `command` - executes command ignoring functions
+- `echo` - prints text
+- `false` - returns failure status (exit code 1)
+- `fc` - "fix command", interactive history editor
+- `getopts` - processes options
+- `hash` - caches external command locations
+- `history` - shows command history (considered a common extension in POSIX)
+- `kill` - sends signals
+- `local` - declares local variables inside functions
+- `logout` - logs out from login shell
+- `mapfile`, `readarray` - reads file lines into array (alias)
+- `printf` - formats and prints text
+- `pwd` - shows current directory
+- `read` - reads input
+- `test`, `[` - conditional evaluation (alias)
+- `true` - returns success status (exit code 0)
+- `type` - shows command type
+- `ulimit` - shows/configures system resource limits
+- `umask` - permission mask
+- `wait` - waits for processes
+
 ## Special
 - `.`, `source` - executes script in current context (alias)
-- `:` - null command, always returns success
+- `:` - null command, always returns success (exit code 0)
 - `break`, `continue` - loop control
 - `eval` - evaluates arguments as command
 - `exec` - replaces current shell
@@ -16,38 +51,6 @@
 - `times` - displays execution times
 - `trap` - handles signals
 - `unset` - removes variables or functions
-
-## Regular
-- `alias`, `unalias` - manages aliases
-- `bg`, `fg`, `jobs` - job control
-- `cd` - changes directory
-- `command` - executes command ignoring functions
-- `echo` - prints text
-- `fc` - "fix command", interactive history editor
-- `getopts` - processes options
-- `hash` - caches external command locations
-- `history` - shows command history (considered a common extension in POSIX)
-- `kill` - sends signals
-- `local` - declares local variables inside functions
-- `logout` - logs out from login shell
-- `mapfile`, `readarray` - reads file lines into array (alias)
-- `printf` - formats and prints text
-- `pwd` - shows current directory
-- `read` - reads input
-- `test`, `[` - conditional evaluation
-- `type` - shows command type
-- `ulimit` - shows/configures system resource limits
-- `umask` - permission mask
-- `wait` - waits for processes
-
-## 42sh
-- `banner` - displays 42sh banner
-- `builtin` - executes builtin ignoring functions with same name
-- `declare`, `typeset` - declares variables with attributes (alias)
-- `enable` - enables/disables builtins
-- `help` - help about builtins
-- `let` - arithmetic evaluation
-- `shopt` - configures 42sh-specific options
 
 ---
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:47:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 19:37:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,15 @@
 
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
+
+#pragma endregion
+
+#pragma region "Dots"
+
+	int bt_dots(t_arg *args) {
+		(void) args;
+
+		return (0);
+	}
 
 #pragma endregion

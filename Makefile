@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/20 12:57:48 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/20 19:43:14 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -145,6 +145,7 @@ SRCS	=	main/main.c										\
 			builtins/regular/cd.c							\
 			builtins/regular/command.c						\
 			builtins/regular/echo.c							\
+			builtins/regular/false.c						\
 			builtins/regular/fc.c							\
 			builtins/regular/fg.c							\
 			builtins/regular/getopts.c						\
@@ -159,6 +160,7 @@ SRCS	=	main/main.c										\
 			builtins/regular/pwd.c							\
 			builtins/regular/read.c							\
 			builtins/regular/test.c							\
+			builtins/regular/true.c							\
 			builtins/regular/type.c							\
 			builtins/regular/ulimit.c						\
 			builtins/regular/umask.c						\
