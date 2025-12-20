@@ -1,35 +1,72 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   executer.c                                         :+:      :+:    :+:   */
+/*   help
+                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/16 21:45:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:32:13 by vzurera-         ###   ########.fr       */
+/*   Created: 2024/12/20 11:00:23 by vzurera-          #+#    #+#             */
+/*   Updated: 2024/12/20 11:00:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "tests/args.h"
 	#include "builtins/builtins.h"
-	#include "hashes/builtin.h"
-	#include "main/shell.h"
+	#include "builtins/options.h"
 
 #pragma endregion
 
-int builtin_exec(t_arg *args) {
-	if (!args || !args->value) return (0);
+// ., source
+// :
+// break
+// continue
+// eval
+// exec
+// exit
+// export
+// readonly
+// return
+// set
+// shift
+// times
+// trap
+// unset
 
-	t_builtin *builtin = builtin_find(args->value);
-	if (builtin && !builtin->disabled) {
-		if (strcmp(args->value, "exit") && strcmp(args->value, "logout")) args = args->next;
-		int exit_code = builtin->execute(args);
-		if (exit_code != -1) shell.exit_code = exit_code;
-		return (1);
-	}
 
-	return (0);
-}
+// alias
+// unalias
+// bg
+// fg
+// jobs
+// cd
+// command
+// echo
+// fc
+// getopts
+// hash
+// history
+// kill
+// local
+// logout
+// mapfile, readarray
+// printf
+// pwd
+// read
+// test, [
+// type
+// ulimit
+// umask
+// wait
+
+
+// banner
+// builtin
+// declare, typeset
+// enable
+// help
+// let
+// shopt
+
+//	Total: 25

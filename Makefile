@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/19 11:26:11 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/20 12:57:48 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -132,39 +132,55 @@ SRCS	=	main/main.c										\
 			hashes/variables.c								\
 															\
 															\
-			builtins/alias/alias.c							\
-			builtins/alias/unalias.c						\
-			builtins/env/declare.c							\
-			builtins/env/export.c							\
-			builtins/env/readonly.c							\
-			builtins/env/set.c								\
-			builtins/env/shopt.c							\
-			builtins/env/unset.c							\
-			builtins/filesystem/cd.c						\
-			builtins/filesystem/hash.c						\
-			builtins/filesystem/pwd.c						\
-			builtins/history/fc.c							\
-			builtins/history/history.c						\
-			builtins/jobs/bg.c								\
-			builtins/jobs/fg.c								\
-			builtins/jobs/jobs.c							\
-			builtins/jobs/kill.c							\
-			builtins/jobs/wait.c							\
-			builtins/math/let.c								\
-			builtins/scripting/dot.c						\
-			builtins/scripting/eval.c						\
-			builtins/scripting/exec.c						\
-			builtins/scripting/source.c						\
-			builtins/scripting/test.c						\
-			builtins/shell/banner.c							\
-			builtins/shell/builtin.c						\
-			builtins/shell/command.c						\
-			builtins/shell/echo.c							\
-			builtins/shell/enable.c							\
-			builtins/shell/exec.c							\
-			builtins/shell/exit.c							\
-			builtins/shell/help.c							\
-			builtins/shell/type.c							\
+			builtins/42sh/banner.c							\
+			builtins/42sh/builtin.c							\
+			builtins/42sh/declare.c							\
+			builtins/42sh/enable.c							\
+			builtins/42sh/help.c							\
+			builtins/42sh/let.c								\
+			builtins/42sh/shopt.c							\
+															\
+			builtins/regular/alias.c						\
+			builtins/regular/bg.c							\
+			builtins/regular/cd.c							\
+			builtins/regular/command.c						\
+			builtins/regular/echo.c							\
+			builtins/regular/fc.c							\
+			builtins/regular/fg.c							\
+			builtins/regular/getopts.c						\
+			builtins/regular/hash.c							\
+			builtins/regular/history.c						\
+			builtins/regular/jobs.c							\
+			builtins/regular/kill.c							\
+			builtins/regular/local.c						\
+			builtins/regular/logout.c						\
+			builtins/regular/mapfile.c						\
+			builtins/regular/printf.c						\
+			builtins/regular/pwd.c							\
+			builtins/regular/read.c							\
+			builtins/regular/test.c							\
+			builtins/regular/type.c							\
+			builtins/regular/ulimit.c						\
+			builtins/regular/umask.c						\
+			builtins/regular/unalias.c						\
+			builtins/regular/wait.c							\
+															\
+			builtins/special/break.c						\
+			builtins/special/continue.c						\
+			builtins/special/dot.c							\
+			builtins/special/dots.c							\
+			builtins/special/eval.c							\
+			builtins/special/exec.c							\
+			builtins/special/exit.c							\
+			builtins/special/export.c						\
+			builtins/special/readonly.c						\
+			builtins/special/return.c						\
+			builtins/special/set.c							\
+			builtins/special/shift.c						\
+			builtins/special/times.c						\
+			builtins/special/trap.c							\
+			builtins/special/unset.c						\
+															\
 			builtins/utils/executer.c						\
 			builtins/utils/options.c						\
 															\
