@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:10:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "utils/libft.h"
-	#include "hashes/key_value.h"
 
 #pragma endregion
 
@@ -62,6 +61,8 @@
 #pragma endregion
 
 #pragma region "Format for Shell"
+
+	// Escapes a string for safe use within shell quotes (' or ")
 
 	char *format_for_shell(const char *value, char quote_type) {
 		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);

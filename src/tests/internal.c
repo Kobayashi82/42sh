@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:40:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 	#include "tests/args.h"
 	#include "expansion/globbing.h"
 	#include "hashes/alias.h"
-	#include "hashes/variables.h"
+	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "tests/tests.h"
 	

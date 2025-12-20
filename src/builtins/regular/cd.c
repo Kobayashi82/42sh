@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:47:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
-	#include "hashes/variables.h"
+	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"

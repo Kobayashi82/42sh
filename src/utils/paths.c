@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:21:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/variables.h"
+	#include "hashes/variable.h"
 	#include "utils/libft.h"
 	#include "utils/paths.h"
 	#include "utils/print.h"

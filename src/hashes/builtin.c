@@ -6,16 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 20:55:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:14:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
 	#include "hashes/builtin.h"
 	#include "builtins/builtins.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
 
 #pragma endregion
 

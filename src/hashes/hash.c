@@ -1,26 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmdp.c                                             :+:      :+:    :+:   */
+/*   hash.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:37:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:14:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "hashes/hash.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "hashes/cmdp.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
-	t_cmdp *cmdp_table[CMDP_HASH_SIZE];
+	t_cmdp *hash_table[CMDP_HASH_SIZE];
 
 #pragma endregion
 
@@ -62,8 +62,8 @@
 			new_cmdp->name = ft_strdup(name);
 			new_cmdp->path = ft_strdup(path);
 
-			new_cmdp->next = cmdp_table[index];
-			cmdp_table[index] = new_cmdp;
+			new_cmdp->next = hash_table[index];
+			hash_table[index] = new_cmdp;
 
 			return (0);
 		}
@@ -80,7 +80,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_cmdp *cmdp = cmdp_table[index];
+			t_cmdp *cmdp = hash_table[index];
 
 			while (cmdp) {
 				if (!strcmp(cmdp->name, name)) {
@@ -97,7 +97,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_cmdp *cmdp = cmdp_table[index];
+			t_cmdp *cmdp = hash_table[index];
 
 			while (cmdp) {
 				if (!strcmp(cmdp->name, name)) {
@@ -118,7 +118,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-				t_cmdp *cmdp = cmdp_table[index];
+				t_cmdp *cmdp = hash_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
 					cmdp = cmdp->next;
@@ -130,7 +130,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-				t_cmdp *cmdp = cmdp_table[index];
+				t_cmdp *cmdp = hash_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) {
 						array[i] = ft_strdup(cmdp->path);
@@ -172,7 +172,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-				t_cmdp *cmdp = cmdp_table[index];
+				t_cmdp *cmdp = hash_table[index];
 				while (cmdp) {
 					if (cmdp->name && cmdp->path) i++;
 					cmdp = cmdp->next;
@@ -194,13 +194,13 @@
 			if (!name) return (1);
 
 			unsigned int index = hash_index(name);
-			t_cmdp *cmdp = cmdp_table[index];
+			t_cmdp *cmdp = hash_table[index];
 			t_cmdp *prev = NULL;
 
 			while (cmdp) {
 				if (!strcmp(cmdp->name, name)) {
 					if (prev)	prev->next = cmdp->next;
-					else		cmdp_table[index] = cmdp->next;
+					else		hash_table[index] = cmdp->next;
 					free(cmdp->name); free(cmdp->path); free(cmdp);
 					return (0);
 				}
@@ -217,8 +217,8 @@
 
 		void cmdp_clear() {
 			for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-				if (cmdp_table[index]) {
-					t_cmdp *cmdp = cmdp_table[index];
+				if (hash_table[index]) {
+					t_cmdp *cmdp = hash_table[index];
 					while (cmdp) {
 						t_cmdp *next = cmdp->next;
 						free(cmdp->name);
@@ -226,7 +226,7 @@
 						free(cmdp);
 						cmdp = next;
 					}
-					cmdp_table[index] = NULL;
+					hash_table[index] = NULL;
 				}
 			}
 		}

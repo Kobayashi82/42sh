@@ -1,25 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   variables.c                                        :+:      :+:    :+:   */
+/*   variable.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 20:21:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:16:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/terminal.h"
-	#include "utils/print.h"
 	#include "terminal/readinput/history.h"
-	#include "hashes/variables.h"
-	#include "hashes/key_value.h"
-	#include "main/shell.h"
+
+	#include "hashes/variable.h"
 	#include "main/options.h"
+	#include "main/shell.h"
+
+	#include "utils/libft.h"
+	#include "utils/print.h"
 
 #pragma endregion
 

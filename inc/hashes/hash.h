@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:09:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:03:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 
 	#pragma endregion
 
-	extern t_cmdp *cmdp_table[CMDP_HASH_SIZE];
+	extern t_cmdp *hash_table[CMDP_HASH_SIZE];
 
 #pragma endregion
 

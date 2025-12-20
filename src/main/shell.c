@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:14:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:15:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 	#include "terminal/readinput/history.h"
 
 	#include "hashes/alias.h"
-	#include "hashes/variables.h"
 	#include "hashes/builtin.h"
+	#include "hashes/variable.h"
 
 	#include "main/options.h"
 	#include "main/shell.h"

@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/20 20:40:59 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/20 21:13:48 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -127,9 +127,8 @@ SRCS	=	main/main.c										\
 															\
 			hashes/alias.c									\
 			hashes/builtin.c								\
-			hashes/cmdp.c									\
-			hashes/key_value.c								\
-			hashes/variables.c								\
+			hashes/hash.c									\
+			hashes/variable.c								\
 															\
 															\
 			builtins/42sh/banner.c							\
@@ -194,6 +193,7 @@ SRCS	=	main/main.c										\
 															\
 			utils/array.c									\
 			utils/gnl.c										\
+			utils/key_value.c								\
 			utils/num.c										\
 			utils/paths.c									\
 			utils/print.c									\

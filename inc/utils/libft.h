@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/09 16:58:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:09:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,13 @@
 	#pragma region "GET_NEXT_LINE"
 
 		char	*get_next_line(int fd);
+
+	#pragma endregion
+
+	#pragma region "KEY / VALUE"
+
+		int		get_key_value(const char *line, char **key, char **value, char sep);
+		char	*format_for_shell(const char *value, char quote_type);
 
 	#pragma endregion
 

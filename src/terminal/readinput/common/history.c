@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 15:13:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "hashes/variables.h"
+	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"

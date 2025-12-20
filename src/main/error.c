@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:50:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,9 @@
 	#include "utils/print.h"
 	#include "main/shell.h"
 	#include "hashes/alias.h"
-	#include "hashes/variables.h"
+	#include "hashes/variable.h"
 	#include "hashes/builtin.h"
-	#include "hashes/cmdp.h"
+	#include "hashes/hash.h"
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:47:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 21:12:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	#include "tests/args.h"
 	#include "builtins/builtins.h"
 	#include "builtins/options.h"
-	#include "hashes/cmdp.h"
+	#include "hashes/hash.h"
 
 #pragma endregion
 
@@ -58,7 +58,7 @@
 	static int print_hash(int reuse) {
 		int title = 0; int total = 0;
 		for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-			t_cmdp *cmdp = cmdp_table[index];
+			t_cmdp *cmdp = hash_table[index];
 			while (cmdp) {
 				if (cmdp->name && cmdp->path) {
 					if (reuse) {
