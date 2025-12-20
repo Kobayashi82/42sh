@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 19:40:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/20 20:55:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,24 +263,26 @@
 	// The Bash POSIX mode is described in Bash POSIX Mode.
 
 	int builtin_initialize() {
-		// Special
-		// builtin_add(".", 0, 1, &bt_dot);
-		// builtin_add("source", 0, 1, &bt_dot);
-		// builtin_add(":", 0, 1, &bt_dots);
-		// builtin_add("break", 0, 1, &bt_break);
-		// builtin_add("continue", 0, 1, &bt_continue);
-		// builtin_add("eval", 0, 1, &bt_eval);
-		builtin_add("exec", 0, 1, &bt_exec);
-		builtin_add("exit", 0, 1, &bt_exit);
-		builtin_add("export", 0, 1, &bt_export);
-		builtin_add("readonly", 0, 1, &bt_readonly);
-		// builtin_add("return", 0, 1, &bt_return);
-		// builtin_add("set", 0, 1, &bt_set);
-		// builtin_add("shift", 0, 1, &bt_shift);
-		// builtin_add("times", 0, 1, &bt_times);
-		// builtin_add("trap", 0, 1, &bt_trap);
-		builtin_add("unset", 0, 1, &bt_unset);
-
+		
+		// 42sh
+		builtin_add("banner", 0, 0, &bt_banner);
+		builtin_add("welcome", 0, 0, &bt_welcome);
+		builtin_add("builtin", 0, 0, &bt_builtin);
+		builtin_add("declare", 0, 0, &bt_declare);
+		// builtin_add("dirs", 0, 0, &bt_dirs);
+		// builtin_add("disown", 0, 0, &bt_disown);
+		builtin_add("typeset", 0, 0, &bt_declare);
+		builtin_add("enable", 0, 0, &bt_enable);
+		// builtin_add("help", 0, 0, &bt_help);
+		builtin_add("history", 0, 0, &bt_history);
+		// builtin_add("let", 0, 0, &bt_let);
+		// builtin_add("local", 0, 0, &bt_local);
+		builtin_add("logout", 0, 0, &bt_logout);
+		// builtin_add("mapfile", 0, 0, &bt_mapfile);
+		// builtin_add("popd", 0, 0, &bt_popd);
+		// builtin_add("pushd", 0, 0, &bt_pushd);
+		builtin_add("shopt", 0, 0, &bt_shopt);
+		// builtin_add("suspend", 0, 0, &bt_suspend);
 
 		// Regular
 		builtin_add("alias", 0, 0, &bt_alias);
@@ -295,11 +297,7 @@
 		builtin_add("fc", 0, 0, &bt_fc);
 		// builtin_add("getopts", 0, 0, &bt_getopts);
 		builtin_add("hash", 0, 0, &bt_hash);
-		builtin_add("history", 0, 0, &bt_history);
 		// builtin_add("kill", 0, 0, &bt_kill);
-		// builtin_add("local", 0, 0, &bt_local);
-		builtin_add("logout", 0, 0, &bt_logout);
-		// builtin_add("mapfile", 0, 0, &bt_mapfile);
 		// builtin_add("readarray", 0, 0, &bt_readarray);
 		// builtin_add("printf", 0, 0, &bt_printf);
 		builtin_add("pwd", 0, 0, &bt_pwd);
@@ -312,16 +310,23 @@
 		// builtin_add("umask", 0, 0, &bt_umask);
 		// builtin_add("wait", 0, 0, &bt_wait);
 
-
-		// 42sh
-		builtin_add("banner", 0, 0, &bt_banner);
-		builtin_add("builtin", 0, 0, &bt_builtin);
-		builtin_add("declare", 0, 0, &bt_declare);
-		builtin_add("typeset", 0, 0, &bt_declare);
-		builtin_add("enable", 0, 0, &bt_enable);
-		// builtin_add("help", 0, 0, &bt_help);
-		// builtin_add("let", 0, 0, &bt_let);
-		builtin_add("shopt", 0, 0, &bt_shopt);
+		// Special
+		// builtin_add("break", 0, 1, &bt_break);
+		// builtin_add("continue", 0, 1, &bt_continue);
+		// builtin_add(".", 0, 1, &bt_dot);
+		// builtin_add("source", 0, 1, &bt_dot);
+		// builtin_add(":", 0, 1, &bt_dots);
+		// builtin_add("eval", 0, 1, &bt_eval);
+		builtin_add("exec", 0, 1, &bt_exec);
+		builtin_add("exit", 0, 1, &bt_exit);
+		builtin_add("export", 0, 1, &bt_export);
+		builtin_add("readonly", 0, 1, &bt_readonly);
+		// builtin_add("return", 0, 1, &bt_return);
+		// builtin_add("set", 0, 1, &bt_set);
+		// builtin_add("shift", 0, 1, &bt_shift);
+		// builtin_add("times", 0, 1, &bt_times);
+		// builtin_add("trap", 0, 1, &bt_trap);
+		builtin_add("unset", 0, 1, &bt_unset);
 
 		return (0);
 	}

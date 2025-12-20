@@ -1,13 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   help
-                                            :+:      :+:    :+:   */
+/*   help.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/20 11:00:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2024/12/20 11:00:32 by vzurera-         ###   ########.fr       */
+/*   Created: 2025/12/20 21:00:29 by vzurera-          #+#    #+#             */
+/*   Updated: 2025/12/20 21:00:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +17,39 @@
 
 #pragma endregion
 
+// 42sh (16) + 2 alias
+//
 // banner
 // builtin
 // declare, typeset
+// dirs
+// disown
 // enable
 // help
+// history
 // let
+// local
+// logout
+// mapfile, readarray
+// popd
+// pushd
 // shopt
+// suspend
 
+// Regular (22) + 1 alias
+//
 // alias
-// unalias
 // bg
-// fg
-// jobs
 // cd
 // command
 // echo
 // false
 // fc
+// fg
 // getopts
 // hash
-// history
+// jobs
 // kill
-// local
-// logout
-// mapfile, readarray
 // printf
 // pwd
 // read
@@ -51,12 +58,15 @@
 // type
 // ulimit
 // umask
+// unalias
 // wait
 
-// ., source
-// :
+// Special (15) + 1 alias
+//
 // break
 // continue
+// ., source
+// :
 // eval
 // exec
 // exit
@@ -69,4 +79,12 @@
 // trap
 // unset
 
-//	Total: 48 + 4 alias
+//	Total: 53 + 4 alias
+
+// Not Implemented
+//
+// bind
+// caller
+// compgen
+// complete
+// compopt

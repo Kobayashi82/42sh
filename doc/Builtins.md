@@ -1,45 +1,59 @@
 
 # Builtins
 
-
 ## 42sh
+
 - `banner` - displays 42sh banner
+- `welcome` - displays 42sh welcome message
 - `builtin` - executes builtin ignoring functions with same name
-- `declare`, `typeset` - declares variables with attributes (alias)
+- `declare` - declares variables with attributes
+- `typeset` - declares variables with attributes (alias of `declare`)
+- `dirs` - shows directory stack
+- `disown` - detaches jobs from shell
 - `enable` - enables/disables builtins
 - `help` - help about builtins
+- `history` - shows command history
 - `let` - arithmetic evaluation
+- `local` - declares local variables inside functions
+- `logout` - logs out from login shell
+- `mapfile` - reads file lines into array
+- `readarray` - reads file lines into array (alias of `mapfile`)
+- `popd` - removes directory from stack
+- `pushd` - adds directory to stack
 - `shopt` - configures 42sh-specific options
+- `suspend` - suspends shell execution
 
 ## Regular
-- `alias`, `unalias` - manages aliases
-- `bg`, `fg`, `jobs` - job control
+- `alias` - creates command aliases
+- `bg` - resumes job in background
 - `cd` - changes directory
 - `command` - executes command ignoring functions
 - `echo` - prints text
 - `false` - returns failure status (exit code 1)
 - `fc` - "fix command", interactive history editor
+- `fg` - resumes job in foreground
 - `getopts` - processes options
 - `hash` - caches external command locations
-- `history` - shows command history (considered a common extension in POSIX)
+- `jobs` - lists active jobs
 - `kill` - sends signals
-- `local` - declares local variables inside functions
-- `logout` - logs out from login shell
-- `mapfile`, `readarray` - reads file lines into array (alias)
 - `printf` - formats and prints text
 - `pwd` - shows current directory
 - `read` - reads input
-- `test`, `[` - conditional evaluation (alias)
+- `test` - conditional evaluation
+- `[` - conditional evaluation (alias of `test`)
 - `true` - returns success status (exit code 0)
 - `type` - shows command type
 - `ulimit` - shows/configures system resource limits
 - `umask` - permission mask
+- `unalias` - removes aliases
 - `wait` - waits for processes
 
 ## Special
-- `.`, `source` - executes script in current context (alias)
+- `break` - exits from loop
+- `continue` - skips to next loop iteration
+- `.` - executes script in current context
+- `source` - executes script in current context (alias of `.`)
 - `:` - null command, always returns success (exit code 0)
-- `break`, `continue` - loop control
 - `eval` - evaluates arguments as command
 - `exec` - replaces current shell
 - `exit` - terminates shell

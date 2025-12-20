@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/20 19:43:14 by vzurera-         ###   ########.fr        #
+#    Updated: 2025/12/20 20:40:59 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -135,10 +135,19 @@ SRCS	=	main/main.c										\
 			builtins/42sh/banner.c							\
 			builtins/42sh/builtin.c							\
 			builtins/42sh/declare.c							\
+			builtins/42sh/dirs.c							\
+			builtins/42sh/disown.c							\
 			builtins/42sh/enable.c							\
 			builtins/42sh/help.c							\
+			builtins/42sh/history.c							\
 			builtins/42sh/let.c								\
+			builtins/42sh/local.c							\
+			builtins/42sh/logout.c							\
+			builtins/42sh/mapfile.c							\
+			builtins/42sh/popd.c							\
+			builtins/42sh/pushd.c							\
 			builtins/42sh/shopt.c							\
+			builtins/42sh/suspend.c							\
 															\
 			builtins/regular/alias.c						\
 			builtins/regular/bg.c							\
@@ -150,12 +159,8 @@ SRCS	=	main/main.c										\
 			builtins/regular/fg.c							\
 			builtins/regular/getopts.c						\
 			builtins/regular/hash.c							\
-			builtins/regular/history.c						\
 			builtins/regular/jobs.c							\
 			builtins/regular/kill.c							\
-			builtins/regular/local.c						\
-			builtins/regular/logout.c						\
-			builtins/regular/mapfile.c						\
 			builtins/regular/printf.c						\
 			builtins/regular/pwd.c							\
 			builtins/regular/read.c							\
