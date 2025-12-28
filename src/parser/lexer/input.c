@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 15:15:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/10 22:21:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 00:53:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@
 	#pragma region "Full Line"
 
 		static void full_line_append(t_lexer *lexer, const char *input) {
-			if (!input) return ;
+			if (!input) return;
 
 			char	*new_full = NULL;
 			size_t	full_len = ft_strlen(lexer->full_input);

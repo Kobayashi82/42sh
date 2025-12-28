@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:47:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/27 23:01:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,9 +140,9 @@
 
 		if (strchr(opts->valid, '?')) return (free(opts), print_help());
 		if (strchr(opts->valid, '#')) return (free(opts), print_version("command", "1.0"));
-		
+
 		if (!opts->args || !opts->args->value) return (free(opts), 0);
-		
+
 		if (strchr(opts->valid, 'V')) {
 			t_arg *arg = opts->args; arg->extra = 1;
 			return (free(opts), bt_type(arg));

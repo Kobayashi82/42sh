@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 20:57:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/27 23:04:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 	// int		bt_test(t_arg *args);
 	int		bt_true(t_arg *args);
 	int		bt_type(t_arg *args);
-	// int		bt_ulimit(t_arg *args);
+	int		bt_ulimit(t_arg *args);
 	// int		bt_umask(t_arg *args);
 	int		bt_unalias(t_arg *args);
 	// int		bt_wait(t_arg *args);

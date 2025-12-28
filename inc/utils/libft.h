@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:09:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 00:46:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 	#include <stdlib.h>
 	#include <string.h>
 	#include <ctype.h>
+	#include <limits.h>
+	#include <errno.h>
 
 	#include <stdio.h>
 
