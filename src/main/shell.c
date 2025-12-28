@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 16:49:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:58:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,10 @@ int shell_time() { return (time(NULL) - shell.started); }
 			argus[0] = "-a";
 			argus[1] = "patata";
 			argus[2] = "-b";
+			argus[3] = "frita";
 			argus[4] = NULL;
 			shell.argv = argus;
-			shell.argc = 3;
+			shell.argc = 4;
 		} else {
 			shell.fullname = "42sh";
 			shell.name = "42sh";

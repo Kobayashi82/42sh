@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 21:45:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 12:20:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:32:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ int builtin_exec(t_arg *args) {
 
 	t_builtin *builtin = builtin_find(args->value);
 	if (builtin && !builtin->disabled) {
-		if (!strcmp(args->value, "getopts")) {
+		if (!strcmp(args->value, "getopts") ||
+			!strcmp(args->value, "ulimit")) {
 			int argc;
 			char **argv = args_to_argv(args, &argc);
 			int exit_code = builtin->execute2(argc, argv);

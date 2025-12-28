@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 12:13:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 18:33:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,7 +329,7 @@
 		// builtin_add("test", 0, 0, &bt_test);
 		builtin_add("true", 0, 0, &bt_true);
 		builtin_add("type", 0, 0, &bt_type);
-		builtin_add("ulimit", 0, 0, &bt_ulimit);
+		builtin_add2("ulimit", 0, 0, &bt_ulimit);
 		// builtin_add("umask", 0, 0, &bt_umask);
 		// builtin_add("wait", 0, 0, &bt_wait);
 
