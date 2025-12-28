@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:15:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 14:59:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ int shell_time() { return (time(NULL) - shell.started); }
 #pragma region "Initialize"
 
 	int initialize(int argc, const char **argv, const char **envp) {
-		(void) argc; (void) argv;
-
 		//	uid, euid
 		//	PS1, PS2
 		//	column, row
@@ -58,6 +56,31 @@ int shell_time() { return (time(NULL) - shell.started); }
 		shell.started = time(NULL);
 		srand(shell.started);
 		shell.cwd = get_cwd("shell-init");
+
+		// Args
+		shell.optpos = 1;
+		if (argc > 0 && argv && argv[0]) {
+			shell.fullname = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
+    		shell.name = strrchr(shell.fullname, '/');
+    		shell.name = (shell.name) ? shell.name + 1 : shell.fullname;
+			shell.arg0 = (argv[0][0] == '-') ? "-42sh" : "42sh";
+			shell.argv = (argc > 1) ? &argv[1] : NULL;
+			shell.argc = argc - 1;
+
+			static const char *argus[3];
+			argus[0] = "-a";
+			argus[1] = "patata";
+			argus[2] = NULL;
+			shell.argv = argus;
+			shell.argc = 2;
+		} else {
+			shell.fullname = "42sh";
+			shell.name = "42sh";
+			shell.arg0 = "42sh";
+			shell.argv = NULL;
+			shell.argc = 0;
+		}
+
 		terminal.bk_stdin = dup(STDIN_FILENO);
 		terminal.bk_stdout = dup(STDOUT_FILENO);
 		terminal.bk_stderr = dup(STDERR_FILENO);

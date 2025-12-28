@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/27 23:04:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 12:13:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,29 @@
 			if (disabled != -1) new_builtin->disabled = disabled;
 			if (special != -1) new_builtin->special = special;
 			if (execute) new_builtin->execute = execute;
+			new_builtin->next = builtin_table[index];
+			builtin_table[index] = new_builtin;
+
+			return (0);
+		}
+
+		int builtin_add2(const char *name, int disabled, int special, int (*execute2)(int argc, char **argv)) {
+			if (!name) return (0);
+
+			t_builtin *new_builtin = builtin_find(name);
+			if (new_builtin) {
+				if (disabled != -1) new_builtin->disabled = disabled;
+				if (special != -1) new_builtin->special = special;
+				if (execute2) new_builtin->execute2 = execute2;
+				return (0);
+			}
+
+			unsigned int index = hash_index(name);
+			new_builtin = calloc(1, sizeof(t_builtin));
+			new_builtin->name = ft_strdup(name);
+			if (disabled != -1) new_builtin->disabled = disabled;
+			if (special != -1) new_builtin->special = special;
+			if (execute2) new_builtin->execute2 = execute2;
 			new_builtin->next = builtin_table[index];
 			builtin_table[index] = new_builtin;
 
@@ -295,7 +318,7 @@
 		builtin_add("echo", 0, 0, &bt_echo);
 		builtin_add("false", 0, 0, &bt_false);
 		builtin_add("fc", 0, 0, &bt_fc);
-		// builtin_add("getopts", 0, 0, &bt_getopts);
+		builtin_add2("getopts", 0, 0, &bt_getopts);
 		builtin_add("hash", 0, 0, &bt_hash);
 		// builtin_add("kill", 0, 0, &bt_kill);
 		// builtin_add("readarray", 0, 0, &bt_readarray);

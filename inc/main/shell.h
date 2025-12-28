@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:42:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 13:17:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,12 @@
 			t_ast		*ast;
 			int			exit;
 			int			exit_code;
+			int			optpos;
+			const char	*name;
+			const char	*fullname;
+			const char	*arg0;
+			const char	**argv;
+			int			argc;
 		} t_shell;
 
 	#pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 00:59:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 12:18:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 
 #pragma region "Args to Argv"
 
-	char **args_to_argv(t_arg *args, int *argc) {
+	static char **args_to_argv(t_arg *args, int *argc) {
 		int count = 0;
 
 		t_arg *tmp = args;
@@ -76,7 +76,7 @@
 
 #pragma region "Free Argv"
 
-	void free_argv(char **argv) {
+	static void free_argv(char **argv) {
 		if (!argv) return;
 		for (int i = 0; argv[i]; ++i) free(argv[i]);
 		free(argv);

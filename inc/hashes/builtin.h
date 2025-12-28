@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:09:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 12:06:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 			int					disabled;
 			int					special;
 		    int         		(*execute)(t_arg *args);
+			int         		(*execute2)(int argc, char **argv);
 			struct s_builtin	*next;
 		} t_builtin;
 
