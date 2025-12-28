@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/27 23:01:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:33:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "tests/args.h"
-	#include "builtins/builtins.h"
 	#include "builtins/options.h"
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
@@ -180,7 +179,7 @@
 			if (alias_cmd && alias_cmd->value) {
 				if (builtin_find(alias_cmd->value)) {
 					t_arg *cmd = test_create_args(alias_cmd->value);
-					builtin_exec(cmd);
+					// builtin_exec(cmd);
 					args_clear(&cmd);
 				} else {
 					t_arg *cmd = test_create_args(alias_cmd->value);
@@ -193,7 +192,7 @@
 					} args_clear(&cmd);
 				}
 			} else if (builtin_cmd) {
-				builtin_exec(opts->args);
+				// builtin_exec(opts->args);
 			} else if (check_function(opts->args->value)) {
 				printf("Se ejecuta la función '%s()'\n", args->value);
 				//exec_func();

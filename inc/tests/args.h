@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 17:30:31 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:32:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 23:59:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,5 +65,8 @@
 	t_arg	*args_sort(t_arg *args);
 	void	args_clear(t_arg **args);
 	void	args_print(t_arg *args);
+
+	char	**test_create_argv(int argc, ...);
+	void	test_free_argv(char **argv);
 
 #pragma endregion

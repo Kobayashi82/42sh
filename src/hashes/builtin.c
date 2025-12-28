@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 18:33:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:40:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
-	#include "builtins/builtins.h"
+	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
 
@@ -40,46 +40,26 @@
 
 	#pragma region "Builtin"
 
-		int builtin_add(const char *name, int disabled, int special, int (*execute)(t_arg *args)) {
+		static int builtin_add(const char *name, int disabled, int special, int (*execute)(int argc, char **argv)) {
 			if (!name) return (0);
 
 			t_builtin *new_builtin = builtin_find(name);
 			if (new_builtin) {
-				if (disabled != -1) new_builtin->disabled = disabled;
-				if (special != -1) new_builtin->special = special;
-				if (execute) new_builtin->execute = execute;
+				if (disabled != -1)	new_builtin->disabled = disabled;
+				if (special  != -1)	new_builtin->special  = special;
+				if (execute)		new_builtin->execute  = execute;
+
 				return (0);
 			}
 
 			unsigned int index = hash_index(name);
 			new_builtin = calloc(1, sizeof(t_builtin));
 			new_builtin->name = ft_strdup(name);
-			if (disabled != -1) new_builtin->disabled = disabled;
-			if (special != -1) new_builtin->special = special;
-			if (execute) new_builtin->execute = execute;
-			new_builtin->next = builtin_table[index];
-			builtin_table[index] = new_builtin;
 
-			return (0);
-		}
+			if (disabled != -1)	new_builtin->disabled = disabled;
+			if (special  != -1)	new_builtin->special  = special;
+			if (execute)		new_builtin->execute  = execute;
 
-		int builtin_add2(const char *name, int disabled, int special, int (*execute2)(int argc, char **argv)) {
-			if (!name) return (0);
-
-			t_builtin *new_builtin = builtin_find(name);
-			if (new_builtin) {
-				if (disabled != -1) new_builtin->disabled = disabled;
-				if (special != -1) new_builtin->special = special;
-				if (execute2) new_builtin->execute2 = execute2;
-				return (0);
-			}
-
-			unsigned int index = hash_index(name);
-			new_builtin = calloc(1, sizeof(t_builtin));
-			new_builtin->name = ft_strdup(name);
-			if (disabled != -1) new_builtin->disabled = disabled;
-			if (special != -1) new_builtin->special = special;
-			if (execute2) new_builtin->execute2 = execute2;
 			new_builtin->next = builtin_table[index];
 			builtin_table[index] = new_builtin;
 
@@ -291,65 +271,82 @@
 		builtin_add("banner", 0, 0, &bt_banner);
 		builtin_add("welcome", 0, 0, &bt_welcome);
 		builtin_add("builtin", 0, 0, &bt_builtin);
-		builtin_add("declare", 0, 0, &bt_declare);
-		// builtin_add("dirs", 0, 0, &bt_dirs);
-		// builtin_add("disown", 0, 0, &bt_disown);
-		builtin_add("typeset", 0, 0, &bt_declare);
+		// builtin_add("declare", 0, 0, &bt_declare);
+		// SIN CREAR builtin_add("dirs", 0, 0, &bt_dirs);
+		// SIN CREAR builtin_add("disown", 0, 0, &bt_disown);
+		// builtin_add("typeset", 0, 0, &bt_declare);
 		builtin_add("enable", 0, 0, &bt_enable);
-		// builtin_add("help", 0, 0, &bt_help);
-		builtin_add("history", 0, 0, &bt_history);
-		// builtin_add("let", 0, 0, &bt_let);
-		// builtin_add("local", 0, 0, &bt_local);
-		builtin_add("logout", 0, 0, &bt_logout);
-		// builtin_add("mapfile", 0, 0, &bt_mapfile);
-		// builtin_add("popd", 0, 0, &bt_popd);
-		// builtin_add("pushd", 0, 0, &bt_pushd);
-		builtin_add("shopt", 0, 0, &bt_shopt);
-		// builtin_add("suspend", 0, 0, &bt_suspend);
+		// SIN CREAR builtin_add("help", 0, 0, &bt_help);
+		// builtin_add("history", 0, 0, &bt_history);
+		// SIN CREAR builtin_add("let", 0, 0, &bt_let);
+		// SIN CREAR builtin_add("local", 0, 0, &bt_local);
+		// builtin_add("logout", 0, 0, &bt_logout);
+		// SIN CREAR builtin_add("mapfile", 0, 0, &bt_mapfile);
+		// SIN CREAR builtin_add("popd", 0, 0, &bt_popd);
+		// SIN CREAR builtin_add("pushd", 0, 0, &bt_pushd);
+		// builtin_add("shopt", 0, 0, &bt_shopt);
+		// SIN CREAR builtin_add("suspend", 0, 0, &bt_suspend);
 
-		// Regular
-		builtin_add("alias", 0, 0, &bt_alias);
-		builtin_add("unalias", 0, 0, &bt_unalias);
-		// builtin_add("bg", 0, 0, &bt_bg);
-		// builtin_add("fg", 0, 0, &bt_fg);
-		// builtin_add("jobs", 0, 0, &bt_jobs);
-		builtin_add("cd", 0, 0, &bt_cd);
-		builtin_add("command", 0, 0, &bt_command);
-		builtin_add("echo", 0, 0, &bt_echo);
-		builtin_add("false", 0, 0, &bt_false);
-		builtin_add("fc", 0, 0, &bt_fc);
-		builtin_add2("getopts", 0, 0, &bt_getopts);
-		builtin_add("hash", 0, 0, &bt_hash);
-		// builtin_add("kill", 0, 0, &bt_kill);
-		// builtin_add("readarray", 0, 0, &bt_readarray);
-		// builtin_add("printf", 0, 0, &bt_printf);
-		builtin_add("pwd", 0, 0, &bt_pwd);
-		// builtin_add("read", 0, 0, &bt_read);
-		// builtin_add("[", 0, 0, &bt_test);
-		// builtin_add("test", 0, 0, &bt_test);
-		builtin_add("true", 0, 0, &bt_true);
-		builtin_add("type", 0, 0, &bt_type);
-		builtin_add2("ulimit", 0, 0, &bt_ulimit);
-		// builtin_add("umask", 0, 0, &bt_umask);
-		// builtin_add("wait", 0, 0, &bt_wait);
+		// SIN CREAR Regular
+		// builtin_add("alias", 0, 0, &bt_alias);
+		// builtin_add("unalias", 0, 0, &bt_unalias);
+		// SIN CREAR builtin_add("bg", 0, 0, &bt_bg);
+		// SIN CREAR builtin_add("fg", 0, 0, &bt_fg);
+		// SIN CREAR builtin_add("jobs", 0, 0, &bt_jobs);
+		// builtin_add("cd", 0, 0, &bt_cd);
+		// builtin_add("command", 0, 0, &bt_command);
+		// builtin_add("echo", 0, 0, &bt_echo);
+		// builtin_add("false", 0, 0, &bt_false);
+		// builtin_add("fc", 0, 0, &bt_fc);
+		builtin_add("getopts", 0, 0, &bt_getopts);
+		// builtin_add("hash", 0, 0, &bt_hash);
+		// SIN CREAR builtin_add("kill", 0, 0, &bt_kill);
+		// SIN CREAR builtin_add("readarray", 0, 0, &bt_readarray);
+		// SIN CREAR builtin_add("printf", 0, 0, &bt_printf);
+		// builtin_add("pwd", 0, 0, &bt_pwd);
+		// SIN CREAR builtin_add("read", 0, 0, &bt_read);
+		// SIN CREAR builtin_add("[", 0, 0, &bt_test);
+		// SIN CREAR builtin_add("test", 0, 0, &bt_test);
+		// builtin_add("true", 0, 0, &bt_true);
+		// builtin_add("type", 0, 0, &bt_type);
+		builtin_add("ulimit", 0, 0, &bt_ulimit);
+		// SIN CREAR builtin_add("umask", 0, 0, &bt_umask);
+		// SIN CREAR builtin_add("wait", 0, 0, &bt_wait);
 
-		// Special
-		// builtin_add("break", 0, 1, &bt_break);
-		// builtin_add("continue", 0, 1, &bt_continue);
-		// builtin_add(".", 0, 1, &bt_dot);
-		// builtin_add("source", 0, 1, &bt_dot);
-		// builtin_add(":", 0, 1, &bt_dots);
-		// builtin_add("eval", 0, 1, &bt_eval);
-		builtin_add("exec", 0, 1, &bt_exec);
-		builtin_add("exit", 0, 1, &bt_exit);
-		builtin_add("export", 0, 1, &bt_export);
-		builtin_add("readonly", 0, 1, &bt_readonly);
-		// builtin_add("return", 0, 1, &bt_return);
-		// builtin_add("set", 0, 1, &bt_set);
-		// builtin_add("shift", 0, 1, &bt_shift);
-		// builtin_add("times", 0, 1, &bt_times);
-		// builtin_add("trap", 0, 1, &bt_trap);
-		builtin_add("unset", 0, 1, &bt_unset);
+		// SIN CREAR Special
+		// SIN CREAR builtin_add("break", 0, 1, &bt_break);
+		// SIN CREAR builtin_add("continue", 0, 1, &bt_continue);
+		// SIN CREAR builtin_add(".", 0, 1, &bt_dot);
+		// SIN CREAR builtin_add("source", 0, 1, &bt_dot);
+		// SIN CREAR builtin_add(":", 0, 1, &bt_dots);
+		// SIN CREAR builtin_add("eval", 0, 1, &bt_eval);
+		// builtin_add("exec", 0, 1, &bt_exec);
+		// builtin_add("exit", 0, 1, &bt_exit);
+		// builtin_add("export", 0, 1, &bt_export);
+		// builtin_add("readonly", 0, 1, &bt_readonly);
+		// SIN CREAR builtin_add("return", 0, 1, &bt_return);
+		// SIN CREAR builtin_add("set", 0, 1, &bt_set);
+		// SIN CREAR builtin_add("shift", 0, 1, &bt_shift);
+		// SIN CREAR builtin_add("times", 0, 1, &bt_times);
+		// SIN CREAR builtin_add("trap", 0, 1, &bt_trap);
+		// builtin_add("unset", 0, 1, &bt_unset);
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "Execute"
+
+	int builtin_exec(int argc, char **argv) {
+		if (!argc) return (0);
+
+		t_builtin *builtin = builtin_find(argv[0]);
+		if (builtin && !builtin->disabled) {
+			int exit_code = builtin->execute(argc, argv);
+			if (exit_code != -1) shell.exit_code = exit_code;
+			return (1);
+		}
 
 		return (0);
 	}

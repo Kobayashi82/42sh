@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:48:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "tests/args.h"
-	#include "builtins/builtins.h"
+	#include "hashes/builtin.h"
 	#include "builtins/options.h"
 	#include "main/options.h"
 

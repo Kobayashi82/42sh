@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:03:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,11 +21,49 @@
 
 #pragma endregion
 
+#pragma region "Args to Argv"
+
+	static char **args_to_argv(t_arg *args, int *argc) {
+		int count = 0;
+
+		t_arg *tmp = args;
+		while (tmp) {
+			if (tmp->value) count++;
+			tmp = tmp->next;
+		}
+
+		char **argv = malloc(sizeof(char *) * (count + 1));
+		if (!argv) return (NULL);
+		*argc = count;
+
+		int i = 0;
+		tmp = args;
+		while (tmp) {
+			if (tmp->value) argv[i++] = strdup(tmp->value);
+			tmp = tmp->next;
+		}
+		argv[i] = NULL;
+
+		return (argv);
+	}
+
+#pragma endregion
+
+#pragma region "Free Argv"
+
+	static void free_argv(char **argv) {
+		if (!argv) return;
+		for (int i = 0; argv[i]; ++i) free(argv[i]);
+		free(argv);
+	}
+
+#pragma endregion
+
 #pragma region "Read Input"
 
 	#include "parser/lexer.h"
 	#include "expansion/globbing.h"
-	#include "builtins/builtins.h"
+	#include "hashes/builtin.h"
 	#include <stdio.h>
 
 	int read_input(char *value) {
@@ -45,8 +83,11 @@
 
 			if (args) {
 				globbing(args);
-				builtin_exec(args);
+				int argc = 0;
+				char **argv = args_to_argv(args, &argc);
+				builtin_exec(argc, argv);
 				args_clear(&args);
+				free_argv(argv);
 			}
 		} else {
 			free(terminal.input);

@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 18:42:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 23:08:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
 
@@ -92,16 +93,6 @@
 		}
 
 	#pragma endregion
-
-#pragma endregion
-
-#pragma region "Invalid"
-
-	static int invalid() {
-		print(STDERR_FILENO, "Try 'ulimit --help' for more information\n", RESET_PRINT);
-
-		return (1);
-	}
 
 #pragma endregion
 
@@ -199,18 +190,30 @@
 		int		resource = RLIMIT_FSIZE;
 		int		resource_count = 0;
 		char	*limit_str = NULL;
+		int		opt, option_index = optind = opterr = 0;
 
 		struct option long_options[] = {
-			{"help",    no_argument, 0, 'h'},
-			{"version", no_argument, 0, 'V'},
+			{"help",    no_argument, 0, 0},
+			{"version", no_argument, 0, 0},
 			{0, 0, 0, 0}
 		};
 
-		int opt;
-		optind = opterr = 0;
+		
 
-		while ((opt = getopt_long(argc, argv, "SHacdefilmnqrstuvxRhV", long_options, NULL)) != -1) {
+		while ((opt = getopt_long(argc, argv, "SHacdefilmnqrstuvxR", long_options, &option_index)) != -1) {
 			switch (opt) {
+				case 0  :
+					if (!strcmp(long_options[option_index].name, "help"))		return (help());
+					if (!strcmp(long_options[option_index].name, "version"))	return (version());
+				case '?': {
+					char buf[2] = {optopt, '\0'};
+					print(STDERR_FILENO, shell.arg0, RESET);
+					print(STDERR_FILENO, ft_strjoin_sep(": ulimit: -", buf, ": invalid option\n", 0), FREE_JOIN);
+					print(STDERR_FILENO, "ulimit: usage: ulimit [-SHacdefilmnqrstuvxR] [limit]\n\n", JOIN);
+					print(STDERR_FILENO, "Try 'ulimit --help' for more information\n", PRINT);
+					return (1);
+				}
+
 				case 'S': soft = 1; hard = 0; break;
 				case 'H': soft = 0; hard = 1; break;
 				case 'a': return (show_limits(hard));
@@ -232,7 +235,10 @@
 				case 'R':
 					resource_count++;
 					if (resource_count > 1) {
-						print(STDERR_FILENO, "ulimit: cannot specify multiple resources\n", RESET_PRINT);
+						print(STDERR_FILENO, shell.arg0, RESET);
+						print(STDERR_FILENO, ": ulimit: cannot specify multiple resources\n", JOIN);
+						print(STDERR_FILENO, "ulimit: usage: ulimit [-SHacdefilmnqrstuvxR] [limit]\n\n", PRINT);
+						print(STDERR_FILENO, "Try 'ulimit --help' for more information\n", PRINT);
 						return (1);
 					}
 
@@ -253,15 +259,6 @@
 					else if (opt == 'x') resource = RLIMIT_LOCKS;		// file locks
 					else if (opt == 'R') resource = RLIMIT_RTTIME;		// real-time timeout
 					break;
-				case '?': {
-					char buf[2] = {optopt, '\0'};
-					print(STDERR_FILENO, ft_strjoin_sep("ulimit: -", buf, ": invalid option\n", 0), FREE_RESET_PRINT);
-					return (invalid());
-				}
-				case 'h':
-					return (help());
-				case 'V':
-					return (version());
 			}
 		}
 
@@ -276,7 +273,8 @@
 		if (limit_str) {
 			rlim_t new_limit = parse_limit(limit_str);
 			if (new_limit == (rlim_t)-1) {
-				print(STDERR_FILENO, ft_strjoin_sep("ulimit: ", limit_str, ": invalid number\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, shell.arg0, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", limit_str, ": invalid number\n", 0), FREE_PRINT);
 				return (1);
 			}
 

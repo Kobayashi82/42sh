@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 20:05:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "builtins/builtins.h"
+	#include "hashes/builtin.h"
 	#include "builtins/options.h"
 
 #pragma endregion

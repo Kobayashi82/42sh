@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 12:07:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 12:47:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "terminal/terminal.h"
 	#include "utils/print.h"
 	#include "tests/args.h"
-	#include "builtins/builtins.h"
+	#include "hashes/builtin.h"
 	#include "builtins/options.h"
 	#include "main/shell.h"
 

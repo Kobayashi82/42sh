@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 20:20:50 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:40:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 23:59:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,9 @@
 
 	#include "utils/libft.h"
 	#include "tests/args.h"
+
+	#include <stdarg.h>
+	#include <stdlib.h>
 
 #pragma endregion
 
@@ -93,3 +96,28 @@ void test_free_args(t_arg *args) {
         current = next;
     }
 }
+
+
+	char **test_create_argv(int argc, ...) {
+		va_list args;
+		char **argv;
+		int i;
+
+		argv = malloc(sizeof(char *) * (argc + 1));
+		if (!argv) return (NULL);
+
+		va_start(args, argc);
+		for (i = 0; i < argc; i++)
+			argv[i] = ft_strdup(va_arg(args, char *));
+		va_end(args);
+
+		argv[i] = NULL;
+
+		return (argv);
+	}
+
+	void test_free_argv(char **argv) {
+		if (!argv) return;
+		for (int i = 0; argv[i]; ++i) free(argv[i]);
+		free(argv);
+	}
