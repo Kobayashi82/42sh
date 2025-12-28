@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 00:46:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:19:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@
 
 		#pragma region "JOIN"
 
-			char	*ft_strjoin(char *str1, char *str2, int frees);
-			char	*ft_strjoin_sep(char *s1, char *sep, char *s2, int frees);
+			char	*ft_strjoin(const char *str1, const char *str2, int frees);
+			char	*ft_strjoin_sep(const char *s1, const char *sep, const char *s2, int frees);
 
 		#pragma endregion
 

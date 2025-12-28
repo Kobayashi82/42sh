@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 12:18:06 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 16:14:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:23:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@
 	//
 	//	Returns: 0 on success, 1 on failure
 	//
-	int print(int fd, char *str, int mode) {
+	int print(int fd, const char *str, int mode) {
 		if (fd < 0 || fd >= TOTAL_FD) return (1);
 
 		if (mode == RESET_ALL) {
@@ -108,7 +108,7 @@
 		}
 
 		//	Free the input string if necessary
-		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free(str);
+		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free((void *)str);
 
 		return (result == -1);
 	}

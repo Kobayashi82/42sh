@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 14:59:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 16:49:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,13 @@ int shell_time() { return (time(NULL) - shell.started); }
 			shell.argv = (argc > 1) ? &argv[1] : NULL;
 			shell.argc = argc - 1;
 
-			static const char *argus[3];
+			static const char *argus[5];
 			argus[0] = "-a";
 			argus[1] = "patata";
-			argus[2] = NULL;
+			argus[2] = "-b";
+			argus[4] = NULL;
 			shell.argv = argus;
-			shell.argc = 2;
+			shell.argc = 3;
 		} else {
 			shell.fullname = "42sh";
 			shell.name = "42sh";

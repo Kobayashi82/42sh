@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 15:18:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:35:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@
 		return (1);
 	}
 
-	char	*ft_toupper_s(char *str) {
+	char *ft_toupper_s(char *str) {
 		int i = -1;
 
 		while (str[++i]) if (str[i] >= 'a' && str[i] <= 'z') str[i] -= 32;
 		return (str);
 	}
 
-	char	*ft_tolower_s(char *str) {
+	char *ft_tolower_s(char *str) {
 		int	i = -1;
 
 		while (str[++i]) { if (str[i] >= 'A' && str[i] <= 'Z') str[i] += 32; }
@@ -62,7 +62,7 @@
 
 	#pragma region "StrTrim"
 
-		char	*ft_strtrim(const char *s1, const char *set) {
+		char *ft_strtrim(const char *s1, const char *set) {
 			int i = 0, j = ft_strlen(s1) - 1;
 
 			if (!s1 || !*s1) return (NULL);
@@ -76,7 +76,7 @@
 
 	#pragma region "SubStrTrim"
 
-		char	*ft_substr(const char *str, size_t start, int len) {
+		char *ft_substr(const char *str, size_t start, int len) {
 			int m_len = 0;
 
 			if (start <= ft_strlen(str)) m_len = ft_strlen(str) - start;
@@ -132,7 +132,7 @@
 
 	#pragma region "StrJoin"
 
-		char	*ft_strjoin(char *str1, char *str2, int frees) {
+		char *ft_strjoin(const char *str1, const char *str2, int frees) {
 			if (!str1 && !str2) return (NULL);
 
 			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
@@ -143,8 +143,8 @@
 				if (str2) ft_strlcat(new_str, str2, len);
 			} else if (str2) strcpy(new_str, str2);
 
-			if (frees == 1 || frees == 3) free(str1);
-			if (frees == 2 || frees == 3) free(str2);
+			if (frees == 1 || frees == 3) free((void *)str1);
+			if (frees == 2 || frees == 3) free((void *)str2);
 
 			return (new_str);
 		}
@@ -153,7 +153,7 @@
 
 	#pragma region "StrJoinSep"
 
-		char	*ft_strjoin_sep(char *str1, char *sep, char *str2, int frees) {
+		char *ft_strjoin_sep(const char *str1, const char *sep, const char *str2, int frees) {
 			int	len = ft_strlen(str1) + ft_strlen(sep) + ft_strlen(str2);
 
 			if (!str1 && !sep && !str2) return (NULL);
@@ -168,9 +168,9 @@
 				if (str2) ft_strlcat(new_str, str2, len + 1);
 			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
 
-			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free(str1);
-			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free(sep);
-			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) free(str2);
+			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free((void *)str1);
+			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free((void *)sep);
+			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) free((void *)str2);
 
 			return (new_str);
 		}
@@ -183,13 +183,15 @@
 
 	#pragma region "StrDup"
 
-		char	*ft_strdup(const char *s1) {
+		char *ft_strdup(const char *s1) {
 			if (!s1) return (NULL);
 
-			char *copy = malloc(ft_strlen(s1) + 1);
+			size_t len = ft_strlen(s1);
+			char *copy = malloc(len + 1);
 			if (!copy) return (NULL);
 
-			ft_strlcpy(copy, s1, ft_strlen(s1) + 1);
+			memcpy(copy, s1, len);
+			copy[len] = '\0';
 			return (copy);
 		}
 
@@ -197,8 +199,8 @@
 
 	#pragma region "StrNDup"
 
-		char	*ft_strndup(const char *s1, size_t n) {
-			if (!s1 || n == 0) return (NULL);
+		char *ft_strndup(const char *s1, size_t n) {
+			if (!s1) return (NULL);
 
 			size_t len = 0;
     		while (len < n && s1[len] != '\0') len++;
@@ -206,7 +208,8 @@
 			char *copy = malloc(len + 1);
 			if (!copy) return (NULL);
 
-			ft_strlcpy(copy, s1, len + 1);
+			memcpy(copy, s1, len);
+			copy[len] = '\0';
 			return (copy);
 		}
 
@@ -229,7 +232,7 @@
 
 	#pragma region "Free All"
 
-		static char	**free_all(char **result, int i) {
+		static char **free_all(char **result, int i) {
 			if (result) {
 				while (i-- > 0) free(result[i]);
 				free(result);
@@ -259,7 +262,7 @@
 
 	#pragma region "Word Dup"
 
-		static char	*word_dup(char *str, int start, int finish, char c) {
+		static char *word_dup(char *str, int start, int finish, char c) {
 			char	*word = malloc((finish - start + 1));
 			int		i = 0;
 
@@ -275,7 +278,7 @@
 
 	#pragma region "Split"
 
-		char	**ft_split(char *s, char c) {
+		char **ft_split(char *s, char c) {
 			int		i = -1, j = 0, index = -1;
 			char	**split = malloc((count_words(s, c) + 1) * sizeof(char *));
 			if (!s || !split) return (free_all(split, 0));

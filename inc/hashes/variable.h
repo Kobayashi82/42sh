@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   variables.h                                        :+:      :+:    :+:   */
+/*   variable.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:09:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:25:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,10 @@
 
 	//	---------- IMPORT ----------
 	int		variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);
-	int		variables_concatenate(t_var **table, const char *key, char *value, int exported, int readonly, int integer, int force);
+	int		variables_concatenate(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);
 	void	variables_from_array(t_var **table, const char **array);
 	void	variables_join(t_var **dst_table, t_var **src_table);
-	int		variables_validate(char *key, char *value, char *name, int is_asign, int show_msg);
+	int		variables_validate(const char *key, const char *value, const char *name, int is_asign, int show_msg);
 	//	---------- EXPORT ----------
 	t_var	*variables_find(t_var **table, const char *key);
 	char	*variables_find_value(t_var **table, const char *key);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:16:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/28 17:25:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@
 
 	#pragma region "Concatenate"
 
-		int variables_concatenate(t_var **table, const char *key, char *value, int exported, int readonly, int integer, int force) {
+		int variables_concatenate(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
 			if (!key) return (0);
 			if (force == -1) force = 0;
 
@@ -157,7 +157,7 @@
 
 	#pragma region "Validate"
 
-		int variables_validate(char *key, char *value, char *name, int is_asign, int show_msg) {
+		int variables_validate(const char *key, const char *value, const char *name, int is_asign, int show_msg) {
 			if (!key) return (0);
 			int result = 0;
 
