@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -447,7 +447,7 @@
 #pragma region "FC (Fix Command)"
 
 	int bt_fc(t_arg *args) {
-		t_opt *opts = parse_options(args, "elnrs", '-', 0);
+		t_opt *opts = parse_options_old(args, "elnrs", '-', 0);
 		
 		if (*opts->invalid) {
 			invalid_option("fc", opts->invalid, "[-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]");

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 #pragma region "Unalias"
 
 	int bt_unalias(t_arg *args) {
-		t_opt *opts = parse_options(args, "a", '-', 0);
+		t_opt *opts = parse_options_old(args, "a", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("unalias", opts->invalid, "[-a] name [name ...]");

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:33:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@
 #pragma region "Command"
 
 	int bt_command(t_arg *args) {
-		t_opt *opts = parse_options(args, "pVv", '-', 0);
+		t_opt *opts = parse_options_old(args, "pVv", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("command", opts->invalid, "[-pVv] command [arg ...]");

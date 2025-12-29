@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/24 00:53:43 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:50:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stddef.h>
-
 #pragma region "Includes"
+
+	#include <stddef.h>
 
 	#define CMDP_HASH_SIZE	101
 

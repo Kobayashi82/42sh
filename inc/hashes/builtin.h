@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:41:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 14:08:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@
 	int			bt_banner();
 	int			bt_welcome();
 	int			bt_builtin(int argc, char **argv);
-	int			bt_declare(t_arg *args);
+	// int			bt_declare(int argc, char **argv);
 	// int			bt_dirs(t_arg *args);
 	// int			bt_disown(t_arg *args);
 	int			bt_enable(int argc, char **argv);
@@ -83,7 +83,7 @@
 	// int			bt_jobs(t_arg *args);
 	// int			bt_kill(t_arg *args);
 	// int			bt_printf(t_arg *args);
-	int			bt_pwd(t_arg *args);
+	int			bt_pwd(int argc, char **argv);
 	// int			bt_read(t_arg *args);
 	// int			bt_test(t_arg *args);
 	int			bt_true(t_arg *args);

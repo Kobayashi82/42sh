@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 #pragma region "History"
 
 	int bt_history(t_arg *args) {
-		t_opt *opts = parse_options(args, "cdsprw", '-', 0);
+		t_opt *opts = parse_options_old(args, "cdsprw", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("history", opts->invalid, "[-c] [-d offset] [n] or history -rw [filename]");

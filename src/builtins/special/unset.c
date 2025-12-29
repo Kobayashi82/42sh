@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@
 #pragma region "Unset"
 
 	int bt_unset(t_arg *args) {
-		t_opt *opts = parse_options(args, "v", '-', 0);
+		t_opt *opts = parse_options_old(args, "v", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("unset", opts->invalid, "[-v] [name ...]");

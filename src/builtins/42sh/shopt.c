@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@
 #pragma region "Unset"
 
 	int bt_shopt(t_arg *args) {
-		t_opt *opts = parse_options(args, "pqsuo", '-', 0);
+		t_opt *opts = parse_options_old(args, "pqsuo", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("shopt", opts->invalid, "[-pqsu] [-o] [optname ...]");

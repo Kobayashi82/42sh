@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:38:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@
 #pragma region "Declare"
 
 	int bt_declare(t_arg *args) {
-		t_opt *opts = parse_options(args, "pilrux", '-', 0);
-		t_opt *opts_plus = parse_options(args, "ilrux", '+', 0);
+		t_opt *opts = parse_options_old(args, "pilrux", '-', 0);
+		t_opt *opts_plus = parse_options_old(args, "ilrux", '+', 0);
 
 		(void) opts_plus;
 

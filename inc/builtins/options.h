@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 17:28:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:06:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 #pragma region "Methods"
 
 	//	========== UTILS ===========
-	t_opt		*parse_options(t_arg *args, const char *valid_opts, char opt_char, int no_invalid);
+	t_opt		*parse_options_old(t_arg *args, const char *valid_opts, char opt_char, int no_invalid);
 	int			invalid_option(char *name, char *opts, char *usage);
 	int			print_version(char *name, char *version);
 

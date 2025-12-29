@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:33:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,7 +201,7 @@
 	int bt_type(t_arg *args) {
 		int is_command = 0;
 		if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
-		t_opt *opts = parse_options(args, "afptP", '-', 0);
+		t_opt *opts = parse_options_old(args, "afptP", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("type", opts->invalid, "[-afptP] name [name ...]");

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@
 #pragma region "Export"
 
 	int bt_export(t_arg *args) {
-		t_opt *opts = parse_options(args, "np", '-', 0);
+		t_opt *opts = parse_options_old(args, "np", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("export", opts->invalid, "[-n] [name[=value] ...] or export -p");

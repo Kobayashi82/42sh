@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:33:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 14:07:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,8 @@
 		int 	opts_len = 0;
 
 		struct option long_options[] = {
-			{"help",    no_argument, 0, 0},
-			{"version", no_argument, 0, 0},
+			{"help",	no_argument, 0, 0},
+			{"version",	no_argument, 0, 0},
 			{0, 0, 0, 0}
 		};
 

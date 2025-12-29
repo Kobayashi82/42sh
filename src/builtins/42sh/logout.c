@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 12:07:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 #pragma region "Logout"
 
 	int bt_logout(t_arg *args) {
-		t_opt *opts = parse_options(args->next, "", '-', 0);
+		t_opt *opts = parse_options_old(args->next, "", '-', 0);
 
 		if (strchr(opts->valid, '?')) return (free(opts), print_help());
 		if (strchr(opts->valid, '#')) return (free(opts), print_version("logout", "1.0"));

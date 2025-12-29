@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@
 			tmp_arg = tmp_arg->next;
 		}
 
-		t_opt *opts = parse_options(args, "LP", '-', 0);
+		t_opt *opts = parse_options_old(args, "LP", '-', 0);
 		
 		tmp_arg = args;
 		while (tmp_arg && tmp_arg->value) {

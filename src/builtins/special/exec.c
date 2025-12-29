@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@
 #pragma region "Exec"
 
 	int bt_exec(t_arg *args) {
-		t_opt *opts = parse_options(args, "acl", '-', 0);
+		t_opt *opts = parse_options_old(args, "acl", '-', 0);
 
 		if (*opts->invalid) {
 			invalid_option("exec", opts->invalid, "[-cl] [-a name] [command [argument ...]] [redirection ...]");

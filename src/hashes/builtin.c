@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:40:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 14:08:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -303,7 +303,7 @@
 		// SIN CREAR builtin_add("kill", 0, 0, &bt_kill);
 		// SIN CREAR builtin_add("readarray", 0, 0, &bt_readarray);
 		// SIN CREAR builtin_add("printf", 0, 0, &bt_printf);
-		// builtin_add("pwd", 0, 0, &bt_pwd);
+		builtin_add("pwd", 0, 0, &bt_pwd);
 		// SIN CREAR builtin_add("read", 0, 0, &bt_read);
 		// SIN CREAR builtin_add("[", 0, 0, &bt_test);
 		// SIN CREAR builtin_add("test", 0, 0, &bt_test);
