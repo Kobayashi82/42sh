@@ -20,6 +20,37 @@
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
 - hash, implementar opciones -tpdr
 
+
+## 42sh
+
+- `builtin`
+- `declare` - Unfinished
+- `enable`
+- `history`
+- `logout` - Unfinished
+- `shopt`
+
+## Regular
+- `alias`
+- `cd`
+- `command`
+- `false`
+- `fc`
+- `hash`
+- `true`
+- `type`
+- `ulimit`
+- `unalias`
+
+## Special
+- `dots`
+- `exec`
+- `exit`
+- `export`
+- `readonly`
+- `unset`
+
+
 ## Source
 - Opciones de arranque (mirar Bash_Options.md)
 

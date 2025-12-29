@@ -6,64 +6,76 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 23:39:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
-	#include "tests/args.h"
 	#include "hashes/builtin.h"
-	#include "builtins/options.h"
 	#include "hashes/variable.h"
 	#include "main/shell.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
-//	if -i atoi to de operands
-// declare patata		crea la variable sin atributos (si ya existe, no le hace cambios)
-// declare -irx patata	crea o añade la variable con los atributos
-// declare -pirx patata	ignora atributos y muestra patata si existe (prevalece -p)
-// declare -pirx		muestra las variables que cumplan con los atributos indicados
-// declare -irx			muestra las variables que cumplan con los atributos indicados
-// declare -p			-p es opcional, muestra todas las variables
-// declare +irx patata	quita los atributos a patata
+#pragma region "Help / Version"
 
-#pragma region "Help"
+	#pragma region "Help"
 
-	static int print_help() {
-		char *msg =
-			"declare: declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]\n"
-			"    Set variable values and attributes.\n\n"
+		static int help() {
+			char *msg =
+				"declare: declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]\n"
+				"    Set variable values and attributes.\n\n"
 
-			"    Declare variables and give them attributes.  If no NAMEs are given,\n"
-			"    display the attributes and values of all variables.\n\n"
+				"    Declare variables and give them attributes.  If no NAMEs are given,\n"
+				"    display the attributes and values of all variables.\n\n"
 
-			"    Options:\n"
-			"      -p        display the attributes and value of each NAME\n\n"
+				"    Options:\n"
+				"      -p        display the attributes and value of each NAME\n\n"
 
-			"    Options which set attributes:\n"
-			"      -i        to make NAMEs have the `integer' attribute\n"
-			"      -l        to convert the value of each NAME to lower case on assignment\n"
-			"      -r        to make NAMEs readonly\n"
-			"      -u        to convert the value of each NAME to upper case on assignment\n"
-			"      -x        to make NAMEs export\n\n"
+				"    Options which set attributes:\n"
+				"      -i        to make NAMEs have the `integer' attribute\n"
+				"      -l        to convert the value of each NAME to lower case on assignment\n"
+				"      -r        to make NAMEs readonly\n"
+				"      -u        to convert the value of each NAME to upper case on assignment\n"
+				"      -x        to make NAMEs export\n\n"
 
-			"    Using `+' instead of `-' turns off the given attribute.\n\n"
+				"    Using `+' instead of `-' turns off the given attribute.\n\n"
 
-			"    Variables with the integer attribute have arithmetic evaluation\n"
-			"    performed when the variable is assigned a value.\n\n"
+				"    Variables with the integer attribute have arithmetic evaluation\n"
+				"    performed when the variable is assigned a value.\n\n"
 
-			"    Exit Status:\n"
-			"      Returns success unless an invalid option is supplied or a variable assignment\n"
-			"      error occurs.\n";
+				"    Exit Status:\n"
+				"      Returns success unless an invalid option is supplied or a variable assignment\n"
+				"      error occurs.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, RESET_PRINT);
 
-		return (0);
-	}
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"declare 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
@@ -89,8 +101,8 @@
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			print(STDOUT_FILENO, shell.arg0, RESET);
+			print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			result = 1;
 		} else {
 			if (concatenate && variables_concatenate(vars_table, key, value, 1, -1, -1, -1))	result = 1;
@@ -125,8 +137,8 @@
 		if (variables_validate(key, value, "declare", 1, 1)) return (free(key), free(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			print(STDOUT_FILENO, shell.arg0, RESET);
+			print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			result = 1;
 		} else {
 			if (concatenate && variables_concatenate(vars_table, key, value, 0, -1, -1, -1))	result = 1;
@@ -140,33 +152,44 @@
 
 #pragma region "Declare"
 
-	int bt_declare(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "pilrux", '-', 0);
-		t_opt *opts_plus = parse_options_old(args, "ilrux", '+', 0);
+	int bt_declare(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		(void) opts_plus;
+		t_parse_result *result = parse_options(argc, argv, "pilrux", "ilrux", long_opts, "declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]");
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 1);
 
-		if (*opts->invalid) {
-			invalid_option("declare", opts->invalid, "[-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]");
-			return (free(opts), 1);
-		}
-
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("declare", "1.0"));
-
-		if (!opts->args) {
+		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+		
+		if (!result->args) {
 			variables_print(vars_table, EXPORTED_LIST, 1);
-			return (free(opts), 1);
+			return (free_options(result), 1);
 		}
 
-		int result = 0;
-		while (opts->args) {
-			if (strchr(opts->valid, 'n')) { if (delete_declare(opts->args->value)) result = 1; }
-			else if (add_declare(opts->args->value)) result = 1;
-			opts->args = opts->args->next;
+		int ret = 0;
+		for (int i = 0; result->args[i]; ++i) {
+			if (has_option(result, 'n')) {
+				if (delete_declare(result->args[i])) ret = 1;
+			} else if (add_declare(result->args[i])) ret = 1;
 		}
-
-		return (free(opts), result);
+		
+		return (free_options(result), ret);
 	}
 
 #pragma endregion
+
+// SIN ACABAR
+
+//	if -i atoi to de operands
+// declare patata		crea la variable sin atributos (si ya existe, no le hace cambios)
+// declare -irx patata	crea o añade la variable con los atributos
+// declare -pirx patata	ignora atributos y muestra patata si existe (prevalece -p)
+// declare -pirx		muestra las variables que cumplan con los atributos indicados
+// declare -irx			muestra las variables que cumplan con los atributos indicados
+// declare -p			-p es opcional, muestra todas las variables
+// declare +irx patata	quita los atributos a patata

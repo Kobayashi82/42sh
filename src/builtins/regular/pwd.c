@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 19:16:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 23:21:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "LP:", NULL, long_opts, "pwd [-LP]");
+		t_parse_result *result = parse_options(argc, argv, "LP", NULL, long_opts, "pwd [-LP]");
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 

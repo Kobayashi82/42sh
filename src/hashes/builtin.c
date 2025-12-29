@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 14:08:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 23:20:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@
 		builtin_add("banner", 0, 0, &bt_banner);
 		builtin_add("welcome", 0, 0, &bt_welcome);
 		builtin_add("builtin", 0, 0, &bt_builtin);
-		// builtin_add("declare", 0, 0, &bt_declare);
+		builtin_add("declare", 0, 0, &bt_declare);
 		// SIN CREAR builtin_add("dirs", 0, 0, &bt_dirs);
 		// SIN CREAR builtin_add("disown", 0, 0, &bt_disown);
 		// builtin_add("typeset", 0, 0, &bt_declare);
