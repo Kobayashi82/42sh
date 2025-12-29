@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 19:10:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/29 19:15:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -421,8 +421,16 @@
 			int arg_count = 0;
 			int done_with_opts = 0;
 
-			result->silent_mode = (short_opts && *short_opts == ':') ? 1 : 0;
-			result->silent_mode_plus = (short_opts_plus && *short_opts_plus == ':') ? 1 : 0;
+			if (short_opts && *short_opts == ':') {
+				result->silent_mode = 1;
+				short_opts++;
+			}
+
+			if (short_opts_plus && *short_opts_plus == ':') {
+				result->silent_mode_plus = 1;
+				short_opts_plus++;
+			}
+
 			result->usage = usage;
 			result->name = argv[0];
 			for (int i = 1; i < argc; i++) {
