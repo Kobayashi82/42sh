@@ -23,7 +23,6 @@
 
 ## 42sh
 
-- `builtin`
 - `declare` - Unfinished
 - `enable`
 - `history`

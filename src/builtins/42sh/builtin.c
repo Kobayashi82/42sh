@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:33:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 14:31:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,7 @@
 	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-
-	#include <getopt.h>
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
@@ -68,42 +67,34 @@
 #pragma region "Builtin"
 
 	int bt_builtin(int argc, char **argv) {
-		int opt, option_index = optind = opterr = 0;
-
-		struct option long_options[] = {
-			{"help",    no_argument, 0, 0},
-			{"version", no_argument, 0, 0},
-			{0, 0, 0, 0}
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
 		};
 
-		while ((opt = getopt_long(argc, argv, "", long_options, &option_index)) != -1) {
-			switch (opt) {
-				case 0  :
-					if (!strcmp(long_options[option_index].name, "help"))		return (help());
-					if (!strcmp(long_options[option_index].name, "version"))	return (version());
-				case '?': {
-					char buf[2] = {optopt, '\0'};
-					print(STDERR_FILENO, shell.arg0, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": builtin: -", buf, ": invalid option\n", 0), FREE_JOIN);
-					print(STDERR_FILENO, "builtin: usage: builtin [shell-builtin [arg ...]]\n\n", JOIN);
-					print(STDERR_FILENO, "Try 'builtin --help' for more information\n", PRINT);
-					return (1);
-				}
-			}
-		}
+		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "builtin [shell-builtin [arg ...]]");
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 1);
 
-		if (argv[optind]) {
-			t_builtin *builtin = builtin_find(argv[optind]);
+		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+
+
+		int ret = 0;
+
+		if (result->args) {
+			t_builtin *builtin = builtin_find(result->args[0]);
 			if (builtin && !builtin->disabled) {
-				return (builtin_exec(argc - optind, &argv[optind]));
+				ret = builtin_exec(result->argc, result->args);
 			} else {
 				print(STDERR_FILENO, shell.arg0, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", argv[optind], ": not a shell builtin\n", 0), FREE_PRINT);
-				return (1);
+				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", result->args[0], ": not a shell builtin\n", 0), FREE_PRINT);
+				ret = 1;
 			}
 		}
 
-		return (0);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

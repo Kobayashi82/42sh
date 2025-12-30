@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 19:15:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 14:12:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -476,6 +476,7 @@
 
 				// Argument
 				tmp_args[arg_count++] = ft_strdup(arg);
+				done_with_opts = 1;
 			}
 
 			result->argc = arg_count;
