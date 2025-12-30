@@ -68,10 +68,6 @@
 
 ---
 
-## Casos donde se pide más input:
-
-- Diferenciar entre user input y alias input
-
 ### No Interactivo
 
 - Cuando el input llega a EOF y lexer->input no es NULL;

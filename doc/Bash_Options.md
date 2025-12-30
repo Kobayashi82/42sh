@@ -1,141 +1,152 @@
-# Guía Completa de Opciones de Bash
+# Opciones de 42sh
 
-## Opciones Largas de GNU
+## Formas de Invocar 42sh
+
+### `42sh`
+Invocación normal de 42sh.
+
+### `-42sh`
+Invoca 42sh como shell de login. El guion `-` al principio del nombre indica que es un login shell. Ejecuta archivos de perfil como `/etc/profile`, `~/.42sh_profile`, `~/.profile`.
+
+**Equivale a `42sh -l` o `42sh --login`**
+
+### `r42sh`
+Invoca 42sh en modo restringido con funcionalidades limitadas por seguridad:
+
+- No se puede cambiar de directorio con `cd`
+- No se puede modificar `PATH`, `SHELL`, `ENV`, `42sh_ENV`
+- No se pueden ejecutar comandos con rutas absolutas o relativas que contengan `/`
+- No se puede redirigir salida con `>`, `>>`, `<>`, `>&`
+- No se puede usar `exec`
+- No se pueden deshabilitar restricciones con `set +r`
+
+**Equivale a `42sh -r` o `42sh --restricted`**
+
+### `sh`
+Cuando 42sh se invoca con el nombre `sh`, entra en modo de compatibilidad POSIX automáticamente.
+
+**Equivale a `42sh --posix`**
+
+---
+
+## Opciones Largas (`--opcion`)
 
 ### `--debug`
-Activa el modo de depuración. Produce trazas de depuración antes de ejecutar cada comando.
+Habilita el modo de depuración extendido. Proporciona información detallada sobre la ejecución del script.
 
 ### `--debugger`
-Habilita el soporte para el depurador de bash. Permite el uso de características extendidas de depuración.
+Activa el soporte para el depurador de 42sh. Permite usar herramientas de debugging con el shell.
 
 ### `--dump-po-strings`
-Equivale a `-D`, pero con salida en formato gettext po (portable object).
+Extrae todas las cadenas traducibles en formato gettext (.po). Útil para internacionalización.
 
 ### `--dump-strings`
-Equivale a `-D`. Muestra todas las cadenas traducibles en el script sin ejecutarlo.
+Muestra todas las cadenas traducibles del shell. Similar a `--dump-po-strings` pero sin formato específico.
 
 ### `--help`
-Muestra la información de ayuda y sale.
+Muestra la ayuda con todas las opciones disponibles y termina.
 
-### `--init-file <archivo>` / `--rcfile <archivo>`
-Ejecuta comandos desde el archivo especificado en lugar de `~/.bashrc` cuando se inicia una shell interactiva.
+### `--init-file <archivo>` o `--rcfile <archivo>`
+Ejecuta comandos del archivo especificado en lugar de `~/.42shrc` en shells interactivos.
+
+**Ejemplo:** `42sh --init-file ~/mi_config.sh`
 
 ### `--login`
-Hace que bash actúe como una shell de login.
+Hace que 42sh se comporte como un shell de login, ejecutando los archivos de perfil correspondientes. Equivalente a invocar 42sh como `-42sh`.
 
 ### `--noediting`
-No usa la biblioteca GNU readline para leer líneas de comando en shells interactivas.
+Desactiva la edición de línea de comandos con readline en shells interactivos.
 
 ### `--noprofile`
-No lee los archivos de inicio del sistema (`/etc/profile`) ni ninguno de los archivos de inicio personales (`~/.bash_profile`, `~/.bash_login`, `~/.profile`).
+No lee ningún archivo de inicialización de perfil (`/etc/profile`, `~/.42sh_profile`, `~/.42sh_login`, `~/.profile`).
 
 ### `--norc`
-No lee ni ejecuta el archivo de inicio personal `~/.bashrc` si la shell es interactiva.
+No lee el archivo `~/.42shrc` en shells interactivos.
 
 ### `--posix`
-Cambia el comportamiento de bash donde la operación por defecto difiere del estándar POSIX para que coincida con el estándar.
+Hace que 42sh se ajuste estrictamente al estándar POSIX, modificando comportamientos que difieren del estándar.
 
 ### `--pretty-print`
-Muestra los comandos de la shell en un formato más legible sin ejecutarlos.
+Reformatea y muestra comandos de un script en lugar de ejecutarlos. Útil para análisis de sintaxis y formateo de código.
+
+**Ejemplo:** `42sh --pretty-print script.sh`
+
+### `--rcfile <archivo>` o `--init-file <archivo>`
+Ejecuta comandos del archivo especificado en lugar de `~/.42shrc` en shells interactivos.
+
+**Ejemplo:** `42sh --rcfile ~/mi_config.sh`
 
 ### `--restricted`
-La shell se vuelve restringida. Limita lo que el usuario puede hacer (sin cambiar directorios, sin redirigir salida, sin ejecutar comandos con `/`, etc.).
+Inicia 42sh en modo restringido con funcionalidades limitadas por seguridad. Equivalente a invocar `r42sh`.
 
 ### `--verbose`
-Equivale a `-v`. Imprime las líneas de entrada de la shell a medida que se leen.
+Equivalente a `-v`. Muestra las líneas de entrada a medida que se leen.
 
 ### `--version`
-Muestra información de versión de bash y sale.
+Muestra información de versión de 42sh y termina.
 
-## Opciones de Invocación
+---
+
+## Opciones Cortas
+
+Estas opciones **solo funcionan al invocar 42sh**, no se pueden usar con el comando `set` dentro de 42sh.
 
 ### `-c <comando>`
-Lee y ejecuta comandos desde el argumento de cadena. Si hay argumentos después del comando, se asignan a los parámetros posicionales, comenzando con `$0`.
+Ejecuta el comando especificado y termina. Los argumentos adicionales después del comando se pasan como parámetros posicionales (`$0`, `$1`, `$2`, etc.).
+
+**Ejemplo:** `42sh -c "echo Hola $USER" arg0 arg1`
 
 ### `-i`
-Fuerza a la shell a ejecutarse en modo interactivo.
+Fuerza el modo interactivo. 42sh se comporta como si estuviera recibiendo entrada del usuario directamente, incluso si está leyendo de un archivo o pipe.
 
 ### `-l`
-Hace que bash actúe como si hubiera sido invocado como una shell de login.
+Actúa como shell de login. Equivalente a `--login`.
 
 ### `-r`
-Shell restringida. Equivale a `--restricted`.
+Inicia en modo restringido. Equivalente a `--restricted`.
 
 ### `-s`
-Lee comandos desde la entrada estándar. Si hay argumentos después de `-s`, se asignan a los parámetros posicionales.
+Lee comandos desde la entrada estándar (stdin). Si hay argumentos adicionales, se convierten en parámetros posicionales.
+
+**Ejemplo:** `echo "pwd" | 42sh -s`
 
 ### `-D`
-Lista todas las cadenas entre comillas dobles precedidas por `$` sin ejecutar el script. Útil para internacionalización.
+Lista todas las cadenas entre comillas dobles precedidas por `$` (cadenas traducibles). No ejecuta comandos. Útil para localización e internacionalización.
+
+**Ejemplo:** `42sh -D script.sh`
 
 ### `-O <shopt_option>`
-Establece la opción de shopt especificada antes de ejecutar el script.
+Activa una opción de `shopt` al iniciar 42sh.
 
-## Opciones de Shell (set)
+### `+O <shopt_option>`
+Desactiva una opción de `shopt` al iniciar 42sh.
 
-Estas opciones se pueden activar con `set -<letra>` o desactivar con `set +<letra>`:
+### Opciones de `set`
+También se aceptan opciones de `set` al iniciarse 42sh.
 
-### `-a` (allexport)
-Marca automáticamente para exportar todas las variables y funciones que se modifiquen o creen.
+### Notas
+Puedes desactivar opciones usando `+` en lugar de `-`:
 
-### `-b` (notify)
-Notifica la terminación de trabajos en segundo plano inmediatamente, en lugar de esperar al siguiente prompt.
+**Ejemplo:** `42sh +x script.sh`
 
-### `-e` (errexit)
-Sale inmediatamente si un comando sale con un estado diferente de cero.
+---
 
-### `-f` (noglob)
-Deshabilita la expansión de nombres de archivo (globbing).
+## Ver Opciones Activas
 
-### `-h` (hashall)
-Recuerda la ubicación de comandos cuando se buscan para ejecutarlos.
+Para ver qué opciones están activas en una sesión de 42sh:
 
-### `-k` (keyword)
-Todos los argumentos de asignación se colocan en el entorno del comando, no solo los que preceden al nombre del comando.
+```bash
+set -o      # Muestra todas las opciones de set
+shopt       # Muestra todas las opciones de shopt
+echo $-     # Muestra letras de opciones activas (ej: "himBHs")
+```
 
-### `-m` (monitor)
-Habilita el control de trabajos. Esta opción está activada por defecto para shells interactivas.
+---
 
-### `-n` (noexec)
-Lee comandos pero no los ejecuta. Útil para verificar la sintaxis de scripts.
+## Notas Importantes
 
-### `-p` (privileged)
-Modo privilegiado. No se procesan los archivos `$ENV` y no se heredan funciones de shell del entorno.
-
-### `-t` (onecmd)
-Sale después de leer y ejecutar un comando.
-
-### `-u` (nounset)
-Trata las variables no establecidas como un error cuando se sustituyen.
-
-### `-v` (verbose)
-Imprime las líneas de entrada de la shell a medida que se leen.
-
-### `-x` (xtrace)
-Imprime comandos y sus argumentos a medida que se ejecutan. Muy útil para depuración.
-
-### `-B` (braceexpand)
-Habilita la expansión de llaves. Está activada por defecto.
-
-### `-C` (noclobber)
-Previene la sobrescritura de archivos existentes mediante redirección de salida (`>`).
-
-### `-H` (histexpand)
-Habilita la sustitución de historial con `!`. Está activada por defecto en shells interactivas.
-
-### `-P` (physical)
-No sigue enlaces simbólicos al ejecutar comandos como `cd` que cambian el directorio actual.
-
-### `-o <nombre_opción>`
-Establece opciones por nombre largo. Algunas opciones importantes:
-- `pipefail`: El valor de retorno de un pipeline es el estado del último comando que salió con un valor diferente de cero.
-- `emacs`: Usa el estilo de edición de línea de emacs.
-- `vi`: Usa el estilo de edición de línea de vi.
-- `noclobber`: Igual que `-C`.
-- `errexit`: Igual que `-e`.
-
-## Combinaciones Comunes
-
-- `bash -x script.sh` - Ejecuta un script mostrando cada comando (depuración)
-- `bash -n script.sh` - Verifica la sintaxis sin ejecutar
-- `bash -c "comando"` - Ejecuta un comando directamente
-- `set -euo pipefail` - Combinación común para scripts más seguros: sale en error, variables no definidas causan error, y detecta errores en pipelines
+1. Las opciones de invocación se aplican **desde el inicio** de la ejecución de 42sh
+2. Dentro de un script, puedes cambiar opciones con `set` y `shopt`
+3. El símbolo `-` activa opciones, `+` las desactiva
+4. Múltiples opciones cortas se pueden combinar: `-xeu` = `-x -e -u`
+5. Las opciones de `shopt` solo se pueden activar en invocación con `-O`, dentro de 42sh se usa el comando `shopt`
