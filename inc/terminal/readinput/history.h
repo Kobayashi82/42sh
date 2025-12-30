@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 19:55:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 23:04:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@
 	int			history_add(char *line, int force);
 	int			history_replace(size_t pos, char *line, void *data);
 	//	--------- DELETE -----------
+	void		history_remove_offset_range(size_t start, size_t end);
 	void		history_remove_offset(int offset);
 	void		history_remove(size_t pos);
 	void		history_remove_event(size_t event);
@@ -68,7 +69,7 @@
 	//	---------- GET -------------
 	HIST_ENTRY	**history_clone();
 	size_t		history_length();
-	HIST_ENTRY	*history_get(size_t pos);
+	int			history_offset_to_index(int offset, size_t *out, int is_plus);
 	HIST_ENTRY	*history_get(size_t pos);
 	HIST_ENTRY	*history_current();
 	HIST_ENTRY	*history_event(size_t event);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 23:20:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 14:39:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@
 	// int			bt_disown(t_arg *args);
 	int			bt_enable(int argc, char **argv);
 	// int			bt_help(t_arg *args);
-	int			bt_history(t_arg *args);
+	int			bt_history(int argc, char **argv);
 	// int			bt_let(t_arg *args);
 	// int			bt_local(t_arg *args);
 	int			bt_logout(t_arg *args);

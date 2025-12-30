@@ -24,7 +24,6 @@
 ## 42sh
 
 - `declare` - Unfinished
-- `enable`
 - `history`
 - `logout` - Unfinished
 - `shopt`

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 17:54:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,9 @@
 		typedef struct s_parse_result {
 			t_opt_value     *options;           // Lista de opciones encontradas
 			t_opt_value     *plus_options;      // Opciones con '+' encontradas
-			char            **args;             // Argumentos no-opción
 			int             argc;               // Número de argumentos no-opción
+			char            **argv;             // Argumentos no-opción
+			const char		*shell_name;		//
 			const char		*name;				// 
 			const char		*usage;				// 
 			
@@ -73,11 +74,13 @@
 	// Short
 	t_opt_value     *find_option(t_parse_result *result, char opt);
 	int             has_option(t_parse_result *result, char opt);
+	char			last_option(t_parse_result *result, const char *options);
 	const char      *get_option_value(t_parse_result *result, char opt);
 
 	// Short Plus
 	t_opt_value     *find_plus_option(t_parse_result *result, char opt);
 	int             has_plus_option(t_parse_result *result, char opt);
+	char			last_plus_option(t_parse_result *result, const char *options);
 	const char      *get_plus_option_value(t_parse_result *result, char opt);
 
 	// Long

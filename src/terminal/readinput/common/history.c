@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 23:17:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 	#include "utils/print.h"
 
 	#include <limits.h>
+	#include <stdint.h>
 
 #pragma endregion
 
@@ -38,6 +39,8 @@
 	static size_t		mem_max				= 1000;		//	Maximum number of entry
 	static int			mem_unlimited		= 0;		//	Indicates if it is limited by a maximum size
 
+	static size_t		first_line_fix		= 1;		//	First line to print
+	static size_t		first_line			= 1;		//	First line to print
 	static size_t		length				= 0;		//	Current number of entry
 	static size_t		capacity			= 10;		//	Array size
 	static size_t		event				= 1;		//	Current event number
@@ -188,6 +191,9 @@
 			if (capacity + 1 > tmp_length)	tmp_length = 0;
 			else							tmp_length -= (capacity + 1);
 
+			first_line_fix = tmp_length + 1;
+			first_line = first_line_fix;
+
 			//	Allocate memory for the final history
 			history = calloc(capacity + 1, sizeof(HIST_ENTRY *));
 
@@ -279,7 +285,7 @@
 				while (token) {
 					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
 					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
-					if (!strcmp(token, "erasedups"))		erasedups = 1;
+					if (!strcmp(token, "erasedups"))	erasedups = 1;
 					if (!strcmp(token, "ignoreboth"))	ignoredups = 1; ignorespace = 1;
 					token = ft_strtok(NULL, ":", 30);
 				}
@@ -297,6 +303,7 @@
 				for (size_t i = 0; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+				first_line++;
 			}
 			history[length] = malloc(sizeof(HIST_ENTRY));
 			history[length]->line = ft_strdup(line);
@@ -357,9 +364,40 @@
 
 	#pragma region "Remove"
 
+		//	Remove the indicated offset range
+		void history_remove_offset_range(size_t start, size_t end) {
+			if (!history || !length) return;
+
+			if (start >= length || end >= length) return;
+			if (start > end) return;
+			
+			for (size_t i = start; i <= end; ++i) {
+				if (history[i]) {
+					free(history[i]->line);
+					free(history[i]->data);
+					free(history[i]);
+					history[i] = NULL;
+				}
+			}
+
+			for (size_t i = end + 1; i < length; ++i)
+				history[i - (end - start + 1)] = history[i];
+
+			length -= (end - start + 1);
+			history[length] = NULL;
+
+		    if (first_line > first_line_fix) first_line -= (end - start + 1);
+			if (first_line < first_line_fix) first_line = first_line_fix;
+
+			if (position >= length) {
+				history_set_pos_end();
+				added = 0;
+			}
+		}
+
 		//	Remove the indicate entry by an offset
 		void history_remove_offset(int offset) {
-			if (!history || length == 0) return;
+			if (!history || !length) return;
 
 			size_t pos;
 			if (offset < 0) {
@@ -377,13 +415,16 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+
+				if (first_line > first_line_fix) first_line--;
+
 				if (length && position == length) { history_set_pos_end(); added = 0; }
 			}
 		}
 
 		//	Remove the indicate entry
 		void history_remove(size_t pos) {
-			if (!history || length == 0) return;
+			if (!history || !length) return;
 
 			if (history && pos < length && history[pos]) {
 				if (history[pos]->line) free(history[pos]->line);
@@ -392,13 +433,16 @@
 				for (size_t i = pos; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+
+				if (first_line > first_line_fix) first_line--;
+
 				if (length && position == length) { history_set_pos_end(); added = 0; }
 			}
 		}
 
 		//	Remove the indicate event
 		void history_remove_event(size_t event) {
-			if (!history || length == 0) return;
+			if (!history || !length) return;
 
 			for (size_t i = 0; i < length && history[i]; ++i)
 				if (history[i]->event == event) history_remove(i);
@@ -406,7 +450,7 @@
 
 		//	Remove the current entry
 		void history_remove_current(int remove_event) {
-			if (!history || length == 0) return;
+			if (!history || !length) return;
 
 			if (history && position < length && history[position]) {
 				if (history[position]->line) free(history[position]->line);
@@ -415,6 +459,9 @@
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
 				length -= 1;
+
+				if (first_line > first_line_fix) first_line--;
+
 				if (length && position >= length) { history_set_pos_end(); added = 0; }
 				if (remove_event) event--;
 			}
@@ -422,7 +469,7 @@
 
 		//	Remove the last entry
 		void history_remove_last_if_added(int remove_event) {
-			if (!history || length == 0 || !added) return;
+			if (!history || !length || !added) return;
 
 			history_set_pos_end();
 			history_remove_current(remove_event);
@@ -446,6 +493,7 @@
 			}
 			if (history) { free(history); history = NULL; }
 			position = 0; length = 0; capacity = 10;
+			first_line = first_line_fix;
 		}
 
 	#pragma endregion
@@ -482,6 +530,24 @@
 
 	#pragma region "Get"
 
+		//	Returns the index associated with an offset
+		int history_offset_to_index(int offset, size_t *out, int is_plus) {
+			if (!offset) return (1);
+
+			if (offset < 0) {
+				if ((size_t)(-offset) > length) return (1);
+				*out = length + offset;
+			} else if (is_plus) {
+				if ((size_t)offset > length) return (1);
+				*out = offset - 1;
+			} else {
+				if ((size_t)(offset - first_line) > length) return (1);
+				*out = offset - first_line;
+			}
+
+			return (0);
+		}
+
 		//	Return a pointer to the indicated entry
 		HIST_ENTRY *history_get(size_t pos) {
 			if (history && pos < length) return (history[pos]);
@@ -496,7 +562,7 @@
 
 		//	Return a pointer to the last entry if added
 		HIST_ENTRY *history_get_last_if_added() {
-			if (!history || length == 0 || !added) return (NULL);
+			if (!history || !length || !added) return (NULL);
 
 			history_set_pos_end();
 			return (history_current());
@@ -603,10 +669,10 @@
 
 		for (size_t i = length - offset; i < length && history[i]; ++i) {
 			if (!hide_events) {
-				char *txt_event = ft_itoa(history[i]->event);
-				int spaces = 5 - ft_strlen(txt_event);
+				char *txt_line = ft_itoa(first_line + i);
+				int spaces = 5 - ft_strlen(txt_line);
 				while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-				print(STDOUT_FILENO, txt_event, FREE_JOIN);
+				print(STDOUT_FILENO, txt_line, FREE_JOIN);
 				print(STDOUT_FILENO, "  ", JOIN);
 			}
 			print(STDOUT_FILENO, history[i]->line, JOIN);
@@ -617,6 +683,7 @@
 
 		return (0);
 	}
+
 
 #pragma endregion
 

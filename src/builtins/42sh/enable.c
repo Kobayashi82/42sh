@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 14:31:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 16:26:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
-	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "utils/getopt2.h"
@@ -91,20 +90,20 @@
 		if (has_option(result, 'a'))																				return (free_options(result), builtin_print(2, 0, 1), 0);
 		if (has_option(result, 'n') && has_option(result, 's'))														return (free_options(result), builtin_print(1, 1, 1), 0);
 		if (has_option(result, 's'))																				return (free_options(result), builtin_print(2, 1, 1), 0);
-		if ((has_option(result, 'n') && (!result->args)) || (has_option(result, 'n') && has_option(result, 'p')))	return (free_options(result), builtin_print(1, 0, 1), 0);
+		if ((has_option(result, 'n') && (!result->argv)) || (has_option(result, 'n') && has_option(result, 'p')))	return (free_options(result), builtin_print(1, 0, 1), 0);
 		if (has_option(result, 'p'))																				return (free_options(result), builtin_print(0, 0, 1), 0);
 
 		int		ret = 0;
 		char	*invalues = NULL;
-		if (result->args) {
-			for (int i = 0; result->args[i]; ++i) {
-				t_builtin *builtin = builtin_find(result->args[i]);
+		if (result->argv) {
+			for (int i = 0; result->argv[i]; ++i) {
+				t_builtin *builtin = builtin_find(result->argv[i]);
 				if (builtin) {
 					if (has_option(result, 'n'))	builtin->disabled = 1;
 					else 							builtin->disabled = 0;
 				} else {
-					char *value = ft_strjoin_sep(": enable: ", result->args[i], ": not a shell builtin\n", 0);
-					if (value) invalues = ft_strjoin_sep(invalues, shell.arg0, value, 6);
+					char *value = ft_strjoin_sep(": enable: ", result->argv[i], ": not a shell builtin\n", 0);
+					if (value) invalues = ft_strjoin_sep(invalues, result->shell_name, value, 6);
 					ret = 1;
 				}
 			}

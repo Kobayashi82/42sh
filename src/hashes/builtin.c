@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 14:30:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 14:38:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,7 +277,7 @@
 		// builtin_add("typeset", 0, 0, &bt_declare);
 		builtin_add("enable", 0, 0, &bt_enable);
 		// SIN CREAR builtin_add("help", 0, 0, &bt_help);
-		// builtin_add("history", 0, 0, &bt_history);
+		builtin_add("history", 0, 0, &bt_history);
 		// SIN CREAR builtin_add("let", 0, 0, &bt_let);
 		// SIN CREAR builtin_add("local", 0, 0, &bt_local);
 		// builtin_add("logout", 0, 0, &bt_logout);

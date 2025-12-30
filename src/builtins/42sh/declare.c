@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 23:39:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 16:26:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,18 +166,18 @@
 		if (find_long_option(result, "help"))		return (free_options(result), help());
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 		
-		if (!result->args) {
+		if (!result->argv) {
 			variables_print(vars_table, EXPORTED_LIST, 1);
 			return (free_options(result), 1);
 		}
 
 		int ret = 0;
-		for (int i = 0; result->args[i]; ++i) {
+		for (int i = 0; result->argv[i]; ++i) {
 			if (has_option(result, 'n')) {
-				if (delete_declare(result->args[i])) ret = 1;
-			} else if (add_declare(result->args[i])) ret = 1;
+				if (delete_declare(result->argv[i])) ret = 1;
+			} else if (add_declare(result->argv[i])) ret = 1;
 		}
-		
+
 		return (free_options(result), ret);
 	}
 

@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 14:31:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 16:27:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
-	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
 	#include "utils/getopt2.h"
@@ -83,13 +82,13 @@
 
 		int ret = 0;
 
-		if (result->args) {
-			t_builtin *builtin = builtin_find(result->args[0]);
+		if (result->argv) {
+			t_builtin *builtin = builtin_find(result->argv[0]);
 			if (builtin && !builtin->disabled) {
-				ret = builtin_exec(result->argc, result->args);
+				ret = builtin_exec(result->argc, result->argv);
 			} else {
-				print(STDERR_FILENO, shell.arg0, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", result->args[0], ": not a shell builtin\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", result->argv[0], ": not a shell builtin\n", 0), FREE_PRINT);
 				ret = 1;
 			}
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 14:12:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/30 17:53:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -287,6 +287,21 @@
 
 		#pragma endregion
 
+		#pragma region "Last Option"
+
+			char last_option(t_parse_result *result, const char *options) {
+				if (!result || !options) return (0);
+
+				char last = 0;
+				for (t_opt_value *curr = result->options; curr; curr = curr->next) {
+					if (strchr(options, curr->opt)) last = curr->opt;
+				}
+
+				return (last);
+			}
+
+		#pragma endregion
+
 		#pragma region "Get Option Value"
 
 			const char *get_option_value(t_parse_result *result, char opt) {
@@ -325,6 +340,21 @@
 					if (curr->opt == opt) return (1);
 
 				return (0);
+			}
+
+		#pragma endregion
+
+		#pragma region "Last Plus Option"
+
+			char last_plus_option(t_parse_result *result, const char *options) {
+				if (!result || !options) return (0);
+
+				char last = 0;
+				for (t_opt_value *curr = result->plus_options; curr; curr = curr->next) {
+					if (strchr(options, curr->opt)) last = curr->opt;
+				}
+
+				return (last);
 			}
 
 		#pragma endregion
@@ -385,7 +415,6 @@
 
 	#pragma endregion
 
-
 	#pragma region "Free Options"
 
 		void free_options(t_parse_result *result) {
@@ -394,10 +423,10 @@
 			free_opt_list(result->options);
 			free_opt_list(result->plus_options);
 
-			if (result->args) {
+			if (result->argv) {
 				for (int i = 0; i < result->argc; i++)
-					free(result->args[i]);
-				free(result->args);
+					free(result->argv[i]);
+				free(result->argv);
 			}
 
 			free(result->invalid_long);
@@ -433,6 +462,7 @@
 
 			result->usage = usage;
 			result->name = argv[0];
+			result->shell_name = shell.arg0;
 			for (int i = 1; i < argc; i++) {
 				if (done_with_opts) {
 					tmp_args[arg_count++] = ft_strdup(argv[i]);
@@ -481,11 +511,11 @@
 
 			result->argc = arg_count;
 			if (arg_count > 0) {
-				result->args = calloc(arg_count + 1, sizeof(char*));
-				if (result->args) {
+				result->argv = calloc(arg_count + 1, sizeof(char*));
+				if (result->argv) {
 					for (int i = 0; i < arg_count; i++)
-						result->args[i] = tmp_args[i];
-					result->args[arg_count] = NULL;
+						result->argv[i] = tmp_args[i];
+					result->argv[arg_count] = NULL;
 				}
 			}
 
