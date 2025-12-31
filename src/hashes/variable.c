@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:37:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 19:14:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,25 @@
 
 #pragma endregion
 
-#pragma region "Import"
+#pragma region "Specials"
 
-	static void specials(const char *key, const char *value) {
+	static void specials_set(const char *key, const char *value) {
 		if (!strcmp(key, "42_HISTSIZE"))		history_size_set(atol(value), HIST_MEM);
 		if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(atol(value), HIST_FILE);
+		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_timeformat_set(value);
+		if (!strcmp(key, "42_HISTCONTROL"))		history_histcontrol_set(value);
 	}
+
+	static void specials_unset(const char *key) {
+		if (!strcmp(key, "42_HISTSIZE"))		history_size_set(1000, HIST_MEM);
+		if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(2000, HIST_FILE);
+		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_timeformat_set(NULL);
+		if (!strcmp(key, "42_HISTCONTROL"))		history_histcontrol_set(NULL);
+	}
+
+#pragma endregion
+
+#pragma region "Import"
 
 	#pragma region "Variable"
 
@@ -62,7 +75,7 @@
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
-					specials(key, new_var->value);
+					specials_set(key, new_var->value);
 					return (0);
 				} else return (1);
 			}
@@ -70,7 +83,7 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = ft_strdup(key);
+			new_var->key = ft_strdup(key);
 			if (value) new_var->value = ft_strdup(value);
 
 			if (readonly != -1) new_var->readonly = readonly;
@@ -78,7 +91,7 @@
 			if (integer != -1) new_var->integer = integer;
 			new_var->next = table[index];
 			table[index] = new_var;
-			specials(key, new_var->value);
+			specials_set(key, new_var->value);
 
 			return (0);
 		}
@@ -98,7 +111,7 @@
 					if (readonly != -1) new_var->readonly = readonly;
 					if (exported != -1) new_var->exported = exported;
 					if (integer != -1) new_var->integer = integer;
-					specials(key, new_var->value);
+					specials_set(key, new_var->value);
 					return (0);
 				} else return (1);
 			}
@@ -106,7 +119,7 @@
 			unsigned int index = hash_index(key);
 			new_var = calloc(1, sizeof(t_var));
 
-			new_var->name = ft_strdup(key);
+			new_var->key = ft_strdup(key);
 			new_var->value = NULL;
 			if (value) new_var->value = ft_strdup(value);
 
@@ -115,7 +128,7 @@
 			if (integer != -1) new_var->integer = integer;
 			new_var->next = table[index];
 			table[index] = new_var;
-			specials(key, new_var->value);
+			specials_set(key, new_var->value);
 
 			return (0);
 		}
@@ -146,7 +159,7 @@
 			for (int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = src_table[index];
 				while (var) {
-					variables_add(dst_table, var->name, var->value, var->exported, var->readonly, var->integer, 0);
+					variables_add(dst_table, var->key, var->value, var->exported, var->readonly, var->integer, 0);
 					var = var->next;
 				}
 			}
@@ -159,23 +172,24 @@
 
 		int variables_validate(const char *key, const char *value, const char *name, int is_asign, int show_msg) {
 			if (!key) return (0);
-			int result = 0;
 
+			int result = 0;
 			size_t len = ft_strlen(key);
 
-			if (!len || (!isalpha(key[0]) && key[0] != '_')) result = 1;
+			if (!len || (!isalpha(key[0]) && key[0] != '_'))	result = 1;
+			if (!strcmp(key, "42_HISTFILE"))					result = 0;
+			if (!strcmp(key, "42_HISTSIZE"))					result = 0;
+			if (!strcmp(key, "42_HISTFILESIZE"))				result = 0;
+			if (!strcmp(key, "42_HISTTIMEFORMAT"))				result = 0;
+			if (!strcmp(key, "42_HISTCONTROL"))					result = 0;
+			if (!strcmp(key, "42_SH"))							result = 0;
+			if (!strcmp(key, "42_SUBSHELL"))					result = 0;
+			if (!strcmp(key, "42_VERSION"))						result = 0;
+			if (!strcmp(key, "42_PID"))							result = 0;
 
-			if (!strcmp(key, "42_HISTFILE")) result = 0;
-			if (!strcmp(key, "42_HISTSIZE")) result = 0;
-			if (!strcmp(key, "42_HISTFILESIZE")) result = 0;
-			if (!strcmp(key, "42_HISTCONTROL")) result = 0;
-			if (!strcmp(key, "42_SH")) result = 0;
-			if (!strcmp(key, "42_SUBSHELL")) result = 0;
-			if (!strcmp(key, "42_VERSION")) result = 0;
-			if (!strcmp(key, "42_PID")) result = 0;
-
-			for (size_t i = 1; i < len; ++i)
-				if (!isalnum(key[i]) && key[i] != '_') { result = 1; break; }
+			for (size_t i = 1; i < len; ++i) {
+				if (!isalnum(key[i]) && key[i] != '_') {		result = 1;		break; }
+			}
 
 			if (result && show_msg) {
 				if (!name) name = PROYECTNAME;
@@ -202,7 +216,7 @@
 			t_var *var = table[index];
 
 			while (var) {
-				if (!strcmp(var->name, key)) return (var);
+				if (!strcmp(var->key, key)) return (var);
 				var = var->next;
 			}
 
@@ -216,7 +230,7 @@
 			t_var *var = table[index];
 
 			while (var) {
-				if (!strcmp(var->name, key)) return (var->value);
+				if (!strcmp(var->key, key)) return (var->value);
 				var = var->next;
 			}
 
@@ -233,7 +247,7 @@
 			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
-					if (var->name) {
+					if (var->key) {
 						if ((type == EXPORTED_LIST && var->exported) || (type == EXPORTED  && var->exported && var->value)) i++;
 						if (type == INTERNAL && !var->exported) i++;
 						if (type == READONLY && var->readonly) i++;
@@ -254,8 +268,8 @@
 						if (type == INTERNAL && var->exported) 								{ var = var->next; continue; }
 						if (type == READONLY && !var->readonly)								{ var = var->next; continue; }
 
-						if (var->name) {
-							array[i] = ft_strjoin_sep(var->name, "=", var->value, 0);
+						if (var->key) {
+							array[i] = ft_strjoin_sep(var->key, "=", var->value, 0);
 							i++;
 						}
 					}
@@ -275,7 +289,7 @@
 
 			static int array_value(int type, char **array, size_t i, t_var *var) {
 				if (type < 0 || type > 4) 									return (0);
-				if (!var->name)												return (0);
+				if (!var->key)												return (0);
 				if (type == EXPORTED_LIST && !var->exported)				return (0);
 				if (type == EXPORTED && (!var->exported || !var->value))	return (0);
 				if (type == READONLY && !var->readonly)						return (0);
@@ -290,8 +304,8 @@
 				while (j < 5) var_type[j++] = ' ';
 				var_type[j] = '\0';
 				
-				if (type == INTERNAL)	array[i] = ft_strdup(var->name);
-				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->name, 0);
+				if (type == INTERNAL)	array[i] = ft_strdup(var->key);
+				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
 
 				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
 
@@ -308,7 +322,7 @@
 				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
-						if (var->name) i++;
+						if (var->key) i++;
 						var = var->next;
 					}
 				}
@@ -352,7 +366,7 @@
 			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
-					if (var->name) {
+					if (var->key) {
 						if (type == INTERNAL && !var->exported) i++;
 						if (type == READONLY && var->readonly) i++;
 						if (type == EXPORTED && var->exported && var->value) i++;
@@ -381,10 +395,13 @@
 			t_var *prev = NULL;
 
 			while (var) {
-				if (!strcmp(var->name, key)) {
+				if (!strcmp(var->key, key)) {
 					if (prev)	prev->next = var->next;
 					else		table[index] = var->next;
-					free(var->name); free(var->value); free(var);
+					specials_unset(key);
+					free(var->key);
+					free(var->value);
+					free(var);
 					return (0);
 				}
 				prev = var;
@@ -404,7 +421,8 @@
 					t_var *var = table[index];
 					while (var) {
 						t_var *next = var->next;
-						free(var->name);
+						specials_unset(var->key);
+						free(var->key);
 						free(var->value);
 						free(var);
 						var = next;
@@ -432,11 +450,12 @@
 		char *home = get_home();
 		if (home && (home = ft_strjoin(home, "/.42sh_history", 1))) {
 			history_set_file(home);
-			default_add(table, "42_HISTFILE", home, 0, 0, 0, 1, 1);
+			default_add(table, "42_HISTFILE", home, 0, 0, 0, 1, 1);								//	
 		}
-		default_add(table, "42_HISTSIZE", "5", 0, 0, 0, 0, 0);
-		default_add(table, "42_HISTFILESIZE", "2000", 0, 0, 0, 0, 0);
-		default_add(table, "42_HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);
+		default_add(table, "42_HISTSIZE", "5", 0, 0, 0, 0, 0);									//	
+		default_add(table, "42_HISTFILESIZE", "2000", 0, 0, 0, 0, 0);							//	
+		default_add(table, "42_HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);						//	
+		// default_add(table, "42_HISTTIMEFORMAT", "%F %T ", 0, 0, 0, 0, 0);					//	
 
 		default_add(table, "42_SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
 		default_add(table, "42_SUBSHELL", "0", 0, 0, 0, 1, 0);									//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell

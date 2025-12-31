@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:40:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 19:32:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,9 @@
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-
-	#include <limits.h>
-	#include <stdint.h>
 
 #pragma endregion
 
@@ -32,6 +28,8 @@
 	//.42shrc
 	static HIST_ENTRY	**history			= NULL;		//	History array
 
+	static char			history_histcontrol[4096];		//	
+	static char			history_timeformat[4096];		//	Format for timestamp
 	static char			history_file[4096];				//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entries
 	static int			file_unlimited		= 0;		//	Indicates if it is limited by a maximum size
@@ -177,8 +175,7 @@
 					char *newline = strchr(line, '\n');
 					if (newline) *newline = '\0';
 					tmp_history[tmp_length].line = line;
-					tmp_history[tmp_length].timestamp = 0;
-					tmp_history[tmp_length].data = NULL;
+					tmp_history[tmp_length].timestamp = time(NULL);
 					tmp_length++;
 					continue;
 				}
@@ -201,7 +198,7 @@
 				} else {
 					cmd_length = atol(first_field);
 					command_start = second_field;
-					timestamp = 0;
+					timestamp = time(NULL);
 				}
 
 				char *final_cmd = NULL;
@@ -254,7 +251,6 @@
 				if (final_cmd) {
 					tmp_history[tmp_length].line = final_cmd;
 					tmp_history[tmp_length].timestamp = timestamp;
-					tmp_history[tmp_length].data = NULL;
 					tmp_length++;
 				} else {
 					free(line);
@@ -318,7 +314,6 @@
 				history[length]->length = ft_strlen(history[length]->line);
 				history[length]->event = event++;
 				history[length]->timestamp = tmp_history[i].timestamp;
-				history[length]->data = NULL;
 				length++;
 			}
 			history[length] = NULL;
@@ -388,6 +383,21 @@
 
 #pragma region "Add"
 
+	#pragma region "Hist Control"
+
+	//	Set histcontrol
+	void history_histcontrol_set(const char *value) {
+		if (!value || !*value) {
+			history_histcontrol[0] = '\0';
+			return;
+		}
+
+		strncpy(history_histcontrol, value, 4095);
+		history_histcontrol[ft_strlen(value)] = '\0';
+	}
+
+	#pragma endregion
+
 	#pragma region "Erase Dups"
 
 		//	Remove copies of the same line in the history
@@ -409,9 +419,8 @@
 			if (!line || ft_isspace_s(line) || !mem_max) return (1);
 
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
-			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
-			if (control) {
-				char *token = ft_strtok(control, ":", 30);
+			if (history_histcontrol[0] != '\0') {
+				char *token = ft_strtok(history_histcontrol, ":", 30);
 				while (token) {
 					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
 					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
@@ -428,7 +437,6 @@
 			history_resize(0);
 			if (length >= mem_max && !mem_unlimited) {
 				free(history[0]->line);
-				free(history[0]->data);
 				free(history[0]);
 				history[0] = NULL;
 
@@ -444,7 +452,6 @@
 			history[length]->line = ft_strdup(line);
 			history[length]->length = ft_strlen(line);
 			history[length]->event = event++;
-			history[length]->data = NULL;
 			history[length++]->timestamp = time(NULL);
 			history[length] = NULL;
 			history_set_pos_last();
@@ -459,13 +466,12 @@
 	#pragma region "Replace"
 
 		//	Replace the indicated entry
-		int history_replace(size_t pos, char *line, void *data) {
+		int history_replace(size_t pos, char *line) {
 			if (!history || !line || ft_isspace_s(line) || !length || !mem_max) return (1);
 
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
-			char *control = variables_find_value(vars_table, "42_HISTCONTROL");
-			if (control) {
-				char *token = ft_strtok(control, ":", 30);
+			if (history_histcontrol[0] != '\0') {
+				char *token = ft_strtok(history_histcontrol, ":", 30);
 				while (token) {
 					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
 					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
@@ -482,10 +488,8 @@
 
 			if (history && pos < length && history[pos]) {
 				if (history[pos]->line) free(history[pos]->line);
-				if (history[pos]->data) free(history[pos]->data);
 				history[pos]->line = ft_strdup(line);
 				history[pos]->length = ft_strlen(line);
-				history[pos]->data = data;
 			}
 
 			return (0);
@@ -543,7 +547,6 @@
 
 			if (history && pos < length && history[pos]) {
 				if (history[pos]->line) free(history[pos]->line);
-				if (history[pos]->data) free(history[pos]->data);
 				free(history[pos]);
 				history[pos] = NULL;
 
@@ -572,7 +575,6 @@
 			for (size_t i = start; i <= end; ++i) {
 				if (history[i]) {
 					free(history[i]->line);
-					free(history[i]->data);
 					free(history[i]);
 					history[i] = NULL;
 				}
@@ -636,7 +638,6 @@
 
 			if (history && position < length && history[position]) {
 				if (history[position]->line) free(history[position]->line);
-				if (history[position]->data) free(history[position]->data);
 				free(history[position]); history[position] = NULL;
 				for (size_t i = position; i < length; ++i)
 					history[i] = history[i + 1];
@@ -674,7 +675,6 @@
 			for (size_t i = 0; i < length; ++i) {
 				if (history && history[i]) {
 					if (history[i]->line) free(history[i]->line);
-					if (history[i]->data) free(history[i]->data);
 					free(history[i]);
 					history[i] = NULL;
 				}
@@ -863,6 +863,17 @@
 
 #pragma region "Print"
 
+	//	Set timeformat for timestamp
+	void history_timeformat_set(const char *format) {
+		if (!format || !*format) {
+			history_timeformat[0] = '\0';
+			return;
+		}
+
+		strncpy(history_timeformat, format, 4095);
+		history_timeformat[ft_strlen(format)] = '\0';
+	}
+
 	//	Print all entries
 	int history_print(size_t offset, int hide_pos) {
 		if (!history || !length) return (1);
@@ -878,6 +889,15 @@
 				print(STDOUT_FILENO, txt_line, FREE_JOIN);
 				print(STDOUT_FILENO, "  ", JOIN);
 			}
+
+			if (history_timeformat[0] != '\0') {
+				char time_buffer[128];
+				struct tm *tm_info = localtime(&history[i]->timestamp);
+				if (tm_info && strftime(time_buffer, sizeof(time_buffer), history_timeformat, tm_info) > 0) {
+					print(STDOUT_FILENO, time_buffer, JOIN);
+				}
+			}
+
 			print(STDOUT_FILENO, history[i]->line, JOIN);
 			print(STDOUT_FILENO, "\n", JOIN);
 		}

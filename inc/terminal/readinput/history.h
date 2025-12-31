@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:44:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 19:14:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@
 
 		typedef struct s_HIST_ENTRY {
 			char	*line;
-			void	*data;
 			time_t	timestamp;
 			size_t	event;
 			size_t	length;
@@ -58,8 +57,9 @@
 	int			history_read(const char *filename);
 	int			history_write(const char *filename);
 	//	----------- ADD ------------
+	void		history_histcontrol_set(const char *value);
 	int			history_add(char *line, int force);
-	int			history_replace(size_t pos, char *line, void *data);
+	int			history_replace(size_t pos, char *line);
 	HIST_ENTRY	**history_clone();
 	//	---------- REMOVE ----------
 	void		history_remove_position(size_t pos);
@@ -85,6 +85,7 @@
 	void		history_set_pos(size_t pos);
 	void		history_set_pos_last();
 	//	---------- PRINT -----------
+	void		history_timeformat_set(const char *format);
 	int			history_print(size_t offset, int hide_pos);
 	//	-------- INITIALIZE --------
 	int			history_initialize();

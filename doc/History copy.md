@@ -4,78 +4,48 @@
 
 El historial de 42sh mantiene dos componentes principales:
 
-**Lista en memoria**: Comandos de la sesión actual que aún no se han guardado al disco.  
+**Lista en memoria**: Comandos de la sesión actual que aún no se han guardado al disco.
 **Archivo de historial**: Normalmente `~/.42sh_history`, donde se persisten los comandos entre sesiones.
 
+### Anatomía de una entrada
+
 Cada comando se almacena con:
-- **line**: Comando almacenado
-- **timestamp** 
-- **event**: Número del evento asignado al comando
-- **length**: Longitud del comando almacenado
+- **Número de línea**: Posición en el historial (puede cambiar)
+- **Timestamp** (opcional): Si `HISTTIMEFORMAT` está configurado
+- **Comando**: El texto literal ejecutado
 
+## Variables de Entorno Críticas
 
-## Variables de Entorno
-
-### `42_HISTFILE`
+### `HISTFILE`
 Ruta al archivo de historial. Por defecto: `~/.42sh_history`
 
 ```42sh
-42_HISTFILE=~/.my_custom_history
+HISTFILE=~/.my_custom_history
 ```
 
-### `42_HISTSIZE`
+### `HISTSIZE`
 Número máximo de comandos en memoria durante la sesión.
 
 ```42sh
-42_HISTSIZE=1000
+HISTSIZE=10000
 ```
 
-### `42_HISTFILESIZE`
+### `HISTFILESIZE`
 Número máximo de líneas que se guardan en el archivo al finalizar la sesión.
 
 ```42sh
-42_HISTFILESIZE=2000
+HISTFILESIZE=20000
 ```
 
-### `42_HISTTIMEFORMAT`
-Formato de timestamp para cada comando.
+### `HISTTIMEFORMAT`
+Formato de timestamp para cada comando. Si está vacío, no se guardan timestamps.
 
 ```42sh
-42_HISTTIMEFORMAT="%F %T "  # Formato: YYYY-MM-DD HH:MM:SS
+HISTTIMEFORMAT="%F %T "  # Formato: YYYY-MM-DD HH:MM:SS
 ```
 
-| Código | Significado                          | Ejemplo                |
-|--------|--------------------------------------|------------------------|
-| %Y     | Año con siglo                        | 2025                   |
-| %y     | Año sin siglo                        | 25                     |
-| %m     | Mes (01–12)                          | 12                     |
-| %d     | Día del mes (01–31)                  | 31                     |
-| %e     | Día del mes (1–31, espacio)          |  9                     |
-| %H     | Hora 24h (00–23)                     | 18                     |
-| %I     | Hora 12h (01–12)                     | 06                     |
-| %M     | Minutos (00–59)                      | 42                     |
-| %S     | Segundos (00–60)                     | 07                     |
-| %p     | AM / PM                              | PM                     |
-| %R     | Hora 24h HH:MM                       | 18:42                  |
-| %T     | Hora 24h HH:MM:SS                    | 18:42:07               |
-| %F     | Fecha ISO (YYYY-MM-DD)               | 2025-12-31             |
-| %D     | Fecha MM/DD/YY                       | 12/31/25               |
-| %c     | Fecha y hora locale                  | Wed Dec 31 18:42:07    |
-| %x     | Fecha locale                         | 31/12/25               |
-| %X     | Hora locale                          | 18:42:07               |
-| %a     | Día abreviado                        | Wed                    |
-| %A     | Día completo                         | Wednesday              |
-| %b     | Mes abreviado                        | Dec                    |
-| %B     | Mes completo                         | December               |
-| %j     | Día del año (001–366)                | 365                    |
-| %U     | Semana del año (domingo primero)     | 52                     |
-| %W     | Semana del año (lunes primero)       | 52                     |
-| %Z     | Zona horaria                         | CET                    |
-| %%     | Literal '%'                          | %                      |
-
-### `42_HISTCONTROL`
+### `HISTCONTROL`
 Controla qué comandos se guardan:
-
 - `ignorespace`: Ignora comandos que empiezan con espacio
 - `ignoredups`: Ignora comandos duplicados consecutivos
 - `ignoreboth`: Combina ambos
@@ -85,7 +55,7 @@ Controla qué comandos se guardan:
 HISTCONTROL=ignoreboth:erasedups
 ```
 
-### `HISTIGNORE` (Not Implemented)
+### `HISTIGNORE`
 Patrón de comandos a ignorar (separados por `:`).
 
 ```42sh
@@ -94,42 +64,101 @@ HISTIGNORE="ls:cd:pwd:exit:clear"
 
 ## Navegación del Historial
 
-- `↑` / `Ctrl+P`: Comando anterior
-- `↓` / `Ctrl+N`: Comando siguiente
-- `Ctrl+R`: Búsqueda incremental hacia atrás
-- `Ctrl+S`: Búsqueda incremental hacia adelante
-- `k`: Comando anterior (modo vi)
-- `j`: Comando siguiente (modo vi)
+### Atajos de teclado básicos
 
-## Expansión del Historial
+- **↑ / Ctrl+P**: Comando anterior
+- **↓ / Ctrl+N**: Comando siguiente
+- **Ctrl+R**: Búsqueda incremental hacia atrás
+- **Ctrl+S**: Búsqueda incremental hacia adelante (requiere `stty -ixon`)
+- **Alt+<**: Ir al primer comando del historial
+- **Alt+>**: Ir al último comando (línea actual)
+
+### Modo vi
+
+Si usas `set -o vi`:
+- **Esc + k**: Comando anterior
+- **Esc + j**: Comando siguiente
+- **Esc + /**: Búsqueda hacia atrás
+- **Esc + ?**: Búsqueda hacia adelante
+
+## Expansión del Historial (Event Designators)
 
 La expansión del historial permite referenciar comandos previos usando `!`.
 
-| Sintaxis            | Descripción                                      | Ejemplo        |
-|---------------------|--------------------------------------------------|----------------|
-| `!!`                | Último comando                                   | `sudo !!`      |
-| `!n`                | Comando número n                                 | `!532`         |
-| `!-n`               | n comandos atrás                                 | `!-3`          |
-| `!string`           | Comando más reciente que empieza con "string"    | `!vim`         |
-| `!?string`          | Comando más reciente que contiene "string"       | `!?config`     |
-| `!?string?`         | Comando más reciente que contiene "string"       | `!?config?`    |
-| `^string1^string2^` | Último comando, reemplazando string1 por string2 | `^http^https^` | * No implementado
+### Designadores de eventos
 
-## Búsqueda interactiva (Ctrl+R)
+| Sintaxis | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `!!` | Último comando | `sudo !!` |
+| `!n` | Comando número n | `!532` |
+| `!-n` | n comandos atrás | `!-3` |
+| `!string` | Comando más reciente que empieza con "string" | `!vim` |
+| `!?string?` | Comando más reciente que contiene "string" | `!?config?` |
+| `^string1^string2^` | Último comando, reemplazando string1 por string2 | `^http^https^` |
 
-1. Presiona `Ctrl+R`
+### Designadores de palabras (Word Designators)
+
+Extraen partes específicas de un comando previo. Se usan tras un designador de evento con `:`.
+
+| Sintaxis | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `!:0` | Comando (palabra 0) | `echo !-2:0` |
+| `!:n` | n-ésima palabra (1-indexed) | `ls !vim:1` |
+| `!:^` | Primera palabra (argumento 1) | `cat !:^` |
+| `!:$` | Última palabra | `cd !:$` |
+| `!:*` | Todas las palabras excepto la 0 | `echo !:*` |
+| `!:n-m` | Rango de palabras | `!:2-4` |
+| `!:n-$` | Desde palabra n hasta el final | `!:3-$` |
+| `!:n*` | Desde palabra n hasta el final | `!:2*` |
+
+**Atajos de teclado para palabras:**
+- **Alt+.** o **Esc+.**: Inserta última palabra del comando anterior (repetir para ir hacia atrás)
+- **Alt+Ctrl+Y**: Inserta primer argumento del comando anterior
+
+### Modificadores
+
+Los modificadores transforman el texto expandido. Se añaden tras el designador de palabra con `:`.
+
+| Modificador | Descripción | Ejemplo |
+|-------------|-------------|---------|
+| `:h` | Head - elimina el último componente del path | `!$:h` → `/path/to` de `/path/to/file` |
+| `:t` | Tail - mantiene solo el último componente | `!$:t` → `file` de `/path/to/file` |
+| `:r` | Root - elimina la extensión | `!$:r` → `file` de `file.txt` |
+| `:e` | Extension - mantiene solo la extensión | `!$:e` → `.txt` de `file.txt` |
+| `:p` | Print - muestra sin ejecutar | `!vim:p` |
+| `:q` | Quote - entrecomilla para evitar expansión | `!$:q` |
+| `:x` | Quote por palabras (como :q pero cada palabra) | `!*:x` |
+| `:s/old/new/` | Sustituye primera ocurrencia | `!$:s/http/https/` |
+| `:gs/old/new/` | Sustituye todas las ocurrencias | `!$:gs/ /_/` |
+| `:&` | Repite la última sustitución | `!$:&` |
+
+**Combinaciones de modificadores:**
+```42sh
+!$:h:t      # Directorio padre de un archivo
+!$:r:r      # Elimina dos extensiones (file.tar.gz → file)
+```
+
+## Búsqueda del Historial
+
+### Búsqueda interactiva (Ctrl+R)
+
+1. Presiona **Ctrl+R**
 2. Escribe texto de búsqueda
-3. `Ctrl+R` nuevamente para el siguiente resultado
-4. `Enter` para ejecutar
-5. `Ctrl+G` o `Esc` para cancelar
-6. `→` o `Ctrl+E` para editar sin ejecutar
+3. **Ctrl+R** nuevamente para el siguiente resultado
+4. **Enter** para ejecutar
+5. **Ctrl+G** o **Esc** para cancelar
+6. **→** o **Ctrl+E** para editar sin ejecutar
 
----
+### Búsqueda con `history` y grep
+
+```42sh
+history | grep "docker"
+history | grep "git commit" | tail -20
+```
 
 ## Builtin: `history`
 
 ### Sintaxis básica
-
 ```42sh
 history [n]              # Muestra últimos n comandos
 history -c               # Limpia historial en memoria
@@ -149,26 +178,50 @@ history -s arg [arg...]  # Añade argumentos como nueva entrada
 **`-d offset`**: Elimina la entrada específica. El offset puede ser:
 - Positivo: Posición absoluta desde el inicio
 - Negativo: Posición relativa desde el final
-- Rango:
 
 ```42sh
-history -d 5        # Elimina por indice
-history -d -5       # Elimina desde el final
-history -d +5       # Elimina desde el principio
-history -d 5--5     # Elimina penúltimo comando
+history -d 450      # Elimina comando #450
+history -d -2       # Elimina penúltimo comando
 ```
 
-**`-a` (append)**: Añade las líneas nuevas de esta sesión al archivo `$HISTFILE`. No lee nada. (No Implementado)
+**`-a` (append)**: Añade las líneas nuevas de esta sesión al archivo `$HISTFILE`. No lee nada.
 
 **`-r` (read)**: Lee el contenido del `$HISTFILE` y lo añade a la lista en memoria. Útil para sincronizar entre sesiones.
 
 **`-w` (write)**: Sobrescribe el `$HISTFILE` con el contenido actual en memoria.
 
-**`-n` (new)**: Lee líneas del `$HISTFILE` que no están en memoria y las añade. (No Implementado)
+**`-n` (new)**: Lee líneas del `$HISTFILE` que no están en memoria y las añade.
 
 **`-p` (print)**: Realiza expansión del historial sobre los argumentos y muestra el resultado sin añadirlo al historial.
 
+```42sh
+history -p !vim     # Muestra el último comando vim sin ejecutarlo
+history -p !!:$     # Muestra la última palabra del último comando
+```
+
 **`-s` (store)**: Guarda los argumentos como una nueva entrada en el historial.
+
+```42sh
+history -s "comando inventado"   # Añade al historial sin ejecutar
+```
+
+### Ejemplos prácticos
+
+```42sh
+# Ver últimos 20 comandos
+history 20
+
+# Eliminar comando específico
+history -d 1523
+
+# Sincronizar historial entre terminales
+history -a          # Guarda esta sesión
+history -r          # Lee otras sesiones
+
+# Limpiar todo
+history -c
+history -w          # Vacía el archivo también
+```
 
 ## Builtin: `fc`
 
@@ -232,6 +285,25 @@ fc -5 -1        # Edita últimos 5 comandos
 fc vim git      # Edita desde último "vim" hasta último "git"
 ```
 
+### Ejemplos prácticos
+
+```42sh
+# Editar y re-ejecutar último comando
+fc
+
+# Ver historial de forma limpia
+fc -ln -50
+
+# Re-ejecutar comando corrigiendo un typo
+fc -s tset=test
+
+# Editar bloque de comandos relacionados
+fc vim1 vim4    # Si tienes varios comandos vim numerados
+
+# Listar comandos de hoy (requiere HISTTIMEFORMAT)
+fc -l | grep "$(date +%Y-%m-%d)"
+```
+
 ## Opciones del Historial (`shopt`)
 
 42sh tiene opciones adicionales para controlar el comportamiento del historial con `shopt`.
@@ -266,6 +338,44 @@ shopt -s histreedit
 
 ```42sh
 shopt -s histverify
+```
+
+### Verificar estado
+
+```42sh
+shopt -p | grep hist    # Ver todas las opciones de historial
+shopt histappend        # Ver estado de opción específica
+```
+
+## Configuración Recomendada
+
+Añade esto a tu `~/.42shrc`:
+
+```42sh
+# Tamaño del historial
+HISTSIZE=50000
+HISTFILESIZE=50000
+
+# No guardar duplicados ni comandos que empiezan con espacio
+HISTCONTROL=ignoreboth:erasedups
+
+# Ignorar comandos comunes
+HISTIGNORE="ls:ll:cd:pwd:exit:clear:history"
+
+# Timestamps en historial
+HISTTIMEFORMAT="%F %T "
+
+# Añadir al historial en lugar de sobrescribir
+shopt -s histappend
+
+# Guardar comandos multi-línea como una entrada
+shopt -s cmdhist
+
+# Verificar expansiones antes de ejecutar
+shopt -s histverify
+
+# Actualizar historial después de cada comando (opcional pero útil)
+PROMPT_COMMAND="history -a; history -n"
 ```
 
 ## Sincronización entre Sesiones
