@@ -68,38 +68,38 @@ Asigna los argumentos restantes a los parámetros posicionales. Si no quedan arg
 Asigna los argumentos restantes a los parámetros posicionales. Las opciones -x y -v se desactivan.
 
 ### `-o <nombre_opción>`
-Establece opciones por nombre largo. Algunas opciones importantes:
-`allexport` Igual que -a.
-`braceexpand` Igual que -B.
-`emacs` Usa el estilo de edición de línea de emacs.
-`errexit` Igual que -e.
-`errtrace` Igual que -E.
-`functrace` Igual que -T.
-`hashall` Igual que -h.
-`histexpand` Igual que -H.
-`history` Habilita el historial de comandos.
-`ignoreeof` La shell no sale al leer EOF (Ctrl+D).
-`interactive-comments` Permite comentarios en shells interactivas.
-`keyword` Igual que -k.
-`monitor` Igual que -m.
-`noclobber` Igual que -C.
-`noexec` Igual que -n.
-`noglob` Igual que -f.
-`nolog` (Actualmente ignorada).
-`notify` Igual que -b.
-`nounset` Igual que -u.
-`onecmd` Igual que -t.
-`physical` Igual que -P.
-`pipefail` El valor de retorno de un pipeline es el estado del último comando que salió con un valor diferente de cero (o cero si todos tuvieron éxito).
-`posix` Cambia el comportamiento de bash para coincidir con el estándar POSIX.
-`privileged` Igual que -p.
-`verbose` Igual que -v.
-`vi` Usa el estilo de edición de línea de vi.
-`xtrace` Igual que -x.
+Establece opciones por nombre largo. Algunas opciones importantes:  
+`allexport` Igual que -a.  
+`braceexpand` Igual que -B.  
+`emacs` Usa el estilo de edición de línea de emacs.  
+`errexit` Igual que -e.  
+`errtrace` Igual que -E.  
+`functrace` Igual que -T.  
+`hashall` Igual que -h.  
+`histexpand` Igual que -H.  
+`history` Habilita el historial de comandos.  
+`ignoreeof` La shell no sale al leer EOF (Ctrl+D).  
+`interactive-comments` Permite comentarios en shells interactivas.  
+`keyword` Igual que -k.  
+`monitor` Igual que -m.  
+`noclobber` Igual que -C.  
+`noexec` Igual que -n.  
+`noglob` Igual que -f.  
+`nolog` (Actualmente ignorada).  
+`notify` Igual que -b.  
+`nounset` Igual que -u.  
+`onecmd` Igual que -t.  
+`physical` Igual que -P.  
+`pipefail` El valor de retorno de un pipeline es el estado del último comando que salió con un valor diferente de cero (o cero si todos tuvieron éxito).  
+`posix` Cambia el comportamiento de bash para coincidir con el estándar POSIX.  
+`privileged` Igual que -p.  
+`verbose` Igual que -v.  
+`vi` Usa el estilo de edición de línea de vi.  
+`xtrace` Igual que -x.  
 
 ## Combinaciones Comunes
 
-- `bash -x script.sh` - Ejecuta un script mostrando cada comando (depuración)
-- `bash -n script.sh` - Verifica la sintaxis sin ejecutar
-- `bash -c "comando"` - Ejecuta un comando directamente
-- `set -euo pipefail` - Combinación común para scripts más seguros: sale en error, variables no definidas causan error, y detecta errores en pipelines
+- `bash -x script.sh` - Ejecuta un script mostrando cada comando (depuración).  
+- `bash -n script.sh` - Verifica la sintaxis sin ejecutar.  
+- `bash -c "comando"` - Ejecuta un comando directamente.  
+- `set -euo pipefail` - Combinación común para scripts más seguros: sale en error, variables no definidas causan error, y detecta errores en pipelines.  
