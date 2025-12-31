@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:33:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 23:10:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,7 +300,7 @@
 			if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
 			if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
 			if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
-			if (!editor || !*editor) editor = "nano";
+			if (!editor || !*editor) editor = "nano"; // o como ultima instacia ed...
 			return (editor);
 		}
 
