@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   history.c                                          :+:      :+:    :+:   */
+/*   history_expansion.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 19:56:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:25:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 			pos = atoi(number);
 		}
 
-		HIST_ENTRY *hist = history_get(history_length() - pos);
+		HIST_ENTRY *hist = history_entry_position(history_length() - pos);
 
 		if (!hist || ft_strlen(number) > 9) {
 
@@ -64,7 +64,7 @@
 		char *number = ft_substr(value, start + 1, *end - (start + 1));
 		size_t event = atoi(number);
 
-		HIST_ENTRY *hist = history_event(event);
+		HIST_ENTRY *hist = history_entry_event(event);
 
 		if (!hist || ft_strlen(number) > 9) {
 
@@ -97,7 +97,7 @@
 
 		char *result = NULL;
 		for (size_t i = history_length() - 1; i >= 0; --i) {
-			HIST_ENTRY *hist = history_get(i);
+			HIST_ENTRY *hist = history_entry_position(i);
 			if (hist && hist->line) {
 				if (at_start && !strncmp(hist->line, sub_value, ft_strlen(sub_value)))	{ result = hist->line; break; }
 				if (!at_start && strstr(hist->line, sub_value))							{ result = hist->line; break; }

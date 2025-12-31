@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:26:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,18 +124,18 @@
 		history_clear();
 		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
 		if (!result && !history_add(add_line, 0)) {
-			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
-			else if (strcmp(history_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			if (!history_entry_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			else if (strcmp(history_entry_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
-		if (!result) { history_replace(history_get_pos(), replace_line, NULL);
-			if (!history_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
-			else if (strcmp(history_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+		if (!result) { history_replace(history_position(), replace_line, NULL);
+			if (!history_entry_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+			else if (strcmp(history_entry_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 		}
 		if (!result) { size_t length = history_length(); history_remove_current(0);
 			if (history_length() == length)								{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
 		if (!result) { history_clear();
-			if (history_current() || history_length())					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
+			if (history_entry_current() || history_length())					{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);

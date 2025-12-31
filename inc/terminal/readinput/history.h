@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 23:04:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:44:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #pragma region "Includes"
 
-	#include <stddef.h>
+	#include <time.h>
 
 #pragma endregion
 
@@ -31,9 +31,10 @@
 
 	#pragma region "Structures"
 
-		typedef struct {
+		typedef struct s_HIST_ENTRY {
 			char	*line;
 			void	*data;
+			time_t	timestamp;
 			size_t	event;
 			size_t	length;
 		} HIST_ENTRY;
@@ -46,43 +47,45 @@
 
 	//	-------- EXPANSION ---------
 	int			expand_history(char **input, int show_expansion);
-	//	----------- FILE -----------
-	void		history_file_set(const char *filename);
+	//	---------- SEARCH ----------
+	int			history_search();
 	//	----------- SIZE -----------
-	size_t		history_get_size(int type);
-	void		history_set_size(size_t value, int type);
-	void		history_unset_size(int type);
+	size_t		history_size_get(int type);
+	void		history_size_set(size_t value, int type);
+	void		history_size_unset(int type);
 	//	---------- LOCAL -----------
+	void		history_set_file(const char *filename);
 	int			history_read(const char *filename);
 	int			history_write(const char *filename);
 	//	----------- ADD ------------
 	int			history_add(char *line, int force);
 	int			history_replace(size_t pos, char *line, void *data);
-	//	--------- DELETE -----------
+	HIST_ENTRY	**history_clone();
+	//	---------- REMOVE ----------
+	void		history_remove_position(size_t pos);
 	void		history_remove_offset_range(size_t start, size_t end);
 	void		history_remove_offset(int offset);
-	void		history_remove(size_t pos);
 	void		history_remove_event(size_t event);
 	void		history_remove_current(int remove_event);
 	void		history_remove_last_if_added(int remove_event);
+	//	---------- CLEAR -----------
 	void		history_clear();
-	//	---------- GET -------------
-	HIST_ENTRY	**history_clone();
+		//	---------- GET -------------
+	HIST_ENTRY	*history_entry_position(size_t pos);
+	HIST_ENTRY	*history_entry_event(size_t event);
+	HIST_ENTRY	*history_entry_current();
+	HIST_ENTRY	*history_entry_last_if_added();
+	size_t		history_position();
+	int			history_position_offset(int offset, size_t *out, int is_plus);
+	int			history_position_event(size_t event, size_t *out);
 	size_t		history_length();
-	int			history_offset_to_index(int offset, size_t *out, int is_plus);
-	HIST_ENTRY	*history_get(size_t pos);
-	HIST_ENTRY	*history_current();
-	HIST_ENTRY	*history_event(size_t event);
-	HIST_ENTRY	*history_get_last_if_added();
 	//	--------- NAVIGATE ---------
 	char		*history_prev();
 	char		*history_next();
-	size_t		history_get_pos();
-	int			history_event_pos(size_t event);
 	void		history_set_pos(size_t pos);
-	void		history_set_pos_end();
+	void		history_set_pos_last();
 	//	---------- PRINT -----------
-	int			history_print(size_t offset, int hide_events);
+	int			history_print(size_t offset, int hide_pos);
 	//	-------- INITIALIZE --------
 	int			history_initialize();
 

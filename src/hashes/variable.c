@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 22:40:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:37:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@
 #pragma region "Import"
 
 	static void specials(const char *key, const char *value) {
-		if (!strcmp(key, "42_HISTSIZE"))		history_set_size(atol(value), HIST_MEM);
-		if (!strcmp(key, "42_HISTFILESIZE"))	history_set_size(atol(value), HIST_FILE);
+		if (!strcmp(key, "42_HISTSIZE"))		history_size_set(atol(value), HIST_MEM);
+		if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(atol(value), HIST_FILE);
 	}
 
 	#pragma region "Variable"
@@ -431,7 +431,7 @@
 
 		char *home = get_home();
 		if (home && (home = ft_strjoin(home, "/.42sh_history", 1))) {
-			history_file_set(home);
+			history_set_file(home);
 			default_add(table, "42_HISTFILE", home, 0, 0, 0, 1, 1);
 		}
 		default_add(table, "42_HISTSIZE", "5", 0, 0, 0, 0, 0);

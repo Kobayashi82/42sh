@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:14:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:44:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,6 @@
 
 	//	------- AUTOCOMPLETE -------
 	void	autocomplete();
-
-	//	------ HISTORY SEARCH ------
-	int		history_search();
 
 	//	-------- UNDO/REDO ---------
 	void	undo_push(int push);

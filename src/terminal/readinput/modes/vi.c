@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:26:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@
 					int number = get_n();
 					if (!vi_mode) number = 1;
 
-					int hist_pos = history_get_pos() - (number - 1);
+					int hist_pos = history_position() - (number - 1);
 					if (hist_pos < 0) hist_pos = 0;
 					if (number > 1) history_set_pos(hist_pos);
 					if (!history_length()) { beep(); return; }
@@ -315,15 +315,15 @@
 					int number = get_n();
 					if (!vi_mode) number = 1;
 
-					int hist_pos = history_get_pos() + (number - 1);
+					int hist_pos = history_position() + (number - 1);
 					if (number > 1) history_set_pos(hist_pos);
 					if (!history_length()) { beep(); return; }
 
 					char *new_line = history_next();
 					int free_line = 0;
 
-					if (!tmp_line && history_get_pos() == history_length() - 1) { beep(); return; }
-					if (!new_line && history_get_pos() == history_length() - 1) {
+					if (!tmp_line && history_position() == history_length() - 1) { beep(); return; }
+					if (!new_line && history_position() == history_length() - 1) {
 						new_line = tmp_line;
 						tmp_line = NULL;
 						free_line = 1;

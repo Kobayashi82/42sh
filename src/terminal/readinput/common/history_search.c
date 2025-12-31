@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:19:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:45:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 	enum		e_mode { START, FORWARD, BACKWARD };
 
 	t_buffer		search_buffer;
-	int			hist_searching;							//	Indicates whether the terminal is in searching mode
+	int				hist_searching;							//	Indicates whether the terminal is in searching mode
 	
 	static int		initialized;
 
@@ -149,40 +149,7 @@
 
 #pragma endregion
 
-#pragma region "Search"
-
-	#pragma region "Init"
-
-		void search_init() {
-			undo_push(0);
-			
-			no_match = 0;
-			old_len = chars_width(0, buffer.length, buffer.value);
-			original_size = buffer.size;
-			original_position = buffer.position;
-			original_buffer = malloc(buffer.size);
-			memcpy(original_buffer, buffer.value, buffer.size);
-			
-			hist_searching = 1;
-			initialized = 1;
-			search_buffer.size = 1024;
-			search_buffer.position = 0, search_buffer.length = 0;
-			search_buffer.value = calloc(search_buffer.size, sizeof(char));
-
-			char *prompt = remove_colors(term_prompt);
-			int len = chars_width(0, ft_strlen(prompt), prompt); free(prompt);
-			len += chars_width(0, buffer.position, buffer.value);
-			if (len > 0) cursor_left(len);
-
-			len += chars_width(buffer.position, buffer.length, buffer.value);
-			for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
-			if (len > 0) cursor_left(len);
-
-			write_value(STDOUT_FILENO, "(reverse-i-search)`", 19);
-			write_value(STDOUT_FILENO, "': ", 3); cursor_left(3);
-		}
-
-	#pragma endregion
+#pragma region "Internal"
 
 	#pragma region "Exit"
 
@@ -292,7 +259,7 @@
 					if (mode == BACKWARD) {
 						size_t i = history_pos + 1;
 						for (; i < len; ++i) {
-							HIST_ENTRY *hist = history_get(i);
+							HIST_ENTRY *hist = history_entry_position(i);
 							if (hist && hist->line) {
 								char *match = strstr(hist->line, search_buffer.value);
 								if (match) {
@@ -304,7 +271,7 @@
 					} else {
 						size_t i = history_pos - (mode == FORWARD);
 						for (; i >= 0; --i) {
-							HIST_ENTRY *hist = history_get(i);
+							HIST_ENTRY *hist = history_entry_position(i);
 							if (hist && hist->line) {
 								char *match = strstr(hist->line, search_buffer.value);
 								if (match) {
@@ -333,22 +300,55 @@
 
 	#pragma endregion
 
-	#pragma region "Search"
+	#pragma region "Init"
 
-		int history_search() {
-			if (!initialized) { search_init(); return (1); }
+		static void search_init() {
+			undo_push(0);
+			
+			no_match = 0;
+			old_len = chars_width(0, buffer.length, buffer.value);
+			original_size = buffer.size;
+			original_position = buffer.position;
+			original_buffer = malloc(buffer.size);
+			memcpy(original_buffer, buffer.value, buffer.size);
+			
+			hist_searching = 1;
+			initialized = 1;
+			search_buffer.size = 1024;
+			search_buffer.position = 0, search_buffer.length = 0;
+			search_buffer.value = calloc(search_buffer.size, sizeof(char));
 
-			if 		(buffer.c == 3)			{ search_cancel(); return (0); }	//	[CTRL + C]	SIG_INT
-			else if	(buffer.c == 7)			return (search_cancel());			//	[CTRL + G]	Cancel search
-			else if (buffer.c == 18)		search_find(FORWARD);				//	[CTRL + R]	Search up
-			else if (buffer.c == 19)		search_find(BACKWARD);				//	[CTRL + S]	Search down
-			else if	(buffer.c == 127)		backspace();						//	[BackSpace]	Delete the previous character
-			else if (isprint(buffer.c))	print_char();			
-			else							return (search_exit());
+			char *prompt = remove_colors(term_prompt);
+			int len = chars_width(0, ft_strlen(prompt), prompt); free(prompt);
+			len += chars_width(0, buffer.position, buffer.value);
+			if (len > 0) cursor_left(len);
 
-			return (1);
+			len += chars_width(buffer.position, buffer.length, buffer.value);
+			for (int i = len; i > 0; --i) write_value(STDOUT_FILENO, " ", 1);
+			if (len > 0) cursor_left(len);
+
+			write_value(STDOUT_FILENO, "(reverse-i-search)`", 19);
+			write_value(STDOUT_FILENO, "': ", 3); cursor_left(3);
 		}
 
 	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Search"
+
+	int history_search() {
+		if (!initialized) { search_init(); return (1); }
+
+		if 		(buffer.c == 3)			{ search_cancel(); return (0); }	//	[CTRL + C]	SIG_INT
+		else if	(buffer.c == 7)			return (search_cancel());			//	[CTRL + G]	Cancel search
+		else if (buffer.c == 18)		search_find(FORWARD);				//	[CTRL + R]	Search up
+		else if (buffer.c == 19)		search_find(BACKWARD);				//	[CTRL + S]	Search down
+		else if	(buffer.c == 127)		backspace();						//	[BackSpace]	Delete the previous character
+		else if (isprint(buffer.c))		print_char();			
+		else							return (search_exit());
+
+		return (1);
+	}
 
 #pragma endregion

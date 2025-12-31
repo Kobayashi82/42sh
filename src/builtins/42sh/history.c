@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 23:20:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:32:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,8 +159,8 @@
 			char *dash = strchr(offset + 1, '-');
 
 			if (!dash)															return (1);
-			if (history_offset_to_index(atoi(offset), start, *offset == '+'))	return (1);
-			if (history_offset_to_index(atoi(dash + 1), end, *offset == '+'))	return (1);
+			if (history_position_offset(atoi(offset), start, *offset == '+'))	return (1);
+			if (history_position_offset(atoi(dash + 1), end, *offset == '+'))	return (1);
 
 			return (0);
 		}

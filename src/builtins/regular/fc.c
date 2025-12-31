@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2025/12/31 15:33:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@
 		opts->args = start;
 
 		char *hist_fc_command = NULL;
-		HIST_ENTRY *hist_curr = history_get_last_if_added();
+		HIST_ENTRY *hist_curr = history_entry_last_if_added();
 		if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
 		history_remove_last_if_added(1);
 
@@ -100,7 +100,7 @@
 				size_t last_pos = history_length();
 				if (last_pos--) {
 					for (int i = last_pos; i > 0; i--) {
-						HIST_ENTRY * hist = history_get(i);
+						HIST_ENTRY * hist = history_entry_position(i);
 						if (!hist) {
 							result = 1;
 							break;
@@ -119,12 +119,12 @@
 						result = 1;
 					} else {
 						size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
-						HIST_ENTRY *hist = history_get(pos);
+						HIST_ENTRY *hist = history_entry_position(pos);
 						if (!hist) result = 1;
 						else command = ft_strdup(hist->line);
 					}
 				} else {
-					HIST_ENTRY *hist = history_event(number);
+					HIST_ENTRY *hist = history_entry_event(number);
 					if (!hist) result = 1;
 					else command = ft_strdup(hist->line);
 				}
@@ -132,7 +132,7 @@
 		} else {
 			size_t last_pos = history_length();
 			if (last_pos--) {
-				HIST_ENTRY *hist = history_get(last_pos);
+				HIST_ENTRY *hist = history_entry_position(last_pos);
 				if (!hist) result = 1;
 				else command = ft_strdup(hist->line);
 			} else result = 1;
@@ -180,7 +180,7 @@
 	#pragma region "Add"
 
 		static void fc_list_add(int i, int hide_events) {
-			HIST_ENTRY *hist = history_get(i);
+			HIST_ENTRY *hist = history_entry_position(i);
 			if (hist && hist->line) {
 				if (!hide_events) {
 					char *txt_event = ft_itoa(hist->event);
@@ -204,7 +204,7 @@
 					last_pos = ft_max(last_pos - 1 - reduce_one, 0);
 					if (last_pos) {
 						for (int i = last_pos; i > 0; i--) {
-							HIST_ENTRY * hist = history_get(i);
+							HIST_ENTRY * hist = history_entry_position(i);
 							if (hist && !strncmp(hist->line, query, ft_strlen(query))) return (i);
 						} return (-2);
 					} else return (-2);
@@ -216,12 +216,16 @@
 							return (-1);
 						else {
 							size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
-							HIST_ENTRY *hist = history_get(pos);
+							HIST_ENTRY *hist = history_entry_position(pos);
 							if (hist) return (pos);
 						}
-					} else return (history_event_pos(number));
+					} else {
+						size_t pos = 0;
+						return ((history_position_event(number, &pos)) ? -1 : pos);
+					}
 				}
 			}
+
 			return (-1);
 		}
 
@@ -231,15 +235,15 @@
 
 		static int fc_list(t_opt *opts) {
 			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
-			int reduce_one = (history_get_last_if_added() != NULL);
+			int reduce_one = (history_entry_last_if_added() != NULL);
 
 			if (strchr(opts->valid, 'e') && opts->args) {
 				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
 				else					opts->args = opts->args->next;
 			}
 
-			history_set_pos_end();
-			last_pos = history_get_pos();
+			history_set_pos_last();
+			last_pos = history_position();
 			last_pos = ft_max(last_pos - reduce_one, 0);
 		
 			if (!opts->args) {
@@ -309,13 +313,13 @@
 
 			// Remove fc command from history
 			// char *hist_fc_command = NULL;
-			// HIST_ENTRY *hist_curr = history_get_last_if_added();
+			// HIST_ENTRY *hist_curr = history_entry_last_if_added();
 			// if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
 			history_remove_last_if_added(1);
 
 			// Set first and last
-			history_set_pos_end();
-			last_pos = history_get_pos();
+			history_set_pos_last();
+			last_pos = history_position();
 			last_pos = ft_max(last_pos, 0);
 
 			if (!opts->args) {
@@ -350,7 +354,7 @@
 						end_pos = tmp;
 					}
 					for (int i = start_pos; i <= end_pos; ++i) {
-						HIST_ENTRY *hist = history_get(i);
+						HIST_ENTRY *hist = history_entry_position(i);
 						if (hist && hist->line) {
 							if (i != start_pos) write(fd, "\n", 1);
 							if (write(fd, hist->line, hist->length) == -1) {
