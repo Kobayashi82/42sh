@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 19:14:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 14:08:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,11 +53,12 @@
 	void		history_size_set(size_t value, int type);
 	void		history_size_unset(int type);
 	//	---------- LOCAL -----------
-	void		history_set_file(const char *filename);
+	void		history_file_set(const char *filename);
 	int			history_read(const char *filename);
 	int			history_write(const char *filename);
 	//	----------- ADD ------------
-	void		history_histcontrol_set(const char *value);
+	void		history_hist_control_set(const char *value);
+	void		history_hist_ignore_set(const char *value);
 	int			history_add(char *line, int force);
 	int			history_replace(size_t pos, char *line);
 	HIST_ENTRY	**history_clone();
@@ -79,13 +80,14 @@
 	int			history_position_offset(int offset, size_t *out, int is_plus);
 	int			history_position_event(size_t event, size_t *out);
 	size_t		history_length();
+	size_t		history_histcmd();
 	//	--------- NAVIGATE ---------
 	char		*history_prev();
 	char		*history_next();
 	void		history_set_pos(size_t pos);
 	void		history_set_pos_last();
 	//	---------- PRINT -----------
-	void		history_timeformat_set(const char *format);
+	void		history_hist_timeformat_set(const char *format);
 	int			history_print(size_t offset, int hide_pos);
 	//	-------- INITIALIZE --------
 	int			history_initialize();

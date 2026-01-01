@@ -8,6 +8,22 @@
 - Braces expansion
 - Parameter expansion
 
+## History
+
+```bash
+42_HISTIGNORE="ls:cd:pwd:exit:clear"  # Patrón de comandos a ignorar (separados por `:`)
+shopt -s histappend                   # Añade al archivo en lugar de sobreescribir
+shopt -s histreedit                   # Permite re-editar expansiones fallidas
+shopt -s histverify                   # Muestra expansión ! sin ejecutar (para confirmar)
+history                               # (quitar +offset)
+history -a                            # Añade solo comandos nuevos al archivo
+history -n                            # Lee solo las líneas nuevas del archivo (las que aún no están en memoria)
+fc                                    # Arreglar guardado de comandos editados
+fc                                    # Añadir fallback a ed
+
+# Establecer opciones por defecto en modo interactivo y no interactivo
+```
+
 ## Terminal
 - TMOUT: Si está definido, cerrar la shell automáticamente después de N segundos de inactividad en el prompt (sin input del usuario)
 - set -o ignoreeof: Si está activado, ignorar EOF (Ctrl + D) y muestra 'Use "logout" to leave the shell.' en stderr en lugar de cerrar la shell inmediatamente. Pero si se pulsa (CTRL + D) 11 veces seguidas, tambien se cierra. (No se si logout seria lo correcto en mi caso, porque no es el shell usado para login)

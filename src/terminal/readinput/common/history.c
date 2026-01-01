@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 19:32:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 14:17:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
+	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
@@ -28,9 +29,11 @@
 	//.42shrc
 	static HIST_ENTRY	**history			= NULL;		//	History array
 
-	static char			history_histcontrol[4096];		//	
-	static char			history_timeformat[4096];		//	Format for timestamp
-	static char			history_file[4096];				//	Path to the physical history file
+	static char			hist_control[4096];				//	
+	static char			hist_ignore[4096];				//	
+	static char			hist_timeformat[4096];			//	Format for timestamp
+
+	static char			file[4096];						//	Path to the physical history file
 	static size_t		file_max			= 2000;		//	Maximum number of entries
 	static int			file_unlimited		= 0;		//	Indicates if it is limited by a maximum size
 
@@ -141,10 +144,14 @@
 
 	#pragma region "Set File"
 
-		void history_set_file(const char *filename) {
-			if (!filename) return;
+		void history_file_set(const char *filename) {
+			if (!filename || !*filename) {
+				file[0] = '\0';
+				return;
+			}
 
-			strcpy(history_file, filename);
+			strncpy(file, filename, 4095);
+			file[ft_strlen(filename)] = '\0';
 		}
 
 	#pragma endregion
@@ -152,8 +159,8 @@
 	#pragma region "Read File"
 
 		//	Read entries from a history file into a temporary array
-		static int read_history_file(const char *filename) {
-			if (!filename || access(filename, R_OK))	filename = history_file;
+		static int read_file(const char *filename) {
+			if (!filename || access(filename, R_OK))	filename = file;
 			if (!filename || access(filename, R_OK))	return (1);
 			if (!mem_max && !mem_unlimited)				return (0);
 
@@ -269,7 +276,7 @@
 
 		//	Add the entries to the history
 		int history_read(const char *filename) {
-			if (read_history_file(filename)) {
+			if (read_file(filename)) {
 				history_resize(1);
 				return (1);
 			}
@@ -334,7 +341,7 @@
 
 		//	Save the entry to a file
 		int history_write(const char *filename) {
-			if (!filename) filename = history_file;
+			if (!filename) filename = file;
 			if (!filename)				return (1);
 			if (!options.hist_local)	return (0);
 
@@ -383,17 +390,32 @@
 
 #pragma region "Add"
 
-	#pragma region "Hist Control"
+	#pragma region "Set Hist Control"
 
-	//	Set histcontrol
-	void history_histcontrol_set(const char *value) {
+	//	Set hist_control
+	void history_hist_control_set(const char *value) {
 		if (!value || !*value) {
-			history_histcontrol[0] = '\0';
+			hist_control[0] = '\0';
 			return;
 		}
 
-		strncpy(history_histcontrol, value, 4095);
-		history_histcontrol[ft_strlen(value)] = '\0';
+		strncpy(hist_control, value, 4095);
+		hist_control[ft_strlen(value)] = '\0';
+	}
+
+	#pragma endregion
+
+	#pragma region "Set Hist Ignore"
+
+	//	Set hist_ignore
+	void history_hist_ignore_set(const char *value) {
+		if (!value || !*value) {
+			hist_ignore[0] = '\0';
+			return;
+		}
+
+		strncpy(hist_ignore, value, 4095);
+		hist_ignore[ft_strlen(value)] = '\0';
 	}
 
 	#pragma endregion
@@ -419,8 +441,8 @@
 			if (!line || ft_isspace_s(line) || !mem_max) return (1);
 
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
-			if (history_histcontrol[0] != '\0') {
-				char *token = ft_strtok(history_histcontrol, ":", 30);
+			if (hist_control[0] != '\0') {
+				char *token = ft_strtok(hist_control, ":", 30);
 				while (token) {
 					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
 					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
@@ -470,8 +492,8 @@
 			if (!history || !line || ft_isspace_s(line) || !length || !mem_max) return (1);
 
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
-			if (history_histcontrol[0] != '\0') {
-				char *token = ft_strtok(history_histcontrol, ":", 30);
+			if (hist_control[0] != '\0') {
+				char *token = ft_strtok(hist_control, ":", 30);
 				while (token) {
 					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
 					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
@@ -806,6 +828,15 @@
 
 	#pragma endregion
 
+	#pragma region "HistCMD"
+
+		// Return the next command number available ($HISTCMD)
+		size_t history_histcmd() {
+			return (first_line + length);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
 #pragma region "Navigate"
@@ -863,50 +894,57 @@
 
 #pragma region "Print"
 
-	//	Set timeformat for timestamp
-	void history_timeformat_set(const char *format) {
-		if (!format || !*format) {
-			history_timeformat[0] = '\0';
-			return;
-		}
+	#pragma region "Set Time Format"
 
-		strncpy(history_timeformat, format, 4095);
-		history_timeformat[ft_strlen(format)] = '\0';
-	}
-
-	//	Print all entries
-	int history_print(size_t offset, int hide_pos) {
-		if (!history || !length) return (1);
-		if (offset > length) offset = length;
-
-		print(STDOUT_FILENO, NULL, RESET);
-
-		for (size_t i = length - offset; i < length && history[i]; ++i) {
-			if (!hide_pos) {
-				char *txt_line = ft_itoa(first_line + i);
-				int spaces = 5 - ft_strlen(txt_line);
-				while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-				print(STDOUT_FILENO, txt_line, FREE_JOIN);
-				print(STDOUT_FILENO, "  ", JOIN);
+		//	Set timeformat for timestamp
+		void history_hist_timeformat_set(const char *format) {
+			if (!format || !*format) {
+				hist_timeformat[0] = '\0';
+				return;
 			}
 
-			if (history_timeformat[0] != '\0') {
-				char time_buffer[128];
-				struct tm *tm_info = localtime(&history[i]->timestamp);
-				if (tm_info && strftime(time_buffer, sizeof(time_buffer), history_timeformat, tm_info) > 0) {
-					print(STDOUT_FILENO, time_buffer, JOIN);
+			strncpy(hist_timeformat, format, 4095);
+			hist_timeformat[ft_strlen(format)] = '\0';
+		}
+
+	#pragma endregion
+
+	#pragma region "Print"
+
+		//	Print all entries
+		int history_print(size_t offset, int hide_pos) {
+			if (!history || !length) return (1);
+			if (offset > length) offset = length;
+
+			print(STDOUT_FILENO, NULL, RESET);
+
+			for (size_t i = length - offset; i < length && history[i]; ++i) {
+				if (!hide_pos) {
+					char *txt_line = ft_itoa(first_line + i);
+					int spaces = 5 - ft_strlen(txt_line);
+					while (spaces--) print(STDOUT_FILENO, " ", JOIN);
+					print(STDOUT_FILENO, txt_line, FREE_JOIN);
+					print(STDOUT_FILENO, "  ", JOIN);
 				}
+
+				if (hist_timeformat[0] != '\0') {
+					char time_buffer[128];
+					struct tm *tm_info = localtime(&history[i]->timestamp);
+					if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
+						print(STDOUT_FILENO, time_buffer, JOIN);
+					}
+				}
+
+				print(STDOUT_FILENO, history[i]->line, JOIN);
+				print(STDOUT_FILENO, "\n", JOIN);
 			}
 
-			print(STDOUT_FILENO, history[i]->line, JOIN);
-			print(STDOUT_FILENO, "\n", JOIN);
+			print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
 		}
 
-		print(STDOUT_FILENO, NULL, PRINT);
-
-		return (0);
-	}
-
+	#pragma endregion
 
 #pragma endregion
 
@@ -914,9 +952,14 @@
 
 	//	Initialize the history
 	int history_initialize() {
-		char *home = get_home();
-		if (home) home = ft_strjoin_sep(home, "/", ".42sh_history", 1);
-		history_set_file(home); free(home);
+		char *value = NULL;
+		if ((value = variables_find_value(vars_table, "42_HISTFILE")))			history_file_set(value);
+		if ((value = variables_find_value(vars_table, "42_HISTSIZE")))			history_size_set(atol(value), HIST_MEM);
+		if ((value = variables_find_value(vars_table, "42_HISTFILESIZE")))		history_size_set(atol(value), HIST_FILE);
+		if ((value = variables_find_value(vars_table, "42_HISTTIMEFORMAT")))	history_hist_timeformat_set(value);
+		if ((value = variables_find_value(vars_table, "42_HISTCONTROL")))		history_hist_control_set(value);
+		if ((value = variables_find_value(vars_table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
+
 		history_read(NULL);
 
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 19:14:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 14:36:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,18 +43,48 @@
 
 #pragma region "Specials"
 
+	static char *specials_get(const char *key) {
+		if (!key) return (NULL);
+
+		static char special[4096];
+
+		// History
+		if (!strcmp(key, "42_HISTCMD")) {
+			snprintf(special, sizeof(special), "%zu", history_histcmd());
+			return (special);
+		}
+
+		// if (!strcmp(key, "42_HISTFILE"))		history_file_set(value);
+		// if (!strcmp(key, "42_HISTSIZE"))		history_size_set(atol(value), HIST_MEM);
+		// if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(atol(value), HIST_FILE);
+		// if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(value);
+		// if (!strcmp(key, "42_HISTCONTROL"))		history_hist_control_set(value);
+		// if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);
+
+		return (NULL);
+	}
+
 	static void specials_set(const char *key, const char *value) {
+		if (!key) return;
+
+		// History
+		if (!strcmp(key, "42_HISTFILE"))		history_file_set(value);
 		if (!strcmp(key, "42_HISTSIZE"))		history_size_set(atol(value), HIST_MEM);
 		if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(atol(value), HIST_FILE);
-		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_timeformat_set(value);
-		if (!strcmp(key, "42_HISTCONTROL"))		history_histcontrol_set(value);
+		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(value);
+		if (!strcmp(key, "42_HISTCONTROL"))		history_hist_control_set(value);
+		if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);
 	}
 
 	static void specials_unset(const char *key) {
+		if (!key) return;
+
+		// History
+		if (!strcmp(key, "42_HISTFILE"))		history_file_set(NULL);
 		if (!strcmp(key, "42_HISTSIZE"))		history_size_set(1000, HIST_MEM);
 		if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(2000, HIST_FILE);
-		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_timeformat_set(NULL);
-		if (!strcmp(key, "42_HISTCONTROL"))		history_histcontrol_set(NULL);
+		if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(NULL);
+		if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(NULL);
 	}
 
 #pragma endregion
@@ -182,6 +212,7 @@
 			if (!strcmp(key, "42_HISTFILESIZE"))				result = 0;
 			if (!strcmp(key, "42_HISTTIMEFORMAT"))				result = 0;
 			if (!strcmp(key, "42_HISTCONTROL"))					result = 0;
+			if (!strcmp(key, "42_HISTIGNORE"))					result = 0;
 			if (!strcmp(key, "42_SH"))							result = 0;
 			if (!strcmp(key, "42_SUBSHELL"))					result = 0;
 			if (!strcmp(key, "42_VERSION"))						result = 0;
@@ -212,6 +243,15 @@
 		t_var *variables_find(t_var **table, const char *key) {
 			if (!key) return (NULL);
 
+			static t_var special;
+			special.key = 0;
+			special.value = specials_get(key);
+			special.exported = 0;
+			special.integer = 0;
+			special.readonly = 1;
+			special.next = NULL;
+			if (special.value) return (&special);
+
 			unsigned int index = hash_index(key);
 			t_var *var = table[index];
 
@@ -225,6 +265,9 @@
 
 		char *variables_find_value(t_var **table, const char *key) {
 			if (!key) return (NULL);
+
+			char *special = specials_get(key);
+			if (special) return (special);
 
 			unsigned int index = hash_index(key);
 			t_var *var = table[index];
@@ -447,21 +490,25 @@
 	int variables_initialize(t_var **table, const char **envp) {
 		variables_from_array(vars_table, envp);
 
+		// History
 		char *home = get_home();
-		if (home && (home = ft_strjoin(home, "/.42sh_history", 1))) {
-			history_set_file(home);
-			default_add(table, "42_HISTFILE", home, 0, 0, 0, 1, 1);								//	
+		if (home) {
+			if (*home && home[ft_strlen(home) - 1] == '/') home[ft_strlen(home) - 1] = '\0';
+			home = ft_strjoin(home, "/.42sh_history", 1);
+			default_add(table, "42_HISTFILE", home, 0, 0, 0, 0, 1);								//	
 		}
 		default_add(table, "42_HISTSIZE", "5", 0, 0, 0, 0, 0);									//	
 		default_add(table, "42_HISTFILESIZE", "2000", 0, 0, 0, 0, 0);							//	
 		default_add(table, "42_HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);						//	
-		// default_add(table, "42_HISTTIMEFORMAT", "%F %T ", 0, 0, 0, 0, 0);					//	
 
+		// Shell
 		default_add(table, "42_SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
 		default_add(table, "42_SUBSHELL", "0", 0, 0, 0, 1, 0);									//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
 		default_add(table, "42_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
 		default_add(table, "42_PID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
 		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) READONLY
+
+		// Terminal
 		default_add(table, "COLUMNS", ft_itoa(terminal.cols), 0, 0, 1, 1, 1);					//	Update var when expanded (terminal_columns)
 		default_add(table, "LINES", ft_itoa(terminal.rows), 0, 0, 1, 1, 1);						//	Update var when expanded (terminal_rows)
 		default_add(table, "SECONDS", "0", 0, 0, 0, 1, 0);										//	Can be modified, but expand dinamic value
@@ -469,12 +516,13 @@
 		default_add(table, "EPOCHREALTIME", ft_itoa(shell.epoch_realtime), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
 		default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) READONLY
 		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) READONLY
+
+		// Prompt
 		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		default_add(table, "PS3", terminal.PS3, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		default_add(table, "PS4", terminal.PS4, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
 		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
-	
 
 		return (0);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 17:58:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 13:56:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,17 +122,17 @@
 		char	*replace_line = "Testing Replaced";
 
 		history_clear();
-		if (history_read("history"))									{ result = 1; printf(RD"X"RED500" load\n"NC); }
+		if (history_read("history"))											{ result = 1; printf(RD"X"RED500" load\n"NC); }
 		if (!result && !history_add(add_line, 0)) {
-			if (!history_entry_current()->line)								{ result = 1; printf(RD"X"RED500" add\n"NC); }
-			else if (strcmp(history_entry_current()->line, add_line))		{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			if (!history_entry_current()->line)									{ result = 1; printf(RD"X"RED500" add\n"NC); }
+			else if (strcmp(history_entry_current()->line, add_line))			{ result = 1; printf(RD"X"RED500" add\n"NC); }
 		}
 		if (!result) { history_replace(history_position(), replace_line);
-			if (!history_entry_current()->line)								{ result = 1; printf(RD"X"RED500" replace\n"NC); }
-			else if (strcmp(history_entry_current()->line, replace_line))	{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+			if (!history_entry_current()->line)									{ result = 1; printf(RD"X"RED500" replace\n"NC); }
+			else if (strcmp(history_entry_current()->line, replace_line))		{ result = 1; printf(RD"X"RED500" replace\n"NC); }
 		}
 		if (!result) { size_t length = history_length(); history_remove_current(0);
-			if (history_length() == length)								{ result = 1; printf(RD"X"RED500" delete\n"NC); }
+			if (history_length() == length)										{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
 		if (!result) { history_clear();
 			if (history_entry_current() || history_length())					{ result = 1; printf(RD"X"RED500" clear\n"NC); }

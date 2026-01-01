@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:32:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 14:36:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@
 	#pragma endregion
 
 #pragma endregion
-
+#include "hashes/variable.h"
 #pragma region "History"
 
 	int bt_history(int argc, char **argv) {

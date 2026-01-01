@@ -4,8 +4,8 @@
 
 El historial de 42sh se compone de:
 
-**Lista en memoria**: Incluye comandos cargados desde el archivo y comandos ejecutados en la sesión.  
-**Archivo de historial**: Almacena comandos de forma persistente entre sesiones. Por defecto `~/.42sh_history`.
+`Lista en memoria`: Incluye comandos cargados desde el archivo y comandos ejecutados en la sesión.  
+`Archivo de historial`: Almacena comandos de forma persistente entre sesiones. Por defecto `~/.42sh_history`.
 
 Cada comando se almacena con:
 

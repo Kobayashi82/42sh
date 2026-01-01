@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 13:10:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,8 +167,7 @@
 				free_user(user);
 			}
 
-			if (!tmp) return (NULL);
-			return (tmp);
+			return ((tmp) ? tmp : NULL);
 		}
 
 	#pragma endregion
@@ -183,8 +182,7 @@
 				free_user(user);
 			}
 
-			if (!tmp) return (NULL);
-			return (tmp);
+			return ((tmp) ? tmp : NULL);
 		}
 
 	#pragma endregion
@@ -193,17 +191,14 @@
 	#pragma region "By Var"
 
 		char *get_home_by_var() {
-			char *home = getenv("XDG_CONFIG_HOME");
-			if (home) return ft_strdup(home);
-			home = getenv("HOME");
-			if (home) return (ft_strdup(home));
-
-			home = get_home_by_id(getuid());
-			if (home) return (home);
+			char *home = NULL;
+			if ((home = getenv("XDG_CONFIG_HOME")))	return ft_strdup(home);
+			if ((home = getenv("HOME")))			return (ft_strdup(home));
+			if ((home = get_home_by_id(getuid())))	return (home);
 
 			char *user = getenv("USER");
-			if (!user) user = getenv("LOGNAME");
-			if (user) return (ft_strjoin("/home/", user, 0));
+			if (!user)	user = getenv("LOGNAME");
+			if (user)	return (ft_strjoin("/home/", user, 0));
 
 			return (NULL);
 		}
@@ -212,7 +207,9 @@
 
 	#pragma region "Current"
 
-		char *get_home() { return get_home_by_var(); }
+		char *get_home() {
+			return (get_home_by_var());
+		}
 
 	#pragma endregion
 
