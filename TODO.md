@@ -11,13 +11,9 @@
 ## History
 
 ```bash
-42_HISTIGNORE="ls:cd:pwd:exit:clear"  # Patrón de comandos a ignorar (separados por `:`)
-shopt -s histappend                   # Añade al archivo en lugar de sobreescribir
-history                               # (quitar +offset)
 history -a                            # Añade solo comandos nuevos al archivo
 history -n                            # Lee solo las líneas nuevas del archivo (las que aún no están en memoria)
 fc                                    # Arreglar guardado de comandos editados
-fc                                    # Añadir fallback a ed
 ```
 
 ## Terminal

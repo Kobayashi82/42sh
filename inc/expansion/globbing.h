@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:47:53 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/08 16:53:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 18:12:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@
 	void		pattern_clear(t_pattern **patterns);
 
 	//	---------- MATCH -----------
+	int			match_pattern(char *input, char *pattern);
 	t_arg		*match_dir(t_pattern *pattern, char *basedir, char *dir);
 
 	//	--------- BRACKETS ---------

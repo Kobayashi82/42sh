@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 23:36:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 19:09:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 	#include "terminal/readinput/history.h"
 	#include "hashes/variable.h"
+	#include "expansion/globbing.h"
 	#include "main/options.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
@@ -343,38 +344,69 @@
 		int history_write(const char *filename) {
 			if (!filename) filename = file;
 
-			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
-			if (fd < 0)					return (1);
+			int fd;
+			if (options.histappend)	fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
+			else					fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
+			if (fd < 0) return (1);
 
 			if (!history || !file_max || !length) {
 				close(fd);
 				return (0);
 			}
 
-			size_t i = 0;
-			if (length > file_max) i = length - file_max;
+			if (!options.histappend) {
+				size_t i = 0;
+				if (length > file_max) i = length - file_max;
 
-			for (; i < length; i++) {
-				if (history[i] && history[i]->line) {
-					char timestamp_str[32];
-					char length_str[32];
+				for (; i < length; i++) {
+					if (history[i] && history[i]->line) {
+						char timestamp_str[32];
+						char length_str[32];
 
-					// Timestamp
-					if (history[i]->timestamp > 0) {
-						snprintf(timestamp_str, sizeof(timestamp_str), "%ld", (long)history[i]->timestamp);
-						write(fd, timestamp_str, ft_strlen(timestamp_str));
+						// Timestamp
+						if (history[i]->timestamp > 0) {
+							snprintf(timestamp_str, sizeof(timestamp_str), "%ld", (long)history[i]->timestamp);
+							write(fd, timestamp_str, ft_strlen(timestamp_str));
+							write(fd, "\x1F", 1);
+						}
+
+						// Length
+						size_t cmd_len = ft_strlen(history[i]->line);
+						snprintf(length_str, sizeof(length_str), "%zu", cmd_len);
+						write(fd, length_str, ft_strlen(length_str));
 						write(fd, "\x1F", 1);
+
+						// Command
+						write(fd, history[i]->line, cmd_len);
+						write(fd, "\n", 1);
 					}
+				}
+			} else {
+				size_t i = 0;
+				if (length > file_max) i = length - file_max;
 
-					// Length
-					size_t cmd_len = ft_strlen(history[i]->line);
-					snprintf(length_str, sizeof(length_str), "%zu", cmd_len);
-					write(fd, length_str, ft_strlen(length_str));
-					write(fd, "\x1F", 1);
+				for (; i < length; i++) {
+					if (history[i] && history[i]->line) {
+						char timestamp_str[32];
+						char length_str[32];
 
-					// Command
-					write(fd, history[i]->line, cmd_len);
-					write(fd, "\n", 1);
+						// Timestamp
+						if (history[i]->timestamp > 0) {
+							snprintf(timestamp_str, sizeof(timestamp_str), "%ld", (long)history[i]->timestamp);
+							write(fd, timestamp_str, ft_strlen(timestamp_str));
+							write(fd, "\x1F", 1);
+						}
+
+						// Length
+						size_t cmd_len = ft_strlen(history[i]->line);
+						snprintf(length_str, sizeof(length_str), "%zu", cmd_len);
+						write(fd, length_str, ft_strlen(length_str));
+						write(fd, "\x1F", 1);
+
+						// Command
+						write(fd, history[i]->line, cmd_len);
+						write(fd, "\n", 1);
+					}
 				}
 			}
 
@@ -432,6 +464,85 @@
 
 	#pragma endregion
 
+	#pragma region "Hist Ignore"
+
+		#pragma region "Free"
+
+			// Free patterns array
+			static void free_patterns(char **patterns) {
+				if (!patterns) return;
+
+				for (int i = 0; patterns[i]; ++i) free(patterns[i]);
+				free(patterns);
+			}
+
+		#pragma endregion
+
+		#pragma region "Split"
+
+			// Split hist_ignore by ':'
+			static char **split_patterns(char *hist_ignore) {
+				if (!hist_ignore || !*hist_ignore) return (NULL);
+
+				int count = 1;
+				for (int i = 0; hist_ignore[i]; i++) {
+					if (hist_ignore[i] == ':') count++;
+				}
+
+				char **patterns = calloc(count + 1, sizeof(char *));
+				if (!patterns) return (NULL);
+
+				int		i = 0;
+				char	*colon, *start = hist_ignore;
+
+				while ((colon = strchr(start, ':'))) {
+					if (colon - start > 0) {
+						patterns[i] = ft_substr(start, 0, colon - start);
+						if (!patterns[i++]) return (free_patterns(patterns), NULL);
+					}
+					start = colon + 1;
+				}
+				if (*start) {
+					patterns[i] = ft_strdup(start);
+					if (!patterns[i]) return (free_patterns(patterns), NULL);
+				}
+
+				return (patterns);
+			}
+
+		#pragma endregion
+
+		#pragma region "Check"
+
+			// Checks whether the line should be ignored according to hist_ignore
+			static int check_histignore(char *line) {
+				if (!line || !*line || !hist_ignore[0]) return (0);
+
+				char **patterns = split_patterns(hist_ignore);
+				if (!patterns) return (0);
+
+				for (int i = 0; patterns[i]; ++i) {
+					if (!strcmp(patterns[i], "&")) {
+						history_set_pos_last();
+						HIST_ENTRY *entry = history_entry_current();
+						if (entry && entry->line && !strcmp(line, entry->line)) {
+							free_patterns(patterns);
+							return (1);
+						}
+					} else if (match_pattern(line, patterns[i])) {
+						free_patterns(patterns);
+						return (1);
+					}
+				}
+
+				free_patterns(patterns);
+				return (0);
+			}
+
+		#pragma endregion
+
+	#pragma endregion
+
 	#pragma region "Add"
 
 		//	Add an entry to the history
@@ -450,6 +561,7 @@
 				}
 			}
 
+			if (!force && check_histignore(line)) { added = 0; return (1); }
 			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = 0; return (1); }
 			if (!force && ignorespace && isspace(*line)) { added = 0; return (1); }
 			if (!force && erasedups) erase_dups(line, INT_MAX);
@@ -778,15 +890,12 @@
 		#pragma region "Offset"
 
 			//	Returns the position to the entry with the indicated offset
-			int history_position_offset(int offset, size_t *out, int is_plus) {
+			int history_position_offset(int offset, size_t *out) {
 				if (!offset) return (1);
 
 				if (offset < 0) {
 					if ((size_t)(-offset) > length) return (1);
 					*out = length + offset;
-				} else if (is_plus) {
-					if ((size_t)offset > length) return (1);
-					*out = offset - 1;
 				} else {
 					if ((size_t)(offset - first_line) > length) return (1);
 					*out = offset - first_line;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 02:11:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 14:09:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1041,17 +1041,23 @@
 
 		#pragma region "Edit Input"						("v")
 
-			static const char *default_editor() {
-				const char	*editor = variables_find_value(vars_table, "FCEDIT");
-				if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
-				if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
-				if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
-				if (!editor || !*editor) editor = "nano";
-				return (editor);
-			}
+			#pragma region "Editor"
+
+				static char *default_editor() {
+					char *editor = NULL;
+					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "FCEDIT"));
+					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "EDITOR"));
+					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "VISUAL"));
+					if (!editor)	editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"));
+					if (!editor)	editor = get_fullpath_command("nano");
+					if (!editor)	editor = get_fullpath_command("ed");
+
+					return (editor);
+				}
+
+			#pragma endregion
 
 			static int edit_input() {
-				const char *raw_editor = default_editor();
 				int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "input"));
 				if (fd == -1) { beep(); return (1); }
 
@@ -1060,9 +1066,8 @@
 					return (1);
 				} close(fd);
 
-				char *editor = get_fullpath((char *)raw_editor);
-				if (access(editor, X_OK) == -1) {
-					free(editor);
+				char *editor = default_editor();
+				if (!editor) {
 					tmp_delete_fd(fd);
 					beep();
 					return (1);
@@ -1079,9 +1084,15 @@
 				} else if (pid == 0) {
 					char *const args[] = { editor, tmp_find_path_fd(fd), NULL };
 					char **env = variables_to_array(vars_table, EXPORTED, 1);
-					close(-42);
+					close(fd);
+					close(terminal.bk_stdin);
+					close(terminal.bk_stdout);
+					close(terminal.bk_stderr);
 					execve(editor, args, env);
-					beep(); exit(1);
+					tmp_delete_fd(fd);
+					free(editor);
+					beep();
+					exit(1);
 				} else if (pid > 0) {
 					int status;
 					waitpid(pid, &status, 0);
@@ -1132,7 +1143,10 @@
 
 					write(STDOUT_FILENO, "\r\n", 2);
 					return (2);
-				} return (1);
+				}
+
+				free(editor);
+				return (1);
 			}
 
 		#pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 14:36:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 14:22:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,9 @@
 		static int parse_history_range(const char *offset, size_t *start, size_t *end) {
 			char *dash = strchr(offset + 1, '-');
 
-			if (!dash)															return (1);
-			if (history_position_offset(atoi(offset), start, *offset == '+'))	return (1);
-			if (history_position_offset(atoi(dash + 1), end, *offset == '+'))	return (1);
+			if (!dash)											return (1);
+			if (history_position_offset(atoi(offset), start))	return (1);
+			if (history_position_offset(atoi(dash + 1), end))	return (1);
 
 			return (0);
 		}
@@ -258,7 +258,7 @@
 	#pragma endregion
 
 #pragma endregion
-#include "hashes/variable.h"
+
 #pragma region "History"
 
 	int bt_history(int argc, char **argv) {

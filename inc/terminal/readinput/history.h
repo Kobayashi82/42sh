@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 14:08:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 14:21:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@
 	HIST_ENTRY	*history_entry_current();
 	HIST_ENTRY	*history_entry_last_if_added();
 	size_t		history_position();
-	int			history_position_offset(int offset, size_t *out, int is_plus);
+	int			history_position_offset(int offset, size_t *out);
 	int			history_position_event(size_t event, size_t *out);
 	size_t		history_length();
 	size_t		history_histcmd();

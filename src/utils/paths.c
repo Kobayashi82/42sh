@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 14:15:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,21 +444,53 @@
 
 #pragma region "Is Directory"
 
+	// Checks whether a path refers to a directory, resolving symlinks if needed
 	int is_directory(const char *path) {
 		struct stat path_stat;
 		char *resolved_path;
 
-		if (lstat(path, &path_stat) == -1) return (0);
+		if (lstat(path, &path_stat) == -1)					return (0);
 		if (S_ISLNK(path_stat.st_mode)) {
 			resolved_path = resolve_symlink(path);
 			if (*resolved_path) {
-				if (lstat(resolved_path, &path_stat) == -1) return (0);
-				if (S_ISDIR(path_stat.st_mode)) return (1);
+				if (lstat(resolved_path, &path_stat) == -1)	return (0);
+				if (S_ISDIR(path_stat.st_mode))				return (1);
 			}
 		}
 
-		if (S_ISDIR(path_stat.st_mode)) return (1);
-		return (0);
+		return ((S_ISDIR(path_stat.st_mode)) ? 1 : 0);
 	}
 
 #pragma endregion
+
+	// Resolves a command string to its executable path; returns NULL if not executable
+	char *get_fullpath_command(const char *value) {
+		if (!value) return (NULL);
+
+		char	current[4096];
+		char	quoteChar = 0;
+		int		escaped = 0;
+		int		j = 0;
+
+		for (int i = 0; j < 4095 && value[i]; ++i) {
+			char c = value[i];
+
+			if (escaped)											{ escaped = 0;		current[j++] = c;	continue; }
+			if (quoteChar != '\'' && c == '\\')						{ escaped = 1;							continue; }
+			if (!quoteChar && (c == '"' || c == '\''))				{ quoteChar = c;						continue; }
+			if (quoteChar && c == quoteChar)						{ quoteChar = 0;						continue; }
+			if (!quoteChar && isspace(c))							{ 										break;    }
+
+			current[j++] = c;
+		}
+
+		current[j] = '\0';
+
+		char *fullpath = get_fullpath(current);
+		if (!fullpath || access(fullpath, X_OK) == -1) {
+			free(fullpath);
+			fullpath = NULL;
+		}
+
+		return (fullpath);
+	}

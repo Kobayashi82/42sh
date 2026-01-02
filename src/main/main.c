@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 02:34:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 18:24:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
+	#include "utils/paths.h"
 
 	#include "tests/args.h"
 	#include "tests/tests.h"

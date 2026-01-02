@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:53:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 18:12:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 #pragma region "Match Pattern"
 
 	//	Check if input match a pattern. Support ? * and []
-	static int	match_pattern(char * input, char *pattern) {
+	int	match_pattern(char *input, char *pattern) {
 		int i = 0, j = 0, start = -1, match = 0;
 		int input_len = ft_strlen(input);
 		int pattern_len = ft_strlen(pattern);

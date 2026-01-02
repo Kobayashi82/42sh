@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 02:33:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 14:09:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,24 +295,14 @@
 
 	#pragma region "Editor"
 
-		int valid_editor(char *editor) {
-			char *cmd = editor; // obtener primer argumento
-			char *fullpath = get_fullpath(cmd);
-			int ret = 0;
-			if (fullpath) ret = !access(fullpath, X_OK);
-
-			return (ret);
-		}
-
-		const char *default_editor() {
-			const char	*editor = variables_find_value(vars_table, "FCEDIT");
-			if (!editor || !*editor)										editor = variables_find_value(vars_table, "EDITOR");
-			if (!editor || !*editor)										editor = variables_find_value(vars_table, "VISUAL");
-			if (!editor || !*editor)										editor = resolve_symlink("/usr/bin/editor");
-			if ((!editor || !*editor) && !access("/usr/bin/nano", X_OK))	editor = "/usr/bin/nano";
-			if ((!editor || !*editor) && !access("/bin/nano", X_OK))		editor = "/bin/nano";
-			if ((!editor || !*editor) && !access("/usr/bin/ed", X_OK))		editor = "/usr/bin/ed";
-			if ((!editor || !*editor) && !access("/bin/ed", X_OK))			editor = "/bin/ed";
+		static char *default_editor() {
+			char *editor = NULL;
+			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "FCEDIT"));
+			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "EDITOR"));
+			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "VISUAL"));
+			if (!editor)	editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"));
+			if (!editor)	editor = get_fullpath_command("nano");
+			if (!editor)	editor = get_fullpath_command("ed");
 
 			return (editor);
 		}
@@ -476,10 +466,11 @@
 		
 		int result = 0;
 		if (!*opts->valid) {
-			char *editor = get_fullpath((char *)default_editor());
-			if (access(editor, X_OK) == -1) {
-				print(STDERR_FILENO, ft_strjoin(editor, ": command not found\n", 1), FREE_RESET_PRINT);
-				free(editor);
+			char *editor = default_editor();
+			if (!editor) {
+				print(STDERR_FILENO, shell.arg0, RESET);
+				print(STDERR_FILENO, ": fc: editor not found\n", JOIN);
+				print(STDERR_FILENO, "fc: usage: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n", PRINT);
 				result = 1;
 			} else {
 				result = fc_edit(opts, editor);
@@ -498,7 +489,9 @@
 				} else {
 					char *editor = get_fullpath(opts->args->value);
 					if (access(editor, X_OK) == -1) {
-						print(STDERR_FILENO, ft_strjoin(editor, ": command not found\n", 1), FREE_RESET_PRINT);
+						print(STDERR_FILENO, shell.arg0, RESET);
+						print(STDERR_FILENO, ft_strjoin_sep(": ", editor, ": command not found\n", 2), FREE_JOIN);
+						print(STDERR_FILENO, "fc: usage: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n", PRINT);
 						free(editor);
 						result = 1;
 					} else {
