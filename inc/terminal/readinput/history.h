@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 14:21:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 20:33:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@
 		typedef struct s_HIST_ENTRY {
 			char	*line;
 			time_t	timestamp;
-			size_t	event;
 			size_t	length;
 		} HIST_ENTRY;
 
@@ -66,20 +65,19 @@
 	void		history_remove_position(size_t pos);
 	void		history_remove_offset_range(size_t start, size_t end);
 	void		history_remove_offset(int offset);
-	void		history_remove_event(size_t event);
 	void		history_remove_current(int remove_event);
 	void		history_remove_last_if_added(int remove_event);
 	//	---------- CLEAR -----------
 	void		history_clear();
 		//	---------- GET -------------
 	HIST_ENTRY	*history_entry_position(size_t pos);
-	HIST_ENTRY	*history_entry_event(size_t event);
+	HIST_ENTRY	*history_entry_offset(int offset);
 	HIST_ENTRY	*history_entry_current();
 	HIST_ENTRY	*history_entry_last_if_added();
 	size_t		history_position();
 	int			history_position_offset(int offset, size_t *out);
-	int			history_position_event(size_t event, size_t *out);
 	size_t		history_length();
+	size_t		history_event();
 	size_t		history_histcmd();
 	//	--------- NAVIGATE ---------
 	char		*history_prev();

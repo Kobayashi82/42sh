@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 14:22:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 20:14:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,6 +269,8 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "cd:prws", NULL, long_opts, "history [-c] [-d offset] or history -rw [filename] or history -ps arg [arg...]");
+
+		printf("\\!%zu-\\#%zu\n", history_histcmd(), history_event());
 
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);

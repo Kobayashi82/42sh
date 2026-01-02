@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 14:09:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 20:35:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,9 +124,10 @@
 						else command = ft_strdup(hist->line);
 					}
 				} else {
-					HIST_ENTRY *hist = history_entry_event(number);
-					if (!hist) result = 1;
-					else command = ft_strdup(hist->line);
+					// User offset
+					// HIST_ENTRY *hist = history_entry_event(number);
+					// if (!hist) result = 1;
+					// else command = ft_strdup(hist->line);
 				}
 			}
 		} else {
@@ -180,17 +181,21 @@
 	#pragma region "Add"
 
 		static void fc_list_add(int i, int hide_events) {
-			HIST_ENTRY *hist = history_entry_position(i);
-			if (hist && hist->line) {
-				if (!hide_events) {
-					char *txt_event = ft_itoa(hist->event);
-					int spaces = 4 - ft_strlen(txt_event);
-					while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-					print(STDOUT_FILENO, txt_event, FREE_JOIN);
-					print(STDOUT_FILENO, ft_strjoin_sep("     ", hist->line, "\n", 0), FREE_JOIN);
-				} else
-					print(STDOUT_FILENO, ft_strjoin_sep("         ", hist->line, "\n", 0), FREE_JOIN);
-			}
+			(void) i;
+			(void) hide_events;
+			// No usar event, sino offset
+
+			// HIST_ENTRY *hist = history_entry_position(i);
+			// if (hist && hist->line) {
+			// 	if (!hide_events) {
+			// 		char *txt_event = ft_itoa(hist->event);
+			// 		int spaces = 4 - ft_strlen(txt_event);
+			// 		while (spaces--) print(STDOUT_FILENO, " ", JOIN);
+			// 		print(STDOUT_FILENO, txt_event, FREE_JOIN);
+			// 		print(STDOUT_FILENO, ft_strjoin_sep("     ", hist->line, "\n", 0), FREE_JOIN);
+			// 	} else
+			// 		print(STDOUT_FILENO, ft_strjoin_sep("         ", hist->line, "\n", 0), FREE_JOIN);
+			// }
 		}
 
 	#pragma endregion
@@ -220,8 +225,8 @@
 							if (hist) return (pos);
 						}
 					} else {
-						size_t pos = 0;
-						return ((history_position_event(number, &pos)) ? -1 : pos);
+						size_t pos = 0; // Use offset
+						return ((history_position_offset(number, &pos)) ? -1 : pos);
 					}
 				}
 			}

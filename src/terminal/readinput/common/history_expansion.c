@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 00:34:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 20:27:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@
 	static char *expand_event(char *value, int start, size_t *end, size_t length) {
 		while (isdigit(value[*end]) && *end < length) (*end)++;
 		char *number = ft_substr(value, start + 1, *end - (start + 1));
-		size_t event = atoi(number);
+		size_t offset = atoi(number);
 
-		HIST_ENTRY *hist = history_entry_event(event);
+		HIST_ENTRY *hist = history_entry_offset(offset);
 
 		if (!hist || ft_strlen(number) > 9) {
 

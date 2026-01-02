@@ -11,7 +11,6 @@ Cada comando se almacena con:
 
 - `Line`: Comando almacenado
 - `Timestamp`: Fecha y hora en que se almacenó el comando
-- `Event`: Número del evento asignado al comando
 - `Length`: Longitud del comando almacenado
 
 ## Variables de Entorno

@@ -6,11 +6,9 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 19:09:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 20:45:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-// SIGHUP, SIGTERM para guardar historial
 
 #pragma region "Includes"
 
@@ -33,11 +31,10 @@
 	static char			hist_control[4096];				//	
 	static char			hist_ignore[4096];				//	
 	static char			hist_timeformat[4096];			//	Format for timestamp
-
 	static char			file[4096];						//	Path to the physical history file
+	
 	static size_t		file_max			= 2000;		//	Maximum number of entries
 	static int			file_unlimited		= 0;		//	Indicates if it is limited by a maximum size
-
 	static size_t		mem_max				= 1000;		//	Maximum number of entries
 	static int			mem_unlimited		= 0;		//	Indicates if it is limited by a maximum size
 
@@ -290,7 +287,6 @@
 			}
 
 			if (history) history_clear();
-			event = 1;
 
 			//	Adjust capacity to the required size
 			while (capacity <= tmp_length) capacity *= 2;
@@ -320,7 +316,6 @@
 				history[length] = malloc(sizeof(HIST_ENTRY));
 				history[length]->line = tmp_history[i].line;
 				history[length]->length = ft_strlen(history[length]->line);
-				history[length]->event = event++;
 				history[length]->timestamp = tmp_history[i].timestamp;
 				length++;
 			}
@@ -549,6 +544,7 @@
 		int history_add(char *line, int force) {
 			if (!line || ft_isspace_s(line) || !mem_max) return (1);
 
+			event++;
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
 			if (hist_control[0] != '\0') {
 				char *token = ft_strtok(hist_control, ":", 30);
@@ -583,7 +579,6 @@
 			history[length] = malloc(sizeof(HIST_ENTRY));
 			history[length]->line = ft_strdup(line);
 			history[length]->length = ft_strlen(line);
-			history[length]->event = event++;
 			history[length++]->timestamp = time(NULL);
 			history[length] = NULL;
 			history_set_pos_last();
@@ -657,7 +652,6 @@
 
 				copy[i]->timestamp = history[i]->timestamp;
 				copy[i]->length = history[i]->length;
-				copy[i]->event = history[i]->event;
 			}
 
 			copy[length] = NULL;
@@ -750,18 +744,6 @@
 
 	#pragma endregion
 
-	#pragma region "Event"
-
-		//	Remove the indicate entry by an event (e)
-		void history_remove_event(size_t event) {
-			if (!history || !length) return;
-
-			for (size_t i = 0; i < length && history[i]; ++i)
-				if (history[i]->event == event) history_remove_position(i);
-		}
-
-	#pragma endregion
-
 	#pragma region "Current"
 
 		//	Remove the current entry
@@ -818,7 +800,7 @@
 
 		capacity = 10;
 		position = length = 0;
-		first_line = first_line_fix;
+		first_line = first_line_fix = 1;
 	}
 
 #pragma endregion
@@ -832,21 +814,28 @@
 			//	Return a pointer to the entry with the indicated position
 			HIST_ENTRY *history_entry_position(size_t pos) {
 				if (history && pos < length) return (history[pos]);
+
 				return (NULL);
 			}
 
 		#pragma endregion
 
-		#pragma region "Event"
+		#pragma region "Offset"
 
-			//	Return a pointer to the entry with the indicated event
-			HIST_ENTRY *history_entry_event(size_t event) {
-				if (!history) return (NULL);
+			//	Return a pointer to the entry with the indicated position
+			HIST_ENTRY *history_entry_offset(int offset) {
+				if (!offset) return (NULL);
 
-				for (size_t i = 0; i < length && history[i]; ++i) {
-					if (history[i]->event == event) return (history[i]);
+				size_t pos = 0;
+				if (offset < 0) {
+					if ((size_t)(-offset) > length) return (NULL);
+					pos = length + offset;
+				} else {
+					if ((size_t)(offset - first_line) > length) return (NULL);
+					pos = offset - first_line;
 				}
 
+				if (history && pos < length) return (history[pos]);
 				return (NULL);
 			}
 
@@ -906,24 +895,6 @@
 
 		#pragma endregion
 
-		#pragma region "Event"
-
-			//	Return the position to the entry with the indicated event
-			int history_position_event(size_t event, size_t *out) {
-				if (!history) return (1);
-
-				for (size_t i = 0; i < length && history[i]; ++i) {
-					if (history[i]->event == event) {
-						*out = i;
-						return (0);
-					}
-				}
-
-				return (1);
-			}
-
-	#pragma endregion
-
 	#pragma endregion
 
 	#pragma region "Length"
@@ -931,6 +902,15 @@
 		//	Return the length of the history
 		size_t history_length() {
 			return (length);
+		}
+
+	#pragma endregion
+
+	#pragma region "Event"
+
+		//	Return the event number
+		size_t history_event() {
+			return (event);
 		}
 
 	#pragma endregion
@@ -1068,7 +1048,7 @@
 		if ((value = variables_find_value(vars_table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
 
 		history_read(NULL);
-
+		
 		return (0);
 	}
 
