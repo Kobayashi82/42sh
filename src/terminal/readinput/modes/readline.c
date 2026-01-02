@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 10:32:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:26:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 02:11:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@
 					free(buffer.value); buffer.value = NULL;
 					write(STDOUT_FILENO, "\r\n", 2);
 					return (1);
-				} return (0);
+				}
+				
+				return (0);
 			}
 
 		#pragma endregion
@@ -68,7 +70,9 @@
 
 					shell.exit_code = 130; terminal.signal = 2;
 					return (1);
-				} return (0);
+				}
+				
+				return (0);
 			}
 
 		#pragma endregion
@@ -84,7 +88,9 @@
 					write(STDOUT_FILENO, "\r\n", 2);
 
 					return (1);
-				} return (0);
+				}
+				
+				return (0);
 			}
 
 		#pragma endregion
@@ -664,7 +670,7 @@
 
 		if		(ctrl_d(readed))	result = 1;
 		else if	(ctrl_c())			result = 1;
-		else if	(enter())			result = 1;
+		else if	((result = enter())) ;
 		else if (specials())		result = 0;
 		else if (cursor())			result = 0;
 		else if (print_char())		result = 0;

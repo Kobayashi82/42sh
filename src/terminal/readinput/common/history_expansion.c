@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 15:25:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 00:34:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,8 @@
 		size_t length = ft_strlen(value);
 		int changes = 0, in_escape = 0, in_quotes = 0, in_dquotes = 0;
 
+		int ret = 0;
+
 		while (i < length) {
 			// Handle Escape
 			if (in_escape)							{ in_escape = 0;			i++; continue; }
@@ -154,19 +156,24 @@
 
 				if (value[end] == '!') {																						// !!
 					replacement = expand_position(value, start, &end, length, 1);
-					if (!replacement) return (1);
+					if (!replacement) return (2);
+					ret = 1;
 				} else if (value[end] == '-' && isdigit(value[end + 1])) {														// !-[n]
 					replacement = expand_position(value, start, &end, length, 0);
-					if (!replacement) return (1);
+					if (!replacement) return (2);
+					ret = 1;
 				} else if (isdigit(value[end])) {																				// ![n]
 					replacement = expand_event(value, start, &end, length);
-					if (!replacement) return (1);
+					if (!replacement) return (2);
+					ret = 1;
 				} else if (value[end] == '?' && value[end + 1] != '?' && end + 1 < length && !isspace(value[end + 1]) && value[i + 1] != '"') {		// !?[str], !?[str]?
 					replacement = expand_value(value, start, &end, length, 0);
-					if (!replacement) return (1);
+					if (!replacement) return (2);
+					ret = 1;
 				} else {																										// ![str]
 					replacement = expand_value(value, start, &end, length, 1);
-					if (!replacement) return (1);
+					if (!replacement) return (2);
+					ret = 1;
 				}
 
 				if (replacement) {
@@ -194,7 +201,7 @@
 			*input = new_value;
 		}
 
-		return (0);
+		return (ret);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/04 20:13:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 01:19:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,21 @@
 #pragma region "More Input"
 
 	static char *more_input() {
+		char *input = NULL;
+
 		if (shell.source == SRC_INTERACTIVE) {
-			char *input = readinput(prompt_PS2);
-			expand_history(&input, 1);
-			return (input);
+			input = readinput(prompt_PS2);
+		} else {
+			input = get_next_line(fd);
+			if (options.histexpand) expand_history(&input, 0);
 		}
-		
-		return (get_next_line(fd));
+
+		if (terminal.signal == 2) {
+			free(input);
+			return (NULL);
+		}
+
+		return (input);
 	}
 
 #pragma endregion
@@ -83,6 +91,8 @@
 			return (1);
 		}
 
+		if (options.histexpand) expand_history(&input, 0);
+
 		shell.ast = parse(input, more_input, 0, filename, 1);
 		if (shell.source != SRC_STDIN) close(fd);
 
@@ -103,7 +113,6 @@
 		if (!input)							return(1);
 		if (ft_isspace_s(input))			return(free(input), 0);
 
-		expand_history(&input, 1);
 		shell.ast = parse(input, more_input, 1, NULL, 1);
 
 		ast_print(shell.ast);

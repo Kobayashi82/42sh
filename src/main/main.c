@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:30:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 02:34:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
+	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
 
@@ -117,6 +118,11 @@
 			shell.source = SRC_STDIN;
 			read_input(NULL);
 		} else {
+			options_set("history", 1);
+			options_set("histexpand", 1);
+			options_set("expand_aliases", 1);
+			options_set("histverify", 0);
+			options_set("histreedit", 0);
 			shell.source = SRC_INTERACTIVE;
 			while (!shell.exit && !read_input(NULL)) ;
 		}

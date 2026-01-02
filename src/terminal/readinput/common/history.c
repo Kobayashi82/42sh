@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 14:17:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/01 23:36:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,8 +342,6 @@
 		//	Save the entry to a file
 		int history_write(const char *filename) {
 			if (!filename) filename = file;
-			if (!filename)				return (1);
-			if (!options.hist_local)	return (0);
 
 			int fd = open(filename, O_CREAT | O_TRUNC | O_WRONLY, 0664);
 			if (fd < 0)					return (1);

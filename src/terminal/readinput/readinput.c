@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 14:16:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 02:13:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,14 @@
 #pragma endregion
 
 #pragma region "ReadInput"
+	void home() {
+		if (!buffer.length || buffer.position > buffer.length) return;
+
+		while (buffer.position > 0) {
+			do { (buffer.position)--; } while (buffer.position > 0 && (buffer.value[buffer.position] & 0xC0) == 0x80);
+			cursor_left(0);
+		}
+	}
 
 	char *readinput(char *prompt) {
 		if (!isatty(STDIN_FILENO)) return (NULL);
@@ -107,8 +115,61 @@
 			if		(options.emacs)	result = readline(readed);
 			else if	(options.vi)	result = vi();
 			else					result = dumb(readed);
+
+			if (result == 2) {
+				result = 0;
+				if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
+				continue;
+			}
+
+			if (result && buffer.value && buffer.value[0]) {
+				int ret;
+				char *buffer_cpy = ft_strdup(buffer.value);
+				if (options.histexpand) {
+					if (options.histverify) {
+						if ((ret = expand_history(&buffer.value, 0)) == 1) {
+							if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
+							buffer.position = buffer.size = buffer.length = ft_strlen(buffer.value);
+							write(STDOUT_FILENO, buffer.value, buffer.length);
+							cursor_get();
+							result = 0;
+							free(buffer_cpy);
+							continue;
+						}
+					} else {
+						ret = expand_history(&buffer.value, 1);
+					}
+
+					if (ret == 2) {
+						if (options.histreedit) {
+							cursor_start_column();
+							if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
+							free(buffer.value);
+							buffer.value = buffer_cpy;
+							buffer.position = buffer.size = buffer.length = ft_strlen(buffer.value);
+							write(STDOUT_FILENO, buffer.value, buffer.length);
+							cursor_get();
+							result = 0;
+							continue;;
+						} else {
+							cursor_start_column();
+							if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
+							free(buffer.value);
+							free(buffer_cpy);
+							buffer.size = 1024;
+							buffer.position = buffer.length = 0;
+							buffer.value = calloc(buffer.size, sizeof(char));
+							cursor_get();
+							result = 0;
+							continue;;
+						}
+					}
+					free(buffer_cpy);
+				}
+			}
+
 		}
-		
+
 		history_set_pos_last();
 		undo_clear();
 

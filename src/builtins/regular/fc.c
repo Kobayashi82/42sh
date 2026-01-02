@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 23:10:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/02 02:33:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,12 +295,25 @@
 
 	#pragma region "Editor"
 
+		int valid_editor(char *editor) {
+			char *cmd = editor; // obtener primer argumento
+			char *fullpath = get_fullpath(cmd);
+			int ret = 0;
+			if (fullpath) ret = !access(fullpath, X_OK);
+
+			return (ret);
+		}
+
 		const char *default_editor() {
 			const char	*editor = variables_find_value(vars_table, "FCEDIT");
-			if (!editor || !*editor) editor = variables_find_value(vars_table, "EDITOR");
-			if (!editor || !*editor) editor = variables_find_value(vars_table, "VISUAL");
-			if (!editor || !*editor) editor = resolve_symlink("/usr/bin/editor");
-			if (!editor || !*editor) editor = "nano"; // o como ultima instacia ed...
+			if (!editor || !*editor)										editor = variables_find_value(vars_table, "EDITOR");
+			if (!editor || !*editor)										editor = variables_find_value(vars_table, "VISUAL");
+			if (!editor || !*editor)										editor = resolve_symlink("/usr/bin/editor");
+			if ((!editor || !*editor) && !access("/usr/bin/nano", X_OK))	editor = "/usr/bin/nano";
+			if ((!editor || !*editor) && !access("/bin/nano", X_OK))		editor = "/bin/nano";
+			if ((!editor || !*editor) && !access("/usr/bin/ed", X_OK))		editor = "/usr/bin/ed";
+			if ((!editor || !*editor) && !access("/bin/ed", X_OK))			editor = "/bin/ed";
+
 			return (editor);
 		}
 
