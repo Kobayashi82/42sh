@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 23:15:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 23:47:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,11 +106,7 @@
 	#pragma region "(-s) Append Args"
 
 		static int append_args(t_parse_result *result) {
-			if (result->argc == 0) {
-				print(STDERR_FILENO, result->shell_name, RESET);
-				print(STDERR_FILENO, ": history: -s: option requires an argument\n", PRINT);
-				return (2);
-			}
+			if (!result->argc) return (0);
 
 			history_remove_last_if_added(1);
 
@@ -133,11 +129,7 @@
 	#pragma region "(-p) Expansion"
 
 		static int expansion_history(t_parse_result *result) {
-			if (!result->argc) {
-				print(STDERR_FILENO, result->shell_name, RESET);
-				print(STDERR_FILENO, ": history: -p: option requires an argument\n", PRINT);
-				return (2);
-			}
+			if (!result->argc) return (0);
 
 			history_remove_last_if_added(1);
 
