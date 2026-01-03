@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 18:31:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 23:15:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
 					print(STDERR_FILENO, result->shell_name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history1 position out of range\n", 0), FREE_PRINT);
 					return (1);
 				}
 				history_remove_offset_range(start, end);
@@ -193,28 +193,14 @@
 
 			if (!ft_isdigit_s(offset_str)) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history2 position out of range\n", 0), FREE_PRINT);
 				return (1);
 			}
 
-			int number = atoi(offset_str);
-
-			if (*offset_str == '-' || *offset_str == '+') {
-				if (!number || (size_t)abs(number) > history_length()) {
-					print(STDERR_FILENO, result->shell_name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
-					return (1);
-				} else {
-					history_remove_offset(number);
-				}
-			} else {
-				if (!number || (size_t)number > history_length()) {
-					print(STDERR_FILENO, result->shell_name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
-					return (1);
-				} else {
-					history_remove_offset(number);
-				}
+			if (history_remove_offset(atoi(offset_str))) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history4 position out of range\n", 0), FREE_PRINT);
+				return (1);
 			}
 
 			return (0);

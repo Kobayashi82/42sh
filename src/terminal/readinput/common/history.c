@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 18:14:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 23:37:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -459,6 +459,7 @@
 
 			position = (length > 0) ? length - 1 : 0;
 			first_pos = length;
+			added = 0;
 
 			return (0);
 		}
@@ -555,12 +556,12 @@
 	#pragma region "Erase Dups"
 
 		// Remove copies of the same line in the history
-		static void erase_dups(const char *line, size_t pos) {
+		static void erase_dups(const char *line) {
 			if (!history || !length) return;
 
 			size_t i = length;
 			while (i-- > 0 && history[i]) {
-				if (i != pos && !strcmp(history[i]->line, line)) history_remove_position(i);
+				if (!strcmp(history[i]->line, line)) history_remove_position(i);
 			}
 		}
 
@@ -667,19 +668,16 @@
 			if (!force && check_histignore(line)) { added = 0; return (1); }
 			if (!force && ignoredups && length && history && history[length - 1] && history[length - 1]->line && !strcmp(history[length - 1]->line, line)) { added = 0; return (1); }
 			if (!force && ignorespace && isspace(*line)) { added = 0; return (1); }
-			if (!force && erasedups) erase_dups(line, INT_MAX);
+			if (!force && erasedups) erase_dups(line);
 
 			history_resize(0);
 			if (length >= hist_size) {
 				free(history[0]->line);
 				free(history[0]);
-				history[0] = NULL;
 
-				for (size_t i = 0; i < length; ++i) {
-					history[i] = history[i + 1];
-				}
+				length--;
+				memmove(&history[0], &history[1], length * sizeof(HIST_ENTRY *));
 
-				if (length > 0) length -= 1;
 				first_cmd++;
 				if (first_pos) first_pos--;
 			}
@@ -698,77 +696,6 @@
 
 	#pragma endregion
 
-	#pragma region "Replace"
-
-		// Replace the indicated entry
-		int history_replace(size_t pos, char *line) {
-			if (!history || !line || ft_isspace_s(line) || !length || !hist_size) return (1);
-
-			int ignoredups = 0, ignorespace = 0, erasedups = 0;
-			if (hist_control[0] != '\0') {
-				char *token = ft_strtok(hist_control, ":", 30);
-				while (token) {
-					if (!strcmp(token, "ignoredups"))	ignoredups = 1;
-					if (!strcmp(token, "ignorespace"))	ignorespace = 1;
-					if (!strcmp(token, "erasedups"))		erasedups = 1;
-					if (!strcmp(token, "ignoreboth"))	ignoredups = 1; ignorespace = 1;
-					token = ft_strtok(NULL, ":", 30);
-				}
-			}
-
-			if (pos > 0 && ignoredups && history[pos - 1] && history[pos - 1]->line && !strcmp(history[pos - 1]->line, line)) return (1);
-			if (pos == length - 1 && ignoredups && history[pos + 1] && history[pos + 1]->line && !strcmp(history[pos + 1]->line, line)) return (1);
-			if (ignorespace && isspace(*line)) return (1);
-			if (erasedups) erase_dups(line, pos);
-
-			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) free(history[pos]->line);
-				history[pos]->line = ft_strdup(line);
-				history[pos]->length = ft_strlen(line);
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "Clone"
-
-		// Free a cloned history
-		static void history_clone_free(HIST_ENTRY **copy, int i) {
-			while (i >= 0) {
-				free(copy[i]->line);
-				free(copy[i]);
-				i--;
-			}
-			free(copy);
-		}
-
-		// Return a clone of the history
-		HIST_ENTRY **history_clone() {
-			if (!history) return (NULL);
-
-			HIST_ENTRY **copy = malloc((length + 1) * sizeof(HIST_ENTRY *));
-			if (!copy) return (NULL);
-
-			for (size_t i = 0; i < length; ++i) {
-				copy[i] = malloc(sizeof(HIST_ENTRY));
-				if (!copy[i]) return (history_clone_free(copy, i - 1), NULL);
-
-				copy[i]->line = ft_strdup(history[i]->line);
-				if (!copy[i]->line) return (history_clone_free(copy, i), NULL);
-
-				copy[i]->timestamp = history[i]->timestamp;
-				copy[i]->length = history[i]->length;
-			}
-
-			copy[length] = NULL;
-
-			return (copy);
-		}
-
-	#pragma endregion
-
 #pragma endregion
 
 #pragma region "Remove"
@@ -777,71 +704,65 @@
 
 		// Remove the indicate entry by a position (n)
 		void history_remove_position(size_t pos) {
-			if (!history || !length) return;
+			if (!history || !length || pos >= length) return;
 
-			if (history && pos < length && history[pos]) {
-				if (history[pos]->line) free(history[pos]->line);
-				free(history[pos]);
-				history[pos] = NULL;
+			free(history[pos]->line);
+			free(history[pos]);
 
-				for (size_t i = pos; i < length; ++i) {
-					history[i] = history[i + 1];
-				}
+			length--;
+		    if (pos < length) {
+				memmove(&history[pos], &history[pos + 1], (length - pos) * sizeof(HIST_ENTRY *));
+			}		
 
-				if (pos < first_pos) first_pos--;
-				if (length > 0) length -= 1;
-				if (length && position == length) { history_set_pos_last(); added = 0; }
-			}
+			if (pos < first_pos) first_pos--;
+			if (length && position >= length) { history_set_pos_last(); added = 0; }
 		}
 
 	#pragma endregion
 
 	#pragma region "Offset Range"
 
-		// Remove the indicated entries by an offset range (2 offset separated by '-'. ex: +5-20 or -25-+35)
+		// Remove the indicated entries by an offset range (2 offset separated by '-'. ex: 5-20 or -35--25)
 		void history_remove_offset_range(size_t start, size_t end) {
-			if (!history || !length) return;
+			if (!history || !length || start >= length || end >= length || start > end) return;
 
-			if (start >= length || end >= length) return;
-			if (start > end) return;
-			
 			for (size_t i = start; i <= end; ++i) {
-				if (history[i]) {
-					free(history[i]->line);
-					free(history[i]);
-					history[i] = NULL;
-				}
+				free(history[i]->line);
+				free(history[i]);
 			}
 
-			for (size_t i = end + 1; i < length; ++i) {
-				history[i - (end - start + 1)] = history[i];
+			size_t range_size = end - start + 1;
+			if (end + 1 < length) {
+				memmove(&history[start], &history[end + 1], (length - end - 1) * sizeof(HIST_ENTRY *));
 			}
+			length -= range_size;
 
-			if (length >= end - start + 1) length -= (end - start + 1);
-			history[length] = NULL;
+			if		(first_pos > end)		first_pos -= range_size;
+			else if (first_pos >= start)	first_pos = start;
 
-			if (start < first_pos) first_pos -= (first_pos - start);
-			if (length && position == length) { history_set_pos_last(); added = 0; }
+			if (length && position >= length) { history_set_pos_last(); added = 0; }
+			if (position == length) added = 0;
 		}
 
 	#pragma endregion
 
 	#pragma region "Offset"
 
-		// Remove the indicate entry by an offset (+n, -n, n)
-		void history_remove_offset(int offset) {
-			if (!history || !length) return;
+		// Remove the indicate entry by an offset (-n, n)
+		int history_remove_offset(int offset) {
+			if (!history || !length) return (1);
 
 			size_t pos;
 			if (offset < 0) {
-				if ((size_t)(-offset) > length) return;				// Negative offset out of range
+				if ((size_t)(-offset) > length) return (1);
 				pos = length + offset;
 			} else {
-				if (!offset || (size_t)offset > length) return;		// Positivo offset out of range
-				pos = offset - 1;
+				if (offset < (int)first_cmd || (size_t)(offset - first_cmd) >= length) return (1);
+				pos = offset - first_cmd;
 			}
 
 			history_remove_position(pos);
+			return (0);
 		}
 
 	#pragma endregion
@@ -850,20 +771,11 @@
 
 		// Remove the current entry
 		void history_remove_current(int remove_event) {
-			if (!history || !length) return;
+			if (!history || !length || position >= length) return;
 
-			if (history && position < length && history[position]) {
-				if (history[position]->line) free(history[position]->line);
-				free(history[position]); history[position] = NULL;
-				for (size_t i = position; i < length; ++i) {
-					history[i] = history[i + 1];
-				}
-				length -= 1;
+			history_remove_position(position);
 
-				if (position < first_pos) first_pos--;
-				if (length && position >= length) { history_set_pos_last(); added = 0; }
-				if (remove_event) event--;
-			}
+			if (remove_event) event--;
 		}
 
 	#pragma endregion
@@ -876,7 +788,6 @@
 
 			history_set_pos_last();
 			history_remove_current(remove_event);
-			added = 0;
 		}
 
 	#pragma endregion
@@ -915,30 +826,27 @@
 
 			// Return a pointer to the entry with the indicated position
 			HIST_ENTRY *history_entry_position(size_t pos) {
-				if (history && pos < length) return (history[pos]);
-
-				return (NULL);
+				return ((history && pos < length) ? history[pos] : NULL);
 			}
 
 		#pragma endregion
 
 		#pragma region "Offset"
 
-			// Return a pointer to the entry with the indicated position
+			// Return a pointer to the entry with the indicated offset
 			HIST_ENTRY *history_entry_offset(int offset) {
-				if (!offset) return (NULL);
+				if (!history || !length || !offset) return (NULL);
 
 				size_t pos = 0;
 				if (offset < 0) {
 					if ((size_t)(-offset) > length) return (NULL);
 					pos = length + offset;
 				} else {
-					if ((size_t)(offset - first_cmd) > length) return (NULL);
+					if (offset < (int)first_cmd || (size_t)(offset - first_cmd) >= length) return (NULL);
 					pos = offset - first_cmd;
 				}
 
-				if (history && pos < length) return (history[pos]);
-				return (NULL);
+				return (history[pos]);
 			}
 
 		#pragma endregion
@@ -947,8 +855,7 @@
 
 			// Return a pointer to the current entry
 			HIST_ENTRY *history_entry_current() {
-				if (history && position < length) return (history[position]);
-				return (NULL);
+				return ((history && position < length) ? history[position] : NULL);
 			}
 
 		#pragma endregion
@@ -982,13 +889,13 @@
 
 			// Returns the position to the entry with the indicated offset
 			int history_position_offset(int offset, size_t *out) {
-				if (!offset) return (1);
+				if (!history || !length || !offset || !out) return (1);
 
 				if (offset < 0) {
 					if ((size_t)(-offset) > length) return (1);
 					*out = length + offset;
 				} else {
-					if ((size_t)(offset - first_cmd) > length) return (1);
+					if (offset < (int)first_cmd || (size_t)(offset - first_cmd) >= length) return (1);
 					*out = offset - first_cmd;
 				}
 
@@ -1072,9 +979,8 @@
 
 		// Set the position in the history to the last entry
 		void history_set_pos_last() {
-			begining = 0; middle = 0;
-			position = 0;
-			if (length > 0) position = length - 1;
+			position = begining = middle = 0;
+			position = (length) ? length - 1 : 0;
 		}
 
 	#pragma endregion
@@ -1150,6 +1056,7 @@
 		if ((value = variables_find_value(vars_table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
 
 		history_size_set(5, HIST_MEM);
+		history_hist_control_set("ignoreboth");
 		history_read(NULL);
 		
 		return (0);
