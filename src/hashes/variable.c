@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 14:36:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 11:52:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,9 @@
 			return (special);
 		}
 
-		// if (!strcmp(key, "42_HISTFILE"))		history_file_set(value);
-		// if (!strcmp(key, "42_HISTSIZE"))		history_size_set(atol(value), HIST_MEM);
-		// if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(atol(value), HIST_FILE);
+		// if (!strcmp(key, "42_HISTFILE"))			history_file_set(value);
+		// if (!strcmp(key, "42_HISTSIZE"))			history_size_set(atol(value), HIST_MEM);
+		// if (!strcmp(key, "42_HISTFILESIZE"))		history_size_set(atol(value), HIST_FILE);
 		// if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(value);
 		// if (!strcmp(key, "42_HISTCONTROL"))		history_hist_control_set(value);
 		// if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);

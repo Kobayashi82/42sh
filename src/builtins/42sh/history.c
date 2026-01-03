@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 20:14:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 13:45:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,9 +158,11 @@
 		static int parse_history_range(const char *offset, size_t *start, size_t *end) {
 			char *dash = strchr(offset + 1, '-');
 
-			if (!dash)											return (1);
-			if (history_position_offset(atoi(offset), start))	return (1);
-			if (history_position_offset(atoi(dash + 1), end))	return (1);
+			if (!dash)												return (1);
+			*dash = '\0';
+			if (!ft_isdigit_s(offset) || !ft_isdigit_s(dash + 1))	return (1);
+			if (history_position_offset(atoi(offset), start))		return (1);
+			if (history_position_offset(atoi(dash + 1), end))		return (1);
 
 			return (0);
 		}
@@ -177,7 +179,7 @@
 			size_t start = 0, end = 0;
 
 			if (strchr(offset_str + 1, '-')) {
-				if (parse_history_range(offset_str, &start, &end) || !start || !end) {
+				if (parse_history_range(offset_str, &start, &end)) {
 					print(STDERR_FILENO, result->shell_name, RESET);
 					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 					return (1);
@@ -270,7 +272,7 @@
 
 		t_parse_result *result = parse_options(argc, argv, "cd:prws", NULL, long_opts, "history [-c] [-d offset] or history -rw [filename] or history -ps arg [arg...]");
 
-		printf("\\!%zu-\\#%zu\n", history_histcmd(), history_event());
+		// printf("\\!%zu-\\#%zu\n", history_histcmd(), history_event());
 
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);

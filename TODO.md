@@ -16,6 +16,14 @@ history -n                            # Lee solo las líneas nuevas del archivo 
 fc                                    # Arreglar guardado de comandos editados
 ```
 
+### Carga
+- Carga todo el archivo
+
+
+Cuando cargue el archivo al iniciar o -r
+- mem_new_pos (índice donde empiezan los comandos nuevos. Si se elimina una entrada inferior a ese índice, se disminuye y si se vacía el historial se pone a 0.
+- mem_new_number (este es el número de comando último cargado. Si el archivo tiene más comandos que este cuando se usa -n se insertan entre la posición de ese comando y mem_new_number. Luego se actualiza mem_new_number y mem_new_pos.
+
 ## Terminal
 - TMOUT: Si está definido, cerrar la shell automáticamente después de N segundos de inactividad en el prompt (sin input del usuario)
 - set -o ignoreeof: Si está activado, ignorar EOF (Ctrl + D) y muestra 'Use "logout" to leave the shell.' en stderr en lugar de cerrar la shell inmediatamente. Pero si se pulsa (CTRL + D) 11 veces seguidas, tambien se cierra. (No se si logout seria lo correcto en mi caso, porque no es el shell usado para login)
