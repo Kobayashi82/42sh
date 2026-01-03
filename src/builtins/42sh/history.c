@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 13:45:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:25:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,7 +229,7 @@
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
 				return (1);
 			} else {
-				history_write(filename);
+				history_write(filename, 0);
 			}
 
 			return (0);
@@ -259,6 +259,46 @@
 
 	#pragma endregion
 
+	#pragma region "(-a) Append"
+
+		static int write_append(t_parse_result *result) {
+			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
+
+			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
+				return (1);
+			} else {
+				history_write(filename, 1);
+			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "(-n) Read New"
+
+		static int read_history_new(t_parse_result *result) {
+			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
+
+			if (filename && access(filename, F_OK)) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), FREE_PRINT);
+				return (1);
+			} else if (filename && access(filename, R_OK)) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), FREE_PRINT);
+				return (1);
+			} else {
+				history_read_append(filename);
+			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
 #pragma endregion
 
 #pragma region "History"
@@ -270,9 +310,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "cd:prws", NULL, long_opts, "history [-c] [-d offset] or history -rw [filename] or history -ps arg [arg...]");
-
-		// printf("\\!%zu-\\#%zu\n", history_histcmd(), history_event());
+		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] or history -rw [filename] or history -ps arg [arg...]");
 
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
@@ -280,7 +318,13 @@
 		if (find_long_option(result, "help"))		return (free_options(result), help());
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		if (has_option(result, 'r') && has_option(result, 'w')) {
+		int local_options = 0;
+		local_options += has_option(result, 'a');
+		local_options += has_option(result, 'n');
+		local_options += has_option(result, 'r');
+		local_options += has_option(result, 'w');
+
+		if (local_options > 1) {
 			print(STDERR_FILENO, result->shell_name, RESET);
 			print(STDERR_FILENO, ": history: cannot use more than one of -rw\n", PRINT);
 			return (free_options(result), 1);
@@ -293,13 +337,12 @@
 		if (has_option(result, 's'))	{ ret = append_args(result);		return (free_options(result), ret); }
 		if (has_option(result, 'p'))	{ ret = expansion_history(result);	return (free_options(result), ret); }
 		if (has_option(result, 'd'))	{ ret = delete_history(result);		return (free_options(result), ret); }
+		if (has_option(result, 'a'))	{ ret = write_append(result);		return (free_options(result), ret); }
 		if (has_option(result, 'w'))	{ ret = write_history(result);		return (free_options(result), ret); }
 		if (has_option(result, 'r'))	{ ret = read_history(result);		return (free_options(result), ret); }
+		if (has_option(result, 'n'))	{ ret = read_history_new(result);	return (free_options(result), ret); }
 
 		return (free_options(result), ret);
 	}
 
 #pragma endregion
-
-// -r [filename]	Carga todo el archivo en el historial actual	([filename], HISTFILE or ~/.bash_history)
-// -w [filename]	Guarda el historial actual en el archivo		([filename], HISTFILE or ~/.bash_history)

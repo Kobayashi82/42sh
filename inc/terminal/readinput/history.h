@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 20:33:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 17:07:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,9 @@
 	void		history_size_unset(int type);
 	//	---------- LOCAL -----------
 	void		history_file_set(const char *filename);
+	int			history_read_append(const char *filename);
 	int			history_read(const char *filename);
-	int			history_write(const char *filename);
+	int			history_write(const char *filename, int append);
 	//	----------- ADD ------------
 	void		history_hist_control_set(const char *value);
 	void		history_hist_ignore_set(const char *value);
