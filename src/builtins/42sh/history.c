@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 18:25:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/03 18:31:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 		static int help() {
 			char *msg =
-			"history: history [-c] [-d offset] [n] or history -rw [filename]\n"
+			"history: history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]\n"
 			"    Display or manipulate the history list.\n\n"
 
 			"    Display the history list with line numbers\n"
@@ -38,6 +38,9 @@
 			"      -d offset delete the history entry at position OFFSET. Negative\n"
 			"                offsets count back from the end of the history list\n\n"
 
+			"      -a        append history commands from this session to the history file\n"
+			"      -n        read all history commands not already read from the history file\n"
+			"                and append them to the history list before session commands\n"
 			"      -r        read the history file and overwrite the current history\n"
 			"      -w        write the current history to the history file\n\n"
 
@@ -310,7 +313,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] or history -rw [filename] or history -ps arg [arg...]");
+		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]");
 
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
@@ -326,7 +329,7 @@
 
 		if (local_options > 1) {
 			print(STDERR_FILENO, result->shell_name, RESET);
-			print(STDERR_FILENO, ": history: cannot use more than one of -rw\n", PRINT);
+			print(STDERR_FILENO, ": history: cannot use more than one of -anrw\n", PRINT);
 			return (free_options(result), 1);
 		}
 
