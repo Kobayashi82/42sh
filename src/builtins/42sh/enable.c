@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 16:26:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:54:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "anps", NULL, long_opts, "enable [-a] [-nps] [name ...]");
+		t_parse_result *result = parse_options(argc, argv, "anps", NULL, long_opts, "enable [-a] [-nps] [name ...]", 0);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 

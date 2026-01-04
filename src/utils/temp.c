@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/26 11:18:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 18:24:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@
 				t_tmp *tmp = tmp_table[hash_index(path)];
 
 				while (tmp) {
-					if (tmp->path == path) return (tmp->fd);
+					if (!strcmp(tmp->path, path)) return (tmp->fd);
 					tmp = tmp->next;
 				}
 
@@ -333,15 +333,22 @@
 
 		char *ft_mkdtemp(char *path, char *name) {
 			if (!path || !is_writable_dir(path)) {
-				if (!(path = get_temp_dir())) return (NULL);
-			} else path = ft_strdup(path);
-			path = ft_strjoin(path, "/", 1);
+				path = get_temp_dir();
+				if (!path) return (NULL);
+			} else {
+				path = ft_strdup(path);
+			}
+
+			if (*path && path[ft_strlen(path) - 1] != '/') path = ft_strjoin(path, "/", 1);
 			char *template = random_template();
 			char *fullpath = ft_strjoin_sep(path, name, template, 6);
 
-
 			int fd = open(fullpath, O_RDWR | O_CREAT | O_EXCL, 0600);
-			if (fd == -1) { free(fullpath); return (NULL); }
+			if (fd == -1) {
+				free(fullpath);
+				return (NULL);
+			}
+
 			tmp_add(fullpath, fd);
 
 			return (fullpath);

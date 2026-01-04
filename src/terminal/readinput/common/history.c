@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 23:37:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 22:01:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -650,7 +650,8 @@
 
 		// Add an entry to the history
 		int history_add(char *line, int force) {
-			if (!line || ft_isspace_s(line) || !hist_size) return (1);
+			if (!line || !hist_size)			return (1);
+			if (ft_isspace_s(line) && !force)	return (1);
 
 			event++;
 			int ignoredups = 0, ignorespace = 0, erasedups = 0;
@@ -888,7 +889,7 @@
 		#pragma region "Offset"
 
 			// Returns the position to the entry with the indicated offset
-			int history_position_offset(int offset, size_t *out) {
+			size_t history_position_offset(int offset, size_t *out) {
 				if (!history || !length || !offset || !out) return (1);
 
 				if (offset < 0) {
@@ -900,6 +901,27 @@
 				}
 
 				return (0);
+			}
+
+		#pragma endregion
+
+		#pragma region "Query"
+
+			// Returns the position to the entry which start by the indicated query
+			size_t history_position_query(int offset, const char *query, size_t *out) {
+				if (!history || !length || !query || !out) { *out = length; return (0); }
+
+				size_t start;
+				if (history_position_offset(offset, &start)) start = length -1;
+
+				for (size_t i = start; i-- > 0; ) {
+					if (!strncmp(history[i]->line, query, ft_strlen(query))) {
+						*out = i;
+						return (0);
+					}
+				}
+
+				return (1);
 			}
 
 		#pragma endregion
@@ -917,7 +939,7 @@
 
 	#pragma region "Event"
 
-		// Return the event number
+		// Return the event number (\#)
 		size_t history_event() {
 			return (event);
 		}
@@ -926,7 +948,7 @@
 
 	#pragma region "HistCMD"
 
-		// Return the next command number available ($HISTCMD)
+		// Return the next command number available ($42_HISTCMD or \!)
 		size_t history_histcmd() {
 			return (first_cmd + length);
 		}
@@ -1004,6 +1026,64 @@
 
 	#pragma endregion
 
+		int history_print_range(size_t start, size_t end, int reverse, int hide_pos) {
+			if (!history || !length) return (1);
+			if (start >= length) start = length - 1;
+			if (end >= length) end = length - 1;
+			if (start > end) return (1);
+
+			print(STDOUT_FILENO, NULL, RESET);
+
+			if (!reverse) {
+				for (size_t i = start; i <= end && history[i]; ++i) {
+					if (!hide_pos) {
+						char *txt_line = ft_itoa(first_cmd + i);
+						int spaces = 5 - ft_strlen(txt_line);
+						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
+						print(STDOUT_FILENO, txt_line, FREE_JOIN);
+						print(STDOUT_FILENO, "  ", JOIN);
+					}
+
+					if (hist_timeformat[0] != '\0') {
+						char time_buffer[128];
+						struct tm *tm_info = localtime(&history[i]->timestamp);
+						if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
+							print(STDOUT_FILENO, time_buffer, JOIN);
+						}
+					}
+
+					print(STDOUT_FILENO, history[i]->line, JOIN);
+					print(STDOUT_FILENO, "\n", JOIN);
+				}
+			} else {
+				for (size_t i = end + 1; i > start && history[i - 1]; --i) {
+					size_t idx = i - 1;
+					if (!hide_pos) {
+						char *txt_line = ft_itoa(first_cmd + idx);
+						int spaces = 5 - ft_strlen(txt_line);
+						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
+						print(STDOUT_FILENO, txt_line, FREE_JOIN);
+						print(STDOUT_FILENO, "  ", JOIN);
+					}
+
+					if (hist_timeformat[0] != '\0') {
+						char time_buffer[128];
+						struct tm *tm_info = localtime(&history[idx]->timestamp);
+						if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
+							print(STDOUT_FILENO, time_buffer, JOIN);
+						}
+					}
+
+					print(STDOUT_FILENO, history[idx]->line, JOIN);
+					print(STDOUT_FILENO, "\n", JOIN);
+				}
+			}
+
+			print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
 	#pragma region "Print"
 
 		// Print all entries
@@ -1057,6 +1137,7 @@
 
 		history_size_set(5, HIST_MEM);
 		history_hist_control_set("ignoreboth");
+		// history_hist_timeformat_set("%F %T ");
 		history_read(NULL);
 		
 		return (0);

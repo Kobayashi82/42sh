@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 17:53:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:57:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -437,7 +437,7 @@
 
 	#pragma region "Parse Options"
 
-		t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage) {
+		t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_numbers) {
 			if (!argv || argc < 1) return (NULL);
 
 			t_parse_result *result = calloc(1, sizeof(t_parse_result));
@@ -460,6 +460,7 @@
 				short_opts_plus++;
 			}
 
+			result->argv_original = argv;
 			result->usage = usage;
 			result->name = argv[0];
 			result->shell_name = shell.arg0;
@@ -477,9 +478,17 @@
 					continue;
 				}
 
+				// Ignore -number or +number if ignore_numbers is active
+				if (ignore_numbers && (arg[0] == '-' || arg[0] == '+') && arg[1] != '\0' && ft_isnum_s(&arg[1])) {
+					tmp_args[arg_count++] = ft_strdup(arg);
+					done_with_opts = 1;
+					continue;
+				}
+
 				// Detect "-" or "+" alone (they are arguments, not options)
 				if (!strcmp(arg, "-") || !strcmp(arg, "+")) {
 					tmp_args[arg_count++] = ft_strdup(arg);
+					done_with_opts = 1;
 					continue;
 				}
 

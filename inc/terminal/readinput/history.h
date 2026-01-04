@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 23:38:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 20:07:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,8 @@
 	HIST_ENTRY	*history_entry_current();
 	HIST_ENTRY	*history_entry_last_if_added();
 	size_t		history_position();
-	int			history_position_offset(int offset, size_t *out);
+	size_t		history_position_offset(int offset, size_t *out);
+	size_t		history_position_query(int offset, const char *query, size_t *out);
 	size_t		history_length();
 	size_t		history_event();
 	size_t		history_histcmd();
@@ -85,6 +86,7 @@
 	void		history_set_pos_last();
 	//	---------- PRINT -----------
 	void		history_hist_timeformat_set(const char *format);
+	int			history_print_range(size_t start, size_t end, int reverse, int hide_pos);
 	int			history_print(size_t offset, int hide_pos);
 	//	-------- INITIALIZE --------
 	int			history_initialize();

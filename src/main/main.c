@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 22:53:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:41:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,8 @@
 				globbing(args);
 				int argc = 0;
 				char **argv = args_to_argv(args, &argc);
-				builtin_exec(argc, argv);
 				args_clear(&args);
+				builtin_exec(argc, argv);
 				free_argv(argv);
 			}
 		} else {

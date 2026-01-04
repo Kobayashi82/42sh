@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 12:38:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 14:09:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 17:54:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@
 	char	*path_find_first(char *cmd, char *paths);
 	char	**path_find_all(char *cmd, char *paths);
 	char	*get_fullpath(char *path);
+	char	*get_fullpath_command(const char *value, int fullpath);
 	char	*get_cwd(char *sender);
 	char	*correct_path(char *path);
 	int		is_directory(const char *path);
-	char	*get_fullpath_command(const char *value);
 
 #pragma endregion

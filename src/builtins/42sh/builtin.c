@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/30 16:27:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:54:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "builtin [shell-builtin [arg ...]]");
+		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "builtin [shell-builtin [arg ...]]", 0);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 14:09:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 19:51:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1041,112 +1041,13 @@
 
 		#pragma region "Edit Input"						("v")
 
-			#pragma region "Editor"
-
-				static char *default_editor() {
-					char *editor = NULL;
-					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "FCEDIT"));
-					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "EDITOR"));
-					if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "VISUAL"));
-					if (!editor)	editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"));
-					if (!editor)	editor = get_fullpath_command("nano");
-					if (!editor)	editor = get_fullpath_command("ed");
-
-					return (editor);
-				}
-
-			#pragma endregion
-
 			static int edit_input() {
-				int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "input"));
-				if (fd == -1) { beep(); return (1); }
+				history_add(buffer.value, 1);
+				free(buffer.value);
+				buffer.value = ft_strdup("fc");
+				write(STDOUT_FILENO, "\r\n", 2);
 
-				if (write(fd, buffer.value, buffer.length) == -1) {
-					tmp_delete_fd(fd);
-					return (1);
-				} close(fd);
-
-				char *editor = default_editor();
-				if (!editor) {
-					tmp_delete_fd(fd);
-					beep();
-					return (1);
-				}
-
-				char *tmp_file = tmp_find_path_fd(fd);
-
-				pid_t pid = fork();
-				if (pid < 0) {
-					free(editor);
-					tmp_delete_fd(fd);
-					beep();
-					return (1);
-				} else if (pid == 0) {
-					char *const args[] = { editor, tmp_find_path_fd(fd), NULL };
-					char **env = variables_to_array(vars_table, EXPORTED, 1);
-					close(fd);
-					close(terminal.bk_stdin);
-					close(terminal.bk_stdout);
-					close(terminal.bk_stderr);
-					execve(editor, args, env);
-					tmp_delete_fd(fd);
-					free(editor);
-					beep();
-					exit(1);
-				} else if (pid > 0) {
-					int status;
-					waitpid(pid, &status, 0);
-
-					fd = open(tmp_file, O_RDONLY);
-					if (fd == -1) {
-						free(editor);
-						tmp_delete_path(tmp_file);
-						beep();
-						return (1);
-					}
-
-					char	*file_content = NULL;
-					char	temp_buffer[1024];
-					size_t	file_size = 0;
-					int		readed = 0;
-
-					while ((readed = read(fd, temp_buffer, sizeof(temp_buffer))) > 0) {
-						file_content = realloc(file_content, file_size + readed + 1);
-						memcpy(file_content + file_size, temp_buffer, readed);
-						file_size += readed;
-					}
-
-					if (readed < 0) {
-						beep();
-						unlink(tmp_file);
-					} else {
-						file_content[file_size] = '\0';
-
-						if (file_size > 0 && file_content[file_size - 1] == '\n') {
-							file_content[file_size - 1] = '\0';
-							file_size--;
-						}
-						if (file_size > 0 && file_content[file_size - 1] == '\r') {
-							file_content[file_size - 1] = '\0';
-							file_size--;
-						}
-
-						free(buffer.value);
-						buffer.value = file_content;
-						print(STDOUT_FILENO, "\n", RESET);
-						cursor_start_column();
-						print(STDOUT_FILENO, buffer.value, PRINT);
-					}
-
-					free(editor);
-					tmp_delete_path(tmp_file);
-
-					write(STDOUT_FILENO, "\r\n", 2);
-					return (2);
-				}
-
-				free(editor);
-				return (1);
+				return (2);
 			}
 
 		#pragma endregion

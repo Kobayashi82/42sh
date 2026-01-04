@@ -19,7 +19,18 @@
 ## Builtins
 - command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
 - hash, implementar opciones -tpdr
+- getopt (ambos) debe soportar multibyte chars
 
+## History
+- Fc en script
+- Script se ejecutan en contexto actual
+- Input separar script de interactive
+- Si editar y output no es tty, error?
+- Si editar y input no es tty, error?
+- Input es el que añade a historial (somehow)
+- Input hace un while y va enviando líneas hasta que
+- line =null
+- ast = null (no interactivo y no script)
 
 ## 42sh
 

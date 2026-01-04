@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 23:47:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 21:54:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
 					print(STDERR_FILENO, result->shell_name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history1 position out of range\n", 0), FREE_PRINT);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 					return (1);
 				}
 				history_remove_offset_range(start, end);
@@ -185,13 +185,13 @@
 
 			if (!ft_isdigit_s(offset_str)) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history2 position out of range\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 				return (1);
 			}
 
 			if (history_remove_offset(atoi(offset_str))) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history4 position out of range\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 				return (1);
 			}
 
@@ -291,7 +291,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]");
+		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]", 0);
 
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);

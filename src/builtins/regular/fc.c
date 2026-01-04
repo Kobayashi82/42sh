@@ -6,61 +6,102 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 18:32:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/04 22:00:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// -[n] lo trata como opcion
-// Arreglar guardado de comandos editados
-
 #pragma region "Includes"
 
+	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "hashes/variable.h"
 	#include "hashes/builtin.h"
+	#include "hashes/variable.h"
 	#include "builtins/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
-	#include "utils/paths.h"
 	#include "utils/print.h"
-
+	#include "utils/paths.h"
+	#include "utils/getopt2.h"
+	
 	#include <sys/wait.h>
 
-	#include <stdio.h>	// Quitar dependencias
-	#include "tests/args.h"
-	
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-		"fc: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n"
-		"    Display or execute commands from the history list.\n\n"
+	#pragma region "Help"
 
-		"    fc is used to list or edit and re-execute commands from the history list.\n"
-		"    FIRST and LAST can be numbers specifying the range, or FIRST can be a\n"
-		"    string, which means the most recent command beginning with that\n"
-		"    string.\n\n"
+		static int help() {
+			char *msg =
+			"fc: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n"
+			"    Display or execute commands from the history list.\n\n"
 
-		"    Options:\n"
-		"      -e ENAME  select which editor to use.  Default is FCEDIT, then EDITOR,\n"
-		"                then vi\n"
-		"      -l        list lines instead of editing\n"
-		"      -n        omit line numbers when listing\n"
-		"      -r        reverse the order of the lines (newest listed first)\n\n"
+			"    fc is used to list or edit and re-execute commands from the history list.\n"
+			"    FIRST and LAST can be numbers specifying the range, or FIRST can be a\n"
+			"    string, which means the most recent command beginning with that\n"
+			"    string.\n\n"
 
-		"    With the `fc -s [pat=rep ...] [command]' format, COMMAND is\n"
-		"    re-executed after the substitution OLD=NEW is performed.\n\n"
+			"    Options:\n"
+			"      -e ENAME  select which editor to use.  Default is FCEDIT, then EDITOR,\n"
+			"                then vi\n"
+			"      -l        list lines instead of editing\n"
+			"      -n        omit line numbers when listing\n"
+			"      -r        reverse the order of the lines (newest listed first)\n\n"
 
-		"    A useful alias to use with this is r='fc -s', so that typing `r cc'\n"
-		"    runs the last command beginning with `cc' and typing `r' re-executes\n"
-		"    the last command.\n\n"
+			"    With the `fc -s [pat=rep ...] [command]' format, COMMAND is\n"
+			"    re-executed after the substitution OLD=NEW is performed.\n\n"
 
-		"    Exit Status:\n"
-		"      Returns success or status of executed command; non-zero if an error occurs.\n";
+			"    A useful alias to use with this is r='fc -s', so that typing `r cc'\n"
+			"    runs the last command beginning with `cc' and typing `r' re-executes\n"
+			"    the last command.\n\n"
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			"    Exit Status:\n"
+			"      Returns success or status of executed command; non-zero if an error occurs.\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"fc 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Get Position"
+
+	static int fc_get_position(t_parse_result *result, int offset, char *query, size_t *out) {
+		if (!ft_isdigit_s(query)) {
+			if (history_position_query(offset , query, out)) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: no command found\n", 0), FREE_RESET_PRINT);
+				return (1);
+			}
+		} else {
+			int number = atoi(query);
+			if (!strcmp(query, "-0")) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: history specification out of range\n", 0), FREE_RESET_PRINT);
+				return (1);
+			}
+			if (!strcmp(query, "0")) number = -1;
+			if (history_position_offset(number, out)) history_position_offset(-1, out);
+		}
 
 		return (0);
 	}
@@ -69,231 +110,95 @@
 
 #pragma region "Replace (-s)"
 
-	static int fc_replace(t_opt *opts) {
-		int result = 0;
-		char *query = NULL;
-		char *command = NULL;
+	static int fc_replace(t_parse_result *result) {
+		int no_command = 1;
 
-		if (strchr(opts->valid, 'e') && opts->args) {
-			if (opts->args->value && !strchr(opts->args->value, '=')) {
-				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
-				else					opts->args = opts->args->next;
-			}
-		}
-
-		t_arg *start = opts->args;
-		while (opts->args) {
-			if (opts->args->value && !strchr(opts->args->value, '=')) {
-				query = opts->args->value;
+		// Check if there are more than one command
+		for (int i = 0; i < result->argc; ++i) {
+			if (!strchr(result->argv[i], '=')) {
+				if (i < result->argc - 1) {
+					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: too many arguments\n", 0), FREE_RESET_PRINT);
+					return (1);
+				}
+				no_command = 0;
 				break;
 			}
-			opts->args = opts->args->next;
 		}
-		opts->args = start;
 
-		char *hist_fc_command = NULL;
-		HIST_ENTRY *hist_curr = history_entry_last_if_added();
-		if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
+		// Remove fc command from the history
 		history_remove_last_if_added(1);
 
-		if (query) {
-			if (!ft_isdigit_s(query)) {
-				size_t last_pos = history_length();
-				if (last_pos--) {
-					for (int i = last_pos; i > 0; i--) {
-						HIST_ENTRY * hist = history_entry_position(i);
-						if (!hist) {
-							result = 1;
-							break;
-						}
-						if (!strncmp(hist->line, query, ft_strlen(query))) {
-							command = ft_strdup(hist->line);
-							break;
-						}
+		// Set start position
+		size_t start = history_position();
+		if (!no_command && result->argc && fc_get_position(result, -1, result->argv[result->argc - 1], &start)) return (1);
+
+		HIST_ENTRY *entry = history_entry_position(start);
+		char *command = ft_strdup(entry->line);
+
+		for (int i = 0; i < result->argc; ++i) {
+			if (strchr(result->argv[i], '=')) {
+				char *key = NULL, *value = NULL;
+				get_key_value(result->argv[i], &key, &value, '=');
+
+				if (key && *key) {
+					char *find = command;
+					while ((find = strstr(find, key))) {
+						int len = (find - command) + ft_strlen(value);
+						char *new_command = replace_substring(command, find - command, ft_strlen(key), value);
+						if (!new_command) break;
+						free(command);
+						command = new_command;
+						find = command + len;
 					}
-				} else result = 1;
-			} else {
-				int number = atoi(query);
-				if (number == 0) result = 1;
-				else if (*query == '-' ||  *query == '+') {
-					if (ft_strlen(query) > 7 || history_length() < (size_t) abs(number)) {
-						result = 1;
-					} else {
-						size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
-						HIST_ENTRY *hist = history_entry_position(pos);
-						if (!hist) result = 1;
-						else command = ft_strdup(hist->line);
-					}
+					free(key);
+					free(value);
 				} else {
-					// User offset
-					// HIST_ENTRY *hist = history_entry_event(number);
-					// if (!hist) result = 1;
-					// else command = ft_strdup(hist->line);
+					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: invalid substitution format\n", 0), FREE_RESET_PRINT);
+					free(command);
+					free(key);
+					free(value);
+					return (1);
 				}
-			}
-		} else {
-			size_t last_pos = history_length();
-			if (last_pos--) {
-				HIST_ENTRY *hist = history_entry_position(last_pos);
-				if (!hist) result = 1;
-				else command = ft_strdup(hist->line);
-			} else result = 1;
-		}
-
-		if (!command) result = 1;
-		if (result) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
-		else {
-			printf("%s\n", command);	// No se si era debug
-			while (opts->args) {
-				if (opts->args->value && strchr(opts->args->value, '=')) {
-					char *key = NULL, *value = NULL;
-					get_key_value(opts->args->value, &key, &value, '=');
-					if (key && value) {
-						char *find = command;
-						while ((find = strstr(find, key))) {
-							int len = (find - command) + ft_strlen(value);
-							char *new_command = replace_substring(command, find - command, ft_strlen(key), value);
-							if (!new_command) break;
-							free(command);
-							command = new_command;
-							find = command + len;
-						}
-						free(key); free(value);
-					}
-				}
-				opts->args = opts->args->next;
-			}
-
-			if (command && !ft_isspace_s(command)) {
-				print(STDOUT_FILENO, ft_strjoin_sep("Ejecuto (alias, sintaxis, etc...): ", command, "\n", 2), FREE_RESET_PRINT);
 			}
 		}
 
-		if (result && hist_fc_command) history_add(hist_fc_command, 0);
-		free(hist_fc_command);
+		// Execute command
+		int ret = 0;
 
-		return (result);
+		// set -v  # Activa modo verbose
+		// contexto del padre
+		// modo no interactivo
+		// shell.source = SRC_ARGUMENT;
+		// ret = read_input((char *)argv[2]);
+		// ret = execute_script(command);	// como con -c
+
+		free(command);
+		if (!ret) ret = shell.exit_code;
+		
+		return (ret);
 	}
 
 #pragma endregion
 
 #pragma region "List (-lnr)"
 
-	#pragma region "Add"
-
-		static void fc_list_add(int i, int hide_events) {
-			(void) i;
-			(void) hide_events;
-			// No usar event, sino offset
-
-			// HIST_ENTRY *hist = history_entry_position(i);
-			// if (hist && hist->line) {
-			// 	if (!hide_events) {
-			// 		char *txt_event = ft_itoa(hist->event);
-			// 		int spaces = 4 - ft_strlen(txt_event);
-			// 		while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-			// 		print(STDOUT_FILENO, txt_event, FREE_JOIN);
-			// 		print(STDOUT_FILENO, ft_strjoin_sep("     ", hist->line, "\n", 0), FREE_JOIN);
-			// 	} else
-			// 		print(STDOUT_FILENO, ft_strjoin_sep("         ", hist->line, "\n", 0), FREE_JOIN);
-			// }
+	static int fc_list(t_parse_result *result) {
+		// Set start and end position
+		history_set_pos_last();
+		size_t	start = 0, end = 0;
+		start = end = history_position();
+		if (result->argc > 0 && fc_get_position(result, -1, result->argv[0], &start))	return (1);
+		if (result->argc > 1 && fc_get_position(result, -1, result->argv[1], &end))		return (1);
+		if (end < start) {
+			int tmp = start;
+			start = end;
+			end = tmp;
 		}
 
-	#pragma endregion
+		history_print_range(start, end, has_option(result, 'r'), has_option(result, 'n'));
 
-	#pragma region "GetPos"
-
-		static int fc_list_getpos(char *query, int reduce_one) {
-			if (query) {
-				if (!ft_isdigit_s(query)) {
-					int last_pos = history_length();
-					last_pos = ft_max(last_pos - 1 - reduce_one, 0);
-					if (last_pos) {
-						for (int i = last_pos; i > 0; i--) {
-							HIST_ENTRY * hist = history_entry_position(i);
-							if (hist && !strncmp(hist->line, query, ft_strlen(query))) return (i);
-						} return (-2);
-					} else return (-2);
-				} else {
-					int number = atoi(query);
-					if (number == 0) return (-1);
-					else if (*query == '-' ||  *query == '+') {
-						if (ft_strlen(query) > 7 || history_length() < (size_t) abs(number))
-							return (-1);
-						else {
-							size_t pos = number < 0 ?  history_length() - (size_t) abs(number) : number - 1;
-							HIST_ENTRY *hist = history_entry_position(pos);
-							if (hist) return (pos);
-						}
-					} else {
-						size_t pos = 0; // Use offset
-						return ((history_position_offset(number, &pos)) ? -1 : pos);
-					}
-				}
-			}
-
-			return (-1);
-		}
-
-	#pragma endregion
-
-	#pragma region "List"
-
-		static int fc_list(t_opt *opts) {
-			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
-			int reduce_one = (history_entry_last_if_added() != NULL);
-
-			if (strchr(opts->valid, 'e') && opts->args) {
-				if (opts->args->prev)	opts->args->prev->next = opts->args->next;
-				else					opts->args = opts->args->next;
-			}
-
-			history_set_pos_last();
-			last_pos = history_position();
-			last_pos = ft_max(last_pos - reduce_one, 0);
-		
-			if (!opts->args) {
-				end_pos = last_pos;
-				start_pos = ft_max(end_pos - 15, 0);
-			}
-			
-			if (opts->args) {
-				start_pos = fc_list_getpos(opts->args->value, reduce_one);
-				opts->args = opts->args->next;
-				if (start_pos == -2) result = 1;
-				else if (start_pos == -1) start_pos = 0;
-			}
-
-			if (!result) {
-				if (opts->args) {
-					end_pos = fc_list_getpos(opts->args->value, reduce_one);
-					if (end_pos == -2) result = 1;
-					else if (end_pos == -1) end_pos = last_pos;
-				} else end_pos = last_pos;
-			}
-
-			if (!result) {
-				if (end_pos < start_pos) {
-					int tmp = start_pos;
-					start_pos = end_pos;
-					end_pos = tmp;
-				}
-				
-				int hide_events = strchr(opts->valid, 'n') != NULL;
-				print(STDOUT_FILENO, NULL, RESET);
-				if (strchr(opts->valid, 'r'))
-					for (int i = end_pos; i >= start_pos; --i) fc_list_add(i, hide_events);
-				else
-					for (int i = start_pos; i <= end_pos; ++i) fc_list_add(i, hide_events);
-				print(STDOUT_FILENO, NULL, PRINT);
-			}
-
-			if (result) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
-
-			return (result);
-		}
-
-	#pragma endregion
+		return (0);
+	}
 
 #pragma endregion
 
@@ -301,156 +206,180 @@
 
 	#pragma region "Editor"
 
-		static char *default_editor() {
-			char *editor = NULL;
-			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "FCEDIT"));
-			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "EDITOR"));
-			if (!editor)	editor = get_fullpath_command(variables_find_value(vars_table, "VISUAL"));
-			if (!editor)	editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"));
-			if (!editor)	editor = get_fullpath_command("nano");
-			if (!editor)	editor = get_fullpath_command("ed");
+		static int default_editor(t_parse_result *result, char **editor, const char *cmd) {
+			if (!result || !editor) return (1);
+			char *name = NULL;
 
-			return (editor);
+			if (cmd) {
+				name	= get_fullpath_command(cmd, 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command(variables_find_value(vars_table, "FCEDIT"), 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command(variables_find_value(vars_table, "EDITOR"), 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command(variables_find_value(vars_table, "VISUAL"), 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command("/usr/bin/editor", 0);
+				*editor = get_fullpath_command(resolve_symlink(name), 1);
+			}
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command("nano", 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+			if (!cmd && !*editor) {
+				free(name);
+				name	= get_fullpath_command("ed", 0);
+				*editor = get_fullpath_command(name, 1);
+			}
+
+			if (!*editor) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": command not found\n", 0), FREE_PRINT);
+				else				print(STDERR_FILENO, ": fc: editor not found\n", PRINT);
+				free(name);
+				return (1);
+			}
+		
+			if (is_directory((char *)(*editor))) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Is a directory\n", 0), FREE_PRINT);
+				else				print(STDERR_FILENO, ": editor: Is a directory\n", PRINT);
+				free(name);
+				free(*editor);
+				*editor = NULL;
+				return (1);
+			}
+
+			if (access(*editor, X_OK) == -1) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Permission denied\n", 0), FREE_PRINT);
+				else				print(STDERR_FILENO, ": editor: Permission denied\n", PRINT);
+				free(name);
+				free(*editor);
+				*editor = NULL;
+				return (1);
+			}
+
+			free(name);
+			return (0);
 		}
 
 	#pragma endregion
 
 	#pragma region "Edit"
 
-		static int fc_edit(t_opt *opts, char *editor) {
-			int result = 0, start_pos = 0, end_pos = 0, last_pos = 0;
+		static int fc_edit(t_parse_result *result) {
+			// Find editor command
+			char *editor = NULL;
+			if (default_editor(result, &editor, get_option_value(result, 'e')))				return (1);
 
-			// Remove fc command from history
-			// char *hist_fc_command = NULL;
-			// HIST_ENTRY *hist_curr = history_entry_last_if_added();
-			// if (hist_curr) hist_fc_command = ft_strdup(hist_curr->line);
+			// Remove fc command from the history
 			history_remove_last_if_added(1);
 
-			// Set first and last
+			// Set start and end position
 			history_set_pos_last();
-			last_pos = history_position();
-			last_pos = ft_max(last_pos, 0);
-
-			if (!opts->args) {
-				end_pos = last_pos;
-				start_pos = last_pos;
-			}
-
-			if (opts->args) {
-				start_pos = fc_list_getpos(opts->args->value, 0);
-				opts->args = opts->args->next;
-				if (start_pos == -2) result = 1;
-				else if (start_pos == -1) start_pos = 0;
-			}
-
-			if (!result) {
-				if (opts->args) {
-					end_pos = fc_list_getpos(opts->args->value, 0);
-					if (end_pos == -2) result = 1;
-					else if (end_pos == -1) end_pos = last_pos;
-				} else end_pos = last_pos;
+			size_t	start = 0, end = 0;
+			start = end = history_position();
+			if (result->argc > 0 && fc_get_position(result, -1, result->argv[0], &start))	return (free(editor), 1);
+			if (result->argc > 1 && fc_get_position(result, -1, result->argv[1], &end))		return (free(editor), 1);
+			if (result->argc == 1) end = start;
+			if (end < start) {
+				int tmp = start;
+				start = end;
+				end = tmp;
 			}
 
 			// Create temp file
-			int fd = -1;
-			if (!result) {
-				fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
-				if (fd == -1) result = 2;
-				else {
-					if (end_pos < start_pos) {
-						int tmp = start_pos;
-						start_pos = end_pos;
-						end_pos = tmp;
-					}
-					for (int i = start_pos; i <= end_pos; ++i) {
-						HIST_ENTRY *hist = history_entry_position(i);
-						if (hist && hist->line) {
-							if (i != start_pos) write(fd, "\n", 1);
-							if (write(fd, hist->line, hist->length) == -1) {
-								tmp_delete_fd(fd);
-								result = 2;
-								break;
-							}
-						}
-					}
-					close(fd);
-				}
-			}
-			if (!result && fd == -1) result = 2;
-
-			// Abre el editor
-			char *tmp_file = NULL;
-			if (!result) {
-				tmp_file = tmp_find_path_fd(fd);
-
-				pid_t pid = fork();
-				if (pid < 0) {
-					// fork error
-					result = 4;
-				} else if (pid == 0) {
-					char *const args[] = { editor, tmp_file, NULL};
-					char **env = variables_to_array(vars_table, EXPORTED, 1);
-					execve(editor, args, env);
-					exit(1);
-				} else if (pid > 0) {
-					int status;
-					waitpid(pid, &status, 0);
-					if (WIFEXITED(status))			status = WEXITSTATUS(status);
-					else if (WIFSIGNALED(status))	status = 128 + WTERMSIG(status);
-
-					if (status || (fd = open(tmp_file, O_RDONLY)) == -1) result = 3;
-				}
+			int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
+			if (fd == -1) {
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot create temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
+				free(editor);
+				return (1);
 			}
 
-			// Abre y lee el archivo modificado
-			char *file_content = NULL;
-			if (!result) {
-				char	temp_buffer[1024];
-				size_t	file_size = 0;
-				int		readed = 0;
-
-				while ((readed = read(fd, temp_buffer, sizeof(temp_buffer))) > 0) {
-					file_content = realloc(file_content, file_size + readed + 1);
-					memcpy(file_content + file_size, temp_buffer, readed);
-					file_size += readed;
-				}
-
-				if (readed < 0) {
-					unlink(tmp_file);
-					free(file_content);
-					file_content = NULL;
-					result = 3;
-				} else {
-					if (file_content) {
-
-						file_content[file_size] = '\0';
-						
-						if (file_size > 0 && file_content[file_size - 1] == '\n') {
-							file_content[file_size - 1] = '\0';
-							file_size--;
-						}
-						if (file_size > 0 && file_content[file_size - 1] == '\r') {
-							file_content[file_size - 1] = '\0';
-							file_size--;
-						}
+			for (size_t i = start; i <= end; ++i) {
+				HIST_ENTRY *entry = history_entry_position(i);
+				if (entry && entry->line) {
+					if (i != start) write(fd, "\n", 1);
+					if (write(fd, entry->line, entry->length) == -1) {
+						free(editor);
+						tmp_delete_fd(fd);
+						print(STDERR_FILENO, result->shell_name, RESET);
+						print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot write to temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
+						return (1);
 					}
 				}
 			}
+			close(fd);
 
-			if (result == 1) print(STDOUT_FILENO, "fc: no command found\n", RESET_PRINT);
-			if (result == 2) print(STDOUT_FILENO, "fc: crear\n", RESET_PRINT);
-			if (result == 3) print(STDOUT_FILENO, "fc: leer\n", RESET_PRINT);
+			// Fork and execute the editor
+			char *tmp_file = tmp_find_path_fd(fd);
 
+			pid_t pid = fork();
+			if (pid < 0) {	// Error
+				free(editor);
+				tmp_delete_path(tmp_file);
+				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot fork: ", strerror(errno), "\n", 0), FREE_PRINT);
+				return (1);
+			}
+			if (pid == 0) {	// Child
+				close(terminal.bk_stdin);
+				close(terminal.bk_stdout);
+				close(terminal.bk_stderr);
+				char *const args[] = { editor, tmp_file, NULL};
+				char **env = variables_to_array(vars_table, EXPORTED, 1);
+				execve(editor, args, env);
+				free(editor);
+				tmp_delete_path(tmp_file);
+				array_free(env);
+				ast_free(&shell.ast);
+				for (int i = 0; result->argv_original && result->argv_original[i]; ++i) free(result->argv_original[i]);
+				free(result->argv_original);
+				free_options(result);
+				exit_error(NOTHING, 1, NULL, 1);
+			}
+			if (pid > 0) {	// Parent
+				int status;
+				waitpid(pid, &status, 0);
+				if		(WIFEXITED(status))		status = WEXITSTATUS(status);
+				else if	(WIFSIGNALED(status))	status = 128 + WTERMSIG(status);
+
+				if (status) {
+					free(editor);
+					tmp_delete_path(tmp_file);
+					return (1);
+				}
+			}
+
+			// Execute tmp_file
+			int ret = 0;
 			free(editor);
+
+			// set -v  # Activa modo verbose
+			// contexto del padre
+			// modo no interactivo
+			// ret = execute_script(tmp_file);
+
 			tmp_delete_path(tmp_file);
+			if (!ret) ret = shell.exit_code;
 
-			// Add fc command to history
-			if (!result && file_content) {
-				history_add(file_content, 0);
-				print(STDOUT_FILENO, ft_strjoin(file_content, "\n", 1), FREE_RESET_PRINT);
-			}
-
-			return (result);
+			return (ret);
 		}
 
 	#pragma endregion
@@ -459,56 +388,29 @@
 
 #pragma region "FC (Fix Command)"
 
-	int bt_fc(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "elnrs", '-', 0);
-		
-		if (*opts->invalid) {
-			invalid_option("fc", opts->invalid, "[-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]");
-			return (free(opts), 1);
-		}
+	int bt_fc(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",    NO_ARGUMENT, 0},
+			{"version", NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("fc", "1.0"));
-		
-		int result = 0;
-		if (!*opts->valid) {
-			char *editor = default_editor();
-			if (!editor) {
-				print(STDERR_FILENO, shell.arg0, RESET);
-				print(STDERR_FILENO, ": fc: editor not found\n", JOIN);
-				print(STDERR_FILENO, "fc: usage: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n", PRINT);
-				result = 1;
-			} else {
-				result = fc_edit(opts, editor);
-			}
-		}
+		t_parse_result *result = parse_options(argc, argv, "se:lnr", NULL, long_opts, "fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]", 1);
 
-		if (*opts->valid) {
-			if (strchr(opts->valid, 's')) {
-				result = fc_replace(opts);
-			} else if (strchr(opts->valid, 'l')) {
-				result = fc_list(opts);
-			} else if (strchr(opts->valid, 'e')) {
-				if (!opts->args) {
-					print(STDOUT_FILENO, "fc: -e: option requires an argument\n", RESET_PRINT);
-					result = 1;
-				} else {
-					char *editor = get_fullpath(opts->args->value);
-					if (access(editor, X_OK) == -1) {
-						print(STDERR_FILENO, shell.arg0, RESET);
-						print(STDERR_FILENO, ft_strjoin_sep(": ", editor, ": command not found\n", 2), FREE_JOIN);
-						print(STDERR_FILENO, "fc: usage: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n", PRINT);
-						free(editor);
-						result = 1;
-					} else {
-						opts->args = opts->args->next;
-						result = fc_edit(opts, editor);
-					}
-				}
-			}
-		}
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 1);
 
-		return (free(opts), (result != 0));
+		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+
+		int ret = 0;
+
+		if (!result->options)			{ ret = fc_edit(result);			return (free_options(result), ret); }
+		if (has_option(result, 's'))	{ ret = fc_replace(result);			return (free_options(result), ret); }
+		if (has_option(result, 'l'))	{ ret = fc_list(result);			return (free_options(result), ret); }
+		if (has_option(result, 'e'))	{ ret = fc_edit(result);			return (free_options(result), ret); }
+
+		return (free_options(result), ret);
 	}
 
 #pragma endregion
@@ -524,7 +426,6 @@
 	//	si no se indica [ENAME] se usará la variable EDITOR, si no, VISUAL, si no, se buscará en "/usr/bin/editor" y por ultimo se usará "nano". Si todo eso falla, muestra un error
 	//	[first] [last] son números de eventos del comando
 	//	si [first] [last] no se indican, se utilizará el último comando
-	//	si [+first] [+last] se aplica offset a partir del primer comando
 	//	si [-first] [-last] se aplica offset a partir del último comando
 	//	si [first] solo, se aplica desde el último comando hasta [first]
 	//	si [first] es un string, se muestra desde el último comando hasta la primera coincidencia (empezando por la cadena)
@@ -552,7 +453,6 @@
 	//	[-nr] no tienen efecto (se ignoran) si [-l] no está.
 	//	[first] [last] son números de eventos del comando
 	//	si [first] [last] no se indican, se utilizarán los últimos 16 comandos
-	//	si [+first] [+last] se aplica offset a partir del primer comando
 	//	si [-first] [-last] se aplica offset a partir del último comando
 	//	si [first] solo, se aplica desde el último comando hasta [first]
 	//	si [first] es un string, se muestra desde el último comando hasta la primera coincidencia (empezando por la cadena)
