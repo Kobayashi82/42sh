@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 18:50:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 21:21:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,20 +274,20 @@
 		builtin_add("banner", 0, 0, &bt_banner, &bt_builtin_help);
 		builtin_add("welcome", 0, 0, &bt_welcome, &bt_builtin_help);
 		builtin_add("builtin", 0, 0, &bt_builtin, &bt_builtin_help);
-		builtin_add("declare", 0, 0, &bt_declare, &bt_builtin_help);
+		builtin_add("declare", 0, 0, &bt_declare, &bt_declare_help);
 		// SIN CREAR builtin_add("dirs", 0, 0, &bt_dirs, &bt_builtin_help);
 		// SIN CREAR builtin_add("disown", 0, 0, &bt_disown, &bt_builtin_help);
 		// builtin_add("typeset", 0, 0, &bt_declare, &bt_builtin_help);
-		builtin_add("enable", 0, 0, &bt_enable, &bt_builtin_help);
+		builtin_add("enable", 0, 0, &bt_enable, &bt_enable_help);
 		builtin_add("help", 0, 0, &bt_help, &bt_help_help);
-		builtin_add("history", 0, 0, &bt_history, &bt_builtin_help);
+		builtin_add("history", 0, 0, &bt_history, &bt_history_help);
 		// SIN CREAR builtin_add("let", 0, 0, &bt_let, &bt_builtin_help);
 		// SIN CREAR builtin_add("local", 0, 0, &bt_local, &bt_builtin_help);
-		// builtin_add("logout", 0, 0, &bt_logout, &bt_builtin_help);
+		builtin_add("logout", 0, 0, &bt_logout, &bt_logout_help);
 		// SIN CREAR builtin_add("mapfile", 0, 0, &bt_mapfile, &bt_builtin_help);
 		// SIN CREAR builtin_add("popd", 0, 0, &bt_popd, &bt_builtin_help);
 		// SIN CREAR builtin_add("pushd", 0, 0, &bt_pushd, &bt_builtin_help);
-		// builtin_add("shopt", 0, 0, &bt_shopt, &bt_builtin_help);
+		builtin_add("shopt", 0, 0, &bt_shopt, &bt_shopt_help);
 		// SIN CREAR builtin_add("suspend", 0, 0, &bt_suspend, &bt_builtin_help);
 
 		// SIN CREAR Regular
@@ -300,7 +300,7 @@
 		// builtin_add("command", 0, 0, &bt_command, &bt_builtin_help);
 		// builtin_add("echo", 0, 0, &bt_echo, &bt_builtin_help);
 		// builtin_add("false", 0, 0, &bt_false, &bt_builtin_help);
-		builtin_add("fc", 0, 0, &bt_fc, &bt_builtin_help);
+		builtin_add("fc", 0, 0, &bt_fc, &bt_fc_help);
 		builtin_add("getopts", 0, 0, &bt_getopts, &bt_builtin_help);
 		// builtin_add("hash", 0, 0, &bt_hash, &bt_builtin_help);
 		// SIN CREAR builtin_add("kill", 0, 0, &bt_kill, &bt_builtin_help);
@@ -324,11 +324,11 @@
 		// SIN CREAR builtin_add(":", 0, 1, &bt_dots, &bt_builtin_help);
 		// SIN CREAR builtin_add("eval", 0, 1, &bt_eval, &bt_builtin_help);
 		// builtin_add("exec", 0, 1, &bt_exec, &bt_builtin_help);
-		// builtin_add("exit", 0, 1, &bt_exit, &bt_builtin_help);
+		builtin_add("exit", 0, 1, &bt_exit, &bt_exit_help);
 		// builtin_add("export", 0, 1, &bt_export, &bt_builtin_help);
 		// builtin_add("readonly", 0, 1, &bt_readonly, &bt_builtin_help);
 		// SIN CREAR builtin_add("return", 0, 1, &bt_return, &bt_builtin_help);
-		// SIN CREAR builtin_add("set", 0, 1, &bt_set, &bt_builtin_help);
+		builtin_add("set", 0, 1, &bt_set, &bt_set_help);
 		// SIN CREAR builtin_add("shift", 0, 1, &bt_shift, &bt_builtin_help);
 		// SIN CREAR builtin_add("times", 0, 1, &bt_times, &bt_builtin_help);
 		// SIN CREAR builtin_add("trap", 0, 1, &bt_trap, &bt_builtin_help);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:41:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:44:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 		int i = 0;
 		tmp = args;
 		while (tmp) {
-			if (tmp->value) argv[i++] = strdup(tmp->value);
+			if (tmp->value) argv[i++] = ft_strdup(tmp->value);
 			tmp = tmp->next;
 		}
 		argv[i] = NULL;

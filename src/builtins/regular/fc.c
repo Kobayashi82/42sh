@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 22:00:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:47:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,11 @@
 
 	#pragma region "Help"
 
-		static int help() {
+		int bt_fc_help(int format, int no_print) {
+			char *name = "fc";
+			char *syntax = "fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]";
+			char *description = "Display or execute commands from the history list.";
 			char *msg =
-			"fc: fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]\n"
-			"    Display or execute commands from the history list.\n\n"
-
 			"    fc is used to list or edit and re-execute commands from the history list.\n"
 			"    FIRST and LAST can be numbers specifying the range, or FIRST can be a\n"
 			"    string, which means the most recent command beginning with that\n"
@@ -58,7 +58,38 @@
 			"    Exit Status:\n"
 			"      Returns success or status of executed command; non-zero if an error occurs.\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
 
 			return (0);
 		}
@@ -348,9 +379,7 @@
 				free(editor);
 				tmp_delete_path(tmp_file);
 				array_free(env);
-				ast_free(&shell.ast);
-				for (int i = 0; result->argv_original && result->argv_original[i]; ++i) free(result->argv_original[i]);
-				free(result->argv_original);
+				free_argv_original(result);
 				free_options(result);
 				exit_error(NOTHING, 1, NULL, 1);
 			}
@@ -400,7 +429,7 @@
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 
-		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "help"))		return (free_options(result), bt_fc_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 		int ret = 0;

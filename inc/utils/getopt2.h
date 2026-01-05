@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:51:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:47:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@
 	int             has_long_option(t_parse_result *result, const char *name);
 	const char      *get_long_option_value(t_parse_result *result, const char *name);
 
+	void			free_argv_original(t_parse_result *result);
 	void            free_options(t_parse_result *result);
 
 #pragma endregion

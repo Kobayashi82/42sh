@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 13:17:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:53:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,7 @@
 			t_ast		*ast;
 			int			exit;
 			int			exit_code;
+			int			login_shell;
 			int			optpos;
 			const char	*name;
 			const char	*fullname;

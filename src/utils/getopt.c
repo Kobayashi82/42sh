@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:57:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:48:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -416,6 +416,17 @@
 	#pragma endregion
 
 	#pragma region "Free Options"
+
+		void free_argv_original(t_parse_result *result) {
+			if (!result) return;
+
+			for (int i = 0; result->argv_original && result->argv_original[i]; ++i) {
+				free(result->argv_original[i]);
+			}
+
+			free(result->argv_original);
+			result->argv_original = NULL;
+		}
 
 		void free_options(t_parse_result *result) {
 			if (!result) return;

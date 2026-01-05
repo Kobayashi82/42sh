@@ -6,66 +6,127 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 21:30:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "terminal/terminal.h"
-	#include "utils/print.h"
-	#include "tests/args.h"
 	#include "hashes/builtin.h"
-	#include "builtins/options.h"
 	#include "main/shell.h"
-
-	#include "parser/parser.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
+#pragma region "Help / Version"
 
-#pragma region "Help"
+	#pragma region "Help"
 
-	static int print_help() {
-		char *msg =
-		"exit: exit [n]\n"
-		"    Exit the shell.\n\n"
+		int bt_exit_help(int format, int no_print) {
+			char *name = "exit";
+			char *syntax = "exit [n]";
+			char *description = "Exit the shell.";
+			char *msg =
+				"    Exits the shell with a status of N.\n"
+				"    If N is omitted, the exit status is that of the last command executed.\n";
 
-		"    Exits the shell with a status of N. If N is omitted, the exit status\n"
-		"    is that of the last command executed.\n";
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
 
-		return (0);
-	}
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"exit 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Exit"
 
-	int bt_exit(t_arg *args) {
-		t_opt *opts = parse_options_old(args->next, "", '-', 0);
+	int bt_exit(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("exit", "1.0"));
+		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "exit [n]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 1);
 
-		int result = 0;
+		if (find_long_option(result, "help"))		return (free_options(result), bt_exit_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		if (opts->args && opts->args->next) {
-			print(STDOUT_FILENO, "exit: too many arguments\n", RESET_PRINT);
-			result = 1;
-		} else if (opts->args && !ft_isdigit_s(opts->args->value)) {
-			print(STDOUT_FILENO, "exit: numeric argument required\n", RESET_PRINT);
-			result = 2;
-		} else if (opts->args && opts->args->value)
-			result = atol(opts->args->value);
 
-		free(opts);
-		args_clear(&args);
-		exit_error(NOTHING, result, NULL, 1);
+		int ret = 0;
 
-		return (result);
+		if (shell.login_shell && shell.source == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", RESET_PRINT);
+		if (!shell.login_shell && shell.source == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
+
+		if (result->argc > 1) {
+			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": exit: too many arguments\n", 0), FREE_RESET_PRINT);
+			ret = 1;
+		} else if (result->argc && !ft_isdigit_s(result->argv[0])) {
+			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": exit: numeric argument required\n", 0), FREE_RESET_PRINT);
+			ret = 2;
+		} else if (result->argc) {
+			ret = atol(result->argv[0]);
+		}
+
+		free_argv_original(result);
+		free_options(result);
+		exit_error(NOTHING, ret, NULL, 1);
+
+		return (ret);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:54:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 20:31:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@
 
 	#pragma region "Help"
 
-		static int help() {
+		int bt_history_help(int format, int no_print) {
+			char *name = "history";
+			char *syntax = "history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]";
+			char *description = "Display or manipulate the history list.";
 			char *msg =
-			"history: history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]\n"
-			"    Display or manipulate the history list.\n\n"
-
 			"    Display the history list with line numbers\n"
 			"    An argument of [n] lists only the last [n] entries.\n\n"
 
@@ -54,7 +54,38 @@
 			"    Exit Status:\n"
 			"      Returns success unless an invalid option is given or an error occurs.\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
 
 			return (0);
 		}
@@ -296,7 +327,7 @@
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 
-		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "help"))		return (free_options(result), bt_history_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 		int local_options = 0;
