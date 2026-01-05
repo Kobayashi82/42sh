@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2025/12/29 13:28:38 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/05 23:35:44 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -412,3 +412,16 @@ _progress:
 # ─────────── #
 
 .PHONY: all clean fclean re wipe _show_title _title _hide_cursor _show_cursor _delete_objects _progress
+
+# 	int bt_welcome() {
+# 		print(STDOUT_FILENO, G"\n\t\t\tWELCOME TO "RED600"42"Y"sh"G" 1.0\n\n", RESET);
+# 		print(STDOUT_FILENO, C"\t This "BR"project"C" has been made with ",    JOIN);
+# 		print(STDOUT_FILENO, G"effort"C" and "G"care\n",                       JOIN);
+# 		print(STDOUT_FILENO, C"\t Feel "G"free"C" to try anything you want\n", JOIN);
+# 		print(STDOUT_FILENO,  "\t To get information about the "BR"builtins",  JOIN);
+# 		print(STDOUT_FILENO, C" you can type "Y"help\n\n",                     JOIN);
+# 		print(STDOUT_FILENO, C"\t Check the "G"documentation"C" for",          JOIN);
+# 		print(STDOUT_FILENO,  " a complete list of features\n\n",              PRINT);
+		
+# 		return (0);
+# 	}

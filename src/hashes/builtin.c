@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 21:21:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 00:35:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -269,28 +269,27 @@
 	// The Bash POSIX mode is described in Bash POSIX Mode.
 
 	int builtin_initialize() {
-		
 		// 42sh
-		builtin_add("banner", 0, 0, &bt_banner, &bt_builtin_help);
-		builtin_add("welcome", 0, 0, &bt_welcome, &bt_builtin_help);
+		builtin_add("banner", 0, 0, &bt_banner, &bt_banner_help);
 		builtin_add("builtin", 0, 0, &bt_builtin, &bt_builtin_help);
 		builtin_add("declare", 0, 0, &bt_declare, &bt_declare_help);
-		// SIN CREAR builtin_add("dirs", 0, 0, &bt_dirs, &bt_builtin_help);
-		// SIN CREAR builtin_add("disown", 0, 0, &bt_disown, &bt_builtin_help);
-		// builtin_add("typeset", 0, 0, &bt_declare, &bt_builtin_help);
+		builtin_add("typeset", 0, 0, &bt_declare, &bt_typeset_help);
+		builtin_add("dirs", 0, 0, &bt_dirs, &bt_dirs_help);
+		builtin_add("disown", 0, 0, &bt_disown, &bt_disown_help);
 		builtin_add("enable", 0, 0, &bt_enable, &bt_enable_help);
 		builtin_add("help", 0, 0, &bt_help, &bt_help_help);
 		builtin_add("history", 0, 0, &bt_history, &bt_history_help);
-		// SIN CREAR builtin_add("let", 0, 0, &bt_let, &bt_builtin_help);
-		// SIN CREAR builtin_add("local", 0, 0, &bt_local, &bt_builtin_help);
+		builtin_add("let", 0, 0, &bt_let, &bt_let_help);
+		builtin_add("local", 0, 0, &bt_local, &bt_local_help);
 		builtin_add("logout", 0, 0, &bt_logout, &bt_logout_help);
-		// SIN CREAR builtin_add("mapfile", 0, 0, &bt_mapfile, &bt_builtin_help);
-		// SIN CREAR builtin_add("popd", 0, 0, &bt_popd, &bt_builtin_help);
-		// SIN CREAR builtin_add("pushd", 0, 0, &bt_pushd, &bt_builtin_help);
+		builtin_add("mapfile", 0, 0, &bt_mapfile, &bt_mapfile_help);
+		builtin_add("readarray", 0, 0, &bt_mapfile, &bt_readarray_help);
+		builtin_add("popd", 0, 0, &bt_popd, &bt_popd_help);
+		builtin_add("pushd", 0, 0, &bt_pushd, &bt_pushd_help);
 		builtin_add("shopt", 0, 0, &bt_shopt, &bt_shopt_help);
-		// SIN CREAR builtin_add("suspend", 0, 0, &bt_suspend, &bt_builtin_help);
+		builtin_add("suspend", 0, 0, &bt_suspend, &bt_suspend_help);
 
-		// SIN CREAR Regular
+		// Regular
 		// builtin_add("alias", 0, 0, &bt_alias, &bt_builtin_help);
 		// builtin_add("unalias", 0, 0, &bt_unalias, &bt_builtin_help);
 		// SIN CREAR builtin_add("bg", 0, 0, &bt_bg, &bt_builtin_help);
@@ -316,7 +315,7 @@
 		// SIN CREAR builtin_add("umask", 0, 0, &bt_umask, &bt_builtin_help);
 		// SIN CREAR builtin_add("wait", 0, 0, &bt_wait, &bt_builtin_help);
 
-		// SIN CREAR Special
+		// Special
 		// SIN CREAR builtin_add("break", 0, 1, &bt_break, &bt_builtin_help);
 		// SIN CREAR builtin_add("continue", 0, 1, &bt_continue, &bt_builtin_help);
 		// SIN CREAR builtin_add(".", 0, 1, &bt_dot, &bt_builtin_help);

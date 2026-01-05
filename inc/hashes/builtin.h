@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 21:21:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 00:34:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,30 +61,41 @@
 	int			builtin_exec(int argc, char **argv);
 
 	//	====== BUILTINS (42SH) =====
-	int			bt_banner();
-	int			bt_welcome();
+	int			bt_banner(int argc, char **argv);
+	int			bt_banner_help(int format, int no_print);
 	int			bt_builtin(int argc, char **argv);
 	int			bt_builtin_help(int format, int no_print);
 	int			bt_declare(int argc, char **argv);
 	int			bt_declare_help(int format, int no_print);
-	// int			bt_dirs(t_arg *args);
-	// int			bt_disown(t_arg *args);
+	int			bt_typeset_help(int format, int no_print);
+	int			bt_dirs(int argc, char **argv);
+	int			bt_dirs_help(int format, int no_print);
+	int			bt_disown(int argc, char **argv);
+	int			bt_disown_help(int format, int no_print);
 	int			bt_enable(int argc, char **argv);
 	int			bt_enable_help(int format, int no_print);
 	int			bt_help(int argc, char **argv);
 	int			bt_help_help(int format, int no_print);
 	int			bt_history(int argc, char **argv);
 	int			bt_history_help(int format, int no_print);
-	// int			bt_let(t_arg *args);
-	// int			bt_local(t_arg *args);
+	int			bt_let(int argc, char **argv);
+	int			bt_let_help(int format, int no_print);
+	int			bt_local(int argc, char **argv);
+	int			bt_local_help(int format, int no_print);
 	int			bt_logout(int argc, char **argv);
 	int			bt_logout_help(int format, int no_print);
-	// int			bt_mapfile(t_arg *args);
-	// int			bt_popd(t_arg *args);
-	// int			bt_pushd(t_arg *args);
+	int			bt_mapfile(int argc, char **argv);
+	int			bt_mapfile_help(int format, int no_print);
+	int			bt_readarray_help(int format, int no_print);
+	int			bt_popd(int argc, char **argv);
+	int			bt_popd_help(int format, int no_print);
+	int			bt_pushd(int argc, char **argv);
+	int			bt_pushd_help(int format, int no_print);
 	int			bt_shopt(int argc, char **argv);
 	int			bt_shopt_help(int format, int no_print);
-	// int			bt_suspend(t_arg *args);
+	int			bt_suspend(int argc, char **argv);
+	int			bt_suspend_help(int format, int no_print);
+
 
 	//	==== BUILTINS (Regular) ====
 	int			bt_alias(t_arg *args);

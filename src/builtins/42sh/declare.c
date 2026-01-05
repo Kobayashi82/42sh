@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 20:31:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 00:13:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,88 +23,160 @@
 
 #pragma region "Help / Version"
 
-	#pragma region "Help"
+	#pragma region "Typeset"
 
-		int bt_declare_help(int format, int no_print) {
-			char *name = "declare";
-			char *syntax = "declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]";
-			char *description = "Set variable values and attributes.";
-			char *msg =
-				"    Declare variables and give them attributes.  If no NAMEs are given,\n"
-				"    display the attributes and values of all variables.\n\n"
+		#pragma region "Help"
 
-				"    Options:\n"
-				"      -p        display the attributes and value of each NAME\n\n"
+			int bt_typeset_help(int format, int no_print) {
+				char *name = "typeset";
+				char *syntax = "typeset [-aAfFgiIlnrtux] name[=value] ... or typeset -p [-aAfFilnrtux] [name ...]";
+				char *description = "Set variable values and attributes.";
+				char *msg = "    A synonym for `declare'.  See `help declare'.\n";
 
-				"    Options which set attributes:\n"
-				"      -i        to make NAMEs have the `integer' attribute\n"
-				"      -l        to convert the value of each NAME to lower case on assignment\n"
-				"      -r        to make NAMEs readonly\n"
-				"      -u        to convert the value of each NAME to upper case on assignment\n"
-				"      -x        to make NAMEs export\n\n"
+				if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-				"    Using `+' instead of `-' turns off the given attribute.\n\n"
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				}
 
-				"    Variables with the integer attribute have arithmetic evaluation\n"
-				"    performed when the variable is assigned a value.\n\n"
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				}
 
-				"    Exit Status:\n"
-				"      Returns success unless an invalid option is supplied or a variable assignment\n"
-				"      error occurs.\n";
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				}
 
-			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+				return (0);
 			}
 
-			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+		#pragma endregion
+
+		#pragma region "Version"
+
+			static int version_typeset() {
+				char *msg =
+					"typeset 1.0.\n"
+					"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+					"This is free software: you are free to change and redistribute it.\n"
+					"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+					"Written by Kobayashi82 (vzurera-).\n";
+
+				print(STDOUT_FILENO, msg, RESET_PRINT);
+
+				return (0);
 			}
 
-			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
-			}
-
-			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
-			}
-
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
-
-			return (0);
-		}
+		#pragma endregion
 
 	#pragma endregion
 
-	#pragma region "Version"
+	#pragma region "Declare"
 
-		static int version() {
-			char *msg =
-				"declare 1.0.\n"
-				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
-				"This is free software: you are free to change and redistribute it.\n"
-				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+		#pragma region "Help"
 
-				"Written by Kobayashi82 (vzurera-).\n";
+			int bt_declare_help(int format, int no_print) {
+				char *name = "declare";
+				char *syntax = "declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]";
+				char *description = "Set variable values and attributes.";
+				char *msg =
+					"    Declare variables and give them attributes.  If no NAMEs are given,\n"
+					"    display the attributes and values of all variables.\n\n"
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+					"    Options:\n"
+					"      -p        display the attributes and value of each NAME\n\n"
 
-			return (0);
-		}
+					"    Options which set attributes:\n"
+					"      -i        to make NAMEs have the `integer' attribute\n"
+					"      -l        to convert the value of each NAME to lower case on assignment\n"
+					"      -r        to make NAMEs readonly\n"
+					"      -u        to convert the value of each NAME to upper case on assignment\n"
+					"      -x        to make NAMEs export\n\n"
+
+					"    Using `+' instead of `-' turns off the given attribute.\n\n"
+
+					"    Variables with the integer attribute have arithmetic evaluation\n"
+					"    performed when the variable is assigned a value.\n\n"
+
+					"    Exit Status:\n"
+					"      Returns success unless an invalid option is supplied or a variable assignment\n"
+					"      error occurs.\n";
+
+				if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				}
+
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				}
+
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				}
+
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				}
+
+				if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+				return (0);
+			}
+
+		#pragma endregion
+
+		#pragma region "Version"
+
+			static int version() {
+				char *msg =
+					"declare 1.0.\n"
+					"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+					"This is free software: you are free to change and redistribute it.\n"
+					"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+					"Written by Kobayashi82 (vzurera-).\n";
+
+				print(STDOUT_FILENO, msg, RESET_PRINT);
+
+				return (0);
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
@@ -190,13 +262,18 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "pilrux", "ilrux", long_opts, "declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]", 0);
+		char *syntax = "declare [-ilrux] [name[=value] ...] or declare -p [-ilrux] [name ...]";
+		if (argc && !strcmp(argv[0], "typeset")) syntax = "typeset [-aAfFgiIlnrtux] name[=value] ... or typeset -p [-aAfFilnrtux] [name ...]";
+
+		t_parse_result *result = parse_options(argc, argv, "pilrux", "ilrux", long_opts, syntax, 0);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 
-		if (find_long_option(result, "help"))		return (free_options(result), bt_declare_help(HELP_NORMAL, 0));
-		if (find_long_option(result, "version"))	return (free_options(result), version());
-		
+		if (find_long_option(result, "help") && !strcmp(argv[0], "typeset"))	return (free_options(result), bt_typeset_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "help"))									return (free_options(result), bt_declare_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version") && !strcmp(argv[0], "typeset"))	return (free_options(result), version_typeset());
+		if (find_long_option(result, "version"))								return (free_options(result), version());
+
 		if (!result->argv) {
 			variables_print(vars_table, EXPORTED_LIST, 1);
 			return (free_options(result), 1);
