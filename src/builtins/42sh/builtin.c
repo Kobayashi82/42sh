@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:54:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 19:08:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,51 @@
 
 	#pragma region "Help"
 
-		static int help() {
+		int bt_builtin_help(int format, int no_print) {
+			char *name = "builtin";
+			char *syntax = "builtin [shell-builtin [arg ...]]";
+			char *description = "Execute shell builtins.";
 			char *msg =
-				"builtin: builtin [shell-builtin [arg ...]]\n"
-				"    Execute shell builtins.\n\n"
-
 				"    Execute SHELL-BUILTIN with arguments ARGs without performing command\n"
 				"    lookup.  This is useful when you wish to reimplement a shell builtin\n"
 				"    as a shell function, but need to execute the builtin within the function.\n\n"
 
 				"    Exit Status:\n"
 				"      Returns the exit status of SHELL-BUILTIN, or 0 if SHELL-BUILTIN is\n"
-				"      not a shell builtin.\n";
+				"      not a shell builtin.";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
 
 			return (0);
 		}
@@ -76,7 +107,7 @@
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 1);
 
-		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "help"))		return (free_options(result), bt_builtin_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 

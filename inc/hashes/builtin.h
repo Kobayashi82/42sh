@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 11:42:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/05 18:49:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,20 @@
 
 	#include <stddef.h>
 
-	#define BUILTIN_HASH_SIZE	101
-
 #pragma endregion
 
 #pragma region "Variables"
+
+	#pragma region "Enumerators"
+
+		enum e_builtin_help {
+			HELP_SYNTAX,
+			HELP_DESCRIPTION,
+			HELP_NORMAL,
+			HELP_MANPAGE
+		};
+
+	#pragma endregion
 
 	#pragma region "Structures"
 
@@ -30,6 +39,7 @@
 			int					disabled;
 			int					special;
 			int         		(*execute)(int argc, char **argv);
+			int         		(*help)(int format, int no_print);
 			struct s_builtin	*next;
 		} t_builtin;
 
@@ -54,11 +64,13 @@
 	int			bt_banner();
 	int			bt_welcome();
 	int			bt_builtin(int argc, char **argv);
+	int			bt_builtin_help(int format, int no_print);
 	int			bt_declare(int argc, char **argv);
 	// int			bt_dirs(t_arg *args);
 	// int			bt_disown(t_arg *args);
 	int			bt_enable(int argc, char **argv);
-	// int			bt_help(t_arg *args);
+	int			bt_help(int argc, char **argv);
+	int			bt_help_help(int format, int no_print);
 	int			bt_history(int argc, char **argv);
 	// int			bt_let(t_arg *args);
 	// int			bt_local(t_arg *args);

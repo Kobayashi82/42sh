@@ -34,11 +34,13 @@ Permiten configurar el comportamiento del shell y controlar distintas caracterí
 | `force_fignore`        | -      | ✗     | ✓      | Fuerza el uso de sufijos en `FIGNORE` al completar palabras                                   |
 | `functrace`            | `-T`   | ✓     | ✓      | Hereda trap `DEBUG` y `RETURN` en funciones                                                   |
 | `globasciiranges`      | -      | ✗     | ✓      | Los rangos en patrones `[a-z]` usan orden ASCII en vez de locale                              |
+| `globskipdots`         | -      | ✗     | ✓      | Los patrones de glob nunca coinciden con `.` y `..` incluso si el patrón empieza con punto    |
 | `globstar`             | -      | ✗     | ✓      | El patrón `**` hace matching recursivo de directorios                                         |
 | `gnu_errfmt`           | -      | ✗     | ✓      | Mensajes de error en formato estándar GNU                                                     |
 | `hashall`              | `-h`   | ✓     | ✓      | Guarda la ubicación de comandos en tabla hash al buscarlos                                    |
 | `histappend`           | -      | ✗     | ✓      | Añade al archivo de historial en vez de sobrescribirlo                                        |
 | `histexpand`           | `-H`   | ✓     | ✗      | Habilita sustitución de historial estilo `!`                                                  |
+| `history`              | -      | ✓     | ✗      | Habilita el historial de comandos                                                             |
 | `histreedit`           | -      | ✗     | ✓      | Permite reeditar una sustitución de historial fallida                                         |
 | `histverify`           | -      | ✗     | ✓      | Carga el resultado de sustitución de historial en el buffer de edición                        |
 | `hostcomplete`         | -      | ✗     | ✓      | Intenta completar hostname cuando hay `@`                                                     |
@@ -47,12 +49,11 @@ Permiten configurar el comportamiento del shell y controlar distintas caracterí
 | `inherit_errexit`      | -      | ✗     | ✓      | Subshells heredan el estado de `errexit`                                                      |
 | `interactive_comments` | -      | ✗     | ✓      | Permite comentarios `#` en comandos interactivos                                              |
 | `lastpipe`             | -      | ✗     | ✓      | Ejecuta el último comando de un pipeline en el shell actual (no en subshell)                  |
-| `lithist`              | -      | ✗     | ✓      | Guarda comandos multilínea con newlines embebidos en el historial                             |
 | `localvar_inherit`     | -      | ✗     | ✓      | Variables locales heredan el valor de variables con el mismo nombre en scope superior         |
 | `localvar_unset`       | -      | ✗     | ✓      | Variables locales heredan el estado unset de variables en scope superior                      |
 | `login_shell`          | -      | ✗     | ✓      | **Solo lectura**. Indica si el shell es un shell de login                                     |
-| `mailwarn`             | -      | ✗     | ✓      | Avisa si se ha accedido a correo desde la última verificación                                 |
 | `monitor`              | `-m`   | ✓     | ✓      | Habilita control de jobs                                                                      |
+| `no_empty_cmd_completion` | -   | ✗     | ✓      | No intenta completar comandos en una línea vacía (al presionar TAB)                           |
 | `nocaseglob`           | -      | ✗     | ✓      | Expansión de pathname ignora mayúsculas/minúsculas                                            |
 | `nocasematch`          | -      | ✗     | ✓      | Matching de patrones ignora mayúsculas/minúsculas en `case` y `[[`                            |
 | `noclobber`            | `-C`   | ✓     | ✓      | Previene sobrescribir archivos existentes con redirección `>`                                 |
@@ -61,9 +62,9 @@ Permiten configurar el comportamiento del shell y controlar distintas caracterí
 | `notify`               | `-b`   | ✓     | ✓      | Reporta status de jobs en background inmediatamente                                           |
 | `nounset`              | `-u`   | ✓     | ✓      | Trata variables no definidas como error al expandirlas                                        |
 | `nullglob`             | -      | ✗     | ✓      | Patrones que no hacen match se expanden a string nulo (en vez de literal)                     |
+| `patsub_replacement`   | -      | ✗     | ✓      | En `${var//pattern/replacement}`, el `&` en replacement referencia al texto que coincidió     |
 | `physical`             | `-P`   | ✓     | ✓      | No sigue enlaces simbólicos al ejecutar comandos como `cd`                                    |
 | `pipefail`             | -      | ✓     | ✗      | El valor de retorno de un pipeline es el del último comando que falló                         |
-| `posix`                | -      | ✓     | ✗      | Cambia comportamiento para ajustarse al estándar POSIX                                        |
 | `privileged`           | `-p`   | ✓     | ✗      | Modo privilegiado/restringido                                                                 |
 | `progcomp`             | -      | ✗     | ✓      | Habilita facilidades de completado programable                                                |
 | `progcomp_alias`       | -      | ✗     | ✓      | Intenta completado programable en aliases                                                     |
@@ -90,7 +91,7 @@ Permite configurar opciones del shell y ver el estado de variables, funciones y 
 | -                    | `-`    | Marca el final de las opciones y desactiva las opciones `xtrace` y `verbose`            |
 | -                    | `-o`   | Activa la opción larga indicada o muestra todas las opciones con su estado              |
 | -                    | `+o`   | Desactiva la opción larga indicada o muestra todas las opciones en formato reutilizable |
-| `positional`         | `-P`   | Muestra todos los parámetros posicionales del shell                                     |
+| `positional`         | `-S`   | Muestra todos los parámetros posicionales del shell                                     |
 | `variables`          | `-V`   | Muestra todas las variables (locales y exportadas)                                      |
 | `variables-exported` | `-X`   | Muestra las variables exportadas                                                        |
 | `variables-local`    | `-L`   | Muestra todas las variables locales                                                     |
@@ -125,7 +126,7 @@ Los parámetros posicionales representan los argumentos pasados a `42sh`, `scrip
 ```bash
 # Mostrar los parámetros posicionales:
 set --positional
-set -P
+set -S
 
 # Modificar parámetros posicionales:
 set arg1 arg2 arg3
