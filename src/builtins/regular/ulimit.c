@@ -6,18 +6,51 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 23:08:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 00:31:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// ulimit -xvalue1 -v -cd value2	(funciona, -x usa value1 y -vcd usan value2)
+// ulimit -x value1 -v value2		(no funciona, -x usa value1, -v y value2 se ignoran)
+
 #pragma region "Includes"
 
-	#include "main/shell.h"
+	#include "hashes/builtin.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
+	#include "utils/getopt2.h"
 
-	#include <getopt.h>
 	#include <sys/resource.h>
+
+#pragma endregion
+
+#pragma region "Variables"
+
+	static struct {
+		int			resource;
+		const char	*name;
+		const char	*unit;
+		char		opt;
+		int			divisor;
+	} limits[] = {
+		{	RLIMIT_RTTIME,		"real-time non-blocking time",	"us",		'R',	1		},
+		{	RLIMIT_CORE,		"core file size",				"blocks",	'c',	512		},
+		{	RLIMIT_DATA,		"data seg size",				"KB",		'd',	1024	},
+		{	RLIMIT_NICE,		"scheduling priority",			"",			'e',	1		},
+		{	RLIMIT_FSIZE,		"file size",					"blocks",	'f',	512		},
+		{	RLIMIT_SIGPENDING,	"pending signals",				"",			'i',	1		},
+		{	RLIMIT_MEMLOCK,		"max locked memory",			"KB",		'l',	1024	},
+		{	RLIMIT_RSS,			"max memory size",				"KB",		'm',	1024	},
+		{	RLIMIT_NOFILE,		"open files",					"",			'n',	1		},
+		{	RLIMIT_MSGQUEUE,	"POSIX message queues",			"bytes",	'q',	1		},
+		{	RLIMIT_RTPRIO,		"real-time priority",			"",			'r',	1		},
+		{	RLIMIT_STACK,		"stack size",					"KB",		's',	1024	},
+		{	RLIMIT_CPU,			"cpu time",						"seconds",	't',	1		},
+		{	RLIMIT_NPROC,		"max user processes",			"",			'u',	1		},
+		{	RLIMIT_AS,			"virtual memory",				"KB",		'v',	1024	},
+		{	RLIMIT_LOCKS,		"file locks",					"",			'x',	1		},
+		{	-1, NULL, NULL, 0, 0}
+	};
 
 #pragma endregion
 
@@ -25,11 +58,11 @@
 
 	#pragma region "Help"
 
-		static int help() {
+		int bt_ulimit_help(int format, int no_print) {
+			char *name = "ulimit";
+			char *syntax = "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]";
+			char *description = "Modify shell resource limits.";
 			char *msg =
-				"ulimit: ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]\n"
-				"    Modify shell resource limits.\n\n"
-
 				"    Provides control over the resources available to the shell and processes\n"
 				"    it creates, on systems that allow such control.\n\n"
 
@@ -69,7 +102,38 @@
 				"    Exit Status:\n"
 				"      Returns success unless an invalid option is supplied or an error occurs.\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
 
 			return (0);
 		}
@@ -100,38 +164,47 @@
 
 	#pragma region "Show Limits"
 
-		static int show_limits(int hard) {
-			struct {
-				int resource;
-				const char *name;
-				const char *unit;
-				char opt;
-				int divisor;
-			} limits[] = {
-				{RLIMIT_RTTIME,     "real-time non-blocking time", "us",      'R', 1},
-				{RLIMIT_CORE,       "core file size",              "blocks",  'c', 512},
-				{RLIMIT_DATA,       "data seg size",               "KB",      'd', 1024},
-				{RLIMIT_NICE,       "scheduling priority",         "",        'e', 1},
-				{RLIMIT_FSIZE,      "file size",                   "blocks",  'f', 512},
-				{RLIMIT_SIGPENDING, "pending signals",             "",        'i', 1},
-				{RLIMIT_MEMLOCK,    "max locked memory",           "KB",      'l', 1024},
-				{RLIMIT_RSS,        "max memory size",             "KB",      'm', 1024},
-				{RLIMIT_NOFILE,     "open files",                  "",        'n', 1},
-				{RLIMIT_MSGQUEUE,   "POSIX message queues",        "bytes",   'q', 1},
-				{RLIMIT_RTPRIO,     "real-time priority",          "",        'r', 1},
-				{RLIMIT_STACK,      "stack size",                  "KB",      's', 1024},
-				{RLIMIT_CPU,        "cpu time",                    "seconds", 't', 1},
-				{RLIMIT_NPROC,      "max user processes",          "",        'u', 1},
-				{RLIMIT_AS,         "virtual memory",              "KB",      'v', 1024},
-				{RLIMIT_LOCKS,      "file locks",                  "",        'x', 1},
-				{-1, NULL, NULL, 0, 0}
-			};
+		static int show_limits(int hard, int resource) {
+			if (resource != -1) {
+				struct rlimit rlim;
+				if (getrlimit(resource, &rlim) == -1) return (1);
+
+				rlim_t value = hard ? rlim.rlim_max : rlim.rlim_cur;
+
+				int i = 0;
+				for (; limits[i].resource != -1; ++i) {
+					if (limits[i].resource == resource) break;
+				}
+
+				char header[64];
+				snprintf(header, sizeof(header), "(%-c) %-35s ", limits[i].opt, limits[i].name);
+				print(STDOUT_FILENO, header, JOIN);
+
+				if (value == RLIM_INFINITY) {
+					print(STDOUT_FILENO, "unlimited\n", JOIN);
+				} else {
+					char buf[64];
+					long scaled_value = (long)(value / limits[i].divisor);
+					
+					if (*limits[i].unit)	snprintf(buf, sizeof(buf), "%ld %s\n", scaled_value, limits[i].unit);
+					else					snprintf(buf, sizeof(buf), "%ld\n", scaled_value);
+					
+					print(STDOUT_FILENO, buf, JOIN);
+				}
+
+				return (0);
+			}
 
 			print(STDOUT_FILENO, NULL, RESET);
 
-			for (int i = 0; limits[i].resource != -1; i++) {
+			int ret = 0;
+
+			for (int i = 0; limits[i].resource != -1; ++i) {
 				struct rlimit rlim;
-				if (getrlimit(limits[i].resource, &rlim) == -1) continue;
+				if (getrlimit(limits[i].resource, &rlim) == -1) {
+					ret = 1;
+					continue;
+				}
 
 				rlim_t value = hard ? rlim.rlim_max : rlim.rlim_cur;
 
@@ -145,124 +218,55 @@
 					char buf[64];
 					long scaled_value = (long)(value / limits[i].divisor);
 					
-					if (*limits[i].unit) {
-						snprintf(buf, sizeof(buf), "%ld %s\n", scaled_value, limits[i].unit);
-					} else {
-						snprintf(buf, sizeof(buf), "%ld\n", scaled_value);
-					}
+					if (*limits[i].unit)	snprintf(buf, sizeof(buf), "%ld %s\n", scaled_value, limits[i].unit);
+					else					snprintf(buf, sizeof(buf), "%ld\n", scaled_value);
 
 					print(STDOUT_FILENO, buf, JOIN);
 				}
 			}
 
 			print(STDOUT_FILENO, NULL, PRINT);
-			return (0);
+
+			return (ret);
 		}
 
 	#pragma endregion
 
 	#pragma region "Parse Limit"
 
-		// No es -1 RLIM_INFINITY? el error se confundiria?
-		static rlim_t parse_limit(const char *str) {
-			if (!strcmp(str, "unlimited"))	return (RLIM_INFINITY);
-			if (!strcmp(str, "hard"))		return (-2);
-			if (!strcmp(str, "soft"))		return (-3);
+		static int get_divisor(int resource) {
+			for (int i = 0; limits[i].resource != -1; i++) {
+				if (limits[i].resource == resource)
+					return limits[i].divisor;
+			}
+			return 1;
+		}
+
+		static rlim_t parse_limit(const char *value, int resource, int *ret) {
+			if (!strcmp(value, "unlimited"))				return (RLIM_INFINITY);
+			if (!strcmp(value, "hard"))			{ *ret = 2; return (0); }
+			if (!strcmp(value, "soft"))			{ *ret = 3; return (0); }
+
+			printf("%s\n", value);
 
 			char *endptr;
 			errno = 0;
-			unsigned long val = strtoul(str, &endptr, 10);
+			unsigned long val = strtoul(value, &endptr, 10);
 
-			if (errno == ERANGE || val == ULONG_MAX)	return (-1);
-			if (endptr == str || *endptr != '\0')		return (-1);
-			
-			return ((rlim_t)val);
+			if (errno == ERANGE || val == ULONG_MAX)	{ *ret = 1; return (0); };
+			if (endptr == value || *endptr != '\0')		{ *ret = 1; return (0); };
+
+			return ((rlim_t)(val * get_divisor(resource)));
 		}
 
 	#pragma endregion
 
 #pragma endregion
 
-#pragma region "Ulimit"
+#pragma region "Process Resource"
 
-	int bt_ulimit(int argc, char **argv) {
-		int		soft = 1, hard = 0;
-		int		resource = RLIMIT_FSIZE;
-		int		resource_count = 0;
-		char	*limit_str = NULL;
-		int		opt, option_index = optind = opterr = 0;
-
-		struct option long_options[] = {
-			{"help",    no_argument, 0, 0},
-			{"version", no_argument, 0, 0},
-			{0, 0, 0, 0}
-		};
-
-		
-
-		while ((opt = getopt_long(argc, argv, "SHacdefilmnqrstuvxR", long_options, &option_index)) != -1) {
-			switch (opt) {
-				case 0  :
-					if (!strcmp(long_options[option_index].name, "help"))		return (help());
-					if (!strcmp(long_options[option_index].name, "version"))	return (version());
-				case '?': {
-					char buf[2] = {optopt, '\0'};
-					print(STDERR_FILENO, shell.arg0, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": ulimit: -", buf, ": invalid option\n", 0), FREE_JOIN);
-					print(STDERR_FILENO, "ulimit: usage: ulimit [-SHacdefilmnqrstuvxR] [limit]\n\n", JOIN);
-					print(STDERR_FILENO, "Try 'ulimit --help' for more information\n", PRINT);
-					return (1);
-				}
-
-				case 'S': soft = 1; hard = 0; break;
-				case 'H': soft = 0; hard = 1; break;
-				case 'a': return (show_limits(hard));
-				case 'c':
-				case 'd':
-				case 'e':
-				case 'f':
-				case 'i':
-				case 'l':
-				case 'm':
-				case 'n':
-				case 'q':
-				case 'r':
-				case 's':
-				case 't':
-				case 'u':
-				case 'v':
-				case 'x':
-				case 'R':
-					resource_count++;
-					if (resource_count > 1) {
-						print(STDERR_FILENO, shell.arg0, RESET);
-						print(STDERR_FILENO, ": ulimit: cannot specify multiple resources\n", JOIN);
-						print(STDERR_FILENO, "ulimit: usage: ulimit [-SHacdefilmnqrstuvxR] [limit]\n\n", PRINT);
-						print(STDERR_FILENO, "Try 'ulimit --help' for more information\n", PRINT);
-						return (1);
-					}
-
-					if		(opt == 'c') resource = RLIMIT_CORE;		// core file size
-					else if (opt == 'd') resource = RLIMIT_DATA;		// data segment
-					else if (opt == 'e') resource = RLIMIT_NICE;		// scheduling priority
-					else if (opt == 'f') resource = RLIMIT_FSIZE;		// file size
-					else if (opt == 'i') resource = RLIMIT_SIGPENDING;	// pending signals
-					else if (opt == 'l') resource = RLIMIT_MEMLOCK;		// locked memory
-					else if (opt == 'm') resource = RLIMIT_RSS;			// resident set size
-					else if (opt == 'n') resource = RLIMIT_NOFILE;		// file descriptors
-					else if (opt == 'q') resource = RLIMIT_MSGQUEUE;	// POSIX message queues
-					else if (opt == 'r') resource = RLIMIT_RTPRIO;		// real-time priority
-					else if (opt == 's') resource = RLIMIT_STACK;		// stack size
-					else if (opt == 't') resource = RLIMIT_CPU;			// CPU time
-					else if (opt == 'u') resource = RLIMIT_NPROC;		// number of processes
-					else if (opt == 'v') resource = RLIMIT_AS;			// virtual memory
-					else if (opt == 'x') resource = RLIMIT_LOCKS;		// file locks
-					else if (opt == 'R') resource = RLIMIT_RTTIME;		// real-time timeout
-					break;
-			}
-		}
-
-		if (optind < argc) limit_str = argv[optind];
+	static int process_resource(t_parse_result *result, const char *limit_str, const char *option_str, int hard, int resource) {
+		const char *value = (option_str) ? option_str : limit_str;
 
 		struct rlimit rlim;
 		if (getrlimit(resource, &rlim) == -1) {
@@ -270,33 +274,98 @@
 			return (1);
 		}
 
-		if (limit_str) {
-			rlim_t new_limit = parse_limit(limit_str);
-			if (new_limit == (rlim_t)-1) {
-				print(STDERR_FILENO, shell.arg0, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", limit_str, ": invalid number\n", 0), FREE_PRINT);
+		if (value) {
+			int ret = 0;
+			rlim_t new_limit = parse_limit(value, resource, &ret);
+			if		(ret == 3)	new_limit = rlim.rlim_cur;
+			else if (ret == 2)	new_limit = rlim.rlim_max;
+			else if (ret == 1) {
+				print(STDERR_FILENO, result->shell_name,                                           JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", value, ": invalid number\n", 0), FREE_JOIN);
 				return (1);
 			}
 
-			if (soft) rlim.rlim_cur = new_limit;
-			if (hard) rlim.rlim_max = new_limit;
+			if (hard)	rlim.rlim_max = new_limit;
+			else		rlim.rlim_cur = new_limit;
 
 			if (setrlimit(resource, &rlim) == -1) {
-				perror("ulimit");
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ulimit: ", 0), JOIN);
+
+				for (int i = 0; limits[i].resource != -1; i++) {
+					if (limits[i].resource == resource) {
+						print(STDERR_FILENO, limits[i].name, JOIN);
+						break;
+					}
+				}
+
+				print(STDERR_FILENO, ": cannot modify limit: ", JOIN);
+
+				if (errno == EINVAL && (resource == RLIMIT_RTPRIO || resource == RLIMIT_NICE || resource == RLIMIT_MEMLOCK)) {
+					print(STDERR_FILENO, "Operation not permitted\n", JOIN);
+				} else {
+					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", 0), JOIN);
+				}
+
 				return (1);
 			}
 		} else {
-			rlim_t value = hard ? rlim.rlim_max : rlim.rlim_cur;
-			if (value == RLIM_INFINITY)
-				print(STDOUT_FILENO, "unlimited\n", RESET_PRINT);
-			else {
-				char buf[32];
-				snprintf(buf, sizeof(buf), "%ld", (long)value);
-				print(STDOUT_FILENO, ft_strjoin(buf, "\n", 0), FREE_RESET_PRINT);
-			}
+			return (show_limits(hard, resource));
 		}
 
 		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "Ulimit"
+
+	int bt_ulimit(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
+
+		t_parse_result *result = parse_options(argc, argv, "SHac::d::e::f::i::l::m::n::q::r::s::t::u::v::x::R::", NULL, long_opts, "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
+
+		if (find_long_option(result, "help"))		return (free_options(result), bt_ulimit_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+
+
+		int			ret = 0, hard = 0;
+		const char	*limit_str = (result->argc) ? result->argv[0] : NULL;
+
+		if (has_option(result,'H')) hard = 1;
+		if (has_option(result,'S')) hard = 0;
+		if (has_option(result,'a')) return (free_options(result), show_limits(hard, -1));
+
+		print(STDOUT_FILENO, NULL, RESET);
+		print(STDERR_FILENO, NULL, RESET);
+
+		if (!result->options       && process_resource(result, limit_str, NULL, hard, RLIMIT_FSIZE))								ret = 1;	// file size
+		if (has_option(result,'c') && process_resource(result, limit_str, get_option_value(result, 'c'), hard, RLIMIT_CORE))		ret = 1;	// core file size
+		if (has_option(result,'d') && process_resource(result, limit_str, get_option_value(result, 'd'), hard, RLIMIT_DATA))		ret = 1;	// data segment
+		if (has_option(result,'e') && process_resource(result, limit_str, get_option_value(result, 'e'), hard, RLIMIT_NICE))		ret = 1;	// scheduling priority
+		if (has_option(result,'f') && process_resource(result, limit_str, get_option_value(result, 'f'), hard, RLIMIT_FSIZE))		ret = 1;	// file size
+		if (has_option(result,'i') && process_resource(result, limit_str, get_option_value(result, 'i'), hard, RLIMIT_SIGPENDING))	ret = 1;	// pending signals
+		if (has_option(result,'l') && process_resource(result, limit_str, get_option_value(result, 'l'), hard, RLIMIT_MEMLOCK))		ret = 1;	// locked memory
+		if (has_option(result,'m') && process_resource(result, limit_str, get_option_value(result, 'm'), hard, RLIMIT_RSS))			ret = 1;	// resident set size
+		if (has_option(result,'n') && process_resource(result, limit_str, get_option_value(result, 'n'), hard, RLIMIT_NOFILE))		ret = 1;	// file descriptors
+		if (has_option(result,'q') && process_resource(result, limit_str, get_option_value(result, 'q'), hard, RLIMIT_MSGQUEUE))	ret = 1;	// POSIX message queues
+		if (has_option(result,'r') && process_resource(result, limit_str, get_option_value(result, 'r'), hard, RLIMIT_RTPRIO))		ret = 1;	// real-time priority
+		if (has_option(result,'s') && process_resource(result, limit_str, get_option_value(result, 's'), hard, RLIMIT_STACK))		ret = 1;	// stack size
+		if (has_option(result,'t') && process_resource(result, limit_str, get_option_value(result, 't'), hard, RLIMIT_CPU))			ret = 1;	// CPU time
+		if (has_option(result,'u') && process_resource(result, limit_str, get_option_value(result, 'u'), hard, RLIMIT_NPROC))		ret = 1;	// number of processes
+		if (has_option(result,'v') && process_resource(result, limit_str, get_option_value(result, 'v'), hard, RLIMIT_AS))			ret = 1;	// virtual memory
+		if (has_option(result,'x') && process_resource(result, limit_str, get_option_value(result, 'x'), hard, RLIMIT_LOCKS))		ret = 1;	// file locks
+		if (has_option(result,'R') && process_resource(result, limit_str, get_option_value(result, 'R'), hard, RLIMIT_RTTIME))		ret = 1;	// real-time timeout
+
+		print(STDOUT_FILENO, NULL, PRINT);
+		print(STDERR_FILENO, NULL, PRINT);
+
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

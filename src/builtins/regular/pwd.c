@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 22:30:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@
 
 	#pragma region "Help"
 
-		static int help() {
+		int bt_pwd_help(int format, int no_print) {
+			char *name = "pwd";
+			char *syntax = "pwd: pwd [-LP]";
+			char *description = "Print the name of the current working directory.";
 			char *msg =
-				"pwd: pwd [-LP]\n"
-				"    Print the name of the current working directory.\n\n"
-
 				"    opts:\n"
 				"      -L        print the value of $PWD if it names the current working\n"
 				"                directory\n"
@@ -41,7 +41,38 @@
 				"      Returns 0 unless an invalid option is given or the current directory\n"
 				"      cannot be read.\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
 
 			return (0);
 		}
@@ -68,7 +99,7 @@
 
 #pragma endregion
 
-#pragma region "PWD"
+#pragma region "Pwd"
 
 	int bt_pwd(int argc, char **argv) {
 		t_long_option long_opts[] = {
@@ -81,7 +112,7 @@
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
-		if (find_long_option(result, "help"))		return (free_options(result), help());
+		if (find_long_option(result, "help"))		return (free_options(result), bt_pwd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 		int ret = 0;

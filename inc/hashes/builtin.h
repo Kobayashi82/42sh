@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:44:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 00:28:38 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,6 @@
 	int			bt_suspend(int argc, char **argv);
 	int			bt_suspend_help(int format, int no_print);
 
-
 	//	==== BUILTINS (Regular) ====
 	int			bt_alias(int argc, char **argv);
 	int			bt_alias_help(int format, int no_print);
@@ -123,16 +122,22 @@
 	int			bt_kill_help(int format, int no_print);
 	// int			bt_printf(t_arg *args);
 	int			bt_pwd(int argc, char **argv);
-	// int			bt_read(t_arg *args);
+	int			bt_pwd_help(int format, int no_print);
+	int			bt_read(int argc, char **argv);
+	int			bt_read_help(int format, int no_print);
 	// int			bt_test(t_arg *args);
 	int			bt_true(int argc, char **argv);
 	int			bt_true_help(int format, int no_print);
-	int			bt_type(t_arg *args);
+	int			bt_type(int argc, char **argv);
+	int			bt_type_help(int format, int no_print);
 	int			bt_ulimit(int argc, char **argv);
-	// int			bt_umask(t_arg *args);
+	int			bt_ulimit_help(int format, int no_print);
+	int			bt_umask(int argc, char **argv);
+	int			bt_umask_help(int format, int no_print);
 	int			bt_unalias(int argc, char **argv);
 	int			bt_unalias_help(int format, int no_print);
-	// int			bt_wait(t_arg *args);
+	int			bt_wait(int argc, char **argv);
+	int			bt_wait_help(int format, int no_print);
 
 	//	==== BUILTINS (Special) ====
 	// int			bt_break(t_arg *args);

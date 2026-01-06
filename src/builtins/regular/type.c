@@ -6,30 +6,31 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 00:26:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/print.h"
-	#include "tests/args.h"
-	#include "builtins/options.h"
+	#include "hashes/builtin.h"
 	#include "hashes/alias.h"
 	#include "hashes/hash.h"
-	#include "hashes/builtin.h"
+	#include "utils/libft.h"
 	#include "utils/paths.h"
+	#include "utils/print.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-			"type: type [-afptP] name [name ...]\n"
-			"    Display information about command type.\n\n"
+	#pragma region "Help"
 
+		int bt_type_help(int format, int no_print) {
+			char *name = "type";
+			char *syntax = "type [-afptP] name [name ...]";
+			char *description = "Display information about command type.";
+			char *msg =
 			"    For each NAME, indicate how it would be interpreted if used as a\n"
 			"    command name.\n\n"
 
@@ -54,10 +55,61 @@
 			"    Exit Status:\n"
 			"      Returns success if all of the NAMEs are found; fails if any are not found.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		return (0);
-	}
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"type 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
@@ -198,47 +250,65 @@
 
 #pragma region "Type"
 
-	int bt_type(t_arg *args) {
-		int is_command = 0;
-		if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
-		t_opt *opts = parse_options_old(args, "afptP", '-', 0);
+	int bt_type(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("type", opts->invalid, "[-afptP] name [name ...]");
-			return (free(opts), 1);
-		}
+		t_parse_result *result = parse_options(argc, argv, "dms", NULL, long_opts, "help [-dms] [pattern ...]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_help_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		print(STDOUT_FILENO, NULL, RESET);
-		print(STDERR_FILENO, NULL, RESET);
 
-		int result = 0;
-		while (opts->args) {
-			if (opts->args->value) {
-				int tmp_result = 0;
-				tmp_result += check_alias(opts->args->value, opts->valid);
-				tmp_result += check_builtin(opts->args->value, opts->valid);
-				tmp_result += check_function(opts->args->value, opts->valid);
-				tmp_result += check_command(opts->args->value, opts->valid, is_command);
-				if (is_command) {
-					if (!tmp_result && result == 0) result = 1;
-					if (tmp_result) result = 2;
-				} else if (!tmp_result) result = 1;
+		int ret = 0;
 
-				if (!tmp_result && strchr(opts->valid, 'a'))
-					print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), FREE_JOIN);
-			}
-			opts->args = opts->args->next;
-		}
+		return (free_options(result), ret);
+
+		// int is_command = 0;
+		// if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
+		// t_opt *opts = parse_options_old(args, "afptP", '-', 0);
+
+		// if (*opts->invalid) {
+		// 	invalid_option("type", opts->invalid, "[-afptP] name [name ...]");
+		// 	return (free(opts), 1);
+		// }
+
+		// if (strchr(opts->valid, '?')) return (free(opts), print_help());
+		// if (strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
+
+		// print(STDOUT_FILENO, NULL, RESET);
+		// print(STDERR_FILENO, NULL, RESET);
+
+		// int result = 0;
+		// while (opts->args) {
+		// 	if (opts->args->value) {
+		// 		int tmp_result = 0;
+		// 		tmp_result += check_alias(opts->args->value, opts->valid);
+		// 		tmp_result += check_builtin(opts->args->value, opts->valid);
+		// 		tmp_result += check_function(opts->args->value, opts->valid);
+		// 		tmp_result += check_command(opts->args->value, opts->valid, is_command);
+		// 		if (is_command) {
+		// 			if (!tmp_result && result == 0) result = 1;
+		// 			if (tmp_result) result = 2;
+		// 		} else if (!tmp_result) result = 1;
+
+		// 		if (!tmp_result && strchr(opts->valid, 'a'))
+		// 			print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), FREE_JOIN);
+		// 	}
+		// 	opts->args = opts->args->next;
+		// }
 		
 
-		print(STDOUT_FILENO, NULL, PRINT);
-		print(STDERR_FILENO, NULL, PRINT);
+		// print(STDOUT_FILENO, NULL, PRINT);
+		// print(STDERR_FILENO, NULL, PRINT);
 
-		if (result == 2) result = 0;
-		return (free(opts), result);
+		// if (result == 2) result = 0;
+		// return (free(opts), result);
 	}
 
 #pragma endregion

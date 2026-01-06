@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:44:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 00:23:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,18 +302,17 @@
 		builtin_add("hash", 0, 0, &bt_hash, &bt_hash_help);
 		builtin_add("jobs", 0, 0, &bt_jobs, &bt_jobs_help);
 		builtin_add("kill", 0, 0, &bt_kill, &bt_kill_help);
-		// SIN CREAR builtin_add("readarray", 0, 0, &bt_readarray, &bt_builtin_help);
 		// SIN CREAR builtin_add("printf", 0, 0, &bt_printf, &bt_builtin_help);
-		builtin_add("pwd", 0, 0, &bt_pwd, &bt_builtin_help);
-		// SIN CREAR builtin_add("read", 0, 0, &bt_read, &bt_builtin_help);
+		builtin_add("pwd", 0, 0, &bt_pwd, &bt_pwd_help);
+		builtin_add("read", 0, 0, &bt_read, &bt_read_help);
 		// SIN CREAR builtin_add("[", 0, 0, &bt_test, &bt_builtin_help);
 		// SIN CREAR builtin_add("test", 0, 0, &bt_test, &bt_builtin_help);
 		builtin_add("true", 0, 0, &bt_true, &bt_true_help);
-		// builtin_add("type", 0, 0, &bt_type, &bt_builtin_help);
-		builtin_add("ulimit", 0, 0, &bt_ulimit, &bt_builtin_help);
-		// SIN CREAR builtin_add("umask", 0, 0, &bt_umask, &bt_builtin_help);
+		builtin_add("type", 0, 0, &bt_type, &bt_type_help);
+		builtin_add("ulimit", 0, 0, &bt_ulimit, &bt_ulimit_help);
+		builtin_add("umask", 0, 0, &bt_umask, &bt_umask_help);
 		builtin_add("unalias", 0, 0, &bt_unalias, &bt_unalias_help);
-		// SIN CREAR builtin_add("wait", 0, 0, &bt_wait, &bt_builtin_help);
+		builtin_add("wait", 0, 0, &bt_wait, &bt_wait_help);
 
 		// Special
 		// SIN CREAR builtin_add("break", 0, 1, &bt_break, &bt_builtin_help);
