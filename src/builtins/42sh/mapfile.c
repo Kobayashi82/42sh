@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 00:35:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,7 +203,7 @@
 
 		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, syntax, 0);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 1);
+		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help") && !strcmp(argv[0], "readarray"))		return (free_options(result), bt_readarray_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "help"))										return (free_options(result), bt_mapfile_help(HELP_NORMAL, 0));

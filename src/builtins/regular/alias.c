@@ -6,45 +6,98 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "hashes/builtin.h"
+	#include "hashes/alias.h"
+	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "tests/args.h"
-	#include "hashes/builtin.h"
-	#include "builtins/options.h"
-	#include "hashes/alias.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-			"alias: alias [-p] [name[=value] ... ]\n"
-			"    Define or display aliases.\n\n"
+	#pragma region "Help"
 
-			"    Without arguments, `alias' prints the list of aliases in the reusable\n"
-			"    form `alias NAME=VALUE' on standard output.\n\n"
+		int bt_alias_help(int format, int no_print) {
+			char *name = "alias";
+			char *syntax = "alias [-p] [name[=value] ... ]";
+			char *description = "Define or display aliases.";
+			char *msg =
+				"    Without arguments, `alias' prints the list of aliases in the reusable\n"
+				"    form `alias NAME=VALUE' on standard output.\n\n"
 
-			"    Otherwise, an alias is defined for each NAME whose VALUE is given.\n"
-			"    A trailing space in VALUE causes the next word to be checked for\n"
-			"    alias substitution when the alias is expanded.\n\n"
+				"    Otherwise, an alias is defined for each NAME whose VALUE is given.\n"
+				"    A trailing space in VALUE causes the next word to be checked for\n"
+				"    alias substitution when the alias is expanded.\n\n"
 
-			"    Options:\n"
-			"      -p        print all defined aliases in a reusable format\n\n"
+				"    Options:\n"
+				"      -p        print all defined aliases in a reusable format\n\n"
 
-			"    Exit Status:\n"
-			"      Returns success unless a NAME is supplied for which no alias has been defined.\n";
+				"    Exit Status:\n"
+				"      Returns success unless a NAME is supplied for which no alias has been defined.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		return (0);
-	}
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"alias 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
@@ -75,7 +128,8 @@
 		}
 
 		if (!alias) {
-			char *value = ft_strjoin_sep("alias: ", arg, ": not found\n", 0);
+			char *value = ft_strjoin(shell.arg0, ": alias: ", 0);
+			value = ft_strjoin_sep(value, arg, ": not found\n", 1);
 			if (value) *invalues = ft_strjoin(*invalues, value, 3);
 		}
 
@@ -86,35 +140,42 @@
 
 #pragma region "Alias"
 
-	int bt_alias(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "p", '-', 0);
+	int bt_alias(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("alias", opts->invalid, "[-p] [name[=value] ... ]");
-			return (free(opts), 1);
-		}
+		t_parse_result *result = parse_options(argc, argv, "p", NULL, long_opts, "alias [-p] [name[=value] ... ]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("alias", "1.0"));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_alias_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		int result = 0;
+
+		int ret = 0;
+
 		char *values = NULL, *invalues = NULL;
 
-		if (opts->args) {
-			while (opts->args) {
-				if (opts->args->value && opts->args->value[0] != '=' && strchr(opts->args->value, '=')) {
-					if (add_alias(opts->args->value)) result = 1;
-				} else print_alias(opts->args->value, &values, &invalues);
-				opts->args = opts->args->next;
+		if (!result->argc || has_option(result, 'p')) {
+			alias_print(1);
+			return (free_options(result), 0);
+		}
+
+		for (int i = 0; i < result->argc; ++i) {
+			if (result->argv[i][0] != '=' && strchr(result->argv[i], '=')) {
+				if (add_alias(result->argv[i])) ret = 1;
+			} else {
+				print_alias(result->argv[i], &values, &invalues);
 			}
-		} else if (!*opts->valid) alias_print(1);
-		
-		if (strchr(opts->valid, 'p')) alias_print(1);
+		}
 
-		if (values) { print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
+		if (values)		{ print(STDOUT_FILENO, values, RESET_PRINT); free(values); }
+		if (invalues)	{ print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
 
-		return (free(opts), result);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

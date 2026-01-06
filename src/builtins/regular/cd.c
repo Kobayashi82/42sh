@@ -6,91 +6,148 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
-	#include "builtins/options.h"
 	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/paths.h"
 	#include "utils/print.h"
-
-	#include "tests/args.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-		"cd: cd [-L|[-P] [dir]\n"
-		"    Change the shell working directory.\n\n"
+	#pragma region "Help"
 
-		"    Change the current directory to DIR.  The default DIR is the value of the\n"
-		"    HOME shell variable.\n\n"
+		int bt_cd_help(int format, int no_print) {
+			char *name = "cd";
+			char *syntax = "cd [-L|[-P] [dir]";
+			char *description = "Change the shell working directory.";
+			char *msg =
+				"    Change the current directory to DIR.  The default DIR is the value of the\n"
+				"    HOME shell variable.\n\n"
 
-		"    The variable CDPATH defines the search path for the directory containing\n"
-		"    DIR.  Alternative directory names in CDPATH are separated by a colon (:).\n"
-		"    A null directory name is the same as the current directory.  If DIR begins\n"
-		"    with a slash (/), then CDPATH is not used.\n\n"
+				"    The variable CDPATH defines the search path for the directory containing\n"
+				"    DIR.  Alternative directory names in CDPATH are separated by a colon (:).\n"
+				"    A null directory name is the same as the current directory.  If DIR begins\n"
+				"    with a slash (/), then CDPATH is not used.\n\n"
 
-		"    If the directory is not found, and the shell option `cdable_vars' is set,\n"
-		"    the word is assumed to be  a variable name.  If that variable has a value,\n"
-		"    its value is used for DIR.\n\n"
+				"    If the directory is not found, and the shell option `cdable_vars' is set,\n"
+				"    the word is assumed to be  a variable name.  If that variable has a value,\n"
+				"    its value is used for DIR.\n\n"
 
-		"    Options:\n"
-		"      -L        force symbolic links to be followed: resolve symbolic\n"
-		"                links in DIR after processing instances of `..'\n"
-		"      -P        use the physical directory structure without following\n"
-		"                symbolic links: resolve symbolic links in DIR before\n"
-		"                processing instances of `..'\n"
+				"    Options:\n"
+				"      -L        force symbolic links to be followed: resolve symbolic\n"
+				"                links in DIR after processing instances of `..'\n"
+				"      -P        use the physical directory structure without following\n"
+				"                symbolic links: resolve symbolic links in DIR before\n"
+				"                processing instances of `..'\n"
 
-		"    The default is to follow symbolic links, as if `-L' were specified.\n"
-		"    `..' is processed by removing the immediately previous pathname component\n"
-		"    back to a slash or the beginning of DIR.\n\n"
+				"    The default is to follow symbolic links, as if `-L' were specified.\n"
+				"    `..' is processed by removing the immediately previous pathname component\n"
+				"    back to a slash or the beginning of DIR.\n\n"
 
-		"    Exit Status:\n"
-		"      Returns 0 if the directory is changed, and if $PWD is set successfully when\n"
-		"      -P is used; non-zero otherwise.\n";
-	
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+				"    Exit Status:\n"
+				"      Returns 0 if the directory is changed, and if $PWD is set successfully when\n"
+				"      -P is used; non-zero otherwise.\n";
 
-		return (0);
-	}
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"cd 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Change Dir"
 
-	static int change_dir(char **main_path, t_opt *opts) {
-		char *path = ft_strdup(*main_path);
+	static int change_dir(t_parse_result *result, char **main_path) {
 		char *original = *main_path;
+		char *path = ft_strdup(original);
+
 		if (*path != '/') {
 			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-			path = resolve_path(tmp); free(tmp);
+			path = resolve_path(tmp);
+			free(tmp);
 		} else {
-			char *tmp = resolve_path(path); free(path);
+			char *tmp = resolve_path(path);
+			free(path);
 			path = tmp;
 		}
-		
+
 		if (options.cdspell && shell.source == SRC_INTERACTIVE) path = correct_path(path);
-		
+
 		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
 			char *var_path = variables_find_value(vars_table, original);
 			if (var_path) {
-				free(path); path = ft_strdup(var_path);
+				free(path);
+				path = ft_strdup(var_path);
 
 				if (*path != '/') {
 					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, 3);
-					path = resolve_path(tmp); free(tmp);
+					path = resolve_path(tmp);
+					free(tmp);
 				} else {
-					char *tmp = resolve_path(path); free(path);
+					char *tmp = resolve_path(path);
+					free(path);
 					path = tmp;
 				}
 
@@ -98,15 +155,19 @@
 			}
 		}
 
-		if ((!options.cd_resolve && !*opts->valid) || strchr(opts->valid, 'L')) {
+		if ((!options.cd_resolve && !result->options) || has_option(result, 'L')) {
 			;
-		} else if ((options.cd_resolve && !*opts->valid) || (strchr(opts->valid, 'P'))) {
-			char *tmp = ft_strdup(resolve_symlink(path)); free(path);
+		} else if ((options.cd_resolve && !result->options) || has_option(result, 'P')) {
+			char *tmp = ft_strdup(resolve_symlink(path));
+			free(path);
 			path = tmp;
 		}
 
-		if (chdir(path)) { free(path); return (1); }
-		
+		if (chdir(path)) {
+			free(path);
+			return (1);
+		}
+
 		free(*main_path);
 		*main_path = path;
 		return (0);
@@ -116,7 +177,7 @@
 
 #pragma region "Check CDPATH"
 
-	int check_CDPATH(char **main_path, t_opt *opts, int *is_dash) {
+	int check_CDPATH(t_parse_result *result, char **main_path, int *is_dash) {
 		char *vars = variables_find_value(vars_table, "CDPATH");
 		if (vars) {
 			char *token = ft_strtok(vars, ":", 61);
@@ -125,11 +186,14 @@
 				if (*token) {
 					char *path = NULL;
 
-					if (!strcmp(token, "-")) { *is_dash = 1;
+					if (!strcmp(token, "-")) {
+						*is_dash = 1;
 						path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
-					} else path = ft_strdup(token);
-					
-					if (path && !change_dir(&path, opts)) {
+					} else {
+						path = ft_strdup(token);
+					}
+
+					if (path && !change_dir(result, &path)) {
 						free(*main_path);
 						*main_path = path;
 						return (0);
@@ -140,84 +204,99 @@
 
 				token = ft_strtok(NULL, ":", 61);
 			}
-		} return (1);
+		}
+
+		return (1);
 	}
 
 
 #pragma endregion
 
-#pragma region "CD"
+#pragma region "Cd"
 
-	int bt_cd(t_arg *args) {
-		t_arg *tmp_arg = args;
-		while (tmp_arg && tmp_arg->value) {
-			if (!strcmp(tmp_arg->value, "-")) tmp_arg->value[0] = '|';
-			tmp_arg = tmp_arg->next;
-		}
+	int bt_cd(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		t_opt *opts = parse_options_old(args, "LP", '-', 0);
-		
-		tmp_arg = args;
-		while (tmp_arg && tmp_arg->value) {
-			if (!strcmp(tmp_arg->value, "|")) tmp_arg->value[0] = '-';
-			tmp_arg = tmp_arg->next;
-		}
+		t_parse_result *result = parse_options(argc, argv, "LP", NULL, long_opts, "cd [-L|[-P] [dir]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (*opts->invalid) {
-			invalid_option("cd", opts->invalid, "[-L|[-P] [dir]");
-			return (free(opts), 1);
-		}
+		if (find_long_option(result, "help"))		return (free_options(result), bt_cd_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("cd", "1.0"));
 
-		int result = 0;
+		int ret = 0;
+
 		char *path = NULL;
 		int is_dash = 0;
 
-		if (!opts->args) {
+		if (!result->argc) {
 			path = ft_strdup(variables_find_value(vars_table, "HOME"));
-			if (!path) { result = 2;
-				print(STDERR_FILENO, PROYECTNAME ": cd: HOME not set\n", RESET_PRINT);
+			if (!path) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: HOME not set\n", 0), FREE_RESET_PRINT);
+				ret = 2;
 			}
-		} else if (opts->args->value && *opts->args->value) {
-			if (opts->args->next) { result = 2;
-				print(STDERR_FILENO, PROYECTNAME ": cd: too many arguments\n", RESET_PRINT);
-			} else if (!strcmp(opts->args->value, "-")) { is_dash = 1;
+		} else {
+			if (result->argc > 1) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: too many arguments\n", 0), FREE_RESET_PRINT);
+				ret = 2;
+			} else if (!strcmp(result->argv[0], "-")) {
+				is_dash = 1;
 				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
-				if (!path) { result = 2;
-					print(STDERR_FILENO, PROYECTNAME ": cd: OLDPWD not set\n", RESET_PRINT);
+				if (!path) {
+					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: OLDPWD not set\n", 0), FREE_RESET_PRINT);
+					ret = 2;
 				}
-			} else path = ft_strdup(opts->args->value);
-		}
-		
-		if (!result && (!path || !*path)) result = 3;
-		if (!result) result = change_dir(&path, opts);
-		if (result == 1) {
-			if (!check_CDPATH(&path, opts, &is_dash)) result = 0;
-			else if (access(path, F_OK) != -1 && !is_directory(path))		print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": Not a directory\n", 0), FREE_RESET_PRINT);
-			else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": Permission denied\n", 0), FREE_RESET_PRINT);
-			else															print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": cd: ", opts->args->value, ": No such file or directory\n", 0), FREE_RESET_PRINT);
+			} else {
+				path = ft_strdup(result->argv[0]);
+				if (!path) ret = 3;
+			}
 		}
 
-		if (!result) {
+		if (!ret) ret = change_dir(result, &path);
+		if (ret == 1) {
+			if		(!check_CDPATH(result, &path, &is_dash))				ret = 0;
+			else if	(access(path, F_OK) != -1 && !is_directory(path)) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),           FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0), FREE_PRINT);
+			} else if (access(path, F_OK) != -1 && access(path, X_OK) == -1) {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),             FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0), FREE_PRINT);
+			} else {
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),                     FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0), FREE_PRINT);
+			}
+		}
+
+		if (!ret) {
 			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
 
 			t_var *var = variables_find(vars_table, "OLDPWD");
 			if (var && var->readonly) {
-				print(STDERR_FILENO, PROYECTNAME ": OLDPWD: readonly variable\n", RESET_PRINT);
-				result = 1;
-			} else variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
-				
-			free(shell.cwd); shell.cwd = ft_strdup(path);
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": OLDPWD: readonly variable\n", 0), FREE_RESET_PRINT);
+				ret = 1;
+			} else {
+				variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
+			}
+
+			free(shell.cwd);
+			shell.cwd = ft_strdup(path);
 			var = variables_find(vars_table, "PWD");
 			if (var && var->readonly) {
-				print(STDERR_FILENO, PROYECTNAME ": PWD: readonly variable\n", RESET_PRINT);
-				result = 1;
-			} else variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
+				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": PWD: readonly variable\n", 0), FREE_RESET_PRINT);
+				ret = 1;
+			} else {
+				variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
+			}
 		}
 
-		return (free(path), free(opts), (result != 0));
+		free(path);
+
+		return (free_options(result), (ret != 0));
 	}
 
 #pragma endregion

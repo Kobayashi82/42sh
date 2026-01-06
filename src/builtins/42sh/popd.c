@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 00:21:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@
 
 		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "popd [-n] [+N | -N]", 0);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 1);
+		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_popd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

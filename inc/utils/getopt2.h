@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 20:47:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 20:09:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@
 #pragma region "Methods"
 
 	// Parsing
-	t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_numbers);
+	t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_mode);
 
 	// Short
 	t_opt_value     *find_option(t_parse_result *result, char opt);

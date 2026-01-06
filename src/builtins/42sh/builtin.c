@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 23:43:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@
 
 		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "builtin [shell-builtin [arg ...]]", 0);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 1);
+		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_builtin_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

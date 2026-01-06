@@ -6,50 +6,102 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:48:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
-
+	
+	#include "hashes/builtin.h"
+	#include "hashes/hash.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "tests/args.h"
-	#include "hashes/builtin.h"
-	#include "builtins/options.h"
-	#include "hashes/hash.h"
+	#include "utils/getopt2.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-			"hash: hash [-lr] [-p pathname] [-dt] [name ...]\n"
-			"    Remember or display program locations.\n\n"
+	#pragma region "Help"
 
-			"    Determine and remember the full pathname of each command NAME.\n"
-			"    If no arguments are given, information about remembered commands is displayed.\n\n"
+		int bt_hash_help(int format, int no_print) {
+			char *name = "hash";
+			char *syntax = "hash [-lr] [-p pathname] [-dt] [name ...]";
+			char *description = "Remember or display program locations.";
+			char *msg =
+				"    Determine and remember the full pathname of each command NAME.\n"
+				"    If no arguments are given, information about remembered commands is displayed.\n\n"
 
-			"    Options:\n"
-			"      -d               forget the remembered location of each NAME\n"
-			"      -l               display in a format that may be reused as input\n"
-			"      -p pathname      use PATHNAME as the full pathname of NAME\n"
-			"      -r               forget all remembered locations\n"
-			"      -t               print the remembered location of each NAME, preceding\n"
-			"                       each location with the corresponding NAME if multiple\n"
-			"                       NAMEs are given\n"
-			"    Arguments:\n"
-			"      NAME             Each NAME is searched for in $PATH and added to the list\n"
-			"                       of remembered commands.\n\n"
+				"    Options:\n"
+				"      -d               forget the remembered location of each NAME\n"
+				"      -l               display in a format that may be reused as input\n"
+				"      -p pathname      use PATHNAME as the full pathname of NAME\n"
+				"      -r               forget all remembered locations\n"
+				"      -t               print the remembered location of each NAME, preceding\n"
+				"                       each location with the corresponding NAME if multiple\n"
+				"                       NAMEs are given\n"
+				"    Arguments:\n"
+				"      NAME             Each NAME is searched for in $PATH and added to the list\n"
+				"                       of remembered commands.\n\n"
 
-			"    Exit Status:\n"
-			"      Returns success unless NAME is not found or an invalid option is given.\n";
+				"    Exit Status:\n"
+				"      Returns success unless NAME is not found or an invalid option is given.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		return (0);
-	}
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"hash 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
@@ -93,43 +145,63 @@
 
 #pragma region "Hash"
 
-	int bt_hash(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "dlprt", '-', 0);
+	int bt_hash(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("hash", opts->invalid, "[-lr] [-p pathname] [-dt] [name ...]");
-			return (free(opts), 1);
-		}
+		t_parse_result *result = parse_options(argc, argv, "lrp:dt", NULL, long_opts, "hash [-lr] [-p pathname] [-dt] [name ...]", 0);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("hash", "1.0"));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_hash_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+
+
+		int ret = 0;
 
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 
-		if ((!*opts->valid || !strcmp(opts->valid, "l")) && !opts->args) {
-			int result = print_hash(strchr(opts->valid, 'l') != NULL);
-			return (free(opts), result);
+		if (has_option(result, 'r')) {
+			cmdp_clear();
+			return (free_options(result), 0);
 		}
 
-		if ((strchr(opts->valid, 't') || strchr(opts->valid, 'p') || strchr(opts->valid, 'd')) && !opts->args) {
-			char opt[4]; int i = 0;
-			if (strchr(opts->valid, 't')) opt[i++] = 't';
-			if (strchr(opts->valid, 'p')) opt[i++] = 'p';
-			if (strchr(opts->valid, 'd')) opt[i++] = 'd';
-			opt[i] = '\0';
-			print(STDERR_FILENO, ft_strjoin_sep("hash: -", opt, ": option requires an argument\n", 0), FREE_JOIN);
-			print(STDERR_FILENO, "usage: hash [-lr] [-p pathname] [-dt] [name ...]\n\n", JOIN);
-			print(STDERR_FILENO, "Try 'hash --help' for more information\n", PRINT);
-			return (free(opts), 1);
+		if (has_option(result, 't')) {
+			// -t             print the remembered location of each NAME, preceding
+            //                each location with the corresponding NAME if multiple
+            //                NAMEs are given
+			return (free_options(result), 0);
 		}
 
-		// Falta implementar -tpdr
+		if (has_option(result, 'd') || has_option(result, 'p')) {
+			if (!result->argc) {
+				print(STDERR_FILENO, result->shell_name,                                                            RESET);
+				if		(has_option(result, 'd')) print(STDERR_FILENO, ": hash: -d: option requires an argument\n", JOIN);
+				else if (has_option(result, 't')) print(STDERR_FILENO, ": hash: -t: option requires an argument\n", JOIN);
+				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                    PRINT);
+				return (free_options(result), 2);
+			}
+
+			for (int i = 0; i < result->argc; ++i)  {
+				// -d             forget the remembered location of each NAME
+				// -p pathname    use PATHNAME as the full pathname of NAME
+			}
+			return (free_options(result), 0);
+		}
+
+		if (!result->options || has_option(result, 'l')) {
+			ret = print_hash(has_option(result, 'l'));
+			return (free_options(result), ret);
+		}
 
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);
 
-		return (free(opts), 0);
+		return (free_options(result), 0);
 	}
 
 #pragma endregion

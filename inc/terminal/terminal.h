@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/06 20:22:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 18:29:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,10 @@
 
 #pragma region Methods
 
-	void	signals_set();
-	int		no_interactive_input(char *value);
-	int		interactive_input();
+	const char	*signal_to_str(int sig);
+	int			str_to_signal(const char *sig);
+	void		signals_set();
+	int			no_interactive_input(char *value);
+	int			interactive_input();
 
 #pragma endregion

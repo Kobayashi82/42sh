@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/02 02:13:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 22:03:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,21 @@
 		while (!result) {
 			cursor_show();
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
+
+			if (readed < 0) {
+				if (errno == EINTR) {
+					if (shell.exit) {
+						disable_raw_mode();
+						write(STDOUT_FILENO, "\n", 1);
+						if (buffer.value) free(buffer.value);
+						buffer.value = NULL;
+						return (NULL);
+					}
+					continue;
+				}
+				return (NULL);
+			}
+
 			if (!isatty(STDIN_FILENO)) return (NULL);
 			cursor_hide();		
 

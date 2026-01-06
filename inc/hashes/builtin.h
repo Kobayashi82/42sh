@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 00:34:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:44:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,28 +98,40 @@
 
 
 	//	==== BUILTINS (Regular) ====
-	int			bt_alias(t_arg *args);
-	// int			bt_bg(t_arg *args);
-	int			bt_cd(t_arg *args);
-	int			bt_command(t_arg *args);
-	int			bt_echo(t_arg *args);
-	int			bt_false(t_arg *args);
+	int			bt_alias(int argc, char **argv);
+	int			bt_alias_help(int format, int no_print);
+	int			bt_bg(int argc, char **argv);
+	int			bt_bg_help(int format, int no_print);
+	int			bt_cd(int argc, char **argv);
+	int			bt_cd_help(int format, int no_print);
+	int			bt_command(int argc, char **argv);
+	int			bt_command_help(int format, int no_print);
+	int			bt_echo(int argc, char **argv);
+	int			bt_echo_help(int format, int no_print);
+	int			bt_false(int argc, char **argv);
+	int			bt_false_help(int format, int no_print);
 	int			bt_fc(int argc, char **argv);
 	int			bt_fc_help(int format, int no_print);
-	// int			bt_fg(t_arg *args);
+	int			bt_fg(int argc, char **argv);
+	int			bt_fg_help(int format, int no_print);
 	int			bt_getopts(int argc, char **argv);
-	int			bt_hash(t_arg *args);
-	// int			bt_jobs(t_arg *args);
-	// int			bt_kill(t_arg *args);
+	int			bt_hash(int argc, char **argv);
+	int			bt_hash_help(int format, int no_print);
+	int			bt_jobs(int argc, char **argv);
+	int			bt_jobs_help(int format, int no_print);
+	int			bt_kill(int argc, char **argv);
+	int			bt_kill_help(int format, int no_print);
 	// int			bt_printf(t_arg *args);
 	int			bt_pwd(int argc, char **argv);
 	// int			bt_read(t_arg *args);
 	// int			bt_test(t_arg *args);
-	int			bt_true(t_arg *args);
+	int			bt_true(int argc, char **argv);
+	int			bt_true_help(int format, int no_print);
 	int			bt_type(t_arg *args);
 	int			bt_ulimit(int argc, char **argv);
 	// int			bt_umask(t_arg *args);
-	int			bt_unalias(t_arg *args);
+	int			bt_unalias(int argc, char **argv);
+	int			bt_unalias_help(int format, int no_print);
 	// int			bt_wait(t_arg *args);
 
 	//	==== BUILTINS (Special) ====

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 00:35:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/06 16:44:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -290,29 +290,29 @@
 		builtin_add("suspend", 0, 0, &bt_suspend, &bt_suspend_help);
 
 		// Regular
-		// builtin_add("alias", 0, 0, &bt_alias, &bt_builtin_help);
-		// builtin_add("unalias", 0, 0, &bt_unalias, &bt_builtin_help);
-		// SIN CREAR builtin_add("bg", 0, 0, &bt_bg, &bt_builtin_help);
-		// SIN CREAR builtin_add("fg", 0, 0, &bt_fg, &bt_builtin_help);
-		// SIN CREAR builtin_add("jobs", 0, 0, &bt_jobs, &bt_builtin_help);
-		// builtin_add("cd", 0, 0, &bt_cd, &bt_builtin_help);
-		// builtin_add("command", 0, 0, &bt_command, &bt_builtin_help);
-		// builtin_add("echo", 0, 0, &bt_echo, &bt_builtin_help);
-		// builtin_add("false", 0, 0, &bt_false, &bt_builtin_help);
+		builtin_add("alias", 0, 0, &bt_alias, &bt_alias_help);
+		builtin_add("bg", 0, 0, &bt_bg, &bt_bg_help);
+		builtin_add("cd", 0, 0, &bt_cd, &bt_cd_help);
+		builtin_add("command", 0, 0, &bt_command, &bt_command_help);
+		builtin_add("echo", 0, 0, &bt_echo, &bt_echo_help);
+		builtin_add("false", 0, 0, &bt_false, &bt_false_help);
 		builtin_add("fc", 0, 0, &bt_fc, &bt_fc_help);
+		builtin_add("fg", 0, 0, &bt_fg, &bt_fg_help);
 		builtin_add("getopts", 0, 0, &bt_getopts, &bt_builtin_help);
-		// builtin_add("hash", 0, 0, &bt_hash, &bt_builtin_help);
-		// SIN CREAR builtin_add("kill", 0, 0, &bt_kill, &bt_builtin_help);
+		builtin_add("hash", 0, 0, &bt_hash, &bt_hash_help);
+		builtin_add("jobs", 0, 0, &bt_jobs, &bt_jobs_help);
+		builtin_add("kill", 0, 0, &bt_kill, &bt_kill_help);
 		// SIN CREAR builtin_add("readarray", 0, 0, &bt_readarray, &bt_builtin_help);
 		// SIN CREAR builtin_add("printf", 0, 0, &bt_printf, &bt_builtin_help);
 		builtin_add("pwd", 0, 0, &bt_pwd, &bt_builtin_help);
 		// SIN CREAR builtin_add("read", 0, 0, &bt_read, &bt_builtin_help);
 		// SIN CREAR builtin_add("[", 0, 0, &bt_test, &bt_builtin_help);
 		// SIN CREAR builtin_add("test", 0, 0, &bt_test, &bt_builtin_help);
-		// builtin_add("true", 0, 0, &bt_true, &bt_builtin_help);
+		builtin_add("true", 0, 0, &bt_true, &bt_true_help);
 		// builtin_add("type", 0, 0, &bt_type, &bt_builtin_help);
 		builtin_add("ulimit", 0, 0, &bt_ulimit, &bt_builtin_help);
 		// SIN CREAR builtin_add("umask", 0, 0, &bt_umask, &bt_builtin_help);
+		builtin_add("unalias", 0, 0, &bt_unalias, &bt_unalias_help);
 		// SIN CREAR builtin_add("wait", 0, 0, &bt_wait, &bt_builtin_help);
 
 		// Special
