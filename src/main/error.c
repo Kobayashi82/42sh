@@ -6,22 +6,23 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:36:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:21:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
-	#include "utils/print.h"
-	#include "main/shell.h"
-	#include "hashes/alias.h"
-	#include "hashes/variable.h"
-	#include "hashes/builtin.h"
+	#include "parser/parser.h"
 	#include "hashes/hash.h"
+	#include "hashes/alias.h"
+	#include "hashes/builtin.h"
+	#include "hashes/variable.h"
+	#include "main/shell.h"
+	#include "utils/libft.h"
+	#include "utils/print.h"
 
 #pragma endregion
 

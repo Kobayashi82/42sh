@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/05 20:44:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:20:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
+	#include "parser/parser.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/libft.h"
@@ -71,8 +72,8 @@
 	int read_input(char *value) {
 		signals_set();
 
-		if (shell.source == SRC_INTERACTIVE && interactive_input())			return (1);
-		if (shell.source != SRC_INTERACTIVE && no_interactive_input(value))	return (1);
+		if (shell.mode == SRC_INTERACTIVE && interactive_input())			return (1);
+		if (shell.mode != SRC_INTERACTIVE && no_interactive_input(value))	return (1);
  
 		if (shell.ast) {
 			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
@@ -110,13 +111,13 @@
 		if (argc == 2 && !strcmp(argv[1], "-c")) {
 			exit_error(START_ARGS, 2, NULL, 1);
 		} else if (argc > 2 && !strcmp(argv[1], "-c")) {
-			shell.source = SRC_ARGUMENT;
+			shell.mode = SRC_ARGUMENT;
 			read_input((char *)argv[2]);
 		} else if (argc > 1 && strcmp(argv[1], "-c")) {
-			shell.source = SRC_FILE;
+			shell.mode = SRC_FILE;
 			read_input((char *)argv[1]);
 		} else if (!isatty(STDIN_FILENO)) {
-			shell.source = SRC_STDIN;
+			shell.mode = SRC_STDIN;
 			read_input(NULL);
 		} else {
 			options_set("history", 1);
@@ -124,7 +125,7 @@
 			options_set("expand_aliases", 1);
 			options_set("histverify", 0);
 			options_set("histreedit", 0);
-			shell.source = SRC_INTERACTIVE;
+			shell.mode = SRC_INTERACTIVE;
 			while (!shell.exit && !read_input(NULL)) ;
 		}
 

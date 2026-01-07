@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 21:28:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:15:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 	static char *more_input() {
 		char *input = NULL;
 
-		if (shell.source == SRC_INTERACTIVE) {
+		if (shell.mode == SRC_INTERACTIVE) {
 			input = readinput(prompt_PS2);
 		} else {
 			input = get_next_line(fd);
@@ -64,7 +64,7 @@
 		char *filename = NULL;
 		fd = STDIN_FILENO;
 
-		if (shell.source == SRC_FILE) {
+		if (shell.mode == SRC_FILE) {
 			if (value) fd = open(value, O_RDONLY);
 			if (!value || fd == -1) {
 				// error
@@ -73,7 +73,7 @@
 			filename = value;
 		}
 
-		if (shell.source == SRC_ARGUMENT) {
+		if (shell.mode == SRC_ARGUMENT) {
 			int fd_pipe[2];
 			if (!value || pipe(fd_pipe) == -1) {
 				// error
@@ -87,14 +87,14 @@
 		char *input = get_next_line(fd);
 		if (!input) {
 			// error
-			if (shell.source != SRC_STDIN) close(fd);
+			if (shell.mode != SRC_STDIN) close(fd);
 			return (1);
 		}
 
 		if (options.histexpand) expand_history(&input, 0);
 
 		shell.ast = parse(input, more_input, 0, filename, 1);
-		if (shell.source != SRC_STDIN) close(fd);
+		if (shell.mode != SRC_STDIN) close(fd);
 
 		ast_print(shell.ast);
 		printf("\n");

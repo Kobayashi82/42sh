@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 20:07:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 18:19:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,3 @@
 	int			history_initialize();
 
 #pragma endregion
-
-// 42HISTFILE			~/.42sh_history
-// 42HISTFILESIZE		2000
-// 42HISTSIZE			1000
-// 42HISTCMD			la crea al cargar el historial y le asigna el numero de evento actual (readonly)
-// 42HISTCONTROL		ignorespace:ignoredups:ignoreboth:erasedups

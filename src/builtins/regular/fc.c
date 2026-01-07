@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:38:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:15:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@
 		// set -v  # Activa modo verbose
 		// contexto del padre
 		// modo no interactivo
-		// shell.source = SRC_ARGUMENT;
+		// shell.mode = SRC_ARGUMENT;
 		// ret = read_input((char *)argv[2]);
 		// ret = execute_script(command);	// como con -c
 

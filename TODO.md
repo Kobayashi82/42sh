@@ -8,6 +8,10 @@
 - Braces expansion
 - Parameter expansion
 
+## Límites
+- Límite de expansión
+- Límite de eval
+
 ## Terminal
 - CTRL + D no deberia terminar input, deberia hacer beep si hay algo en el buffer
 - TMOUT: Si está definido, cerrar la shell automáticamente después de N segundos de inactividad en el prompt (sin input del usuario)
@@ -18,12 +22,11 @@
 - Pasar process_substitution a expansion
 
 ## Builtins
-- command -v no es identico a bash (ni lo tiene que ser... ya lo miraré)
-- hash, implementar opciones -tpdr
-- getopt (ambos) debe soportar multibyte chars
+- getopt (builtin) debe soportar multibyte chars
 
 ## History
-- Fc en script
+- Cambiar sistema de -a -n para que use timestamp y ordene automaticamente
+- fc en script
 - Script se ejecutan en contexto actual
 - Input separar script de interactive
 - Si editar y output no es tty, error?
@@ -32,34 +35,6 @@
 - Input hace un while y va enviando líneas hasta que
 - line =null
 - ast = null (no interactivo y no script)
-
-## 42sh
-
-- `declare` - Unfinished
-- `history`
-- `logout` - Unfinished
-- `shopt`
-
-## Regular
-- `alias`
-- `cd`
-- `command`
-- `false`
-- `fc`
-- `hash`
-- `true`
-- `type`
-- `ulimit`
-- `unalias`
-
-## Special
-- `dots`
-- `exec`
-- `exit`
-- `export`
-- `readonly`
-- `unset`
-
 
 ## Source
 - Opciones de arranque (mirar Bash_Options.md)

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 17:58:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:18:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int shell_time() { return (time(NULL) - shell.started); }
 		alias_initialize();
 		variables_initialize(vars_table, envp);
 		prompt_initialize();
-		shell.source = SRC_NO_INTERACTIVE;
+		shell.mode = SRC_NO_INTERACTIVE;
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
 		shell.subshell_level = 0;
@@ -60,10 +60,11 @@ int shell_time() { return (time(NULL) - shell.started); }
 		// Args
 		shell.optpos = 1;
 		if (argc > 0 && argv && argv[0]) {
-			shell.fullname = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
-    		shell.name = strrchr(shell.fullname, '/');
-    		shell.name = (shell.name) ? shell.name + 1 : shell.fullname;
-			shell.arg0 = (argv[0][0] == '-') ? "-42sh" : "42sh";
+			shell.name_exec = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
+    		shell.name_bin = strrchr(shell.name_exec, '/');
+    		shell.name_bin = (shell.name_bin) ? shell.name_bin + 1 : shell.name_exec;
+			// shell.name = (argv[0][0] == '-') ? "-42sh" : "42sh"; // use login shell value
+			shell.name = (shell.login_shell) ? "-"PROYECTNAME : PROYECTNAME;
 			shell.argv = (argc > 1) ? &argv[1] : NULL;
 			shell.argc = argc - 1;
 
@@ -76,9 +77,9 @@ int shell_time() { return (time(NULL) - shell.started); }
 			shell.argv = argus;
 			shell.argc = 4;
 		} else {
-			shell.fullname = "42sh";
+			shell.name_exec = "42sh";
+			shell.name_bin = "42sh";
 			shell.name = "42sh";
-			shell.arg0 = "42sh";
 			shell.argv = NULL;
 			shell.argc = 0;
 		}

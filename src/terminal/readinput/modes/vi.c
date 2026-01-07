@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 19:51:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:24:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 #pragma region "Variables"
 
 	enum e_vi_mode { INSERT, EDIT };
-	enum e_mode { CURSOR, AFTER_CURSOR, FIRST, LAST };
+	enum e_cursor_mode { CURSOR, AFTER_CURSOR, FIRST, LAST };
 
 	static int	number_mode, replacement_mode, replacement_char;
 	static char	n[7], last_cmd, last_char[7], *clipboard, *tmp_line;

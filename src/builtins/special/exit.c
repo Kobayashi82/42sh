@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:15:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,8 +109,8 @@
 
 		int ret = 0;
 
-		if (shell.login_shell && shell.source == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", RESET_PRINT);
-		if (!shell.login_shell && shell.source == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
+		if (shell.login_shell && shell.mode == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", RESET_PRINT);
+		if (!shell.login_shell && shell.mode == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
 
 		if (result->argc > 1) {
 			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": exit: too many arguments\n", 0), FREE_RESET_PRINT);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 19:22:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@
 		}
 
 		if (!alias) {
-			char *value = ft_strjoin(shell.arg0, ": alias: ", 0);
+			char *value = ft_strjoin(shell.name, ": alias: ", 0);
 			value = ft_strjoin_sep(value, arg, ": not found\n", 1);
 			if (value) *invalues = ft_strjoin(*invalues, value, 3);
 		}

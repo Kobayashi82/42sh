@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 21:45:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 20:40:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -395,13 +395,13 @@
 
 					// Allow transposition of adjacent characters (Damerau-Levenshtein extension)
 					if (i > 1 && j > 1 && s1[i - 1] == s2[j - 2] && s1[i - 2] == s2[j - 1]) {
-						matrix[i][j] = ft_min(matrix[i - 1][j] + 1,								// Deletion
-									ft_min(matrix[i][j - 1] + 1,								// Insertion
-									ft_min(matrix[i - 1][j - 1] + cost,							// Substitution
+						matrix[i][j] =	ft_min(matrix[i - 1][j] + 1,							// Deletion
+										ft_min(matrix[i][j - 1] + 1,							// Insertion
+										ft_min(matrix[i - 1][j - 1] + cost,						// Substitution
 										matrix[i - 2][j - 2] + 1)));							// Transposition (swap)
 					} else {
-						matrix[i][j] = ft_min(matrix[i - 1][j] + 1,								// Deletion
-									ft_min(matrix[i][j - 1] + 1,								// Insertion
+						matrix[i][j] =	ft_min(matrix[i - 1][j] + 1,							// Deletion
+										ft_min(matrix[i][j - 1] + 1,							// Insertion
 										matrix[i - 1][j - 1] + cost));							// Substitution
 					}
 				}
@@ -412,7 +412,7 @@
 	#pragma endregion
 
 	#pragma region "Closest Dir"
-		
+
 		// Finds the closest matching directory name based on the Levenshtein distance
 		static char *find_closest_dir(const char *input, const char *path) {
 			DIR *dir = opendir(path);
@@ -442,7 +442,7 @@
 	#pragma endregion
 
 	#pragma region "Correct Path"
-	
+
 		// Corrects a potentially misspelled directory path using fuzzy matching
 		char *correct_path(char *path) {
 			char resolved_path[1024] = {0};

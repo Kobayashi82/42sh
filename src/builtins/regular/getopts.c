@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 18:42:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 19:22:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,11 +96,11 @@
 	#pragma region "Variable"
 
 		static void update_variable(const char *key, const char *value) {
-			if (variables_validate(key, NULL, shell.arg0, 0, 1)) return;
+			if (variables_validate(key, NULL, shell.name, 0, 1)) return;
 
 			t_var *var = variables_find(vars_table, key);
 			if (var && var->readonly) {
-				print(STDERR_FILENO, shell.arg0, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			} else {
 				variables_add(vars_table, key, value, -1, -1, -1, 0);
@@ -130,7 +130,7 @@
 			update_variable(varname, "?");
 
 			if (!silent_mode) {
-				print(STDERR_FILENO, shell.arg0, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0), FREE_PRINT);
 				variables_delete(vars_table, "OPTARG");
 			} else {
@@ -145,7 +145,7 @@
 		static void missing_argument(char opt, const char *varname, int silent_mode, int optind) {
 			if (!silent_mode) {
 				char opt_str[2] = {opt, '\0'};
-				print(STDERR_FILENO, shell.arg0, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0), FREE_PRINT);
 				update_variable(varname, "?");
 				variables_delete(vars_table, "OPTARG");
@@ -179,7 +179,7 @@
 		// Validate options
 		if (opt_offset == 1 && argc > 1 && argv[1][0] == '-' && argv[1][1] != '\0') {
 			char buf[2] = {argv[1][1], '\0'};
-			print(STDERR_FILENO, shell.arg0, RESET);
+			print(STDERR_FILENO, shell.name, RESET);
 			print(STDERR_FILENO, ft_strjoin_sep(": getopts: -", buf, ": invalid option\n", 0), FREE_JOIN);
 			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n", PRINT);
 			return (2);

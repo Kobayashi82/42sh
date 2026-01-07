@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 19:22:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, shell.arg0, RESET);
+			print(STDOUT_FILENO, shell.name, RESET);
 			print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			result = 1;
 		} else {
@@ -240,7 +240,7 @@
 		if (variables_validate(key, value, "declare", 1, 1)) return (free(key), free(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, shell.arg0, RESET);
+			print(STDOUT_FILENO, shell.name, RESET);
 			print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			result = 1;
 		} else {
