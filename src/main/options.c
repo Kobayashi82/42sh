@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 18:27:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "terminal/colors.h"
 	#include "main/options.h"
-	#include "utils/libft.h"
-	#include "utils/print.h"
+	#include "utils/utils.h"
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 10:10:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:28:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "terminal/readinput/termcaps.h"
 	#include "terminal/readinput/readinput.h"
-	#include "utils/libft.h"
+	#include "utils/utils.h"
 
 #pragma endregion
 

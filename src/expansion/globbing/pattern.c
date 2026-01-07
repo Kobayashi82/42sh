@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 13:35:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 23:36:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
+	#include "utils/utils.h"
 	#include "main/options.h"
 	#include "expansion/globbing.h"
 

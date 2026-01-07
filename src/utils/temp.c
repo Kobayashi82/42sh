@@ -6,25 +6,24 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/04 18:24:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-
+	#include "utils/utils.h"
 	#include <string.h>
 	#include <sys/time.h>
 	#include <sys/stat.h>
 
 #pragma endregion
 
-#pragma region "HASH"
+#pragma region "Hash"
 
 	#pragma region "Variables"
 
-		#define TMP_HASH_SIZE	1031
+		#define HASH_SIZE		1031
 		#define TEMPLATE_SIZE	6		//	Número de 'X' para generar un nombre aleatorio
 		#define TEMPLATE_TRIES	100		//	Numero de intentos de crear el nombre aleatorio
 		#define TEMPLATE_CHARS	"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -35,7 +34,7 @@
 			struct s_tmp	*next;
 		}	t_tmp;
 
-		t_tmp	*tmp_table[TMP_HASH_SIZE];
+		t_tmp	*tmp_table[HASH_SIZE];
 
 	#pragma endregion
 
@@ -44,8 +43,11 @@
 		static unsigned int hash_index(const char *key) {
 			unsigned int hash = 0;
 
-			while (*key) hash = (hash * 31) + *key++;
-			return (hash % TMP_HASH_SIZE);
+			while (*key) {
+				hash = (hash * 31) + *key++;
+			}
+
+			return (hash % HASH_SIZE);
 		}
 
 	#pragma endregion
@@ -83,7 +85,7 @@
 			char *tmp_find_path_fd(int fd) {
 				if (fd < 0) return (NULL);
 
-				for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					if (tmp_table[index]) {
 						t_tmp *tmp = tmp_table[index];
 						while (tmp) {
@@ -103,7 +105,7 @@
 			// static t_tmp *tmp_find_fd_node(int fd) {
 			// 	if (fd < 0) return (NULL);
 
-			// 	for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+			// 	for (unsigned int index = 0; index < HASH_SIZE; index++) {
 			// 		if (tmp_table[index]) {
 			// 			t_tmp *tmp = tmp_table[index];
 			// 			while (tmp) {
@@ -132,7 +134,7 @@
 			int tmp_find_fd(int fd) {
 				if (fd < 0) return (-1);
 
-				for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					if (tmp_table[index]) {
 						t_tmp *tmp = tmp_table[index];
 						while (tmp) {
@@ -154,7 +156,7 @@
 		void tmp_close_path(char *path) {
 			if (!path) return;
 
-			for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (tmp_table[index]) {
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
@@ -172,7 +174,7 @@
 		void tmp_close_fd(int fd) {
 			if (fd < 0) return;
 
-			for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (tmp_table[index]) {
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {
@@ -201,7 +203,7 @@
 				new_tmp->path = path;
 				new_tmp->fd = fd;
 			} else {
-				unsigned int index = hash_index(path) % TMP_HASH_SIZE;
+				unsigned int index = hash_index(path) % HASH_SIZE;
 				t_tmp *new_node = malloc(sizeof(t_tmp));
 
 				new_node->path = path;
@@ -241,7 +243,7 @@
 		void tmp_delete_fd(int fd) {
 			if (fd < 0) return;
 
-			for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (tmp_table[index]) {
 					t_tmp *tmp = tmp_table[index];
 					t_tmp *prev = NULL;
@@ -267,7 +269,7 @@
 	#pragma region "Clear"
 
 		void tmp_clear() {
-			for (unsigned int index = 0; index < TMP_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (tmp_table[index]) {
 					t_tmp *tmp = tmp_table[index];
 					while (tmp) {

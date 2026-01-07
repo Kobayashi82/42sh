@@ -6,15 +6,15 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/26 14:00:37 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/28 22:32:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
+	#include "utils/utils.h"
 	#include "terminal/terminal.h"
-	#include "utils/print.h"
+
 	#include "tests/args.h"
 
 	#include <stdio.h>

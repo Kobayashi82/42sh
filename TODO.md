@@ -63,3 +63,14 @@
 - Contexto abierto
 - Termina en \
 - Termina en operdor de continuación (&&, ||, |, |&)
+
+
+### Ni puta idea de porqué escribí esto
+
+- Modo vi de fc hace beep si falla?
+- Argumentos del editor en fc
+- Quizás lo más razonable sea usar el editor tal cual y llamar a parse_and_execute mío con el comando formado.
+- Editor tmp_file
+- Y que falle lo que tenga que fallar y tal. Cuando termina el comando, si es 0 continua, si no, error
+- Devuelvo en default_editor el primero available, da igual si existe o no.
+- O -e arg

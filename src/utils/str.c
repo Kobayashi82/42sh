@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/03 13:40:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
+	#include "utils/utils.h"
 
 #pragma endregion
 
@@ -137,11 +137,14 @@
 
 			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
 			char *new_str = malloc(len);
-			if (!new_str) return (NULL);
-			if (str1) {
-				ft_strlcpy(new_str, str1, len);
-				if (str2) ft_strlcat(new_str, str2, len);
-			} else if (str2) strcpy(new_str, str2);
+			if (new_str) {
+				if (str1) {
+					ft_strlcpy(new_str, str1, len);
+					if (str2) ft_strlcat(new_str, str2, len);
+				} else if (str2) {
+					strcpy(new_str, str2);
+				}
+			}
 
 			if (frees == 1 || frees == 3) free((void *)str1);
 			if (frees == 2 || frees == 3) free((void *)str2);
@@ -159,14 +162,18 @@
 			if (!str1 && !sep && !str2) return (NULL);
 
 			char *new_str = malloc(len + 1);
-			if (str1) {
-				ft_strlcpy(new_str, str1, len + 1);
-				if (sep)  ft_strlcat(new_str, sep, len + 1);
-				if (str2) ft_strlcat(new_str, str2, len + 1);
-			} else if (sep) {
-				ft_strlcpy(new_str, sep, len + 1);
-				if (str2) ft_strlcat(new_str, str2, len + 1);
-			} else if (str2) ft_strlcpy(new_str, str2, len + 1);
+			if (new_str) {
+				if (str1) {
+					ft_strlcpy(new_str, str1, len + 1);
+					if (sep)  ft_strlcat(new_str, sep, len + 1);
+					if (str2) ft_strlcat(new_str, str2, len + 1);
+				} else if (sep) {
+					ft_strlcpy(new_str, sep, len + 1);
+					if (str2) ft_strlcat(new_str, str2, len + 1);
+				} else if (str2) {
+					ft_strlcpy(new_str, str2, len + 1);
+				}
+			}
 
 			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free((void *)str1);
 			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free((void *)sep);
@@ -230,72 +237,36 @@
 
 #pragma region "STR_SPLIT"
 
-	#pragma region "Free All"
+	char **ft_split(char *str, char c) {
+		if (!str) return (NULL);
 
-		static char **free_all(char **result, int i) {
-			if (result) {
-				while (i-- > 0) free(result[i]);
-				free(result);
-			}
-
-			return (NULL);
+		int	count = 0, in_word = 0;
+		for (char *tmp = str; *tmp; tmp++) {
+			if (*tmp != c && !in_word && ++count)	in_word = 1;
+			else if (*tmp == c)						in_word = 0;
 		}
 
-	#pragma endregion
+		char **result = calloc(count + 1, sizeof(char *));
+		if (!result) return (NULL);
 
-	#pragma region "Count Words"
-
-		static int	count_words(char *str, char c) {
-			int		i = 0, trigger = 0;
-			char	*tmp = str;
-
-			while (str && *str) {
-				if ((*str != c || (*str == c && str != tmp && *(str - 1) == c)) && trigger == 0) { trigger = 1; i++; }
-				else if (*str == c) trigger = 0;
-				str++;
-			}
-
-			return (i);
-		}
-
-	#pragma endregion
-
-	#pragma region "Word Dup"
-
-		static char *word_dup(char *str, int start, int finish, char c) {
-			char	*word = malloc((finish - start + 1));
-			int		i = 0;
-
-			if (!word) return (NULL);
-			if (finish - start == 1 && str[start] == c) return (free(word), ft_strdup(""));
-			while (start < finish) word[i++] = str[start++];
-			word[i] = '\0';
-
-			return (word);
-		}
-
-	#pragma endregion
-
-	#pragma region "Split"
-
-		char **ft_split(char *s, char c) {
-			int		i = -1, j = 0, index = -1;
-			char	**split = malloc((count_words(s, c) + 1) * sizeof(char *));
-			if (!s || !split) return (free_all(split, 0));
-
-			while (i + 1 <= (int) ft_strlen(s)) {
-				if ((s[++i] != c || (s[i] == c && i > 0 && s[i - 1] == c)) && index < 0) index = i;
-				else if ((s[i] == c || i == (int) ft_strlen(s)) && index >= 0) {
-					split[j++] = word_dup(s, index, i, c);
-					if (split[j - 1] == NULL) return (free_all(split, j));
-					index = -1;
+		for (int i = 0, j = 0, start; str[i];) {
+			while (str[i] == c) ++i;
+			if (str[i]) {
+				start = i;
+				while (str[i] && str[i] != c) ++i;
+				result[j] = malloc(i - start + 1);
+				if (!result[j]) {
+					while (j--) free(result[j]);
+					return (free(result), NULL);
 				}
-			} split[j] = 0;
-
-			return (split);
+				for (int k = 0; k < i - start; ++k)
+					result[j][k] = str[start + k];
+				result[j++][i - start] = '\0';
+			}
 		}
 
-	#pragma endregion
+		return (result);
+	}
 
 #pragma endregion
 
@@ -326,44 +297,111 @@
 
 #pragma region "REPLACE"
 
-	//	Replace a string inside a string with another string XD
-	char *replace(char *str, size_t *start, size_t len, char *replace) {
-		if (len <= 0) return (str);
-		size_t i = (start) ? *start : 0;
-		size_t str_len = ft_strlen(str);
-		size_t replace_len = ft_strlen(replace);
-		size_t new_len = str_len - len + replace_len;
-		char *new_str = malloc(new_len + 1);
+	//	Replace a string inside a string with another string
+	char *replace(const char *str, const char *old, const char *new) {
+		char		*result, *pos;
+		const char	*tmp;
+		size_t		old_len = ft_strlen(old);
+		size_t		new_len = ft_strlen(new);
+		size_t		count = 0;
+		size_t		result_len;
+
+		if (!str || !old || !new || old_len == 0) return (NULL);
+
+		tmp = str;
+		while ((tmp = strstr(tmp, old)) != NULL) {
+			tmp += old_len;
+			count++;
+		}
+
+		if (count == 0) return ft_strdup(str);
+
+		result_len = ft_strlen(str) + count * (new_len - old_len);
+		result = malloc(result_len + 1);
+		if (!result) return (NULL);
+
+		pos = result;
+		tmp = str;
+		while ((tmp = strstr(tmp, old)) != NULL) {
+			size_t len = tmp - str;
+			memcpy(pos, str, len);
+			pos += len;
+			memcpy(pos, new, new_len);
+			pos += new_len;
+			tmp += old_len;
+			str = tmp;
+		}
+		strcpy(pos, str);
 		
-		memcpy(new_str, str, i);														//	Copy the part of the original string before the replacement
-		memcpy(new_str + i, replace, replace_len);									//	Copy the replacement string
-		memcpy(new_str + i + replace_len, str + i + len, str_len - (i + len));		//	Copy the part of the original string after the replacement
-		new_str[new_len] = '\0';														//	Add the null terminator at the end of the new string
-
-		if (start) *start = i + replace_len;											//	Update the start index if needed
-
-		return (free(str), new_str);
+		return (result);
 	}
 
 #pragma endregion
 
 #pragma region "REPLACE SUBSTRING"
 
-	char *replace_substring(char *original, size_t start, size_t len, const char *replacement) {
-		size_t orig_len = ft_strlen(original);
-		size_t repl_len = ft_strlen(replacement);
-		
-		if (start > orig_len)		return (NULL);
+	char *replace_substring(char *str, size_t start, size_t len, const char *new) {
+		size_t orig_len = ft_strlen(str);
+		size_t repl_len = ft_strlen(new);
+
+		if (start > orig_len) return (NULL);
 		if (start + len > orig_len)	len = orig_len - start;
-		
+
 		char *new_str = malloc(orig_len - len + repl_len + 1);
-		
-		strncpy(new_str, original, start);
+		if (!new_str) return (NULL);
+
+		strncpy(new_str, str, start);
 		new_str[start] = '\0';
-		strcat(new_str, replacement);
-		if (start + len < orig_len) strcat(new_str, original + start + len);
-		
+		strcat(new_str, new);
+		if (start + len < orig_len) strcat(new_str, str + start + len);
+
 		return (new_str);
+	}
+
+#pragma endregion
+
+#pragma region "GET NEXT LINE"
+
+	#define GNL_BUFFER	4096	//	Buffer size for GNL
+
+	char *get_next_line(int fd) {
+		static char	buffer[GNL_BUFFER + 1];
+		char		*line = NULL, *newline, *tmp;
+		int			bytes, len, blen;
+
+		if (fd == -1) memset(buffer, 0, GNL_BUFFER + 1);
+		if (fd < 0 || GNL_BUFFER <= 0) return (NULL);
+
+		while (1) {
+			if (!buffer[0] && (bytes = read(fd, buffer, GNL_BUFFER)) <= 0) {
+				if (bytes == 0) return (line);
+				memset(buffer, '\0', GNL_BUFFER + 1);
+				return (free(line), NULL);
+			}
+
+			if ((newline = strchr(buffer, '\n'))) {
+				len = (line) ? ft_strlen(line) : 0;
+				blen = newline - buffer;
+				tmp = malloc(len + blen + 2);
+				if (!tmp) return (free(line), NULL);
+				if (line) memcpy(tmp, line, len);
+				memcpy(tmp + len, buffer, blen);
+				tmp[len + blen] = '\n';
+				tmp[len + blen + 1] = '\0';
+				memmove(buffer, newline + 1, ft_strlen(newline + 1) + 1);
+				return (free(line), tmp);
+			}
+
+			len = (line ? ft_strlen(line) : 0);
+			blen = ft_strlen(buffer);
+			tmp = malloc(len + blen + 1);
+			if (!tmp) return (free(line), NULL);
+			if (line) memcpy(tmp, line, len);
+			memcpy(tmp + len, buffer, blen + 1);
+			memset(buffer, 0, GNL_BUFFER + 1);
+			free(line);
+			line = tmp;
+		}
 	}
 
 #pragma endregion
@@ -371,5 +409,128 @@
 #pragma region "BEEP"
 
 	void beep() { write(STDOUT_FILENO, "\a", 1); }
+
+#pragma endregion
+
+#pragma region "MIN / MAX"
+
+	int		ft_min(int n1, int n2) { if (n1 < n2) { return (n1); } return (n2); }
+	int		ft_max(int n1, int n2) { if (n1 > n2) { return (n1); } return (n2); }
+
+#pragma endregion
+
+#pragma region "ITOA"
+
+	char	*ft_itoa(int n) {
+		char *str;
+		int len = 0, sign = 1, tmp = n;
+
+		if (n == 0) return (ft_strdup("0"));
+		if (n < 0) { sign = -1; len++; }
+		while (tmp != 0) { tmp /= 10; len++; }
+		str = malloc((len + 1));
+		if (!str) return (NULL);
+		str[len] = '\0';
+		while (n != 0) {
+			str[--len] = '0' + (sign * (n % 10));
+			n /= 10;
+		}
+		if (sign == -1) str[0] = '-';
+		return (str);
+	}
+
+#pragma endregion
+
+#pragma region "PRINT"
+
+	//	Manages and writes content to a dynamic buffer associated with a file descriptor
+	//
+	//	Parameters:
+	//		- fd: The file descriptor to write to (standars by default)
+	//		- str: The string to append to the buffer (can be NULL)
+	//		- mode: Controls the behavior based on the following enum values:
+	//			- RESET:			Resets the buffer
+	//			- RESET_PRINT:		Resets the buffer and writes its content
+	//			- FREE_RESET:		Frees the input string and resets the buffer
+	//			- FREE_RESET_PRINT:	Frees the input string, resets the buffer, and writes its content
+	//			- FREE_JOIN:		Frees the input string and appends its content to the buffer
+	//			- FREE_PRINT:		Frees the input string and writes the buffer content
+	//			- JOIN:				Appends the input string to the buffer
+	//			- PRINT:			Writes the buffer content
+	//			- RESET_ALL:		Resets all buffers
+	//
+	//	Returns: 0 on success, 1 on failure
+	//
+
+	#define PRINT_TOTAL_FD	3						//	Total of FDs to manage
+
+	int print(int fd, const char *str, int mode) {
+		static char		*msg[PRINT_TOTAL_FD];		//	Pointer to the buffer storing content for each file descriptor
+		static size_t	len[1024];					//	Current size of the content stored for each file descriptor
+		static size_t	cap[1024];					//	Total allocated capacity of the buffer for each file descriptor
+
+		if (fd < 0 || fd >= PRINT_TOTAL_FD) return (1);
+
+		if (mode == RESET_ALL) {
+			//	Reset and free all buffers
+			for (int i = 0; i < PRINT_TOTAL_FD; ++i) {
+				free(msg[i]);
+				len[i] = 0;
+				cap[i] = 0;
+			}
+			return (0);
+		}
+
+		size_t str_len = str ? ft_strlen(str) : 0;
+
+		//	Reset the buffer if necessary
+		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && msg[fd]) {
+			free(msg[fd]);
+			msg[fd] = NULL;
+			len[fd] = 0;
+			cap[fd] = 0;
+		}
+
+		//	If there is something to add
+		if (str) {
+			//	Initialize the buffer if it doesn't exist
+			if (!msg[fd]) {
+				cap[fd] = (str_len > 1024) ? str_len : 1024;
+				msg[fd] = malloc(cap[fd]);
+				len[fd] = 0;
+			}
+
+			//	Resize the buffer if there's not enough space
+			if (len[fd] + str_len >= cap[fd]) {
+				size_t new_cap = cap[fd] * 2;
+				while (len[fd] + str_len >= new_cap)
+					new_cap *= 2;
+
+				char *new_msg = realloc(msg[fd], new_cap);
+				msg[fd] = new_msg;
+				cap[fd] = new_cap;
+			}
+
+			//	Copy the new string into the buffer
+			memcpy(msg[fd] + len[fd], str, str_len);
+			len[fd] += str_len;
+			msg[fd][len[fd]] = '\0';
+		}
+
+		//	Write the buffer if the mode indicates it
+		int result = 0;
+		if (mode % 2 && msg[fd] && fd > 0) {
+			result = write(fd, msg[fd], len[fd]);
+			free(msg[fd]);
+			msg[fd] = NULL;
+			len[fd] = 0;
+			cap[fd] = 0;
+		}
+
+		//	Free the input string if necessary
+		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free((void *)str);
+
+		return (result == -1);
+	}
 
 #pragma endregion

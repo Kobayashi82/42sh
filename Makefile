@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/07 16:34:10 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/07 23:23:07 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -190,11 +190,8 @@ SRCS	=	main/main.c										\
 															\
 			utils/array.c									\
 			utils/getopt.c									\
-			utils/gnl.c										\
 			utils/key_value.c								\
-			utils/num.c										\
 			utils/paths.c									\
-			utils/print.c									\
 			utils/str.c										\
 			utils/temp.c									\
 			utils/times.c									\

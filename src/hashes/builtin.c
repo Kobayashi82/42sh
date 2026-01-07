@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:05:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 	#include "hashes/builtin.h"
 	#include "main/shell.h"
-	#include "utils/libft.h"
-	#include "utils/print.h"
+	#include "utils/utils.h"
+
 
 	#define BUILTIN_HASH_SIZE	101
 

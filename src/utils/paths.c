@@ -6,21 +6,17 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 20:40:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/variable.h"
-	#include "utils/libft.h"
-	#include "utils/paths.h"
-	#include "utils/print.h"
+	#include "utils/utils.h"
 
 	#include <sys/stat.h>
 	#include <dirent.h>
-	#include <limits.h>
-	#include <errno.h>
 
 #pragma endregion
 

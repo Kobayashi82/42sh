@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:10:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
+	#include "utils/utils.h"
 
 #pragma endregion
 
@@ -63,7 +63,6 @@
 #pragma region "Format for Shell"
 
 	// Escapes a string for safe use within shell quotes (' or ")
-
 	char *format_for_shell(const char *value, char quote_type) {
 		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
 
@@ -94,46 +93,5 @@
 
 		return (escaped);
 	}
-
-#pragma endregion
-
-#pragma region "Rejected"
-
-	//	READ Y WRITE DE OPTIONS NO SE IMPLEMENTAN, PERO EL CODIGO PUEDE SER UTIL PARA LUEGO
-
-	// //	Guarda las opciones en disco
-	// int options_write() {
-	// 	char *filename = ft_strjoin(get_home_path(), "/opciones", 0);
-
-	// 	int fd = open((filename, O_CREAT | O_TRUNC | O_WRONLY, 0644); free(filename);
-	// 	if (fd == -1) return (1);
-
-	// 	print(fd, ft_strjoin_sep("input_mode=", ft_itoa(options.input_mode), "\n", 2), FREE_RESET);
-	// 	print(fd, ft_strjoin_sep("hist_on=", ft_itoa(options.history), "\n", 2), FREE_JOIN);
-	// 	print(fd, ft_strjoin_sep("hist_local=", ft_itoa(options.hist_local), "\n", 2), FREE_PRINT);
-
-	// 	close(fd);
-	// 	return (0);
-	// }
-
-	// //	Lee las opciones del disco
-	// int options_read() {
-	// 	char *filename = ft_strjoin(get_home_path(), "/.42sh", 0);
-
-	// 	options_default();
-	// 	int fd = open((filename, O_RDONLY, -1); free(filename);
-	// 	if (fd == -1) { options_write(); return (1); }
-
-	// 	char *line = NULL, *key = NULL, *value = NULL;
-	// 	while ((line = get_next_line(fd))) {
-	// 		get_key_value(line, &key, &value, '=');
-	// 		if (key && key[0] && value && value[0]) options_set(key, value);
-	// 		free(line);
-	// 	} free(key); free(value);
-
-	// 	close(fd); options_write();
-
-	// 	return (0);
-	// }
 
 #pragma endregion

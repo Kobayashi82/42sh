@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:15:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	#include "utils/times.h"
+	#include "utils/utils.h"
 
 	#include <sys/time.h>
 
@@ -146,7 +145,7 @@
 
 #pragma endregion
 
-		//const char *date = "01/2/2024 14:16:33";
-		// char *current_date = format_timestamp(get_timestamp(NULL));
-		// if (current_date) printf("%s\n", current_date);
-		// return (free(current_date), 0);
+// const char *date = "01/2/2024 14:16:33";
+// char *current_date = format_timestamp(get_timestamp(NULL));
+// if (current_date) printf("%s\n", current_date);
+// return (free(current_date), 0);

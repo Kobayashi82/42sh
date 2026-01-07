@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:37:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 
 	#include "terminal/readinput/history.h"
 	#include "hashes/builtin.h"
-	#include "utils/libft.h"
-	#include "utils/print.h"
+	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
 #pragma endregion

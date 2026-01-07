@@ -4,7 +4,6 @@
 		"type_traits": "c",
 		"utility": "c",
 		"options.h": "c",
-		"libft.h": "c",
 		"prompt.h": "c",
 		"globbing.h": "c",
 		"stdio.h": "c",

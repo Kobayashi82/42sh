@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 20:24:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,7 @@
 	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "main/shell.h"
-	#include "utils/libft.h"
-	#include "utils/paths.h"
-	#include "utils/print.h"
+	#include "utils/utils.h"
 
 	#include <sys/wait.h>
 

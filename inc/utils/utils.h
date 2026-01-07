@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   libft.h                                            :+:      :+:    :+:   */
+/*   utils.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/28 17:19:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,23 @@
 	#include <ctype.h>
 	#include <limits.h>
 	#include <errno.h>
-
 	#include <stdio.h>
+
+#pragma endregion
+
+#pragma region "Enumerators"
+
+	enum e_print {
+		RESET,
+		RESET_PRINT,
+		FREE_RESET,
+		FREE_RESET_PRINT,
+		FREE_JOIN,
+		FREE_PRINT,
+		JOIN,
+		PRINT,
+		RESET_ALL
+	};
 
 #pragma endregion
 
@@ -74,7 +89,6 @@
 
 		#pragma endregion
 
-
 		#pragma region "LEN"
 
 			size_t	ft_strlen(const char *str);
@@ -83,7 +97,7 @@
 
 		#pragma region "SPLIT"
 
-			char	**ft_split(char *s, char c);
+			char	**ft_split(char *str, char c);
 
 		#pragma endregion
 
@@ -95,22 +109,33 @@
 
 		#pragma region "REPLACE"
 
-			char	*replace(char *str, size_t *start, size_t len, char *replace);
+			char	*replace(const char *str, const char *old, const char *new);
 
 		#pragma endregion
 
 		#pragma region "REPLACE SUBSTRING"
 		
-			char *replace_substring(char *original, size_t start, size_t len, const char *replacement);
+			char	*replace_substring(char *str, size_t start, size_t len, const char *new);
 		
 		#pragma endregion
-		
+
+		#pragma region "GET NEXT LINE"
+
+			char	*get_next_line(int fd);
+
+		#pragma endregion
+
 		#pragma region "BEEP"
 
 			void	beep();
 
 		#pragma endregion
 
+		#pragma region "PRINT"
+
+			int		print(int fd, const char *str, int mode);
+
+		#pragma endregion
 
 	#pragma endregion
 
@@ -126,17 +151,10 @@
 
 		void	array_nsort(char **array, size_t skip);
 		void	array_sort(char **array);
-		void	array_int_sort(int *array);
-		void	array_print(const char **array, int numbered);
-		void	array_int_print(int *array);
+		void	array_int_sort(int *array, int reverse);
+		void	array_print(const char **array, int fd, int numbered);
+		void	array_int_print(int *array, int fd);
 		void	array_free(char **array);
-		void	array_free_ptr(char ***array);
-
-	#pragma endregion
-
-	#pragma region "GET_NEXT_LINE"
-
-		char	*get_next_line(int fd);
 
 	#pragma endregion
 
@@ -181,6 +199,29 @@
 		void	tmp_delete_fd(int fd);
 		void	tmp_clear();
 		char	*ft_mkdtemp(char *path, char *name);
+
+	#pragma endregion
+
+	#pragma region "TIME"
+
+		char	*format_timestamp(long timestamp);
+		long	get_timestamp(const char *date);
+
+	#pragma endregion
+
+	#pragma region "PATH"
+
+		#define PATH	"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+		char	*resolve_symlink(const char *path);
+		char	*resolve_path(const char *path);
+		char	*path_find_first(char *cmd, char *paths);
+		char	**path_find_all(char *cmd, char *paths);
+		char	*get_fullpath(char *path);
+		char	*get_fullpath_command(const char *value, int fullpath);
+		char	*get_cwd(char *sender);
+		char	*correct_path(char *path);
+		int		is_directory(const char *path);
 
 	#pragma endregion
 

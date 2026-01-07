@@ -6,21 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/21 14:02:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/libft.h"
-	
-	#include <string.h>
-	#include <stdio.h>
+	#include "utils/utils.h"
 
 #pragma endregion
 
 #pragma region "Sort"
 
+	// Sorts an array of strings alphabetically, ignoring the first 'skip' characters when comparing
 	void array_nsort(char **array, size_t skip) {
 		if (!array || !*array) return;
 		if (skip < 0) skip = 0;
@@ -45,25 +43,11 @@
 		}
 	}
 
+	// Sorts an array of strings alphabetically
+	void array_sort(char **array) { array_nsort(array, 0); }
 
-	void array_sort(char **array) {
-		if (!array || !*array) return;
-
-		size_t count = 0;
-		while (array[count]) count++;
-
-		for (size_t i = 0; i < count - 1; i++) {
-			for (size_t j = 0; j < count - i - 1; j++) {
-				if (strcmp(array[j], array[j + 1]) > 0) {
-					char *temp = array[j];
-					array[j] = array[j + 1];
-					array[j + 1] = temp;
-				}
-			}
-		}
-	}
-
-	void array_int_sort(int *array) {
+	// Sorts an array of numbers from smallest to largest (or reverse if specified)
+	void array_int_sort(int *array, int reverse) {
 		if (!array) return;
 
 		size_t count = 0;
@@ -71,7 +55,8 @@
 
 		for (size_t i = 0; i < count - 1; i++) {
 			for (size_t j = 0; j < count - i - 1; j++) {
-				if (array[j] > array[j + 1]) {
+				int should_swap = reverse ? (array[j] < array[j + 1]) : (array[j] > array[j + 1]);
+				if (should_swap) {
 					int temp = array[j];
 					array[j] = array[j + 1];
 					array[j + 1] = temp;
@@ -84,20 +69,30 @@
 
 #pragma region "Print"
 
-	void array_print(const char **array, int numbered) {
+	void array_print(const char **array, int fd, int numbered) {
 		if (!array) return;
 
-		for (size_t i = 0; array[i]; i++) {
-			if (numbered)	printf("[%zu] %s\n", i, array[i]);
-			else			printf("%s\n", array[i]);
+		print(fd, NULL, RESET);
+
+		for (int i = 0; array[i]; i++) {
+			if (numbered) print(fd, ft_strjoin(ft_itoa(i), " ", 1), FREE_JOIN);
+			print(fd, ft_strjoin(array[i], "\n", 0), FREE_JOIN);
 		}
+
+		print(fd, NULL, PRINT);
 	}
 
-	void array_int_print(int *array) {
+	void array_int_print(int *array, int fd) {
 		if (!array) return;
 
-		for (size_t i = 0; array[i]; i++)
-			printf("%d\n", array[i]);
+		print(fd, NULL, RESET);
+
+		for (int i = 0; array[i]; ++i) {
+			print(fd, ft_itoa(array[i]), FREE_JOIN);
+			print(fd, "\n",              JOIN);
+		}
+
+		print(fd, NULL, PRINT);
 	}
 
 #pragma endregion
@@ -106,19 +101,10 @@
 
 	void array_free(char **array) {
 		if (!array) return;
-		char **tmp_array = array;
 
-		while (tmp_array && *tmp_array) { free(*(tmp_array)); *(tmp_array++) = NULL; }
-		if (array) free(array);
-	}
-
-	void array_free_ptr(char ***array) {
-		if (!array || !*array) return;
-		char **tmp_array = *array;
-
-		while (tmp_array && *tmp_array) { free(*(tmp_array)); *(tmp_array++) = NULL; }
-		if (*array) free(*array);
-		*array = NULL;
+		for (int i = 0; array[i]; ++i)
+			free(array[i]);
+		free(array);
 	}
 
 #pragma endregion
