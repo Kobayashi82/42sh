@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 20:52:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
@@ -462,7 +462,7 @@
 				}
 
 				// Ignore -number or +number if ignore_numbers is active
-				if (ignore_mode == 1 && (arg[0] == '-' || arg[0] == '+') && arg[1] != '\0' && ft_isnum_s(&arg[1])) {
+				if (ignore_mode == IGNORE_NUMBER && (arg[0] == '-' || arg[0] == '+') && arg[1] != '\0' && ft_isnum_s(&arg[1])) {
 					tmp_args[arg_count++] = ft_strdup(arg);
 					done_with_opts = 1;
 					continue;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 00:33:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:40:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@
 		test_free_argv(argv);
 
 		alias_clear();
-		cmdp_clear();
+		hash_clear();
 
 		return (result);
 	}
@@ -220,7 +220,7 @@
 		test_free_argv(argv);
 
 		alias_clear();
-		cmdp_clear();
+		hash_clear();
 
 		return (result);
 	}
@@ -234,8 +234,8 @@
 		return (0);
 		variables_from_array(vars_table, envp);
 		printf("\n");
-		cmdp_add("./42/pipi", 0, 0);
-		cmdp_add("/usr/bin/date", 0, 0);
+		hash_add("./42/pipi", 0, 0);
+		hash_add("/usr/bin/date", 0, 0);
 
 		
 		int argc = 2;
@@ -243,7 +243,7 @@
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
 
-		cmdp_clear();
+		hash_clear();
 
 		return (result);
 	}

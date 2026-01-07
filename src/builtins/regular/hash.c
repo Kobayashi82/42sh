@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:48:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:38:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "hashes/hash.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
@@ -109,29 +109,29 @@
 
 	static int print_hash(int reuse) {
 		int title = 0; int total = 0;
-		for (unsigned int index = 0; index < CMDP_HASH_SIZE; ++index) {
-			t_cmdp *cmdp = hash_table[index];
-			while (cmdp) {
-				if (cmdp->name && cmdp->path) {
+		for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+			t_hash *hash = hash_table[index];
+			while (hash) {
+				if (hash->name && hash->path) {
 					if (reuse) {
 						print(STDOUT_FILENO, "builtin hash -p ", JOIN);
-						print(STDOUT_FILENO, cmdp->path, JOIN);
+						print(STDOUT_FILENO, hash->path, JOIN);
 						print(STDOUT_FILENO, " ", JOIN);
-						print(STDOUT_FILENO, cmdp->name, JOIN);
+						print(STDOUT_FILENO, hash->name, JOIN);
 						print(STDOUT_FILENO, "\n", JOIN);
 					} else {
 						if (!title) { title = 1; print(STDOUT_FILENO, "hits    command\n", JOIN); }
-						char *hits = ft_itoa(cmdp->hits);
+						char *hits = ft_itoa(hash->hits);
 						int spaces = 4 - ft_strlen(hits);
 						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
 						print(STDOUT_FILENO, hits, FREE_JOIN);
 						print(STDOUT_FILENO, "    ", JOIN);
-						print(STDOUT_FILENO, cmdp->path, JOIN);
+						print(STDOUT_FILENO, hash->path, JOIN);
 						print(STDOUT_FILENO, "\n", JOIN);
 					}
 					total++;
 				}
-				cmdp = cmdp->next;
+				hash = hash->next;
 			}
 		}
 
@@ -152,7 +152,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "lrp:dt", NULL, long_opts, "hash [-lr] [-p pathname] [-dt] [name ...]", 0);
+		t_parse_result *result = parse_options(argc, argv, "lrp:dt", NULL, long_opts, "hash [-lr] [-p pathname] [-dt] [name ...]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
@@ -166,7 +166,7 @@
 		print(STDERR_FILENO, NULL, RESET);
 
 		if (has_option(result, 'r')) {
-			cmdp_clear();
+			hash_clear();
 			return (free_options(result), 0);
 		}
 

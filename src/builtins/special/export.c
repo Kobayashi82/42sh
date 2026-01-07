@@ -6,51 +6,102 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "hashes/builtin.h"
+	#include "hashes/variable.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "tests/args.h"
-	#include "hashes/builtin.h"
-	#include "builtins/options.h"
-	#include "hashes/variable.h"
-	#include "main/shell.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-			"export: export [-n] [name[=value] ...] or export -p\n"
-			"    Set export attribute for shell variables.\n\n"
+	#pragma region "Help"
 
-			"    Marks each NAME for automatic export to the environment of subsequently\n"
-			"    executed commands.  If VALUE is supplied, assign VALUE before exporting.\n\n"
+		int bt_export_help(int format, int no_print) {
+			char *name = "export";
+			char *syntax = "export [-n] [name[=value] ...] or export -p";
+			char *description = "Set export attribute for shell variables.";
+			char *msg =
+				"    Marks each NAME for automatic export to the environment of subsequently\n"
+				"    executed commands.  If VALUE is supplied, assign VALUE before exporting.\n\n"
 
-			"    Options:\n"
-			"      -n        remove the export property from each NAME\n"
-			"      -p        display a list of all exported variables and functions\n\n"
+				"    Options:\n"
+				"      -n        remove the export property from each NAME\n"
+				"      -p        display a list of all exported variables and functions\n\n"
 
-			"    Exit Status:\n"
-			"      Returns success unless an invalid option is given or NAME is invalid.\n";
+				"    Exit Status:\n"
+				"      Returns success unless an invalid option is given or NAME is invalid.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		return (0);
-	}
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"export 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Add"
 
-	static int add_export(char *arg) {
+	static int add_export(t_parse_result *result, char *arg) {
 		if (!arg) return (0);
-		int result = 0;
+		int ret = 0;
 
 		if (!strchr(arg, '=')) {
 			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
@@ -69,24 +120,27 @@
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
 			var->exported = 1;
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
-
-			result = 1;
+			print(STDOUT_FILENO, NULL,                                        RESET);
+			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ", 0),     FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
+			ret = 1;
 		} else {
-			if (concatenate && variables_concatenate(vars_table, key, value, 1, -1, -1, -1))	result = 1;
-			if (!concatenate && variables_add(vars_table, key, value, 1, -1, -1, -1))			result = 1;
+			if (concatenate && variables_concatenate(vars_table, key, value, 1, -1, -1, -1))	ret = 1;
+			if (!concatenate && variables_add(vars_table, key, value, 1, -1, -1, -1))			ret = 1;
 		}
 
-		return (free(key), free(value), result);
+		free(key);
+		free(value);
+		return (ret);
 	}
 
 #pragma endregion
 
 #pragma region "Delete"
 
-	static int delete_export(char *arg) {
+	static int delete_export(t_parse_result *result, char *arg) {
 		if (!arg) return (0);
-		int result = 0;
+		int ret = 0;
 
 		if (!strchr(arg, '=')) {
 			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
@@ -105,44 +159,55 @@
 		if (variables_validate(key, value, "export", 1, 1)) return (free(key), free(value), 1);
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_RESET_PRINT);
-			result = 1;
+			print(STDOUT_FILENO, NULL,                                        RESET);
+			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ", 0),     FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
+			ret = 1;
 		} else {
-			if (concatenate && variables_concatenate(vars_table, key, value, 0, -1, -1, -1))	result = 1;
-			if (!concatenate && variables_add(vars_table, key, value, 0, -1, -1, -1))			result = 1;
+			if (concatenate && variables_concatenate(vars_table, key, value, 0, -1, -1, -1))	ret = 1;
+			if (!concatenate && variables_add(vars_table, key, value, 0, -1, -1, -1))			ret = 1;
 		}
-		
-		return (free(key), free(value), result);
+
+		free(key);
+		free(value);
+		return (ret);
 	}
 
 #pragma endregion
 
 #pragma region "Export"
 
-	int bt_export(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "np", '-', 0);
+	int bt_export(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("export", opts->invalid, "[-n] [name[=value] ...] or export -p");
-			return (free(opts), 1);
-		}
+		t_parse_result *result = parse_options(argc, argv, "np", NULL, long_opts, "export [-n] [name[=value] ...] or export -p", IGNORE_OFF);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("export", "1.0"));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_export_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		if (!opts->args) {
+
+		int ret = 0;
+
+		if (!result->argc) {
 			variables_print(vars_table, EXPORTED_LIST, 1);
-			return (free(opts), 0);
+			return (free_options(result), 0);
 		}
 
-		int result = 0;
-		while (opts->args) {
-			if (strchr(opts->valid, 'n')) { if (delete_export(opts->args->value)) result = 1; }
-			else if (add_export(opts->args->value)) result = 1;
-			opts->args = opts->args->next;
+		for (int i = 0; i < result->argc; ++i) {
+			if (has_option(result, 'n')) {
+				if (delete_export(result, result->argv[i]))	ret = 1;
+			} else {
+				if (add_export(result, result->argv[i]))	ret = 1;
+			}
 		}
 
-		return (free(opts), result);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

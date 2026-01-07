@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 20:59:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 00:28:38 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:14:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,12 +120,15 @@
 	int			bt_jobs_help(int format, int no_print);
 	int			bt_kill(int argc, char **argv);
 	int			bt_kill_help(int format, int no_print);
-	// int			bt_printf(t_arg *args);
+	int			bt_printf(int argc, char **argv);
+	int			bt_printf_help(int format, int no_print);
 	int			bt_pwd(int argc, char **argv);
 	int			bt_pwd_help(int format, int no_print);
 	int			bt_read(int argc, char **argv);
 	int			bt_read_help(int format, int no_print);
-	// int			bt_test(t_arg *args);
+	int			bt_test(int argc, char **argv);
+	int			bt_test_help(int format, int no_print);
+	int			bt_bracket_help(int format, int no_print);
 	int			bt_true(int argc, char **argv);
 	int			bt_true_help(int format, int no_print);
 	int			bt_type(int argc, char **argv);
@@ -140,22 +143,36 @@
 	int			bt_wait_help(int format, int no_print);
 
 	//	==== BUILTINS (Special) ====
-	// int			bt_break(t_arg *args);
-	// int			bt_continue(t_arg *args);
-	// int			bt_dot(t_arg *args);
-	// int			bt_dots(t_arg *args);
-	// int			bt_eval(t_arg *args);
-	int			bt_exec(t_arg *args);
+	int			bt_break(int argc, char **argv);
+	int			bt_break_help(int format, int no_print);
+	int			bt_continue(int argc, char **argv);
+	int			bt_continue_help(int format, int no_print);
+	int			bt_dot(int argc, char **argv);
+	int			bt_dot_help(int format, int no_print);
+	int			bt_source_help(int format, int no_print);
+	int			bt_dots(int argc, char **argv);
+	int			bt_dots_help(int format, int no_print);
+	int			bt_eval(int argc, char **argv);
+	int			bt_eval_help(int format, int no_print);
+	int			bt_exec(int argc, char **argv);
+	int			bt_exec_help(int format, int no_print);
 	int			bt_exit(int argc, char **argv);
 	int			bt_exit_help(int format, int no_print);
-	int			bt_export(t_arg *args);
-	int			bt_readonly(t_arg *args);
-	// int			bt_return(t_arg *args);
+	int			bt_export(int argc, char **argv);
+	int			bt_export_help(int format, int no_print);
+	int			bt_readonly(int argc, char **argv);
+	int			bt_readonly_help(int format, int no_print);
+	int			bt_return(int argc, char **argv);
+	int			bt_return_help(int format, int no_print);
 	int			bt_set(int argc, char **argv);
 	int			bt_set_help(int format, int no_print);
-	// int			bt_shift(t_arg *args);
-	// int			bt_times(t_arg *args);
-	// int			bt_trap(t_arg *args);
-	int			bt_unset(t_arg *args);
+	int			bt_shift(int argc, char **argv);
+	int			bt_shift_help(int format, int no_print);
+	int			bt_times(int argc, char **argv);
+	int			bt_times_help(int format, int no_print);
+	int			bt_trap(int argc, char **argv);
+	int			bt_trap_help(int format, int no_print);
+	int			bt_unset(int argc, char **argv);
+	int			bt_unset_help(int format, int no_print);
 
 #pragma endregion

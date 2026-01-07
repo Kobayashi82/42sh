@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 00:31:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	#include "hashes/builtin.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 	#include <sys/resource.h>
 
@@ -326,7 +326,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "SHac::d::e::f::i::l::m::n::q::r::s::t::u::v::x::R::", NULL, long_opts, "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]", 0);
+		t_parse_result *result = parse_options(argc, argv, "SHac::d::e::f::i::l::m::n::q::r::s::t::u::v::x::R::", NULL, long_opts, "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 

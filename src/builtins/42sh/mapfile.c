@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	#include "main/shell.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
@@ -201,7 +201,7 @@
 		char *syntax = "mapfile [-d delim] [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]";
 		if (argc && !strcmp(argv[0], "readarray")) syntax = "readarray [-d delim] [-n count] [-O origin] [-s count] [-t] [-u fd] [-C callback] [-c quantum] [array]";
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, syntax, 0);
+		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, syntax, IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 

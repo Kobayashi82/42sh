@@ -6,51 +6,102 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
-
+	
+	#include "hashes/builtin.h"
+	#include "hashes/variable.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "tests/args.h"
-	#include "hashes/builtin.h"
-	#include "builtins/options.h"
-	#include "hashes/variable.h"
-	#include "main/shell.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-			"    readonly: readonly [name[=value] ...] or readonly -p\n"
-			"    Mark shell variables as unchangeable.\n\n"
+	#pragma region "Help"
 
-			"    Mark each NAME as read-only; the values of these NAMEs may not be\n"
-			"    changed by subsequent assignment.  If VALUE is supplied, assign VALUE\n"
-			"    before marking as read-only.\n\n"
+		int bt_readonly_help(int format, int no_print) {
+			char *name = "readonly";
+			char *syntax = "readonly [name[=value] ...] or readonly -p";
+			char *description = "Mark shell variables as unchangeable.";
+			char *msg =
+				"    Mark each NAME as read-only; the values of these NAMEs may not be\n"
+				"    changed by subsequent assignment.  If VALUE is supplied, assign VALUE\n"
+				"    before marking as read-only.\n\n"
 
-			"    Options:\n"
-			"      -p        display a list of all readonly variables.\n\n"
+				"    Options:\n"
+				"      -p        display a list of all readonly variables.\n\n"
 
-			"    Exit Status:\n"
-			"      Returns success unless an invalid option is given or NAME is invalid.\n";
+				"    Exit Status:\n"
+				"      Returns success unless an invalid option is given or NAME is invalid.\n";
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		return (0);
-	}
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
+
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
+
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"readonly 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Add"
 
-	static int add_readonly(char *arg) {
+	static int add_readonly(t_parse_result *result, char *arg) {
 		if (!arg) return (0);
-		int result = 0;
+		int ret = 0;
 
 		if (!strchr(arg, '=')) {
 			if (variables_validate(arg, NULL, "readonly", 0, 1)) return (1);
@@ -68,45 +119,49 @@
 
 		t_var *var = variables_find(vars_table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME ": ", key, ": readonly variable\n", 0), FREE_PRINT);
-			result = 1;
+			print(STDOUT_FILENO, NULL,                                        RESET);
+			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ", 0),     FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
+			ret = 1;
 		} else {
-			if (concatenate && variables_concatenate(vars_table, key, value, -1, 1, -1, -1))	result = 1;
-			if (!concatenate && variables_add(vars_table, key, value, -1, 1, -1, -1))			result = 1;
+			if (concatenate && variables_concatenate(vars_table, key, value, -1, 1, -1, -1))	ret = 1;
+			if (!concatenate && variables_add(vars_table, key, value, -1, 1, -1, -1))			ret = 1;
 		}
 
-		return (free(key), free(value), result);
+		return (free(key), free(value), ret);
 	}
 
 #pragma endregion
 
 #pragma region "Readonly"
 
-	int bt_readonly(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "p", '-', 0);
+	int bt_readonly(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("readonly", opts->invalid, "[name[=value] ...] or readonly -p");
-			return (free(opts), 1);
-		}
+		t_parse_result *result = parse_options(argc, argv, "p", NULL, long_opts, "readonly [name[=value] ...] or readonly -p", IGNORE_OFF);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("readonly", "1.0"));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_readonly_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		if (!opts->args) {
+		int ret = 0;
+
+		if (!result->argc) {
 			variables_print(vars_table, READONLY, 1);
-			return (free(opts), 0);
+			return (free_options(result), 0);
 		}
 
-		int result = 0;
-		while (opts->args) {
-			if (add_readonly(opts->args->value)) result = 1;
-			opts->args = opts->args->next;
+		for (int i = 0; i < result->argc; ++i) {
+			if (add_readonly(result, result->argv[i])) ret = 1;
 		}
 
-		return (free(opts), result);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

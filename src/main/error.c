@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/20 21:13:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:36:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@
 		alias_clear();
 		variables_clear(vars_table);
 		builtin_clear();
-		cmdp_clear();
+		hash_clear();
 		tmp_clear();
 		prompt_clear(BOTH);
 		ast_free(&shell.ast);

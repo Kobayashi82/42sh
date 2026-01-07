@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:50:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:36:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 	#include <stddef.h>
 
-	#define CMDP_HASH_SIZE	101
+	#define HASH_SIZE	101
 
 #pragma endregion
 
@@ -24,33 +24,33 @@
 
 	#pragma region "Structures"
 
-		typedef struct s_cmdp {
+		typedef struct s_hash {
 			char			*name;
 			char			*path;
 			int				hits;
-			struct s_cmdp	*next;
-		} t_cmdp;
+			struct s_hash	*next;
+		} t_hash;
 
 	#pragma endregion
 
-	extern t_cmdp *hash_table[CMDP_HASH_SIZE];
+	extern t_hash *hash_table[HASH_SIZE];
 
 #pragma endregion
 
 #pragma region "Methods"
 
 	//	---------- IMPORT ----------
-	int		cmdp_add(const char *path, int check_file, int check_exec);
+	int		hash_add(const char *path, int check_file, int check_exec);
 	//	---------- EXPORT ----------
-	t_cmdp	*cmdp_find(const char *name, int ninja);
-	char	*cmdp_find_value(const char *name, int ninja);
-	char	**cmdp_to_array(int sort);
-	int		cmdp_print(int sort);
-	size_t	cmdp_length();
+	t_hash	*hash_find(const char *name, int ninja);
+	char	*hash_find_value(const char *name, int ninja);
+	char	**hash_to_array(int sort);
+	int		hash_print(int sort);
+	size_t	hash_length();
 	//	---------- DELETE ----------
-	int		cmdp_delete(const char *name);
-	void	cmdp_clear();
+	int		hash_delete(const char *name);
+	void	hash_clear();
 	//	-------- INITIALIZE --------
-	int		cmdp_initialize();
+	int		hash_initialize();
 
 #pragma endregion

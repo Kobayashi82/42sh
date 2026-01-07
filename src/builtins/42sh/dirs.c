@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/06 16:45:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "hashes/builtin.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
@@ -119,7 +119,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "dirs [-clpv] [+N] [-N]", 0);
+		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "dirs [-clpv] [+N] [-N]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 

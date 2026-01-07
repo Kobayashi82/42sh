@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 00:26:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:39:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 	#include "utils/libft.h"
 	#include "utils/paths.h"
 	#include "utils/print.h"
-	#include "utils/getopt2.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
@@ -198,11 +198,11 @@
 
 			if (!opts || !*opts) {
 				if (alias_find(arg) || builtin_isactive(arg)) return (0);
-				t_cmdp *cmdp = cmdp_find(arg, 0);
-				if (cmdp) {
-					if (access(cmdp->path, F_OK) != -1) {
-						print(STDOUT_FILENO, cmdp->name, JOIN);
-						print(STDOUT_FILENO, ft_strjoin_sep(" is hashed (", cmdp->path, ")\n", 0), FREE_JOIN);
+				t_hash *hash = hash_find(arg, 0);
+				if (hash) {
+					if (access(hash->path, F_OK) != -1) {
+						print(STDOUT_FILENO, hash->name, JOIN);
+						print(STDOUT_FILENO, ft_strjoin_sep(" is hashed (", hash->path, ")\n", 0), FREE_JOIN);
 						return (1);
 					}
 				}
@@ -257,13 +257,17 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "dms", NULL, long_opts, "help [-dms] [pattern ...]", 0);
+		t_parse_result *result = parse_options(argc, argv, "dms", NULL, long_opts, "help [-dms] [pattern ...]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
-		if (find_long_option(result, "help"))		return (free_options(result), bt_help_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "help"))		return (free_options(result), bt_type_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
+		(void) check_alias;
+		(void) check_builtin;
+		(void) check_function;
+		(void) check_command;
 
 		int ret = 0;
 

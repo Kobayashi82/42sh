@@ -6,94 +6,142 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/29 18:54:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 16:32:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
-
+	
 	#include "hashes/builtin.h"
-	#include "builtins/options.h"
 	#include "utils/libft.h"
 	#include "utils/print.h"
-	
-	#include "tests/args.h"
+	#include "utils/getopt.h"
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Help / Version"
 
-	static int print_help() {
-		char *msg =
-		"exec: exec [-cl] [-a name] [command [argument ...]] [redirection ...]\n"
-		"    Replace the shell with the given command.\n\n"
+	#pragma region "Help"
 
-		"    Execute COMMAND, replacing this shell with the specified program.\n"
-		"    ARGUMENTS become the arguments to COMMAND.  If COMMAND is not specified,\n"
-		"    any redirections take effect in the current shell.\n\n"
+		int bt_exec_help(int format, int no_print) {
+			char *name = "exec";
+			char *syntax = "exec [-cl] [-a name] [command [argument ...]] [redirection ...]";
+			char *description = "Replace the shell with the given command.";
+			char *msg =
+				"    Execute COMMAND, replacing this shell with the specified program.\n"
+				"    ARGUMENTS become the arguments to COMMAND.  If COMMAND is not specified,\n"
+				"    any redirections take effect in the current shell.\n\n"
+				
+				"    Options:\n"
+				"      -a name	 pass NAME as the zeroth argument to COMMAND\n"
+				"      -c	     execute COMMAND with an empty environment\n"
+				"      -l	     place a dash in the zeroth argument to COMMAND\n\n"
+				
+				"    If the command cannot be executed, a non-interactive shell exits, unless\n"
+				"    the shell option `execfail' is set.\n\n"
+				
+				"    Exit Status:\n"
+				"      Returns success unless COMMAND is not found or a redirection error occurs.\n";
 
-		"    Options:\n"
-		"      -a name	 pass NAME as the zeroth argument to COMMAND\n"
-		"      -c	     execute COMMAND with an empty environment\n"
-		"      -l	     place a dash in the zeroth argument to COMMAND\n\n"
+			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
 
-		"    If the command cannot be executed, a non-interactive shell exits, unless\n"
-		"    the shell option `execfail' is set.\n\n"
+			if (format == HELP_SYNTAX) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+			}
 
-		"    Exit Status:\n"
-		"      Returns success unless COMMAND is not found or a redirection error occurs.\n";
+			if (format == HELP_DESCRIPTION) {
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+			}
 
-		print(STDOUT_FILENO, msg, RESET_PRINT);
+			if (format == HELP_NORMAL) {
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+			}
 
-		return (0);
-	}
+			if (format == HELP_MANPAGE) {
+				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+			}
+
+			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Version"
+
+		static int version() {
+			char *msg =
+				"exec 1.0.\n"
+				"Copyright (C) 2026 Kobayashi Corp ⓒ.\n"
+				"This is free software: you are free to change and redistribute it.\n"
+				"There is NO WARRANTY, to the extent permitted by law.\n\n"
+
+				"Written by Kobayashi82 (vzurera-).\n";
+
+			print(STDOUT_FILENO, msg, RESET_PRINT);
+
+			return (0);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Exec"
 
-	int bt_exec(t_arg *args) {
-		t_opt *opts = parse_options_old(args, "acl", '-', 0);
+	int bt_exec(int argc, char **argv) {
+		t_long_option long_opts[] = {
+			{"help",	NO_ARGUMENT, 0},
+			{"version",	NO_ARGUMENT, 0},
+			{NULL, 0, 0}
+		};
 
-		if (*opts->invalid) {
-			invalid_option("exec", opts->invalid, "[-cl] [-a name] [command [argument ...]] [redirection ...]");
-			return (free(opts), 1);
+		t_parse_result *result = parse_options(argc, argv, "acl", NULL, long_opts, "exec [-cl] [-a name] [command [argument ...]] [redirection ...]", IGNORE_OFF);
+		if (!result)		return (1);
+		if (result->error)	return (free_options(result), 2);
+
+		if (find_long_option(result, "help"))		return (free_options(result), bt_exec_help(HELP_NORMAL, 0));
+		if (find_long_option(result, "version"))	return (free_options(result), version());
+
+
+		int ret = 0;
+
+		if (has_option(result, 'c')) {
+			return (free_options(result), 0);
 		}
 
-		if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		if (strchr(opts->valid, '#')) return (free(opts), print_version("enable", "1.0"));
-
-		if (strchr(opts->valid, 'c')) {
-			return (free(opts), 0);
+		if (has_option(result, 'l')) {
+			return (free_options(result), 0);
 		}
 
-		if (strchr(opts->valid, 'l') && strchr(opts->valid, 's')) {
-			return (free(opts), 0);
-		}
-		if (strchr(opts->valid, 'a')) {
-			return (free(opts), 0);
+		if (has_option(result, 'a')) {
+			return (free_options(result), 0);
 		}
 
-		int result = 0;
 		char *invalues = NULL;
-		if (opts->args) {
-			while (opts->args) {
-				// t_builtin *builtin = builtin_find(opts->args->value);
-				// if (builtin) {
-				// 	if (strchr(opts->valid, 'n'))	builtin->disabled = 1;
-				// 	else 								builtin->disabled = 0;
-				// } else {
-				// 	char *value = ft_strjoin_sep("enable: ", opts->args->value, ": not a shell builtin\n", 0);
-				// 	if (value) invalues = ft_strjoin(invalues, value, 3);
-				// 	result = 1;
-				// }
-				opts->args = opts->args->next;
+		if (result->argc) {
+			for (int i = 0; i < result->argc; ++i) {
+				;
 			}
 		} else ;
 
 		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
 
-		return (free(opts), result);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

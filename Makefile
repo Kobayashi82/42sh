@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/05 23:35:44 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/07 16:34:10 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -186,8 +186,6 @@ SRCS	=	main/main.c										\
 			builtins/special/times.c						\
 			builtins/special/trap.c							\
 			builtins/special/unset.c						\
-															\
-			builtins/utils/options.c						\
 															\
 															\
 			utils/array.c									\
