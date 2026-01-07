@@ -6,23 +6,21 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:15:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
+	#include "terminal/readinput/prompt.h"
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
 	#include "hashes/variable.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
-
-	#include <time.h>
 
 #pragma endregion
 
@@ -31,8 +29,6 @@
 	t_shell	shell;
 
 #pragma endregion
-
-int shell_time() { return (time(NULL) - shell.started); }
 
 #pragma region "Initialize"
 
@@ -49,7 +45,7 @@ int shell_time() { return (time(NULL) - shell.started); }
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
 		shell.subshell_level = 0;
-		shell.started = time(NULL);
+		shell.started = seconds_since(0);
 		srand(shell.started);
 		shell.cwd = get_cwd("shell-init");
 

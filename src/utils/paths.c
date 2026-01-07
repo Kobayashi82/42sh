@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:58:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@
 
 			if (path && path[0] != '/') {
 				if (!getcwd(cwd, sizeof(cwd))) {
-					const char *pwd = variables_find_value(vars_table, "PWD");
+					const char *pwd = variables_find_value(vars_table, "PWD");	// No deberia usar shell.cwd ??
 					if (!pwd) {
 						write(2, "Error: No se puede determinar el directorio actual\n", 52);
 						return (NULL);

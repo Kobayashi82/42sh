@@ -6,18 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:13:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:55:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "expansion/globbing.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
-	#include "expansion/globbing.h"
 	#include "tests/tests.h"
-
-	#include <stdio.h>
 
 #pragma endregion
 

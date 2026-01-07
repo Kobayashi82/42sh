@@ -6,16 +6,16 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:00:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/readinput.h"
-	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
+	#include "terminal/readinput/prompt.h"
+	#include "terminal/readinput/readinput.h"
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"

@@ -6,24 +6,22 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:56:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "utils/utils.h"
 	#include "terminal/colors.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "tests/args.h"
-	#include "expansion/globbing.h"
 	#include "hashes/alias.h"
 	#include "hashes/variable.h"
+	#include "expansion/globbing.h"
 	#include "main/options.h"
+	#include "utils/utils.h"
+	#include "tests/args.h"
 	#include "tests/tests.h"
-	
-	#include <stdio.h>
 
 #pragma endregion
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:05:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,10 @@
 	#include "expansion/globbing.h"
 	#include "main/options.h"
 	#include "utils/utils.h"
-
 	#include "tests/args.h"
 
 	#include <dirent.h>
 	#include <sys/stat.h>
-
-	#include <stdio.h>
 
 #pragma endregion
 

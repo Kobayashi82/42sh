@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/07 23:56:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 	#include "terminal/colors.h"
 	#include "hashes/alias.h"
-	#include "hashes/variable.h"
+	#include "hashes/builtin.h"
 	#include "hashes/hash.h"
+	#include "hashes/variable.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
-	#include "hashes/builtin.h"
 	#include "tests/tests.h"
 
 #pragma endregion

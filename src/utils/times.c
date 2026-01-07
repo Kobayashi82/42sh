@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 13:54:55 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:15:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "utils/utils.h"
 
+	#include <time.h>
 	#include <sys/time.h>
 
 #pragma endregion
@@ -141,6 +142,14 @@
 
 		time_t timestamp = (time_t)days * 86400 + hour * 3600 + minute * 60 + second;
 		return (timestamp);
+	}
+
+#pragma endregion
+
+#pragma region "Seconds Since"
+
+	long seconds_since(long start_time) {
+		return (time(NULL) - start_time);
 	}
 
 #pragma endregion

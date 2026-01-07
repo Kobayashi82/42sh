@@ -6,20 +6,20 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:04:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/terminal.h"
-	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/history.h"
-	#include "parser/parser.h"
-	#include "hashes/hash.h"
+	#include "terminal/readinput/prompt.h"
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
+	#include "hashes/hash.h"
 	#include "hashes/variable.h"
+	#include "parser/parser.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 00:14:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,6 +206,7 @@
 
 		char	*format_timestamp(long timestamp);
 		long	get_timestamp(const char *date);
+		long	seconds_since(long start_time);
 
 	#pragma endregion
 
