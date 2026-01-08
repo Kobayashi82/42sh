@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 19:32:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,9 @@
 				int argc = 0;
 				char **argv = args_to_argv(args, &argc);
 				args_clear(&args);
-				builtin_exec(argc, argv);
+				int ret = 0;
+				ret = builtin_exec(argc, argv);
+				if (!ret) print(STDERR_FILENO, ft_strjoin(argv[0], ": command not found\n", 0), FREE_RESET_PRINT);
 				array_free(argv);
 			}
 		} else {

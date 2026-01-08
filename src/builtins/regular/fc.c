@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 20:12:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,6 +236,7 @@
 
 		static int default_editor(t_parse_result *result, char **editor, const char *cmd) {
 			if (!result || !editor) return (1);
+
 			char *name = NULL;
 
 			if (cmd) {
@@ -259,46 +260,43 @@
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
-				free(name);
-				name	= get_fullpath_command("/usr/bin/editor", 0);
-				*editor = get_fullpath_command(resolve_symlink(name), 1);
+				*editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"), 1);
+				if (access(*editor, X_OK) == -1) { free(*editor); *editor = NULL; }
 			}
 			if (!cmd && !*editor) {
-				free(name);
-				name	= get_fullpath_command("nano", 0);
-				*editor = get_fullpath_command(name, 1);
+				*editor = get_fullpath_command("nano", 1);
+				if (access(*editor, X_OK) == -1) { free(*editor); *editor = NULL; }
 			}
 			if (!cmd && !*editor) {
-				free(name);
-				name	= get_fullpath_command("ed", 0);
-				*editor = get_fullpath_command(name, 1);
+				*editor = get_fullpath_command("vi", 1);
+				if (access(*editor, X_OK) == -1) { free(*editor); *editor = NULL; }
+			}
+			if (!cmd && !*editor) {
+				*editor = get_fullpath_command("ed", 1);
+				if (access(*editor, X_OK) == -1) { free(*editor); *editor = NULL; }
 			}
 
-			if (!*editor) {
+			if (!*editor || access(*editor, F_OK) == -1) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": command not found\n", 0), FREE_PRINT);
-				else				print(STDERR_FILENO, ": fc: editor not found\n", PRINT);
-				free(name);
+				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": command not found\n", 0), FREE_PRINT);
+				else			print(STDERR_FILENO, ": fc: editor not found\n", PRINT);
+				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 		
 			if (is_directory((char *)(*editor))) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Is a directory\n", 0), FREE_PRINT);
-				else				print(STDERR_FILENO, ": editor: Is a directory\n", PRINT);
-				free(name);
-				free(*editor);
-				*editor = NULL;
+				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Is a directory\n", 0), FREE_PRINT);
+				else			print(STDERR_FILENO, ": editor: Is a directory\n", PRINT);
+				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
 				print(STDERR_FILENO, result->shell_name, RESET);
-				if (cmd && name)	print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Permission denied\n", 0), FREE_PRINT);
-				else				print(STDERR_FILENO, ": editor: Permission denied\n", PRINT);
-				free(name);
-				free(*editor);
-				*editor = NULL;
+				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Permission denied\n", 0), FREE_PRINT);
+				else			print(STDERR_FILENO, ": editor: Permission denied\n", PRINT);
+				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
