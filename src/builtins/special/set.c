@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 23:16:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:39:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,3 +225,6 @@
 //	set -o vi
 //	set -o history;
 //	set -o hist_local;
+
+// set -- arg1 arg2 arg3  # Establece $1, $2, $3
+// set --                 # Limpia todos los argumentos ($# = 0)

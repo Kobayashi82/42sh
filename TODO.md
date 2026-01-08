@@ -29,6 +29,7 @@
 
 ## Builtins
 - getopt (builtin) debe soportar multibyte chars
+- getopt (for builtin) soportar argumentos opcionales separados (o.) aceptaria no argumento o el siguiente argumento si existe y no es una opcion (empieza por -) - Util para set y otro builtin que no recuerdo, creo que ulimit
 
 ## History
 - Cambiar sistema de -a -n para que use timestamp y ordene automaticamente
