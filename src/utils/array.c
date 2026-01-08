@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:06:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,29 @@
 				}
 			}
 		}
+	}
+
+#pragma endregion
+
+#pragma region "Clone"
+
+	char **array_clone(int length, const char **array) {
+		if (length <= 0 || !array) return (NULL);
+
+		char **new_array = malloc((length + 1) * sizeof(char *));
+		if (!new_array) return (NULL);
+		
+		int i = 0;
+		for (; i < length; ++i) {
+			new_array[i] = ft_strdup(array[i]);
+			if (!new_array[i]) {
+				array_free(new_array);
+				return (NULL);
+			}
+		}
+		new_array[i] = NULL;
+
+		return (new_array);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:56:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:29:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 	#include "hashes/builtin.h"
 	#include "hashes/hash.h"
 	#include "hashes/variable.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
 	#include "tests/tests.h"
@@ -90,9 +91,9 @@
 		char **argv = test_create_argv(argc, "readonly", "-p", "test_fixed");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (variables_length(vars_table, READONLY) != 1) result = 1;
+		if (variables_length(shell.env->table, READONLY) != 1) result = 1;
 
-		variables_clear(vars_table);
+		variables_clear(shell.env->table);
 
 		return (result);
 	}
@@ -108,22 +109,22 @@
 		char **argv = test_create_argv(argc, "export", "a=b", "test");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (variables_length(vars_table, EXPORTED_LIST) != 2) result = 1;
+		if (variables_length(shell.env->table, EXPORTED_LIST) != 2) result = 1;
 
 		argc = 4;
 		argv = test_create_argv(argc, "export", "-n", "a=c", "test");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (!result && variables_length(vars_table, EXPORTED_LIST) != 0) result = 1;
+		if (!result && variables_length(shell.env->table, EXPORTED_LIST) != 0) result = 1;
 
 		argc = 2;
 		argv = test_create_argv(argc, "export", "a+=k");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (!result && variables_length(vars_table, EXPORTED_LIST) != 1) result = 1;
-		if (!result && strcmp(variables_find_value(vars_table, "a"), "ck")) result = 1;
+		if (!result && variables_length(shell.env->table, EXPORTED_LIST) != 1) result = 1;
+		if (!result && strcmp(variables_find_value(shell.env->table, "a"), "ck")) result = 1;
 
-		variables_clear(vars_table);
+		variables_clear(shell.env->table);
 
 		return (result);
 	}
@@ -135,26 +136,26 @@
 	int test_unset() {
 		int result = 0;
 
-		variables_add(vars_table, "a", "b", 1, 0, 0, 0);
-		variables_add(vars_table, "test", NULL, 1, 0, 0, 0);
+		variables_add(shell.env->table, "a", "b", 1, 0, 0, 0);
+		variables_add(shell.env->table, "test", NULL, 1, 0, 0, 0);
 
 		int argc = 3;
 		char **argv = test_create_argv(argc, "unset", "a=b", "test");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (variables_length(vars_table, EXPORTED_LIST) != 1) result = 1;
-		if (!result && variables_length(vars_table, INTERNAL) != 0) result = 1;
+		if (variables_length(shell.env->table, EXPORTED_LIST) != 1) result = 1;
+		if (!result && variables_length(shell.env->table, INTERNAL) != 0) result = 1;
 		
-		variables_add(vars_table, "test", NULL, 1, 0, 0, 0);
+		variables_add(shell.env->table, "test", NULL, 1, 0, 0, 0);
 
 		argc = 4;
 		argv = test_create_argv(argc, "unset", "-v", "a", "test");
 		builtin_exec(argc, argv);
 		test_free_argv(argv);
-		if (!result && variables_length(vars_table, EXPORTED_LIST) != 0) result = 1;
-		if (!result && variables_length(vars_table, INTERNAL) != 0) result = 1;
+		if (!result && variables_length(shell.env->table, EXPORTED_LIST) != 0) result = 1;
+		if (!result && variables_length(shell.env->table, INTERNAL) != 0) result = 1;
 
-		variables_clear(vars_table);
+		variables_clear(shell.env->table);
 
 		return (result);
 	}
@@ -189,7 +190,7 @@
 		int result = 0;
 		return (0);
 
-		variables_from_array(vars_table, envp);
+		variables_from_array(shell.env->table, envp);
 
 		int argc = 5;
 		char **argv = test_create_argv(argc, "type", "-pP", "echo", "popo", "date");
@@ -210,7 +211,7 @@
 		int result = 0;
 		return (0);
 
-		variables_from_array(vars_table, envp);
+		variables_from_array(shell.env->table, envp);
 
 		int argc = 5;
 		char **argv = test_create_argv(argc, "command", "-v", "echo", "popo", "date");
@@ -230,7 +231,7 @@
 	int test_hash(const char **envp) {
 		int result = 0;
 		return (0);
-		variables_from_array(vars_table, envp);
+		variables_from_array(shell.env->table, envp);
 		printf("\n");
 		hash_add("./42/pipi", 0, 0);
 		hash_add("/usr/bin/date", 0, 0);

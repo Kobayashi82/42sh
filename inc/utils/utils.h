@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:14:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:05:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@
 		void	array_nsort(char **array, size_t skip);
 		void	array_sort(char **array);
 		void	array_int_sort(int *array, int reverse);
+		char	**array_clone(int length, const char **array);
 		void	array_print(const char **array, int fd, int numbered);
 		void	array_int_print(int *array, int fd);
 		void	array_free(char **array);

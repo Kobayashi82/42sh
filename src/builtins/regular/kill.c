@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:22:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:12:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 	#include "terminal/terminal.h"
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -149,7 +150,7 @@
 			}
 
 			if (signal < 0 || signal > 64) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": kill: ", 0),                      FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                              FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": invalid signal specification\n", 0), FREE_JOIN);
 				ret = 1;
 			} else {
@@ -196,7 +197,7 @@
 		}
 
 		if (sig_num < 0 || sig_num > 64) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": kill: ", 0),                    FREE_RESET);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                            FREE_RESET);
 			print(STDERR_FILENO, ft_strjoin(failed_signal, ": invalid signal specification\n", 0), FREE_PRINT);
 
 			return (-1);
@@ -225,7 +226,7 @@
 			int pid = -1;
 
 			if (result->argv[i][0] != '%' && !ft_isdigit_s(result->argv[i])) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": kill: ", 0),                              FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                                      FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": arguments must be process or job IDs\n", 0), FREE_JOIN);
 				ret = 1;
 				continue;
@@ -234,7 +235,7 @@
 			if (result->argv[i][0] == '%') {
 				char *job = NULL;
 				if (!job) {
-					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": kill: ", 0),     FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),             FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(result->argv[i], ": no such job\n", 0), FREE_JOIN);
 					ret = 1;
 					continue;
@@ -245,8 +246,8 @@
 			}
 
 			if (kill(0, sig_num)) {
-				print(STDERR_FILENO, ft_strjoin_sep(result->shell_name, ": kill: (", ft_itoa(pid), 3),    FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(") - : ", strerror(errno), "\n", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": kill: (", ft_itoa(pid), 3), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(") - : ", strerror(errno), "\n", 0),       FREE_JOIN);
 			}
 		}
 

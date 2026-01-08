@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:56:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:30:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 	#include "hashes/variable.h"
 	#include "expansion/globbing.h"
 	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
 	#include "tests/tests.h"
@@ -61,28 +62,28 @@
 		printf(C"\tVariables   ");
 
 		int result = 0, envp_count = 0, vars_count = 0;
-		variables_clear(vars_table);
-		variables_from_array(vars_table, envp);
-		char **vars = variables_to_array(vars_table, EXPORTED, 1);
+		variables_clear(shell.env->table);
+		variables_from_array(shell.env->table, envp);
+		char **vars = variables_to_array(shell.env->table, EXPORTED, 1);
 		for (int i = 0; envp[i]; ++i) ++envp_count;
 		for (int i = 0; vars[i]; ++i) ++vars_count;
 		array_free(vars);
 
 		if (envp_count != vars_count)																			{ result = 1; printf(RD"X"RED500" clone\n"NC); }
-		if (!result && !variables_find(vars_table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
-		if (!result) { variables_add(vars_table, "testing", "test", 1, 0, 0, 0);
-			if (!variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
+		if (!result && !variables_find(shell.env->table, "PATH"))														{ result = 1; printf(RD"X"RED500" find\n"NC); }
+		if (!result) { variables_add(shell.env->table, "testing", "test", 1, 0, 0, 0);
+			if (!variables_find(shell.env->table, "testing"))															{ result = 1; printf(RD"X"RED500" create\n"NC); }
 		}
 
-		if (!result) { variables_delete(vars_table, "testing");
-			if (variables_find(vars_table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
+		if (!result) { variables_delete(shell.env->table, "testing");
+			if (variables_find(shell.env->table, "testing"))															{ result = 1; printf(RD"X"RED500" delete\n"NC); }
 		}
-		if (!result) { variables_clear(vars_table);
-			vars = variables_to_array(vars_table, EXPORTED, 1);
+		if (!result) { variables_clear(shell.env->table);
+			vars = variables_to_array(shell.env->table, EXPORTED, 1);
 			if (vars && vars[0])																				{ result = 1; printf(RD"X"RED500" clear\n"NC); }
 		}
 
-		variables_clear(vars_table);
+		variables_clear(shell.env->table);
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:15:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 	
 	#include "hashes/builtin.h"
 	#include "hashes/variable.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -98,13 +99,13 @@
 
 #pragma region "Add"
 
-	static int add_readonly(t_parse_result *result, char *arg) {
+	static int add_readonly(char *arg) {
 		if (!arg) return (0);
 		int ret = 0;
 
 		if (!strchr(arg, '=')) {
 			if (variables_validate(arg, NULL, "readonly", 0, 1)) return (1);
-			t_var *var = variables_find(vars_table, arg);
+			t_var *var = variables_find(shell.env->table, arg);
 			if (var) { var->readonly = 1; return (0); }
 		}
 
@@ -116,15 +117,15 @@
 		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
 		if (variables_validate(key, value, "readonly", 1, 1)) return (free(key), free(value), 1);
 
-		t_var *var = variables_find(vars_table, key);
+		t_var *var = variables_find(shell.env->table, key);
 		if (var && var->readonly) {
 			print(STDOUT_FILENO, NULL,                                        RESET);
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ", 0),     FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": ", 0),             FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
 			ret = 1;
 		} else {
-			if (concatenate && variables_concatenate(vars_table, key, value, -1, 1, -1, -1))	ret = 1;
-			if (!concatenate && variables_add(vars_table, key, value, -1, 1, -1, -1))			ret = 1;
+			if (concatenate && variables_concatenate(shell.env->table, key, value, -1, 1, -1, -1))	ret = 1;
+			if (!concatenate && variables_add(shell.env->table, key, value, -1, 1, -1, -1))			ret = 1;
 		}
 
 		return (free(key), free(value), ret);
@@ -152,12 +153,12 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variables_print(vars_table, READONLY, 1);
+			variables_print(shell.env->table, READONLY, 1);
 			return (free_options(result), 0);
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (add_readonly(result, result->argv[i])) ret = 1;
+			if (add_readonly(result->argv[i])) ret = 1;
 		}
 
 		return (free_options(result), ret);

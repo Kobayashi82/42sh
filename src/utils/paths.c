@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:58:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:29:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/variable.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 	#include <sys/stat.h>
@@ -142,7 +143,7 @@
 
 			if (path && path[0] != '/') {
 				if (!getcwd(cwd, sizeof(cwd))) {
-					const char *pwd = variables_find_value(vars_table, "PWD");	// No deberia usar shell.cwd ??
+					const char *pwd = variables_find_value(shell.env->table, "PWD");	// No deberia usar shell.cwd ??
 					if (!pwd) {
 						write(2, "Error: No se puede determinar el directorio actual\n", 52);
 						return (NULL);
@@ -195,7 +196,7 @@
 		char *get_fullpath(char *path) {
 			if (!path || strchr(path, '/')) return (resolve_path(path));
 
-			char *path_list = ft_strdup(variables_find_value(vars_table, "PATH"));
+			char *path_list = ft_strdup(variables_find_value(shell.env->table, "PATH"));
 			if (!path_list) return (ft_strdup(path));
 
 			char *dir = ft_strtok(path_list, ":", 2);
@@ -275,7 +276,7 @@
 				return (free(fullpath), NULL);
 			}
 
-			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
+			if (!paths && !(paths = variables_find_value(shell.env->table, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
 
@@ -315,7 +316,7 @@
 				} return (free(fullpath), NULL);
 			}
 
-			if (!paths && !(paths = variables_find_value(vars_table, "PATH"))) return (NULL);
+			if (!paths && !(paths = variables_find_value(shell.env->table, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
 

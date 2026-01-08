@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 20:24:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:17:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@
 			int					argc_original;		// Original argc
 			int					argc;				// Number of non-option arguments
 			char				**argv;				// Non-option arguments
-			const char			*shell_name;		// Shell name (same as shell.name)
 			const char			*name;				// Name of the command calling getopt
 			const char			*usage;				// Usage syntax of the calling command
 			char				*invalid_opt;		// Invalid option (NULL if none)

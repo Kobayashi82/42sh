@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:15:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:19:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,41 @@
 #pragma region "Initialize"
 
 	int initialize(int argc, const char **argv, const char **envp) {
+		shell.name_exec = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
+		shell.name_bin = strrchr(shell.name_exec, '/');
+		shell.name_bin = (shell.name_bin) ? shell.name_bin + 1 : shell.name_exec;
+		shell.name = (shell.login_shell) ? "-"PROYECTNAME : PROYECTNAME;
+
+		// Hay que procesar antes las opciones
+
+		t_env *env = calloc(1, sizeof(t_env));
+		if (!env) return (1);
+		shell.env = env;
+		if (argc > 0) {
+			static const char *argus[5];
+			argus[0] = "-a";
+			argus[1] = "patata";
+			argus[2] = "-b";
+			argus[3] = "frita";
+			argus[4] = NULL;
+			shell.env->argc = 4;
+			shell.env->argv = array_clone(shell.env->argc, argus);
+
+			// shell.env->argc = argc - 1;
+			// shell.env->argv = array_clone(shell.env->argc, &argv[1]);
+		}
+		shell.env->argv0 = argv[0];
+		shell.env->optpos = 1;
+		shell.env->sourced = 0;
+		shell.env->parent = NULL;
+
 		//	uid, euid
 		//	PS1, PS2
 		//	column, row
 		builtin_initialize();
 		options_initialize();
 		alias_initialize();
-		variables_initialize(vars_table, envp);
+		variables_initialize(shell.env->table, envp);
 		prompt_initialize();
 		shell.mode = SRC_NO_INTERACTIVE;
 		shell.pid = getpid();
@@ -48,33 +76,6 @@
 		shell.started = seconds_since(0);
 		srand(shell.started);
 		shell.cwd = get_cwd("shell-init");
-
-		// Args
-		shell.optpos = 1;
-		if (argc > 0 && argv && argv[0]) {
-			shell.name_exec = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
-    		shell.name_bin = strrchr(shell.name_exec, '/');
-    		shell.name_bin = (shell.name_bin) ? shell.name_bin + 1 : shell.name_exec;
-			// shell.name = (argv[0][0] == '-') ? "-42sh" : "42sh"; // use login shell value
-			shell.name = (shell.login_shell) ? "-"PROYECTNAME : PROYECTNAME;
-			shell.argv = (argc > 1) ? &argv[1] : NULL;
-			shell.argc = argc - 1;
-
-			static const char *argus[5];
-			argus[0] = "-a";
-			argus[1] = "patata";
-			argus[2] = "-b";
-			argus[3] = "frita";
-			argus[4] = NULL;
-			shell.argv = argus;
-			shell.argc = 4;
-		} else {
-			shell.name_exec = "42sh";
-			shell.name_bin = "42sh";
-			shell.name = "42sh";
-			shell.argv = NULL;
-			shell.argc = 0;
-		}
 
 		terminal.bk_stdin = dup(STDIN_FILENO);
 		terminal.bk_stdout = dup(STDOUT_FILENO);

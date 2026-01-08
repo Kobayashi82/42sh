@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:16:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -203,8 +204,8 @@
 					}
 					add_newline = 1;
 				} else {
-					print(STDERR_FILENO, result->shell_name, JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.", 0), FREE_JOIN);
+					print(STDERR_FILENO, shell.name,                                                                  JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.", 0),  FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", 0), FREE_JOIN);
 				}
 			}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/31 18:41:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 21:38:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,6 @@
 		} t_var;
 
 	#pragma endregion
-
-	extern t_var *vars_table[VARS_HASH_SIZE];
 
 #pragma endregion
 

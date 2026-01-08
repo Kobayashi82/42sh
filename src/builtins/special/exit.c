@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:13:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,10 +112,10 @@
 		if (!shell.login_shell && shell.mode == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
 
 		if (result->argc > 1) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": exit: too many arguments\n", 0), FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": exit: too many arguments\n", 0), FREE_RESET_PRINT);
 			ret = 1;
 		} else if (result->argc && !ft_isdigit_s(result->argv[0])) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": exit: numeric argument required\n", 0), FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": exit: numeric argument required\n", 0), FREE_RESET_PRINT);
 			ret = 2;
 		} else if (result->argc) {
 			ret = atol(result->argv[0]);

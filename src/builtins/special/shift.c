@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:17:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -100,7 +101,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "shift [n]", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "shift [n]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
@@ -108,10 +109,34 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		int ret = 0;
+		if (result->argc && !ft_isdigit_s(result->argv[0])) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ", 0),                          FREE_RESET);
+			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": numeric argument required\n", 0), FREE_PRINT);
+			return (free_options(result), 1);
+		}
 
+		if (result->argc > 1) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: too many arguments\n", 0), FREE_RESET_PRINT);
+			return (free_options(result), 1);
+		}
 
-		return (free_options(result), ret);
+		int number = (result->argc) ? atoi(result->argv[0]) : 1;
+
+		if (number < 0) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ", 0),                         FREE_RESET);
+			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": shift count out of range\n", 0), FREE_PRINT);
+			return (free_options(result), 1);
+		}
+
+		if (!number)					return (free_options(result), 0);
+		if (number > shell.env->argc)	return (free_options(result), 1);
+
+		for (int i = 0; i < number; ++i)
+			free(shell.env->argv[i]);
+		memmove(shell.env->argv, shell.env->argv + number, (shell.env->argc - number + 1) * sizeof(char *));
+		shell.env->argc -= number;
+
+		return (free_options(result), 0);
 	}
 
 #pragma endregion

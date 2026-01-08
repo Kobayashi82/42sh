@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 12:07:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:09:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,17 +109,17 @@
 		int ret = 0;
 
 		if (!shell.login_shell) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": logout: not login shell: use `exit'\n", 0), FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: not login shell: use `exit'\n", 0), FREE_RESET_PRINT);
 			return (free_options(result), 1);
 		}
 
 		if (shell.mode == SRC_INTERACTIVE && !shell.subshell_level) print(STDERR_FILENO, "logout\n", RESET_PRINT);
 
 		if (result->argc > 1) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": logout: too many arguments\n", 0), FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: too many arguments\n", 0), FREE_RESET_PRINT);
 			ret = 1;
 		} else if (result->argc && !ft_isdigit_s(result->argv[0])) {
-			print(STDERR_FILENO, ft_strjoin(result->shell_name, ": logout: numeric argument required\n", 0), FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: numeric argument required\n", 0), FREE_RESET_PRINT);
 			ret = 2;
 		} else if (result->argc) {
 			ret = atol(result->argv[0]);

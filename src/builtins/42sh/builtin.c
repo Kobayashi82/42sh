@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:08:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "terminal/colors.h"
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -118,7 +119,7 @@
 			if (builtin && !builtin->disabled) {
 				ret = builtin_exec(result->argc, result->argv);
 			} else {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", result->argv[0], ": not a shell builtin\n", 0), FREE_PRINT);
 				ret = 1;
 			}

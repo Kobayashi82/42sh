@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:11:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 	
 	#include "hashes/builtin.h"
 	#include "hashes/hash.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -178,7 +179,7 @@
 
 		if (has_option(result, 'd') || has_option(result, 'p')) {
 			if (!result->argc) {
-				print(STDERR_FILENO, result->shell_name,                                                            RESET);
+				print(STDERR_FILENO, shell.name,                                                                    RESET);
 				if		(has_option(result, 'd')) print(STDERR_FILENO, ": hash: -d: option requires an argument\n", JOIN);
 				else if (has_option(result, 't')) print(STDERR_FILENO, ": hash: -t: option requires an argument\n", JOIN);
 				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                    PRINT);

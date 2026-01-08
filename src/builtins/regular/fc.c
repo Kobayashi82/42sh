@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 20:12:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:11:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,16 +115,16 @@
 
 #pragma region "Get Position"
 
-	static int fc_get_position(t_parse_result *result, int offset, char *query, size_t *out) {
+	static int fc_get_position(int offset, char *query, size_t *out) {
 		if (!ft_isdigit_s(query)) {
 			if (history_position_query(offset , query, out)) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: no command found\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", 0), FREE_RESET_PRINT);
 				return (1);
 			}
 		} else {
 			int number = atoi(query);
 			if (!strcmp(query, "-0")) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: history specification out of range\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", 0), FREE_RESET_PRINT);
 				return (1);
 			}
 			if (!strcmp(query, "0")) number = -1;
@@ -145,7 +145,7 @@
 		for (int i = 0; i < result->argc; ++i) {
 			if (!strchr(result->argv[i], '=')) {
 				if (i < result->argc - 1) {
-					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: too many arguments\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", 0), FREE_RESET_PRINT);
 					return (1);
 				}
 				no_command = 0;
@@ -158,7 +158,7 @@
 
 		// Set start position
 		size_t start = history_position();
-		if (!no_command && result->argc && fc_get_position(result, -1, result->argv[result->argc - 1], &start)) return (1);
+		if (!no_command && result->argc && fc_get_position(-1, result->argv[result->argc - 1], &start)) return (1);
 
 		HIST_ENTRY *entry = history_entry_position(start);
 		char *command = ft_strdup(entry->line);
@@ -181,7 +181,7 @@
 					free(key);
 					free(value);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": fc: invalid substitution format\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", 0), FREE_RESET_PRINT);
 					free(command);
 					free(key);
 					free(value);
@@ -215,8 +215,8 @@
 		history_set_pos_last();
 		size_t	start = 0, end = 0;
 		start = end = history_position();
-		if (result->argc > 0 && fc_get_position(result, -1, result->argv[0], &start))	return (1);
-		if (result->argc > 1 && fc_get_position(result, -1, result->argv[1], &end))		return (1);
+		if (result->argc > 0 && fc_get_position(-1, result->argv[0], &start))	return (1);
+		if (result->argc > 1 && fc_get_position(-1, result->argv[1], &end))		return (1);
 		if (end < start) {
 			int tmp = start;
 			start = end;
@@ -246,17 +246,17 @@
 
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(vars_table, "FCEDIT"), 0);
+				name	= get_fullpath_command(variables_find_value(shell.env->table, "FCEDIT"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(vars_table, "EDITOR"), 0);
+				name	= get_fullpath_command(variables_find_value(shell.env->table, "EDITOR"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(vars_table, "VISUAL"), 0);
+				name	= get_fullpath_command(variables_find_value(shell.env->table, "VISUAL"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
@@ -277,25 +277,25 @@
 			}
 
 			if (!*editor || access(*editor, F_OK) == -1) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name,                                                             RESET);
 				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": command not found\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": fc: editor not found\n", PRINT);
+				else			print(STDERR_FILENO, ": fc: editor not found\n",                             PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 		
 			if (is_directory((char *)(*editor))) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name,                                                          RESET);
 				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Is a directory\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": editor: Is a directory\n", PRINT);
+				else			print(STDERR_FILENO, ": editor: Is a directory\n",                        PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name,                                                             RESET);
 				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Permission denied\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": editor: Permission denied\n", PRINT);
+				else			print(STDERR_FILENO, ": editor: Permission denied\n",                        PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
@@ -320,8 +320,8 @@
 			history_set_pos_last();
 			size_t	start = 0, end = 0;
 			start = end = history_position();
-			if (result->argc > 0 && fc_get_position(result, -1, result->argv[0], &start))	return (free(editor), 1);
-			if (result->argc > 1 && fc_get_position(result, -1, result->argv[1], &end))		return (free(editor), 1);
+			if (result->argc > 0 && fc_get_position(-1, result->argv[0], &start))	return (free(editor), 1);
+			if (result->argc > 1 && fc_get_position(-1, result->argv[1], &end))		return (free(editor), 1);
 			if (result->argc == 1) end = start;
 			if (end < start) {
 				int tmp = start;
@@ -332,7 +332,7 @@
 			// Create temp file
 			int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
 			if (fd == -1) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot create temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
 				free(editor);
 				return (1);
@@ -345,7 +345,7 @@
 					if (write(fd, entry->line, entry->length) == -1) {
 						free(editor);
 						tmp_delete_fd(fd);
-						print(STDERR_FILENO, result->shell_name, RESET);
+						print(STDERR_FILENO, shell.name, RESET);
 						print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot write to temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
 						return (1);
 					}
@@ -360,7 +360,7 @@
 			if (pid < 0) {	// Error
 				free(editor);
 				tmp_delete_path(tmp_file);
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot fork: ", strerror(errno), "\n", 0), FREE_PRINT);
 				return (1);
 			}
@@ -369,7 +369,7 @@
 				close(terminal.bk_stdout);
 				close(terminal.bk_stderr);
 				char *const args[] = { editor, tmp_file, NULL};
-				char **env = variables_to_array(vars_table, EXPORTED, 1);
+				char **env = variables_to_array(shell.env->table, EXPORTED, 1);
 				execve(editor, args, env);
 				free(editor);
 				tmp_delete_path(tmp_file);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:19:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:22:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 	#include "hashes/variable.h"
 	#include "expansion/globbing.h"
 	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
@@ -1127,12 +1128,12 @@
 	// Initialize the history
 	int history_initialize() {
 		char *value = NULL;
-		if ((value = variables_find_value(vars_table, "42_HISTFILE")))			history_file_set(value);
-		if ((value = variables_find_value(vars_table, "42_HISTSIZE")))			history_size_set(atol(value), HIST_MEM);
-		if ((value = variables_find_value(vars_table, "42_HISTFILESIZE")))		history_size_set(atol(value), HIST_FILE);
-		if ((value = variables_find_value(vars_table, "42_HISTTIMEFORMAT")))	history_hist_timeformat_set(value);
-		if ((value = variables_find_value(vars_table, "42_HISTCONTROL")))		history_hist_control_set(value);
-		if ((value = variables_find_value(vars_table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
+		if ((value = variables_find_value(shell.env->table, "42_HISTFILE")))		history_file_set(value);
+		if ((value = variables_find_value(shell.env->table, "42_HISTSIZE")))		history_size_set(atol(value), HIST_MEM);
+		if ((value = variables_find_value(shell.env->table, "42_HISTFILESIZE")))	history_size_set(atol(value), HIST_FILE);
+		if ((value = variables_find_value(shell.env->table, "42_HISTTIMEFORMAT")))	history_hist_timeformat_set(value);
+		if ((value = variables_find_value(shell.env->table, "42_HISTCONTROL")))		history_hist_control_set(value);
+		if ((value = variables_find_value(shell.env->table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
 
 		history_size_set(5, HIST_MEM);
 		history_hist_control_set("ignoreboth");

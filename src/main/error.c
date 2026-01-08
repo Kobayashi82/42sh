@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:04:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:35:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,21 @@
 		print(0, NULL, RESET_ALL);
 		history_clear();
 		alias_clear();
-		variables_clear(vars_table);
 		builtin_clear();
 		hash_clear();
 		tmp_clear();
 		prompt_clear(BOTH);
 		ast_free(&shell.ast);
 		free(shell.cwd);
+
+		while (shell.env) {
+			t_env *parent = shell.env->parent;
+			array_free(shell.env->argv);
+			variables_clear(shell.env->table);
+			free(shell.env);
+			shell.env = parent;
+		}
+
 		close(terminal.bk_stdin);
 		close(terminal.bk_stdout);
 		close(terminal.bk_stderr);

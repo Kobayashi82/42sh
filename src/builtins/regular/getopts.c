@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 22:27:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,12 @@
 		static void update_variable(const char *key, const char *value) {
 			if (variables_validate(key, NULL, shell.name, 0, 1)) return;
 
-			t_var *var = variables_find(vars_table, key);
+			t_var *var = variables_find(shell.env->table, key);
 			if (var && var->readonly) {
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
 			} else {
-				variables_add(vars_table, key, value, -1, -1, -1, 0);
+				variables_add(shell.env->table, key, value, -1, -1, -1, 0);
 			}
 		}
 
@@ -131,7 +131,7 @@
 			if (!silent_mode) {
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0), FREE_PRINT);
-				variables_delete(vars_table, "OPTARG");
+				variables_delete(shell.env->table, "OPTARG");
 			} else {
 				update_variable("OPTARG", opt_str);
 			}
@@ -147,14 +147,14 @@
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0), FREE_PRINT);
 				update_variable(varname, "?");
-				variables_delete(vars_table, "OPTARG");
+				variables_delete(shell.env->table, "OPTARG");
 			} else {
 				char opt_str[2] = {opt, '\0'};
 				update_variable(varname, ":");
 				update_variable("OPTARG", opt_str);
 			}
 
-			shell.optpos = 1;
+			shell.env->optpos = 1;
 			update_optind(optind + 1);
 		}
 
@@ -165,9 +165,9 @@
 #pragma region "GetOpts"
 
 	int bt_getopts(int argc, char **argv) {
-		char		*optstring, *varname;
-		int			args_count, optind, opt_offset = 1, silent_mode = 0;
-		const char **args_to_parse;
+		char	*optstring, *varname;
+		int		args_count, optind, opt_offset = 1, silent_mode = 0;
+		char	**args_to_parse;
 
 		if (!strcmp(argv[1], "--help"))		return (help());
 		if (!strcmp(argv[1], "--version"))	return (version());
@@ -195,29 +195,29 @@
 
 		// Determine which args to parse
 		if (argc > opt_offset + 2) {
-			args_to_parse = (const char **)&argv[opt_offset + 2];
+			args_to_parse = &argv[opt_offset + 2];
 			args_count = argc - (opt_offset + 2);
 		} else {
-			args_to_parse = shell.argv;
-			args_count = shell.argc;
+			args_to_parse = shell.env->argv;
+			args_count = shell.env->argc;
 		}
 
 		// Silent mode if optstring starts with ':' or OPTERR == 0
 		if (optstring[0] == ':') optstring += silent_mode = 1;
 		if (!silent_mode) {
-			char *opterr_str = variables_find_value(vars_table, "OPTERR");
+			char *opterr_str = variables_find_value(shell.env->table, "OPTERR");
 			if (opterr_str && atoi(opterr_str) == 0) silent_mode = 1;
 		}
 
 		// Get current OPTIND
-		char *optind_str = variables_find_value(vars_table, "OPTIND");
+		char *optind_str = variables_find_value(shell.env->table, "OPTIND");
 		optind = optind_str ? atoi(optind_str) : 1;
 
 		// Check if we're done parsing
 		if (optind > args_count) {
-			shell.optpos = 1;
+			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variables_delete(vars_table, "OPTARG");
+			variables_delete(shell.env->table, "OPTARG");
 			return (1);
 		}
 
@@ -226,23 +226,23 @@
 
 		// Must start with '-' and not be just '-'
 		if (current_arg[0] != '-' || current_arg[1] == '\0') {
-			shell.optpos = 1;
+			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variables_delete(vars_table, "OPTARG");
+			variables_delete(shell.env->table, "OPTARG");
 			return (1);
 		}
 
 		// Handle "--" in arguments to parse
 		if (current_arg[1] == '-' && current_arg[2] == '\0') {
-			shell.optpos = 1;
+			shell.env->optpos = 1;
 			update_optind(optind + 1);
 			update_variable(varname, "?");
-			variables_delete(vars_table, "OPTARG");
+			variables_delete(shell.env->table, "OPTARG");
 			return (1);
 		}
 
 		// Get current option
-		char opt = current_arg[shell.optpos];
+		char opt = current_arg[shell.env->optpos];
 		char *opt_ptr = strchr(optstring, opt);
 
 		// Option not found or is ':'
@@ -250,10 +250,10 @@
 			invalid(opt, silent_mode, varname);
 
 			// Move to next character
-			shell.optpos++;
-			if (current_arg[shell.optpos] == '\0') {
+			shell.env->optpos++;
+			if (current_arg[shell.env->optpos] == '\0') {
 				optind++;
-				shell.optpos = 1;
+				shell.env->optpos = 1;
 			}
 
 			update_optind(optind);
@@ -263,9 +263,9 @@
 		if (opt_ptr[1] == ':') {
 			// Requires argument
 			const char *arg = NULL;
-			if (current_arg[shell.optpos + 1] != '\0') {
+			if (current_arg[shell.env->optpos + 1] != '\0') {
 				// Argument in current arg (-aVALUE)
-				arg = &current_arg[shell.optpos + 1];
+				arg = &current_arg[shell.env->optpos + 1];
 				optind++;
 			} else if (optind < args_count) {
 				// Argument in next arg (-a VALUE)
@@ -278,14 +278,14 @@
 				return (0);
 			}
 
-			shell.optpos = 1;
+			shell.env->optpos = 1;
 			update_variable("OPTARG", arg);
 		} else {
 			// Doesn't require argument
-			shell.optpos++;
-			if (current_arg[shell.optpos] == '\0') {
+			shell.env->optpos++;
+			if (current_arg[shell.env->optpos] == '\0') {
 				optind++;
-				shell.optpos = 1;
+				shell.env->optpos = 1;
 			}
 		}
 

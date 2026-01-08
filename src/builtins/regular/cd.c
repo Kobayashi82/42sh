@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:09:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@
 		if (options.cdspell && shell.mode == SRC_INTERACTIVE) path = correct_path(path);
 
 		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
-			char *var_path = variables_find_value(vars_table, original);
+			char *var_path = variables_find_value(shell.env->table, original);
 			if (var_path) {
 				free(path);
 				path = ft_strdup(var_path);
@@ -177,7 +177,7 @@
 #pragma region "Check CDPATH"
 
 	int check_CDPATH(t_parse_result *result, char **main_path, int *is_dash) {
-		char *vars = variables_find_value(vars_table, "CDPATH");
+		char *vars = variables_find_value(shell.env->table, "CDPATH");
 		if (vars) {
 			char *token = ft_strtok(vars, ":", 61);
 
@@ -187,7 +187,7 @@
 
 					if (!strcmp(token, "-")) {
 						*is_dash = 1;
-						path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
+						path = ft_strdup(variables_find_value(shell.env->table, "OLDPWD"));
 					} else {
 						path = ft_strdup(token);
 					}
@@ -234,20 +234,20 @@
 		int is_dash = 0;
 
 		if (!result->argc) {
-			path = ft_strdup(variables_find_value(vars_table, "HOME"));
+			path = ft_strdup(variables_find_value(shell.env->table, "HOME"));
 			if (!path) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: HOME not set\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: HOME not set\n", 0), FREE_RESET_PRINT);
 				ret = 2;
 			}
 		} else {
 			if (result->argc > 1) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: too many arguments\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: too many arguments\n", 0), FREE_RESET_PRINT);
 				ret = 2;
 			} else if (!strcmp(result->argv[0], "-")) {
 				is_dash = 1;
-				path = ft_strdup(variables_find_value(vars_table, "OLDPWD"));
+				path = ft_strdup(variables_find_value(shell.env->table, "OLDPWD"));
 				if (!path) {
-					print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: OLDPWD not set\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: OLDPWD not set\n", 0), FREE_RESET_PRINT);
 					ret = 2;
 				}
 			} else {
@@ -260,13 +260,13 @@
 		if (ret == 1) {
 			if		(!check_CDPATH(result, &path, &is_dash))				ret = 0;
 			else if	(access(path, F_OK) != -1 && !is_directory(path)) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),           FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                   FREE_RESET);
 				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0), FREE_PRINT);
 			} else if (access(path, F_OK) != -1 && access(path, X_OK) == -1) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),             FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                     FREE_RESET);
 				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0), FREE_PRINT);
 			} else {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": cd: ", 0),                     FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                             FREE_RESET);
 				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0), FREE_PRINT);
 			}
 		}
@@ -274,22 +274,22 @@
 		if (!ret) {
 			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
 
-			t_var *var = variables_find(vars_table, "OLDPWD");
+			t_var *var = variables_find(shell.env->table, "OLDPWD");
 			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": OLDPWD: readonly variable\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": OLDPWD: readonly variable\n", 0), FREE_RESET_PRINT);
 				ret = 1;
 			} else {
-				variables_add(vars_table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
+				variables_add(shell.env->table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
 			}
 
 			free(shell.cwd);
 			shell.cwd = ft_strdup(path);
-			var = variables_find(vars_table, "PWD");
+			var = variables_find(shell.env->table, "PWD");
 			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": PWD: readonly variable\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": PWD: readonly variable\n", 0), FREE_RESET_PRINT);
 				ret = 1;
 			} else {
-				variables_add(vars_table, "PWD", path, -1, -1, -1, -1);
+				variables_add(shell.env->table, "PWD", path, -1, -1, -1, -1);
 			}
 		}
 

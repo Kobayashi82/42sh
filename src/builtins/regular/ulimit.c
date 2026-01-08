@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:13:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -264,7 +265,7 @@
 
 #pragma region "Process Resource"
 
-	static int process_resource(t_parse_result *result, const char *limit_str, const char *option_str, int hard, int resource) {
+	static int process_resource(const char *limit_str, const char *option_str, int hard, int resource) {
 		const char *value = (option_str) ? option_str : limit_str;
 
 		struct rlimit rlim;
@@ -279,7 +280,7 @@
 			if		(ret == 3)	new_limit = rlim.rlim_cur;
 			else if (ret == 2)	new_limit = rlim.rlim_max;
 			else if (ret == 1) {
-				print(STDERR_FILENO, result->shell_name,                                           JOIN);
+				print(STDERR_FILENO, shell.name,                                                   JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", value, ": invalid number\n", 0), FREE_JOIN);
 				return (1);
 			}
@@ -288,7 +289,7 @@
 			else		rlim.rlim_cur = new_limit;
 
 			if (setrlimit(resource, &rlim) == -1) {
-				print(STDERR_FILENO, ft_strjoin(result->shell_name, ": ulimit: ", 0), JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ", 0), JOIN);
 
 				for (int i = 0; limits[i].resource != -1; i++) {
 					if (limits[i].resource == resource) {
@@ -343,23 +344,23 @@
 		print(STDOUT_FILENO, NULL, RESET);
 		print(STDERR_FILENO, NULL, RESET);
 
-		if (!result->options       && process_resource(result, limit_str, NULL, hard, RLIMIT_FSIZE))								ret = 1;	// file size
-		if (has_option(result,'c') && process_resource(result, limit_str, get_option_value(result, 'c'), hard, RLIMIT_CORE))		ret = 1;	// core file size
-		if (has_option(result,'d') && process_resource(result, limit_str, get_option_value(result, 'd'), hard, RLIMIT_DATA))		ret = 1;	// data segment
-		if (has_option(result,'e') && process_resource(result, limit_str, get_option_value(result, 'e'), hard, RLIMIT_NICE))		ret = 1;	// scheduling priority
-		if (has_option(result,'f') && process_resource(result, limit_str, get_option_value(result, 'f'), hard, RLIMIT_FSIZE))		ret = 1;	// file size
-		if (has_option(result,'i') && process_resource(result, limit_str, get_option_value(result, 'i'), hard, RLIMIT_SIGPENDING))	ret = 1;	// pending signals
-		if (has_option(result,'l') && process_resource(result, limit_str, get_option_value(result, 'l'), hard, RLIMIT_MEMLOCK))		ret = 1;	// locked memory
-		if (has_option(result,'m') && process_resource(result, limit_str, get_option_value(result, 'm'), hard, RLIMIT_RSS))			ret = 1;	// resident set size
-		if (has_option(result,'n') && process_resource(result, limit_str, get_option_value(result, 'n'), hard, RLIMIT_NOFILE))		ret = 1;	// file descriptors
-		if (has_option(result,'q') && process_resource(result, limit_str, get_option_value(result, 'q'), hard, RLIMIT_MSGQUEUE))	ret = 1;	// POSIX message queues
-		if (has_option(result,'r') && process_resource(result, limit_str, get_option_value(result, 'r'), hard, RLIMIT_RTPRIO))		ret = 1;	// real-time priority
-		if (has_option(result,'s') && process_resource(result, limit_str, get_option_value(result, 's'), hard, RLIMIT_STACK))		ret = 1;	// stack size
-		if (has_option(result,'t') && process_resource(result, limit_str, get_option_value(result, 't'), hard, RLIMIT_CPU))			ret = 1;	// CPU time
-		if (has_option(result,'u') && process_resource(result, limit_str, get_option_value(result, 'u'), hard, RLIMIT_NPROC))		ret = 1;	// number of processes
-		if (has_option(result,'v') && process_resource(result, limit_str, get_option_value(result, 'v'), hard, RLIMIT_AS))			ret = 1;	// virtual memory
-		if (has_option(result,'x') && process_resource(result, limit_str, get_option_value(result, 'x'), hard, RLIMIT_LOCKS))		ret = 1;	// file locks
-		if (has_option(result,'R') && process_resource(result, limit_str, get_option_value(result, 'R'), hard, RLIMIT_RTTIME))		ret = 1;	// real-time timeout
+		if (!result->options       && process_resource(limit_str, NULL, hard, RLIMIT_FSIZE))								ret = 1;	// file size
+		if (has_option(result,'c') && process_resource(limit_str, get_option_value(result, 'c'), hard, RLIMIT_CORE))		ret = 1;	// core file size
+		if (has_option(result,'d') && process_resource(limit_str, get_option_value(result, 'd'), hard, RLIMIT_DATA))		ret = 1;	// data segment
+		if (has_option(result,'e') && process_resource(limit_str, get_option_value(result, 'e'), hard, RLIMIT_NICE))		ret = 1;	// scheduling priority
+		if (has_option(result,'f') && process_resource(limit_str, get_option_value(result, 'f'), hard, RLIMIT_FSIZE))		ret = 1;	// file size
+		if (has_option(result,'i') && process_resource(limit_str, get_option_value(result, 'i'), hard, RLIMIT_SIGPENDING))	ret = 1;	// pending signals
+		if (has_option(result,'l') && process_resource(limit_str, get_option_value(result, 'l'), hard, RLIMIT_MEMLOCK))		ret = 1;	// locked memory
+		if (has_option(result,'m') && process_resource(limit_str, get_option_value(result, 'm'), hard, RLIMIT_RSS))			ret = 1;	// resident set size
+		if (has_option(result,'n') && process_resource(limit_str, get_option_value(result, 'n'), hard, RLIMIT_NOFILE))		ret = 1;	// file descriptors
+		if (has_option(result,'q') && process_resource(limit_str, get_option_value(result, 'q'), hard, RLIMIT_MSGQUEUE))	ret = 1;	// POSIX message queues
+		if (has_option(result,'r') && process_resource(limit_str, get_option_value(result, 'r'), hard, RLIMIT_RTPRIO))		ret = 1;	// real-time priority
+		if (has_option(result,'s') && process_resource(limit_str, get_option_value(result, 's'), hard, RLIMIT_STACK))		ret = 1;	// stack size
+		if (has_option(result,'t') && process_resource(limit_str, get_option_value(result, 't'), hard, RLIMIT_CPU))			ret = 1;	// CPU time
+		if (has_option(result,'u') && process_resource(limit_str, get_option_value(result, 'u'), hard, RLIMIT_NPROC))		ret = 1;	// number of processes
+		if (has_option(result,'v') && process_resource(limit_str, get_option_value(result, 'v'), hard, RLIMIT_AS))			ret = 1;	// virtual memory
+		if (has_option(result,'x') && process_resource(limit_str, get_option_value(result, 'x'), hard, RLIMIT_LOCKS))		ret = 1;	// file locks
+		if (has_option(result,'R') && process_resource(limit_str, get_option_value(result, 'R'), hard, RLIMIT_RTTIME))		ret = 1;	// real-time timeout
 
 		print(STDOUT_FILENO, NULL, PRINT);
 		print(STDERR_FILENO, NULL, PRINT);

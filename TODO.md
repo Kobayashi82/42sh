@@ -8,9 +8,15 @@
 - Braces expansion
 - Parameter expansion
 
+## Variables (con entorno)
+
+- Soporte para multi-entornos
+- Añadir local para cuando se añada local (solo añade al entorno actual)
+
 ## Límites
 - Límite de expansión
 - Límite de eval
+- Límite de funciones
 
 ## Terminal
 - CTRL + D no deberia terminar input, deberia hacer beep si hay algo en el buffer

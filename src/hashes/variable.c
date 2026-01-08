@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:04:35 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 21:39:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,6 @@
 	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
-
-#pragma endregion
-
-#pragma region "Variables"
-
-	t_var *vars_table[VARS_HASH_SIZE];
 
 #pragma endregion
 
@@ -485,7 +479,7 @@
 	}
 
 	int variables_initialize(t_var **table, const char **envp) {
-		variables_from_array(vars_table, envp);
+		variables_from_array(table, envp);
 
 		// History
 		char *home = get_home();

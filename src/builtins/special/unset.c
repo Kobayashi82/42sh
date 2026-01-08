@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:16:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "hashes/builtin.h"
 	#include "hashes/variable.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -100,18 +101,18 @@
 
 #pragma region "Delete"
 
-	static int delete_variable(t_parse_result *result, char *arg, char **invalues) {
+	static int delete_variable(char *arg, char **invalues) {
 		if (!arg) return (0);
 
 		int ret = 0;
 
-		t_var *var = variables_find(vars_table, arg);
+		t_var *var = variables_find(shell.env->table, arg);
 		if (var && var->readonly) {
-			char *value = ft_strjoin(result->shell_name, ": ", 0);
+			char *value = ft_strjoin(shell.name, ": ", 0);
 			value = ft_strjoin_sep(value, arg, ": readonly variable\n", 1);
 			if (value) *invalues = ft_strjoin(*invalues, value, 3);
 			ret = 1;
-		} else variables_delete(vars_table, arg);
+		} else variables_delete(shell.env->table, arg);
 
 		return (ret);
 	}
@@ -139,7 +140,7 @@
 
 		char *invalues = NULL;
 		for (int i = 0; i < result->argc; ++i) {
-			if (delete_variable(result, result->argv[i], &invalues)) ret = 1;
+			if (delete_variable(result->argv[i], &invalues)) ret = 1;
 		}
 		
 		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }

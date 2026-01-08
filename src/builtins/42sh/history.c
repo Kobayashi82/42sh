@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:09:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "terminal/readinput/history.h"
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -119,7 +120,7 @@
 				history_print(history_length(), 0);
 			} else {
 				if (!ft_isdigit_s(result->argv[0])) {
-					print(STDERR_FILENO, result->shell_name, RESET);
+					print(STDERR_FILENO, shell.name, RESET);
 					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", 0), FREE_PRINT);
 					return (1);
 				} else {
@@ -195,7 +196,7 @@
 			const char *offset_str = get_option_value(result, 'd');
 
 			if (!offset_str) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ": history: -d: option requires an argument\n", PRINT);
 				return (2);
 			}
@@ -204,7 +205,7 @@
 
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
-					print(STDERR_FILENO, result->shell_name, RESET);
+					print(STDERR_FILENO, shell.name, RESET);
 					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 					return (1);
 				}
@@ -213,13 +214,13 @@
 			}
 
 			if (!ft_isdigit_s(offset_str)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 				return (1);
 			}
 
 			if (history_remove_offset(atoi(offset_str))) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
 				return (1);
 			}
@@ -235,7 +236,7 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
 				return (1);
 			} else {
@@ -253,11 +254,11 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), FREE_PRINT);
 				return (1);
 			} else {
@@ -275,7 +276,7 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
 				return (1);
 			} else {
@@ -293,11 +294,11 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, result->shell_name, RESET);
+				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), FREE_PRINT);
 				return (1);
 			} else {
@@ -335,7 +336,7 @@
 		local_options += has_option(result, 'w');
 
 		if (local_options > 1) {
-			print(STDERR_FILENO, result->shell_name, RESET);
+			print(STDERR_FILENO, shell.name, RESET);
 			print(STDERR_FILENO, ": history: cannot use more than one of -anrw\n", PRINT);
 			return (free_options(result), 1);
 		}

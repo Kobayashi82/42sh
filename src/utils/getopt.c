@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/08 23:16:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -445,7 +445,6 @@
 				result->argc_original = argc;
 				result->usage = usage;
 				result->name = argv[0];
-				result->shell_name = shell.name;
 				for (int i = 1; i < argc; i++) {
 					if (done_with_opts) {
 						tmp_args[arg_count++] = ft_strdup(argv[i]);
