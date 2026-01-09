@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:01:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:42:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "terminal/colors.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
@@ -95,7 +95,7 @@
 				//	Procesa barras, variables ($var & \u)
 			}
 
-			if (!options.multiwidth_chars) remove_forbidden_chars(tmp_prompt);
+			if (!shell.options.multiwidth_chars) remove_forbidden_chars(tmp_prompt);
 
 			if (type == PS1) prompt_PS1 = tmp_prompt;
 			if (type == PS2) prompt_PS2 = tmp_prompt;

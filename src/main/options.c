@@ -1,49 +1,47 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   options.c                                          :+:      :+:    :+:   */
+/*   shell.options.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:23 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:31:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/colors.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
-	t_options options;
-
 	static char *option_names[] = {
-		"emacs", "vi", "hide_ctrl_chars", "multiwidth_chars",
-		"history", "histexpand", "histappend", "histreedit", "histverify",
+		"emacs",				"vi",					"hide_ctrl_chars",		"multiwidth_chars",
+		"history",				"histexpand",			"histappend",			"histreedit",			"histverify",
 		"expand_aliases",
-		"noglob", "dotglob", "nullglob", "failglob", "nocaseglob",
-		"cd_resolve", "cdable_vars", "autocd", "cdspell", "dirspell"
+		"noglob",				"dotglob",				"nullglob",				"failglob",				"nocaseglob",
+		"cd_resolve",			"cdable_vars",			"autocd",				"cdspell",				"dirspell"
 	};
 
 	static int *option_values[] = {
-		&options.emacs, &options.vi, &options.hide_ctrl_chars, &options.multiwidth_chars,
-		&options.history, &options.histexpand, &options.histappend, &options.histreedit, &options.histverify,
-		&options.expand_aliases,
-		&options.noglob, &options.dotglob, &options.nullglob, &options.failglob, &options.nocaseglob,
-		&options.cd_resolve, &options.cdable_vars, &options.autocd, &options.cdspell, &options.dirspell
+		&shell.options.emacs,				&shell.options.vi,					&shell.options.hide_ctrl_chars,		&shell.options.multiwidth_chars,
+		&shell.options.history,				&shell.options.histexpand,			&shell.options.histappend,			&shell.options.histreedit,			&shell.options.histverify,
+		&shell.options.expand_aliases,
+		&shell.options.noglob,				&shell.options.dotglob,				&shell.options.nullglob,			&shell.options.failglob,			&shell.options.nocaseglob,
+		&shell.options.cd_resolve,			&shell.options.cdable_vars,			&shell.options.autocd,				&shell.options.cdspell,				&shell.options.dirspell
 	};
 
 	static int option_types[] = {
-		SET, SET, SET, SET,
-		SET, SET, SHOPT, SHOPT, SHOPT,
+		SET,	SET,	SET,	SET,
+		SET,	SET,	SHOPT,	SHOPT,	SHOPT,
 		SHOPT,
-		SET, SHOPT, SHOPT, SHOPT, SHOPT,
-		SET, SHOPT, SHOPT, SHOPT, SHOPT
+		SET,	SHOPT,	SHOPT,	SHOPT,	SHOPT,
+		SET,	SHOPT,	SHOPT,	SHOPT,	SHOPT
 	};
 
 #pragma endregion
@@ -55,39 +53,39 @@
 
 		//	READINPUT
 		if (!strcmp("emacs", option)) {
-			if (value) options.vi = !value;
-			options.emacs = value;	return (0);
+			if (value) shell.options.vi = !value;
+			shell.options.emacs = value;	return (0);
 		}
 		if (!strcmp("vi", option)) {
-			if (value) options.emacs = !value;
-			options.vi = value;		return (0);
+			if (value) shell.options.emacs = !value;
+			shell.options.vi = value;		return (0);
 		}
-		if (!strcmp("hide_ctrl_chars", option)) 	{ options.hide_ctrl_chars = value;	return (0); }
-		if (!strcmp("multiwidth_chars", option)) 	{ options.multiwidth_chars = value;	return (0); }
+		if (!strcmp("hide_ctrl_chars", option)) 	{ shell.options.hide_ctrl_chars = value;	return (0); }
+		if (!strcmp("multiwidth_chars", option)) 	{ shell.options.multiwidth_chars = value;	return (0); }
 
 		//	HISTORY
-		if (!strcmp("history", option)) 			{ options.history = value;			return (0); }
-		if (!strcmp("histexpand", option)) 			{ options.histexpand = value;		return (0); }
-		if (!strcmp("histappend", option)) 			{ options.histappend = value;		return (0); }
-		if (!strcmp("histreedit", option)) 			{ options.histreedit = value;		return (0); }
-		if (!strcmp("histverify", option)) 			{ options.histverify = value;		return (0); }
+		if (!strcmp("history", option)) 			{ shell.options.history = value;			return (0); }
+		if (!strcmp("histexpand", option)) 			{ shell.options.histexpand = value;		return (0); }
+		if (!strcmp("histappend", option)) 			{ shell.options.histappend = value;		return (0); }
+		if (!strcmp("histreedit", option)) 			{ shell.options.histreedit = value;		return (0); }
+		if (!strcmp("histverify", option)) 			{ shell.options.histverify = value;		return (0); }
 
 		//	ALIAS
-		if (!strcmp("expand_aliases", option)) 		{ options.expand_aliases = value;	return (0); }
+		if (!strcmp("expand_aliases", option)) 		{ shell.options.expand_aliases = value;	return (0); }
 
 		//	GLOBBING
-		if (!strcmp("noglob", option)) 				{ options.noglob = value;			return (0); }
-		if (!strcmp("dotglob", option)) 			{ options.dotglob = value;			return (0); }
-		if (!strcmp("nullglob", option)) 			{ options.nullglob = value;			return (0); }
-		if (!strcmp("failglob", option)) 			{ options.failglob = value;			return (0); }
-		if (!strcmp("nocaseglob", option)) 			{ options.nocaseglob = value;		return (0); }
+		if (!strcmp("noglob", option)) 				{ shell.options.noglob = value;			return (0); }
+		if (!strcmp("dotglob", option)) 			{ shell.options.dotglob = value;			return (0); }
+		if (!strcmp("nullglob", option)) 			{ shell.options.nullglob = value;			return (0); }
+		if (!strcmp("failglob", option)) 			{ shell.options.failglob = value;			return (0); }
+		if (!strcmp("nocaseglob", option)) 			{ shell.options.nocaseglob = value;		return (0); }
 
 		//	CD
-		if (!strcmp("cd_resolve", option)) 			{ options.cd_resolve = value;		return (0); }
-		if (!strcmp("cdable_vars", option)) 		{ options.cdable_vars = value;		return (0); }
-		if (!strcmp("autocd", option)) 				{ options.autocd = value;			return (0); }
-		if (!strcmp("cdspell", option)) 			{ options.cdspell = value;			return (0); }
-		if (!strcmp("dirspell", option)) 			{ options.dirspell = value;			return (0); }
+		if (!strcmp("cd_resolve", option)) 			{ shell.options.cd_resolve = value;		return (0); }
+		if (!strcmp("cdable_vars", option)) 		{ shell.options.cdable_vars = value;		return (0); }
+		if (!strcmp("autocd", option)) 				{ shell.options.autocd = value;			return (0); }
+		if (!strcmp("cdspell", option)) 			{ shell.options.cdspell = value;			return (0); }
+		if (!strcmp("dirspell", option)) 			{ shell.options.dirspell = value;			return (0); }
 
 		return (1);
 	}
@@ -163,34 +161,34 @@
 
 	int options_initialize() {
 		//	READINPUT
-		options.emacs				= 0;
-		options.vi					= 1;
-		options.hide_ctrl_chars		= 0;
-		options.multiwidth_chars	= 1;
+		shell.options.emacs				= 0;
+		shell.options.vi					= 1;
+		shell.options.hide_ctrl_chars		= 0;
+		shell.options.multiwidth_chars	= 1;
 
 		//	HISTORY
-		options.history				= 0;
-		options.histexpand			= 0;
-		options.histappend			= 1;
-		options.histreedit			= 0;
-		options.histverify			= 0;
+		shell.options.history				= 0;
+		shell.options.histexpand			= 0;
+		shell.options.histappend			= 1;
+		shell.options.histreedit			= 0;
+		shell.options.histverify			= 0;
 
 		//	ALIAS
-		options.expand_aliases		= 0;
+		shell.options.expand_aliases		= 0;
 
 		//	GLOBBING
-		options.noglob				= 0;
-		options.dotglob				= 0;
-		options.nullglob			= 0;
-		options.failglob			= 0;
-		options.nocaseglob			= 0;
+		shell.options.noglob				= 0;
+		shell.options.dotglob				= 0;
+		shell.options.nullglob			= 0;
+		shell.options.failglob			= 0;
+		shell.options.nocaseglob			= 0;
 
 		//	CD
-		options.cd_resolve			= 0;
-		options.cdable_vars			= 0;
-		options.autocd				= 0;
-		options.cdspell				= 0;
-		options.dirspell			= 0;
+		shell.options.cd_resolve			= 0;
+		shell.options.cdable_vars			= 0;
+		shell.options.autocd				= 0;
+		shell.options.cdspell				= 0;
+		shell.options.dirspell			= 0;
 
 		return (0);
 	}

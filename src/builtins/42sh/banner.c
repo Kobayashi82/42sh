@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:41:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:28:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/colors.h"
-	#include "hashes/builtin.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"

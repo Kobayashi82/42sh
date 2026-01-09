@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:05:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:43:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "expansion/globbing.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
 
@@ -74,7 +74,7 @@
 
 	//	Search for wildcards matches in every arg and join them in a single list
 	void globbing(t_arg *args) {
-		if (args == NULL || options.noglob) return;
+		if (args == NULL || shell.options.noglob) return;
 
 		globbing(args->next);
 		if (memchr(args->value, '?', ft_strlen(args->value))
@@ -83,12 +83,12 @@
 		{
 			t_arg *files = match(args->value);
 			if (!files) {
-				if (options.nullglob) {
+				if (shell.options.nullglob) {
 					free(args->value);
 					args->value = NULL;
 					args->nullglob = 1;
 				}
-				if (options.failglob) args->failglob = 1;
+				if (shell.options.failglob) args->failglob = 1;
 			} else args_insert(args, &files);
 		}
 	}

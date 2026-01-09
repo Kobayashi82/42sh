@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:40:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "hashes/builtin.h"
-	#include "hashes/variable.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
@@ -196,7 +194,7 @@
 		// set -v  # Activa modo verbose
 		// contexto del padre
 		// modo no interactivo
-		// shell.mode = SRC_ARGUMENT;
+		// shell.mode = MD_ARGUMENT;
 		// ret = read_input((char *)argv[2]);
 		// ret = execute_script(command);	// como con -c
 
@@ -277,25 +275,20 @@
 			}
 
 			if (!*editor || access(*editor, F_OK) == -1) {
-				print(STDERR_FILENO, shell.name,                                                             RESET);
-				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": command not found\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": fc: editor not found\n",                             PRINT);
+				if (name)		exit_error(CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", 0), FREE_RESET_PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
-		
+
 			if (is_directory((char *)(*editor))) {
-				print(STDERR_FILENO, shell.name,                                                          RESET);
-				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Is a directory\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": editor: Is a directory\n",                        PRINT);
+				exit_error(CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
-				print(STDERR_FILENO, shell.name,                                                             RESET);
-				if (name)		print(STDERR_FILENO, ft_strjoin_sep(": ", name, ": Permission denied\n", 0), FREE_PRINT);
-				else			print(STDERR_FILENO, ": editor: Permission denied\n",                        PRINT);
+				exit_error(CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
@@ -332,10 +325,8 @@
 			// Create temp file
 			int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
 			if (fd == -1) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot create temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
 				free(editor);
-				return (1);
+				return (exit_error(TMP_CREATE, 1, "fc", 0, EE_RETURN));
 			}
 
 			for (size_t i = start; i <= end; ++i) {
@@ -345,9 +336,7 @@
 					if (write(fd, entry->line, entry->length) == -1) {
 						free(editor);
 						tmp_delete_fd(fd);
-						print(STDERR_FILENO, shell.name, RESET);
-						print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot write to temp file: ", strerror(errno), "\n", 0), FREE_PRINT);
-						return (1);
+						return (exit_error(TMP_WRITE, 1, "fc", 0, EE_RETURN));
 					}
 				}
 			}
@@ -360,9 +349,7 @@
 			if (pid < 0) {	// Error
 				free(editor);
 				tmp_delete_path(tmp_file);
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": fc: cannot fork: ", strerror(errno), "\n", 0), FREE_PRINT);
-				return (1);
+				return (exit_error(FORK_FAIL, 1, "fc", 0, EE_RETURN));
 			}
 			if (pid == 0) {	// Child
 				close(terminal.bk_stdin);
@@ -371,12 +358,11 @@
 				char *const args[] = { editor, tmp_file, NULL};
 				char **env = variables_to_array(shell.env->table, EXPORTED, 1);
 				execve(editor, args, env);
-				free(editor);
 				tmp_delete_path(tmp_file);
 				array_free(env);
 				free_argv_original(result);
 				free_options(result);
-				exit_error(NOTHING, 1, NULL, 1);
+				exit_error(NOTHING, 1, editor, 1, EE_EXIT);
 			}
 			if (pid > 0) {	// Parent
 				int status;

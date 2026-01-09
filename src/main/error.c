@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:35:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/readinput/prompt.h"
-	#include "hashes/alias.h"
-	#include "hashes/builtin.h"
-	#include "hashes/hash.h"
-	#include "hashes/variable.h"
 	#include "parser/parser.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
@@ -27,36 +23,65 @@
 
 #pragma region "Messages"
 
-	#pragma region "Redirection"
+	#pragma region "Catastrophic"
 
-		//	Print redirections error messages
-		static void redirection_msg(int error, char *val) {
-			if (error == OPEN_AMB)		print(2, ft_strjoin(val, ": ambiguous redirect\n", 0), FREE_PRINT);
-			if (error == OPEN_NO_FILE)	print(2, ft_strjoin(val, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == OPEN_READ)		print(2, ft_strjoin(val, ": Permission denied\n", 0), FREE_PRINT);
-			if (error == OPEN_DIR)		print(2, ft_strjoin(val, ": is a directory\n", 0), FREE_PRINT);
-			if (error == OPEN_FAIL)		print(2, ft_strjoin(val, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == DUP_FAIL)		print(2, "error duplicating file descriptor\n", PRINT);
-			if (error == PIPE_FAIL)		print(2, "pipe failed\n", PRINT);
-			if (error == SUB_HEREDOC)	print(2, ft_strjoin_sep("<< ", val, ": here-document in subshell\n", 0), FREE_PRINT);
+		//	Print catastrophic error messages
+		static void catastrophic_msg(int error, char *value) {
+			if (error == SEGQUIT)			print(STDERR_FILENO, "Quit\n", PRINT);
+			if (error == SEGFAULT)			print(STDERR_FILENO, "CATASTROPHIC - Segmentation fault\n", PRINT);
+			if (error == STDIN_CLOSED)		print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n", PRINT);
+			if (error == STDOUT_CLOSED)		print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", PRINT);
+			if (error == NO_MEMORY)			print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", PRINT);
+			if (error == START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", PRINT);
+			if (error == START_BIN)			print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0), FREE_PRINT);
+			if (error == START_DIR)			print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
+			if (error == SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), FREE_PRINT);
 		}
 
 	#pragma endregion
 
-	#pragma region "Catastrophic"
+	#pragma region "Redirection"
 
-		//	Print main process error messages
-		static void catastrophic_msg(int error, char *value) {
-			if (error == SEGQUIT)		print(2, "Quit\n", PRINT);
-			if (error == SEGFAULT)		print(2, "CATASTROPHIC - Segmentation fault\n", PRINT);
-			if (error == STDIN_CLOSED)	print(2, "CATASTROPHIC - Standard input closed\n", PRINT);
-			if (error == STDOUT_CLOSED)	print(2, "CATASTROPHIC - Standard output closed\n", PRINT);
-			if (error == NO_MEMORY)		print(2, "CATASTROPHIC - No memory left on the device\n", PRINT);
-			if (error == FORK_FAIL)		print(2, "CATASTROPHIC - fork failed\n", PRINT);
-			if (error == START_ARGS)	print(2, "-c: option requires an argument\n", PRINT);
-			if (error == START_BIN)		print(2, ft_strjoin(value, ": cannot execute binary file\n", 0), FREE_PRINT);
-			if (error == START_DIR)		print(2, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
-			if (error == SHLVL_HIGH)	print(2, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), FREE_PRINT);
+		//	Print redirections error messages
+		static void redirection_msg(int error, char *value) {
+			if (error == TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == TMP_WRITE)			print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), FREE_JOIN);
+			if (error == TMP_READ)			print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == TMP_CREATE || error == TMP_WRITE || error == TMP_READ)	print(STDERR_FILENO, "\n",                                    PRINT);
+
+			if (error == REDIR_AMB)			print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0), FREE_PRINT);
+			if (error == OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
+			if (error == OPEN_READ)			print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0), FREE_PRINT);
+			if (error == OPEN_DIR)			print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
+			if (error == OPEN_FAIL)			print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
+			if (error == DUP_FAIL)			print(STDERR_FILENO, "error duplicating file descriptor\n", PRINT);
+			if (error == PIPE_FAIL)			print(STDERR_FILENO, "pipe failed\n", PRINT);
+			if (error == SUB_HEREDOC)		print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0), FREE_PRINT);
+		}
+
+	#pragma endregion
+
+	#pragma region "Builtin"
+
+		//	Print builtin error messages
+		static void builtin_msg(int error, char *value) {
+			(void) error;
+			(void) value;
+		}
+
+	#pragma endregion
+
+	#pragma region "Execution"
+
+		//	Print execution error messages
+		static void execution_msg(int error, char *value) {
+			if (error == FORK_FAIL)			print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == EXECVE_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 FREE_JOIN);
+			if (error == FORK_FAIL || error == EXECVE_FAIL) print(STDERR_FILENO, "\n",                                            PRINT);
+
+			if (error == CMD_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                   FREE_PRINT);
+			if (error == CMD_ISDIR)			print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                      FREE_PRINT);
+			if (error == CMD_EXEC)			print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                   FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -91,16 +116,25 @@
 	}
 
 	//	Print the error message and exit if required
-	int	exit_error(int error, int code, char *value, int fatal) {
-		if (!value) value = "";
-		if (error != NOTHING && error != END) print(2, "42sh: ", RESET);
+	int	exit_error(int error, int code, char *value, int free_value, int fatal) {
+		if (!value) {
+			value = "";
+			free_value = 0;
+		}
+
+		if (error > NOTHING && error < END) {
+			print(STDERR_FILENO, shell.env->argv0, RESET);
+			if (value) print(STDERR_FILENO, ": ", JOIN);
+		}
+
 		catastrophic_msg(error, value);
 		redirection_msg(error, value);
-		// builtsin_msg(error, value);
-		// execution_msg(error, value);
+		builtin_msg(error, value);
+		execution_msg(error, value);
 
-		if (code)	shell.exit_code = code;
-		if (fatal)	free_and_exit();
+		if (free_value) free(value);
+		if (code)		shell.exit_code = code;
+		if (fatal)		free_and_exit();
 
 		return (shell.exit_code);
 	}

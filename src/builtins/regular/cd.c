@@ -6,18 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:40:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:47:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/builtin.h"
-	#include "hashes/variable.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
-
 	#include "utils/getopt.h"
 
 #pragma endregion
@@ -132,9 +128,9 @@
 			path = tmp;
 		}
 
-		if (options.cdspell && shell.mode == SRC_INTERACTIVE) path = correct_path(path);
+		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) path = correct_path(path);
 
-		if (options.cdable_vars && original && path && access(path, F_OK) == -1) {
+		if (shell.options.cdable_vars && original && path && access(path, F_OK) == -1) {
 			char *var_path = variables_find_value(shell.env->table, original);
 			if (var_path) {
 				free(path);
@@ -150,13 +146,13 @@
 					path = tmp;
 				}
 
-				if (options.cdspell && shell.mode == SRC_INTERACTIVE) path = correct_path(path);
+				if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) path = correct_path(path);
 			}
 		}
 
-		if ((!options.cd_resolve && !result->options) || has_option(result, 'L')) {
+		if ((!shell.options.cd_resolve && !result->options) || has_option(result, 'L')) {
 			;
-		} else if ((options.cd_resolve && !result->options) || has_option(result, 'P')) {
+		} else if ((shell.options.cd_resolve && !result->options) || has_option(result, 'P')) {
 			char *tmp = ft_strdup(resolve_symlink(path));
 			free(path);
 			path = tmp;

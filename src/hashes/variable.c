@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:37:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:45:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "hashes/variable.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -28,7 +26,7 @@
 
 		while (*key) hash = (hash * 31) + *key++;
 
-		return (hash % VARS_HASH_SIZE);
+		return (hash % HASH_SIZE);
 	}
 
 #pragma endregion
@@ -178,7 +176,7 @@
 		void variables_join(t_var **dst_table, t_var **src_table) {
 			if (dst_table == src_table) return;
 
-			for (int index = 0; index < VARS_HASH_SIZE; index++) {
+			for (int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = src_table[index];
 				while (var) {
 					variables_add(dst_table, var->key, var->value, var->exported, var->readonly, var->integer, 0);
@@ -279,7 +277,7 @@
 		char **variables_to_array(t_var **table, int type, int sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->key) {
@@ -295,7 +293,7 @@
 			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->value || (!var->value && type == EXPORTED_LIST)) {
@@ -354,7 +352,7 @@
 			int variables_print(t_var **table, int type, int sort) {
 				size_t i = 0;
 
-				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
 						if (var->key) i++;
@@ -366,7 +364,7 @@
 				char **array = malloc((i + 1) * sizeof(char *));
 
 				i = 0;
-				for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
 						i += array_value(type, array, i, var);
@@ -398,7 +396,7 @@
 		size_t variables_length(t_var **table, int type) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
 					if (var->key) {
@@ -451,7 +449,7 @@
 	#pragma region "Clear"
 
 		void variables_clear(t_var **table) {
-			for (unsigned int index = 0; index < VARS_HASH_SIZE; index++) {
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				if (table[index]) {
 					t_var *var = table[index];
 					while (var) {

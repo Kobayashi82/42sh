@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:19:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:46:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
 	#include "terminal/readinput/prompt.h"
-	#include "hashes/alias.h"
-	#include "hashes/builtin.h"
-	#include "hashes/variable.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -69,7 +65,7 @@
 		alias_initialize();
 		variables_initialize(shell.env->table, envp);
 		prompt_initialize();
-		shell.mode = SRC_NO_INTERACTIVE;
+		shell.mode = MD_NO_INTERACTIVE;
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
 		shell.subshell_level = 0;

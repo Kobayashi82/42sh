@@ -6,13 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 12:07:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:40:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/builtin.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
@@ -113,7 +112,7 @@
 			return (free_options(result), 1);
 		}
 
-		if (shell.mode == SRC_INTERACTIVE && !shell.subshell_level) print(STDERR_FILENO, "logout\n", RESET_PRINT);
+		if (shell.mode == MD_INTERACTIVE && !shell.subshell_level) print(STDERR_FILENO, "logout\n", RESET_PRINT);
 
 		if (result->argc > 1) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: too many arguments\n", 0), FREE_RESET_PRINT);
@@ -127,7 +126,7 @@
 
 		free_argv_original(result);
 		free_options(result);
-		exit_error(NOTHING, ret, NULL, 1);
+		exit_error(NOTHING, ret, NULL, 0, EE_EXIT);
 
 		return (ret);
 	}

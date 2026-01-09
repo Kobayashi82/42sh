@@ -6,15 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:43:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/alias.h"
 	#include "parser/lexer.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
@@ -22,7 +21,7 @@
 #pragma region "Expand Alias"
 
 	static int expand_alias(t_lexer *lexer, char *alias_name) {
-		if (!alias_name || !lexer->can_expand_alias || !options.expand_aliases) return (0);
+		if (!alias_name || !lexer->can_expand_alias || !shell.options.expand_aliases) return (0);
 
 		t_buff *buffer = lexer->input;
 		while (buffer) {

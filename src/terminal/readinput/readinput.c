@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:00:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:39:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -127,8 +126,8 @@
 
 			if (hist_searching && history_search()) continue;
 
-			if		(options.emacs)	result = readline(readed);
-			else if	(options.vi)	result = vi();
+			if		(shell.options.emacs)	result = readline(readed);
+			else if	(shell.options.vi)	result = vi();
 			else					result = dumb(readed);
 
 			if (result == 2) {
@@ -140,8 +139,8 @@
 			if (result && buffer.value && buffer.value[0]) {
 				int ret;
 				char *buffer_cpy = ft_strdup(buffer.value);
-				if (options.histexpand) {
-					if (options.histverify) {
+				if (shell.options.histexpand) {
+					if (shell.options.histverify) {
 						if ((ret = expand_history(&buffer.value, 0)) == 1) {
 							if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
 							buffer.position = buffer.size = buffer.length = ft_strlen(buffer.value);
@@ -156,7 +155,7 @@
 					}
 
 					if (ret == 2) {
-						if (options.histreedit) {
+						if (shell.options.histreedit) {
 							cursor_start_column();
 							if (term_prompt) write(STDOUT_FILENO, term_prompt, strlen(term_prompt));
 							free(buffer.value);

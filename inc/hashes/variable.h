@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 21:38:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:16:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-
-	#define VARS_HASH_SIZE 101
 
 #pragma endregion
 

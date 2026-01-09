@@ -6,20 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:23:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/alias.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
-
-#pragma endregion
-
-#pragma region "Variables"
-
-	t_alias *alias_table[ALIAS_HASH_SIZE];
 
 #pragma endregion
 
@@ -29,7 +23,7 @@
 		unsigned int hash = 0;
 
 		while (*key) hash = (hash * 31) + *key++;
-		return (hash % ALIAS_HASH_SIZE);
+		return (hash % HASH_SIZE);
 	}
 
 #pragma endregion
@@ -58,8 +52,8 @@
 			if (value)	new_alias->value = ft_strdup(value);
 			else		new_alias->value = ft_strdup("");
 
-			new_alias->next = alias_table[index];
-			alias_table[index] = new_alias;
+			new_alias->next = shell.alias_table[index];
+			shell.alias_table[index] = new_alias;
 
 			return (0);
 		}
@@ -99,7 +93,7 @@
 			if (!key) return (NULL);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = alias_table[index];
+			t_alias *alias = shell.alias_table[index];
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) return (alias);
@@ -113,7 +107,7 @@
 			if (!key) return (NULL);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = alias_table[index];
+			t_alias *alias = shell.alias_table[index];
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) return (alias->value);
@@ -130,8 +124,8 @@
 		char **alias_to_array(int sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = shell.alias_table[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
 					alias = alias->next;
@@ -142,8 +136,8 @@
 			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = shell.alias_table[index];
 				while (alias) {
 					
 					if (alias->name && alias->value) {
@@ -165,8 +159,8 @@
 		int alias_print(int sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = shell.alias_table[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
 					alias = alias->next;
@@ -177,8 +171,8 @@
 			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = shell.alias_table[index];
 				while (alias) {
 					
 					if (alias->name) {
@@ -212,8 +206,8 @@
 		size_t alias_length() {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_alias *alias = shell.alias_table[index];
 				while (alias) {
 					if (alias->name) i++;
 					alias = alias->next;
@@ -235,13 +229,13 @@
 			if (!key) return (1);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = alias_table[index];
+			t_alias *alias = shell.alias_table[index];
 			t_alias *prev = NULL;
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
-					else		alias_table[index] = alias->next;
+					else		shell.alias_table[index] = alias->next;
 					free(alias->name); free(alias->value); free(alias);
 					return (0);
 				}
@@ -257,9 +251,9 @@
 	#pragma region "Clear"
 
 		void alias_clear() {
-			for (unsigned int index = 0; index < ALIAS_HASH_SIZE; index++) {
-				if (alias_table[index]) {
-					t_alias *alias = alias_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				if (shell.alias_table[index]) {
+					t_alias *alias = shell.alias_table[index];
 					while (alias) {
 						t_alias *next = alias->next;
 						free(alias->name);
@@ -267,7 +261,7 @@
 						free(alias);
 						alias = next;
 					}
-					alias_table[index] = NULL;
+					shell.alias_table[index] = NULL;
 				}
 			}
 		}

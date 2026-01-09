@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:43:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "expansion/globbing.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 	#define MAX_NEW_PATTERN_SIZE 512
@@ -88,7 +88,7 @@
 		static int bracket_pattern_match(const char input, char *pattern, int inv) {
 			char input_char = input;
 			char *pattern_chars = pattern;
-			if (options.nocaseglob) {
+			if (shell.options.nocaseglob) {
 				input_char = tolower(input_char);
 				pattern_chars = ft_tolower_s(pattern);
 			}

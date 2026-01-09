@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/01 23:49:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:32:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@
 		} t_options;
 
 	#pragma endregion
-
-	extern t_options options;
 
 #pragma endregion
 

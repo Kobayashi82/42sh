@@ -6,16 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:22:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:42:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "hashes/variable.h"
 	#include "expansion/globbing.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -473,7 +471,7 @@
 			if (!filename) filename = hist_file;
 
 			int fd;
-			if (append == -1) append = options.histappend;
+			if (append == -1) append = shell.options.histappend;
 			if (append)	fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0664);
 			else		fd = open(filename, O_CREAT | O_TRUNC  | O_WRONLY, 0664);
 			if (fd < 0) return (1);
@@ -963,7 +961,7 @@
 
 		// Return the previous entry line
 		char *history_prev() {
-			if (!history || !options.history || !hist_size || !length) return (NULL);
+			if (!history || !shell.options.history || !hist_size || !length) return (NULL);
 
 			if (position == length) position = length -1;
 			if (begining) return (NULL);
@@ -980,7 +978,7 @@
 
 		// Return the next entry line
 		char *history_next() {
-			if (!history || !options.history || !hist_size || !length) return (NULL);
+			if (!history || !shell.options.history || !hist_size || !length) return (NULL);
 
 			if (position == length) position = length -1;
 			begining = 0; middle = 1;

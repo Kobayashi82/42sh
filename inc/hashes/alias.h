@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/11/29 00:10:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:25:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-
-	#define ALIAS_HASH_SIZE	101
 
 #pragma endregion
 
@@ -31,8 +29,6 @@
 		}	t_alias;
 
 	#pragma endregion
-
-	extern t_alias *alias_table[ALIAS_HASH_SIZE];
 
 #pragma endregion
 

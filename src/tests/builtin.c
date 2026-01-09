@@ -6,17 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:10:01 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:29:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/colors.h"
-	#include "hashes/alias.h"
-	#include "hashes/builtin.h"
-	#include "hashes/hash.h"
-	#include "hashes/variable.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"

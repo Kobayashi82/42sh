@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:01:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:42:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 	#include <termcap.h>
@@ -368,7 +368,7 @@
 
 	int terminal_initialize() {
 		char *termtype = getenv("TERM");
-		if (!termtype) { termtype = "dumb"; options.emacs = 0; options.vi = 0; }
+		if (!termtype) { termtype = "dumb"; shell.options.emacs = 0; shell.options.vi = 0; }
 
 		int success = tgetent(NULL, termtype);
 		if (success < 0)	{ write(STDERR_FILENO, "Could not access the termcap data base.\n", 41);	return (1); }

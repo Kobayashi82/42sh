@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:42:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:00:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:40:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "hashes/variable.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -68,8 +66,8 @@
 				if (buffer.c == 3) {
 					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
 
-					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
-					else							write(STDOUT_FILENO, "^C\r\n", 4);
+					if (shell.options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
+					else								write(STDOUT_FILENO, "^C\r\n", 4);
 
 					shell.exit_code = 130; terminal.signal = 2;
 					return (1);
@@ -435,7 +433,7 @@
 				new_char[c_size] = '\0';
 
 				//	Ignore multi-space chars
-				if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
+				if (!shell.options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
 				undo_push(1);
 

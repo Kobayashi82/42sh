@@ -6,19 +6,19 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/03/14 13:09:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:49:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#pragma region Includes
+#pragma region "Includes"
 
 	#include <stddef.h>
 
 #pragma endregion
 
-#pragma region Methods
+#pragma region "Methods"
 
 	//	---------- UTILS -----------
 	size_t	char_size(unsigned char c);

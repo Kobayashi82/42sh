@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 19:15:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:30:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:45:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,7 @@
 	#include "terminal/colors.h"
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "hashes/alias.h"
-	#include "hashes/variable.h"
 	#include "expansion/globbing.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
@@ -100,8 +97,8 @@
 
 		int result = 0;
 
-		if (!options_set(NULL, 0) || !options_set("none", 0))													{ result = 1; printf(RD"X"RED500" invalid\n"NC); }
-		if (!result && ((options_set("emacs", 0) || options_set("vi", 0)) || (options.emacs || options.vi)))	{ result = 1; printf(RD"X"RED500" set option\n"NC); }
+		if (!options_set(NULL, 0) || !options_set("none", 0))																{ result = 1; printf(RD"X"RED500" invalid\n"NC); }
+		if (!result && ((options_set("emacs", 0) || options_set("vi", 0)) || (shell.options.emacs || shell.options.vi)))	{ result = 1; printf(RD"X"RED500" set option\n"NC); }
 
 		if (!result) printf(G"✓"GREEN500" passed\n"NC);
 

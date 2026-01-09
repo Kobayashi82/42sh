@@ -6,14 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:40:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "terminal/readinput/history.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -128,7 +127,7 @@
 #pragma region "Expand"
 
 	int expand_history(char **input, int show_expansion) {
-		if (!options.history || !options.histexpand || !input || !*input) return (0);
+		if (!shell.options.history || !shell.options.histexpand || !input || !*input) return (0);
 
 		char *value = *input;
 		size_t i = 0;

@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:05:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:44:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "expansion/globbing.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "tests/args.h"
 
@@ -42,7 +42,7 @@
 			char input_char = input[i];
 			char pattern_char = pattern[j];
 
-			if (options.nocaseglob) {
+			if (shell.options.nocaseglob) {
 				input_char = tolower(input_char);
 				pattern_char = tolower(pattern_char);
 			}
@@ -124,7 +124,7 @@
 		if (dr && pattern && pattern->value) {
 			de = readdir(dr);
 			while (de) {
-				int valid = (de->d_name[0] != '.' || options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
+				int valid = (de->d_name[0] != '.' || shell.options.dotglob || (de->d_name[0] == '.' && *pattern->value == '.'));
 				if (valid && match_files(de, pattern, fulldir, dir, &files)) break;
 				de = readdir(dr);
 			}

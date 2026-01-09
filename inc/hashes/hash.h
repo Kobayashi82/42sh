@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 16:36:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:18:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,6 @@
 #pragma region "Includes"
 
 	#include <stddef.h>
-
-	#define HASH_SIZE	101
 
 #pragma endregion
 
@@ -32,8 +30,6 @@
 		} t_hash;
 
 	#pragma endregion
-
-	extern t_hash *hash_table[HASH_SIZE];
 
 #pragma endregion
 

@@ -6,20 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:21:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/hash.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
-
-#pragma endregion
-
-#pragma region "Variables"
-
-	t_hash *hash_table[HASH_SIZE];
 
 #pragma endregion
 
@@ -61,8 +55,8 @@
 			new_hash->name = ft_strdup(name);
 			new_hash->path = ft_strdup(path);
 
-			new_hash->next = hash_table[index];
-			hash_table[index] = new_hash;
+			new_hash->next = shell.hash_table[index];
+			shell.hash_table[index] = new_hash;
 
 			return (0);
 		}
@@ -79,7 +73,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_hash *hash = hash_table[index];
+			t_hash *hash = shell.hash_table[index];
 
 			while (hash) {
 				if (!strcmp(hash->name, name)) {
@@ -96,7 +90,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_hash *hash = hash_table[index];
+			t_hash *hash = shell.hash_table[index];
 
 			while (hash) {
 				if (!strcmp(hash->name, name)) {
@@ -117,7 +111,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = hash_table[index];
+				t_hash *hash = shell.hash_table[index];
 				while (hash) {
 					if (hash->name && hash->path) i++;
 					hash = hash->next;
@@ -129,7 +123,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = hash_table[index];
+				t_hash *hash = shell.hash_table[index];
 				while (hash) {
 					if (hash->name && hash->path) {
 						array[i] = ft_strdup(hash->path);
@@ -171,7 +165,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = hash_table[index];
+				t_hash *hash = shell.hash_table[index];
 				while (hash) {
 					if (hash->name && hash->path) i++;
 					hash = hash->next;
@@ -193,13 +187,13 @@
 			if (!name) return (1);
 
 			unsigned int index = hash_index(name);
-			t_hash *hash = hash_table[index];
+			t_hash *hash = shell.hash_table[index];
 			t_hash *prev = NULL;
 
 			while (hash) {
 				if (!strcmp(hash->name, name)) {
 					if (prev)	prev->next = hash->next;
-					else		hash_table[index] = hash->next;
+					else		shell.hash_table[index] = hash->next;
 					free(hash->name); free(hash->path); free(hash);
 					return (0);
 				}
@@ -216,8 +210,8 @@
 
 		void hash_clear() {
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				if (hash_table[index]) {
-					t_hash *hash = hash_table[index];
+				if (shell.hash_table[index]) {
+					t_hash *hash = shell.hash_table[index];
 					while (hash) {
 						t_hash *next = hash->next;
 						free(hash->name);
@@ -225,7 +219,7 @@
 						free(hash);
 						hash = next;
 					}
-					hash_table[index] = NULL;
+					shell.hash_table[index] = NULL;
 				}
 			}
 		}

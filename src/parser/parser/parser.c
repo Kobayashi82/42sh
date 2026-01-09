@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:38:21 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:02:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:48:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@
 
 	void syntax_error(int type, const char *msg) {
 		if (g_parser && g_parser->token) {
-			if (shell.mode == SRC_INTERACTIVE) {
+			if (shell.mode == MD_INTERACTIVE) {
 				if (type == 1) {
 					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%s'\n", g_parser->prev_token->line, msg);
 					if (g_parser->token) dprintf(2, "42sh: -c: line %d: syntax error: unexpected end of file\n", g_parser->token->line);
 				}
 			}
-			if (shell.mode == SRC_ARGUMENT) {
+			if (shell.mode == MD_ARGUMENT) {
 				if (type == 1) {
 					if (g_parser->prev_token) dprintf(2, "42sh: -c: line %d: unexpected EOF while looking for matching `%s'\n", g_parser->prev_token->line, msg);
 					if (g_parser->token) dprintf(2, "42sh: -c: line %d: syntax error: unexpected end of file\n", g_parser->token->line);

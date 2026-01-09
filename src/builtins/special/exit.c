@@ -6,13 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 10:40:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/builtin.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
@@ -108,8 +107,8 @@
 
 		int ret = 0;
 
-		if (shell.login_shell && shell.mode == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", RESET_PRINT);
-		if (!shell.login_shell && shell.mode == SRC_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
+		if (shell.login_shell && shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", RESET_PRINT);
+		if (!shell.login_shell && shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", RESET_PRINT);
 
 		if (result->argc > 1) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": exit: too many arguments\n", 0), FREE_RESET_PRINT);
@@ -123,7 +122,7 @@
 
 		free_argv_original(result);
 		free_options(result);
-		exit_error(NOTHING, ret, NULL, 1);
+		exit_error(NOTHING, ret, NULL, 0, EE_EXIT);
 
 		return (ret);
 	}

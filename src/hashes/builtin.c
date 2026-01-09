@@ -6,24 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:27:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "hashes/builtin.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
-
-
-	#define BUILTIN_HASH_SIZE	101
-
-#pragma endregion
-
-#pragma region "Variables"
-
-	t_builtin *builtin_table[BUILTIN_HASH_SIZE];
 
 #pragma endregion
 
@@ -33,7 +23,7 @@
 		unsigned int hash = 0;
 
 		while (*key) hash = (hash * 31) + *key++;
-		return (hash % BUILTIN_HASH_SIZE);
+		return (hash % HASH_SIZE);
 	}
 
 #pragma endregion
@@ -63,8 +53,8 @@
 			if (special  != -1)	new_builtin->special  = special;
 			if (execute)		new_builtin->execute  = execute;
 			if (help)			new_builtin->help     = help;
-			new_builtin->next = builtin_table[index];
-			builtin_table[index] = new_builtin;
+			new_builtin->next = shell.builtin_table[index];
+			shell.builtin_table[index] = new_builtin;
 
 			return (0);
 		}
@@ -81,7 +71,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = builtin_table[index];
+			t_builtin *builtin = shell.builtin_table[index];
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) return (builtin);
@@ -95,7 +85,7 @@
 			if (!name) return (0);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = builtin_table[index];
+			t_builtin *builtin = shell.builtin_table[index];
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) return (!builtin->disabled);
@@ -112,8 +102,8 @@
 		char **builtin_to_array(int disabled, int special, int sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = shell.builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
 					builtin = builtin->next;
@@ -124,8 +114,8 @@
 			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = shell.builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
 						array[i] = ft_strdup(builtin->name);
@@ -146,8 +136,8 @@
 		int builtin_print(int disabled, int special, int sort) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = shell.builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
 					builtin = builtin->next;
@@ -158,8 +148,8 @@
 			char **array = malloc((i + 1) * sizeof(char *));
 
 			i = 0;
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = shell.builtin_table[index];
 				while (builtin) {
 				
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
@@ -195,8 +185,8 @@
 		size_t builtin_length(int disabled, int special) {
 			size_t i = 0;
 
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				t_builtin *builtin = shell.builtin_table[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || (!special || builtin->special == special))) i++;
 					builtin = builtin->next;
@@ -218,13 +208,13 @@
 			if (!name) return (1);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = builtin_table[index];
+			t_builtin *builtin = shell.builtin_table[index];
 			t_builtin *prev = NULL;
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) {
 					if (prev)	prev->next = builtin->next;
-					else		builtin_table[index] = builtin->next;
+					else		shell.builtin_table[index] = builtin->next;
 					free(builtin->name); free(builtin);
 					return (0);
 				}
@@ -240,16 +230,16 @@
 	#pragma region "Clear"
 
 		void builtin_clear() {
-			for (unsigned int index = 0; index < BUILTIN_HASH_SIZE; index++) {
-				if (builtin_table[index]) {
-					t_builtin *builtin = builtin_table[index];
+			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+				if (shell.builtin_table[index]) {
+					t_builtin *builtin = shell.builtin_table[index];
 					while (builtin) {
 						t_builtin *next = builtin->next;
 						free(builtin->name);
 						free(builtin);
 						builtin = next;
 					}
-					builtin_table[index] = NULL;
+					shell.builtin_table[index] = NULL;
 				}
 			}
 		}

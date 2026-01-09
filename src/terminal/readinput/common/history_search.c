@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:01:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:41:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/options.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
 
 #pragma region "Variables"
 
-	enum		e_mode { START, FORWARD, BACKWARD };
+	enum e_search_mode { START, FORWARD, BACKWARD };
 
 	t_buffer		search_buffer;
 	int				hist_searching;							//	Indicates whether the terminal is in searching mode
@@ -101,7 +101,7 @@
 			new_char[c_size] = '\0';
 			
 			// Ignore multi-space chars
-			if (!options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
+			if (!shell.options.multiwidth_chars && char_width(0, new_char) > 1) return (1);
 
 			// Expand buffer if necessary
 			if (search_buffer.position + c_size >= search_buffer.size - 1) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:34:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:00:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 12:40:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 	#include "terminal/readinput/history.h"
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
-	#include "main/options.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
 
@@ -45,8 +44,8 @@
 				if (buffer.c == 3) {
 					buffer.value[0] = '\0'; buffer.position = 0; buffer.length = 0;
 
-					if (options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
-					else							write(STDOUT_FILENO, "^C\r\n", 4);
+					if (shell.options.hide_ctrl_chars)	write(STDOUT_FILENO, "\r\n", 2);
+					else								write(STDOUT_FILENO, "^C\r\n", 4);
 
 					shell.exit_code = 130; terminal.signal = 2;
 					return (1);
