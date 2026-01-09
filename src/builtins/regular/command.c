@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:06:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:41:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
-
 	#include "utils/getopt.h"
 
 #pragma endregion
@@ -89,7 +89,7 @@
 				"This is free software: you are free to change and redistribute it.\n"
 				"There is NO WARRANTY, to the extent permitted by law.\n\n"
 
-				"Written by Kobayashi82 (vzurera-).\n";
+				"Written by "DEVELOPER" ("LOGIN42").\n";
 
 			print(STDOUT_FILENO, msg, RESET_PRINT);
 

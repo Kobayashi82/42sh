@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:41:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 	#include "terminal/colors.h"
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -76,7 +77,7 @@
 				"This is free software: you are free to change and redistribute it.\n"
 				"There is NO WARRANTY, to the extent permitted by law.\n\n"
 
-				"Written by Kobayashi82 (vzurera-).\n";
+				"Written by "DEVELOPER" ("LOGIN42").\n";
 
 			print(STDOUT_FILENO, msg, RESET_PRINT);
 

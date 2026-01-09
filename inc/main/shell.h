@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:20:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:40:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@
 
 	#define PROYECTNAME	"42sh"
 	#define VERSION		"1.0"
-	#define DEVELOPER	"Kobayashi"
+	#define DEVELOPER	"Kobayashi82"
+	#define LOGIN42		"vzurera-"
 
 #pragma endregion
 

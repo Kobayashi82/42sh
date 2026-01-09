@@ -6,13 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:47 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:42:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "hashes/builtin.h"
+	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 
@@ -94,7 +95,7 @@
 				"This is free software: you are free to change and redistribute it.\n"
 				"There is NO WARRANTY, to the extent permitted by law.\n\n"
 
-				"Written by Kobayashi82 (vzurera-).\n";
+				"Written by "DEVELOPER" ("LOGIN42").\n";
 
 			print(STDOUT_FILENO, msg, RESET_PRINT);
 

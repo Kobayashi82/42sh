@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 21:39:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 10:37:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@
 		unsigned int hash = 0;
 
 		while (*key) hash = (hash * 31) + *key++;
+
 		return (hash % VARS_HASH_SIZE);
 	}
 
