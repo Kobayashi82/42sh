@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:12:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:57:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@
 			if (!arg) return (0);
 
 			if (!strchr(arg, '=')) {
-				if (variables_validate(arg, NULL, 0)) {
+				if (variables_validate(arg, 0)) {
 					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
@@ -125,7 +125,7 @@
 				key[len - 1] = '\0'; concatenate = 1;
 			}
 
-			if (variables_validate(key, value, 0)) {
+			if (variables_validate(key, 0)) {
 				if (concatenate) key[len - 1] = '+';
 				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
@@ -159,7 +159,7 @@
 			if (!arg) return (0);
 
 			if (!strchr(arg, '=')) {
-				if (variables_validate(arg, NULL, 0)) {
+				if (variables_validate(arg, 0)) {
 					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
@@ -180,7 +180,7 @@
 				key[len - 1] = '\0'; concatenate = 1;
 			}
 
-			if (variables_validate(key, value, 0)) {
+			if (variables_validate(key, 0)) {
 				if (concatenate) key[len - 1] = '+';
 				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
@@ -218,7 +218,7 @@
 			if (!arg) return (0);
 
 			if (!strchr(arg, '=')) {
-				if (variables_validate(arg, NULL, 0)) {
+				if (variables_validate(arg, 0)) {
 					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
@@ -237,7 +237,7 @@
 				key[len - 1] = '\0'; concatenate = 1;
 			}
 
-			if (variables_validate(key, value, 0)) {
+			if (variables_validate(key, 0)) {
 				if (concatenate) key[len - 1] = '+';
 				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
@@ -271,7 +271,7 @@
 			if (!arg) return (0);
 
 			if (!strchr(arg, '=')) {
-				if (variables_validate(arg, NULL, 0)) {
+				if (variables_validate(arg, 0)) {
 					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
@@ -290,7 +290,7 @@
 				key[len - 1] = '\0'; concatenate = 1;
 			}
 
-			if (variables_validate(key, value, 0)) {
+			if (variables_validate(key, 0)) {
 				if (concatenate) key[len - 1] = '+';
 				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
@@ -340,8 +340,8 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			if (has_option(result, 'f'))	variables_print(shell.env->table, EXPORTED_LIST, SORT_NORMAL);	// function
-			else							variables_print(shell.env->table, EXPORTED_LIST, SORT_NORMAL);
+			if (has_option(result, 'f'))	variables_print(shell.env, EXPORTED_LIST, SORT_NORMAL);	// function
+			else							variables_print(shell.env, EXPORTED_LIST, SORT_NORMAL);
 			return (free_options(result), 0);
 		}
 

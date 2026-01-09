@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:21:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:48:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@
 				}
 			} array[i] = NULL;
 
-			if (sort) array_sort(array);
+			if (sort) array_sort(array, sort);
 			return (array);
 		}
 

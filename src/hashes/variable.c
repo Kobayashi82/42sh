@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 16:39:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:58:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@
 
 	#pragma region "Validate"
 
-		int variables_validate(const char *key, const char *value, int local_assing) {
+		int variables_validate(const char *key, int local_assing) {
 			if (!key) return (0);
 
 			int		ret = 0;
@@ -198,6 +198,7 @@
 
 			if (!len || (!isalpha(key[0]) && key[0] != '_'))	ret = 1;
 
+			(void) local_assing;
 			// Valid only if in shell (!shell.env->parent)
 			// 
 			if (!strcmp(key, "42_HISTFILE"))					ret = 0;
@@ -213,14 +214,6 @@
 
 			for (size_t i = 1; i < len; ++i) {
 				if (!isalnum(key[i]) && key[i] != '_') {		ret = 1;		break; }
-			}
-
-			if (ret && show_msg) {
-				print(STDERR_FILENO, shell.env->argv0, RESET);
-				if (value) print(STDERR_FILENO, ": ", JOIN);
-				if (!name) name = PROYECTNAME;
-				print(STDERR_FILENO, ft_strjoin_sep(name, ": `", key, 0), FREE_RESET);
-				if (is_asign)	print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 0), FREE_PRINT);
 			}
 
 			return (ret);
@@ -314,7 +307,7 @@
 				}
 			} array[i] = NULL;
 
-			if (sort) array_sort(array);
+			if (sort) array_sort(array, sort);
 			return (array);
 		}
 
@@ -322,28 +315,40 @@
 
 	#pragma region "Print"
 
-		#pragma region "Array Value"
+		#pragma region "Matches Type"
 
-			static int array_value(int type, char **array, size_t i, t_var *var) {
-				if (type < 0 || type > 4) 									return (0);
-				if (!var->key)												return (0);
+			// Check if a variable matches the requested type
+			static int matches_type(t_var *var, int type) {
+				if (!var || !var->key || type < 0 || type > 4)				return (0);
 				if (type == EXPORTED_LIST && !var->exported)				return (0);
 				if (type == EXPORTED && (!var->exported || !var->value))	return (0);
 				if (type == READONLY && !var->readonly)						return (0);
 				if (type == INTERNAL && var->exported)						return (0);
 
-				char var_type[6]; int j = 0;
-				var_type[j++] = '-';
-				if (var->integer) var_type[j++] = 'i';
-				if (var->readonly) var_type[j++] = 'r';
-				if (var->exported) var_type[j++] = 'x';
-				if (j == 1) var_type[j++] = '-';
-				while (j < 5) var_type[j++] = ' ';
-				var_type[j] = '\0';
-				
-				if (type == INTERNAL)	array[i] = ft_strdup(var->key);
-				else 					array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
+				return (1);
+			}
 
+		#pragma endregion
+
+		#pragma region "Array Value"
+
+			// Format a variable into a string
+			static int array_value(int type, char **array, size_t i, t_var *var) {
+				if (!matches_type(var, type)) return(0);
+
+				char	var_type[6]; 
+				int		j = 0;
+
+				var_type[j++] = '-';
+				if (var->integer)	var_type[j++] = 'i';
+				if (var->readonly)	var_type[j++] = 'r';
+				if (var->exported)	var_type[j++] = 'x';
+				if (j == 1)			var_type[j++] = '-';
+				while (j < 5)		var_type[j++] = ' ';
+				var_type[j] = '\0';
+
+				if (type == INTERNAL)		array[i] = ft_strdup(var->key);
+				else 						array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
 				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
 
 				return (1);
@@ -351,46 +356,91 @@
 
 		#pragma endregion
 
-		#pragma region "Print"
+		#pragma region "Is Shadowed"
 
-			void variables_print(t_var **table, int type, int sort) {
-				size_t i = 0;
+			// Check if a key has already been seen (for shadowing)
+			static int is_shadowed(const char *key, t_var **seen, int count) {
+				if (!key || !seen || !*seen) return (0);
 
-				for (int index = 0; index < HASH_SIZE; ++index) {
-					t_var *var = table[index];
-					while (var) {
-						if (var->key) ++i;
-						var = var->next;
-					}
+				for (int i = 0; i < count; i++) {
+					if (!strcmp(seen[i]->key, key)) return (1);
 				}
 
-				if (i == 0) return;
-				char **array = malloc((i + 1) * sizeof(char *));
+				return (0);
+			}
 
-				i = 0;
-				for (int index = 0; index < HASH_SIZE; ++index) {
-					t_var *var = table[index];
-					while (var) {
-						i += array_value(type, array, i, var);
-						var = var->next;
+		#pragma endregion
+
+		#pragma region "Print"
+
+			void variables_print(t_env *env, int type, int sort) {
+				if (!env || type < 0 || type > 4) return;
+
+				// First pass: count total variables
+				int count = 0;
+				t_env *current = env;
+				while (current) {
+					for (int index = 0; index < HASH_SIZE; ++index) {
+						t_var *var = current->table[index];
+						while (var) {
+							if (var->key) count++;
+							var = var->next;
+						}
 					}
-				} array[i] = NULL;
+					current = current->parent;
+				}
+				if (!count) return;
 
+				// Allocate memory for tracking seen variables
+				t_var **seen = malloc(count * sizeof(t_var *));
+				if (!seen) return;
+
+				// Second pass: collect unique variables respecting shadowing
+				count = 0;
+				current = env;
+				while (current) {
+					for (int index = 0; index < HASH_SIZE; ++index) {
+						t_var *var = current->table[index];
+						while (var) {
+							if (var->key && !is_shadowed(var->key, seen, count)) {
+								if (matches_type(var, type)) seen[count++] = var;
+							}
+							var = var->next;
+						}
+					}
+					current = current->parent;
+				}
+				if (!count) { free(seen); return; }
+
+				// Create string array for printing
+				char **array = malloc((count + 1) * sizeof(char *));
+				if (!array) { free(seen); return; }
+
+				// Third pass: format variables
+				int i = 0;
+				for (int j = 0; j < count; ++j) {
+					i += array_value(type, array, i, seen[j]);
+				}
+				array[i] = NULL;
+
+				// Sort
 				if (sort) array_nsort(array, sort, 13);
 
+				// Print
 				if (array && array[0]) {
 					print(STDOUT_FILENO, NULL, RESET);
 
-					for (int i = 0; array[i]; ++i) {
-						print(STDOUT_FILENO, array[i], JOIN);
+					for (int j = 0; array[j]; ++j) {
+						print(STDOUT_FILENO, array[j], JOIN);
 						print(STDOUT_FILENO, "\n",     JOIN);
 					}
 
 					print(STDOUT_FILENO, NULL, PRINT);
 				}
 
+				// Cleanup
+				free(seen);
 				array_free(array);
-				return;
 			}
 
 		#pragma endregion

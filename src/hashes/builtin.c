@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:27:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:48:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@
 				}
 			} array[i] = NULL;
 
-			if (sort) array_sort(array);
+			if (sort) array_sort(array, sort);
 			return (array);
 		}
 
@@ -163,7 +163,7 @@
 				}
 			} array[i] = NULL;
 
-			if (sort) array_nsort(array, 8);
+			if (sort) array_nsort(array, sort, 8);
 
 			if (array && array[0]) {
 				print(STDOUT_FILENO, NULL, RESET);

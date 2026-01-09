@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:57:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@
 		int ret = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "readonly", 0, 1)) return (1);
+			if (variables_validate(arg, 0)) return (1);
 			t_var *var = variables_find(shell.env->table, arg);
 			if (var) { var->readonly = 1; return (0); }
 		}
@@ -113,7 +113,7 @@
 		int len = ft_strlen(key);
 		int concatenate = 0;
 		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
-		if (variables_validate(key, value, "readonly", 1, 1)) return (free(key), free(value), 1);
+		if (variables_validate(key, 0)) return (free(key), free(value), 1);
 
 		t_var *var = variables_find(shell.env->table, key);
 		if (var && var->readonly) {
@@ -151,7 +151,7 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variables_print(shell.env->table, READONLY, 1);
+			variables_print(shell.env, READONLY, 1);
 			return (free_options(result), 0);
 		}
 
