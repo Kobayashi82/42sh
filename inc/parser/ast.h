@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:28:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2025/12/19 18:40:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 21:08:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@
 			struct s_ast	*right;
 			// Subshell
 			struct s_ast	*child;
-			// Comandos
+			// Commands
 			t_assign		*assign;
 			t_args			*args;
 			t_redir			*redirs;
@@ -64,6 +64,8 @@
 	void	ast_print(t_ast *ast);
 	void	ast_free(t_ast **ast);
 	t_ast	*ast_create(int type);
-	const char *type_to_string(int type);
+	char	**get_argv_from_ast(t_ast *ast, int *argc);
+	
+	const char *type_to_string(int type);	// DEBUG
 
 #pragma endregion

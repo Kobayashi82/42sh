@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:42:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 20:27:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1137,7 +1137,7 @@
 		history_hist_control_set("ignoreboth");
 		// history_hist_timeformat_set("%F %T ");
 		history_read(NULL);
-		
+
 		return (0);
 	}
 

@@ -161,33 +161,33 @@
 
 	int options_initialize() {
 		//	READINPUT
-		shell.options.emacs				= 0;
-		shell.options.vi					= 1;
-		shell.options.hide_ctrl_chars		= 0;
-		shell.options.multiwidth_chars	= 1;
+		shell.options.emacs				= 1;
+		shell.options.vi				= 0;
+		shell.options.hide_ctrl_chars	= 0;
+		shell.options.multiwidth_chars	= 0;
 
 		//	HISTORY
-		shell.options.history				= 0;
-		shell.options.histexpand			= 0;
-		shell.options.histappend			= 1;
-		shell.options.histreedit			= 0;
-		shell.options.histverify			= 0;
+		shell.options.history			= 0;
+		shell.options.histexpand		= 0;
+		shell.options.histappend		= 1;
+		shell.options.histreedit		= 0;
+		shell.options.histverify		= 0;
 
 		//	ALIAS
-		shell.options.expand_aliases		= 0;
+		shell.options.expand_aliases	= 0;
 
 		//	GLOBBING
-		shell.options.noglob				= 0;
-		shell.options.dotglob				= 0;
+		shell.options.noglob			= 0;
+		shell.options.dotglob			= 0;
 		shell.options.nullglob			= 0;
 		shell.options.failglob			= 0;
-		shell.options.nocaseglob			= 0;
+		shell.options.nocaseglob		= 0;
 
 		//	CD
-		shell.options.cd_resolve			= 0;
-		shell.options.cdable_vars			= 0;
-		shell.options.autocd				= 0;
-		shell.options.cdspell				= 0;
+		shell.options.cd_resolve		= 0;
+		shell.options.cdable_vars		= 0;
+		shell.options.autocd			= 0;
+		shell.options.cdspell			= 0;
 		shell.options.dirspell			= 0;
 
 		return (0);

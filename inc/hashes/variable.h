@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:53:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 20:11:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,6 @@
 	char	*variables_find_value(t_var **table, const char *key);
 	char	**variables_to_array(t_var **table, int type, int sort);
 	void	variables_print(t_env *env, int type, int sort);
-	size_t	variables_length(t_var **table, int type);
 	//	---------- DELETE ----------
 	int		variables_delete(t_var **table, const char *key);
 	void	variables_clear(t_var **table);

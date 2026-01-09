@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:46:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 20:21:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,9 @@
 #pragma region "Initialize"
 
 	int initialize(int argc, const char **argv, const char **envp) {
+		t_env *env = calloc(1, sizeof(t_env));
+		if (!env) exit_error(NO_MEMORY, 1, NULL, 0, EE_EXIT);
+
 		shell.name_exec = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
 		shell.name_bin = strrchr(shell.name_exec, '/');
 		shell.name_bin = (shell.name_bin) ? shell.name_bin + 1 : shell.name_exec;
@@ -36,8 +39,6 @@
 
 		// Hay que procesar antes las opciones
 
-		t_env *env = calloc(1, sizeof(t_env));
-		if (!env) return (1);
 		shell.env = env;
 		if (argc > 0) {
 			static const char *argus[5];

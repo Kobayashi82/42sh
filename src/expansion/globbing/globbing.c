@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:43:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 20:43:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 	#include "expansion/globbing.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
-	#include "tests/args.h"
 
 	#include <sys/stat.h>
 
@@ -23,75 +22,75 @@
 
 #pragma region "Search"
 
-	static t_arg *search(t_pattern *patterns, char *basedir, char *dir) {
-		if (!patterns) return (NULL);
-		t_arg *files = NULL, *final = NULL;
+	// static t_arg *search(t_pattern *patterns, char *basedir, char *dir) {
+	// 	if (!patterns) return (NULL);
+	// 	t_arg *files = NULL, *final = NULL;
 
-		if (patterns->next && patterns->is_dir) {
-			files = match_dir(patterns, basedir, dir);
-			t_arg *tmp = files;
-			while (tmp) {
-				t_arg *tmp_files = search(patterns->next, basedir, tmp->value);
-				if (tmp_files) args_merge(&final, &tmp_files);
-				tmp = tmp->next;
-			} args_clear(&files);
-		} else files = match_dir(patterns, basedir, dir);
+	// 	if (patterns->next && patterns->is_dir) {
+	// 		files = match_dir(patterns, basedir, dir);
+	// 		t_arg *tmp = files;
+	// 		while (tmp) {
+	// 			t_arg *tmp_files = search(patterns->next, basedir, tmp->value);
+	// 			if (tmp_files) args_merge(&final, &tmp_files);
+	// 			tmp = tmp->next;
+	// 		} args_clear(&files);
+	// 	} else files = match_dir(patterns, basedir, dir);
 
-		args_merge(&files, &final);
-		return (files);
-	}
+	// 	args_merge(&files, &final);
+	// 	return (files);
+	// }
 
 #pragma endregion
 
 #pragma region "Match"
 
 	//	Check if there is a match for every file and directory using cpattern
-	static t_arg *match(char *value) {
-		if (!value || !*value) return (NULL);
+	// static t_arg *match(char *value) {
+	// 	if (!value || !*value) return (NULL);
 
-		t_pattern *patterns = pattern_create(value);
-		if (!patterns) return (NULL);
+	// 	t_pattern *patterns = pattern_create(value);
+	// 	if (!patterns) return (NULL);
 
-		char *basedir = NULL;
-		char *dir = NULL;
-		if (value[0] != '/') {
-			char cwd[4096];
-			if (!getcwd(cwd, sizeof(cwd))) return (pattern_clear(&patterns), NULL);
-			if (!strcmp(cwd, "/"))	basedir = ft_strdup(cwd);
-			else						basedir = ft_strjoin(cwd, "/", 0);
-		} else							dir = ft_strdup("/");
+	// 	char *basedir = NULL;
+	// 	char *dir = NULL;
+	// 	if (value[0] != '/') {
+	// 		char cwd[4096];
+	// 		if (!getcwd(cwd, sizeof(cwd))) return (pattern_clear(&patterns), NULL);
+	// 		if (!strcmp(cwd, "/"))	basedir = ft_strdup(cwd);
+	// 		else						basedir = ft_strjoin(cwd, "/", 0);
+	// 	} else							dir = ft_strdup("/");
 
-		t_arg *files = search(patterns, basedir, dir);
-		free(basedir); free(dir);
-		pattern_clear(&patterns);
+	// 	t_arg *files = search(patterns, basedir, dir);
+	// 	free(basedir); free(dir);
+	// 	pattern_clear(&patterns);
 
-		return (args_sort(files));
-	}
+	// 	return (args_sort(files));
+	// }
 
 #pragma endregion
 
 #pragma region "Globbing"
 
 	//	Search for wildcards matches in every arg and join them in a single list
-	void globbing(t_arg *args) {
-		if (args == NULL || shell.options.noglob) return;
+	// void globbing(t_arg *args) {
+	// 	if (args == NULL || shell.options.noglob) return;
 
-		globbing(args->next);
-		if (memchr(args->value, '?', ft_strlen(args->value))
-			|| memchr(args->value, '*', ft_strlen(args->value))
-			|| memchr(args->value, '[', ft_strlen(args->value)))
-		{
-			t_arg *files = match(args->value);
-			if (!files) {
-				if (shell.options.nullglob) {
-					free(args->value);
-					args->value = NULL;
-					args->nullglob = 1;
-				}
-				if (shell.options.failglob) args->failglob = 1;
-			} else args_insert(args, &files);
-		}
-	}
+	// 	globbing(args->next);
+	// 	if (memchr(args->value, '?', ft_strlen(args->value))
+	// 		|| memchr(args->value, '*', ft_strlen(args->value))
+	// 		|| memchr(args->value, '[', ft_strlen(args->value)))
+	// 	{
+	// 		t_arg *files = match(args->value);
+	// 		if (!files) {
+	// 			if (shell.options.nullglob) {
+	// 				free(args->value);
+	// 				args->value = NULL;
+	// 				args->nullglob = 1;
+	// 			}
+	// 			if (shell.options.failglob) args->failglob = 1;
+	// 		} else args_insert(args, &files);
+	// 	}
+	// }
 
 #pragma endregion
 

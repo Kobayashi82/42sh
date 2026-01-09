@@ -6,21 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:03:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 21:08:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "parser/parser.h"
-
-	#include <stdlib.h>
+	#include "utils/utils.h"
 
 #pragma endregion
 
 #pragma region "Print (DEBUG)"
-
-	#include <stdio.h>
 
 	const char *type_to_string(int type) {
 		switch (type) {
@@ -297,6 +294,80 @@
 		node->type = type;
 
 		return (node);
+	}
+
+#pragma endregion
+
+#pragma region "AST to Argv"
+
+	static t_ast *find_first_command(t_ast *node) {
+		if (!node)		return (NULL);
+		if (node->args)	return (node);									// If it's a command node (has args), return it
+
+		if (node->left) {												// If it's an operator, search left first
+			t_ast *found = find_first_command(node->left);
+			if (found)		return (found);
+		}
+		if (node->right)	return (find_first_command(node->right));	// Then right
+		if (node->child)	return (find_first_command(node->child));	// If it's a subshell, search in child
+
+		return (NULL);
+	}
+
+	static char *join_segments(t_segment *seg) {
+		if (!seg) return (NULL);
+
+		t_segment *current;
+
+		char *result = ft_strdup(seg->string.value);
+		current = seg->next;
+		while (current) {
+			result = ft_strjoin(result, current->string.value, 1);
+			if (!result) return (NULL);
+			current = current->next;
+		}
+
+		return (result);
+	}
+
+	char **get_argv_from_ast(t_ast *ast, int *argc) {
+		if (!ast) { *argc = 0; return (NULL); }
+
+		t_ast	*cmd_node;
+		t_args	*current;
+		char	**argv;
+		int		i = 0, count = 0;
+
+		cmd_node = find_first_command(ast);
+		if (!cmd_node || !cmd_node->args) return (NULL);
+
+		// Count args
+		current = cmd_node->args;
+		while (current) {
+			count++;
+			current = current->next;
+		}
+
+		// Allocate array
+		argv = malloc((count + 1) * sizeof(char *));
+		if (!argv) return (NULL);
+
+		// Fill array
+		current = cmd_node->args;
+		while (current) {
+			argv[i] = join_segments(current->segment);
+			if (!argv[i]) {
+				array_free(argv);
+				*argc = 0;
+				return (NULL);
+			}
+			current = current->next;
+			i++;
+		}
+		argv[count] = NULL;
+		*argc = count;
+
+		return (argv);
 	}
 
 #pragma endregion

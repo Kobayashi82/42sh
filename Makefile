@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/07 23:23:07 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/09 20:32:56 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,27 +39,9 @@ COUNTER 			= 0
 
 NAME				= 42sh
 CC					= clang
-TESTING				= 1
 
 # FLAGS				= -Wall -Wextra -Werror -O2			# (for production)
 FLAGS				= -Wall -Wextra -Werror -g -O0		# (for debugging)
-
-# LDFLAGS				= -Wl,--wrap=malloc		\
-# 					  -Wl,--wrap=calloc		\
-# 					  -Wl,--wrap=realloc	\
-# 					  -Wl,--wrap=free		\
-# 					  -Wl,--wrap=open		\
-# 					  -Wl,--wrap=close		\
-# 					  -Wl,--wrap=dup		\
-# 					  -Wl,--wrap=dup2		\
-# 					  -Wl,--wrap=pipe		\
-# 					  -Wl,--wrap=execve		\
-# 					  -Wl,--wrap,exit
-# 			utils/safe_execve.c								\
-# 			utils/safe_fd.c									\
-# 			utils/gnl.c										\
-# 			utils/safe_mem.c								\
-# 			utils/safe_xmem.c								\
 
 # ───────────────── #
 # ── DIRECTORIES ── #
@@ -80,9 +62,8 @@ SRCS	=	main/main.c										\
 			main/error.c									\
 															\
 															\
-			terminal/signal.c								\
 			terminal/input.c								\
-															\
+			terminal/signal.c								\
 			terminal/readinput/readinput.c					\
 			terminal/readinput/modes/dumb.c					\
 			terminal/readinput/modes/readline.c				\
@@ -112,10 +93,6 @@ SRCS	=	main/main.c										\
 			parser/parser/parser.c							\
 															\
 															\
-			expansion/globbing/brackets.c					\
-			expansion/globbing/globbing.c					\
-			expansion/globbing/match.c						\
-			expansion/globbing/pattern.c					\
 			expansion/arithmetic.c							\
 			expansion/brace.c								\
 			expansion/group.c								\
@@ -123,6 +100,10 @@ SRCS	=	main/main.c										\
 			expansion/process.c								\
 			expansion/tilde.c								\
 			expansion/word_split.c							\
+			expansion/globbing/brackets.c					\
+			expansion/globbing/globbing.c					\
+			expansion/globbing/match.c						\
+			expansion/globbing/pattern.c					\
 															\
 															\
 			hashes/alias.c									\
@@ -196,14 +177,6 @@ SRCS	=	main/main.c										\
 			utils/temp.c									\
 			utils/times.c									\
 			utils/users.c									\
-															\
-															\
-			tests/args.c									\
-			tests/builtin.c									\
-			tests/create_args.c								\
-			tests/internal.c								\
-			tests/tests.c									\
-			tests/untests.c									\
 
 # ───────────────────────────────────────────────────────────── #
 # ─────────────────────────── RULES ─────────────────────────── #
@@ -228,12 +201,6 @@ _compile: $(OBJS)
 	@printf "\r%50s\r\t$(CYAN)Compiled    $(GREEN)✓ $(YELLOW)$(NAME)$(NC)\n"
 
 	@$(MAKE) -s _progress; printf "\n"
-#	----- REMOVE TO DISABLED TEST -----
-	@if [ "$(TESTING)" -ne 0 ]; then \
-		printf "\033[A" && ./leaks test || true; \
-		printf "\n"; \
-	fi
-#	----- REMOVE TO DISABLED TEST -----
 	@$(MAKE) -s _show_cursor
 
 # ───────────── #
@@ -407,16 +374,3 @@ _progress:
 # ─────────── #
 
 .PHONY: all clean fclean re wipe _show_title _title _hide_cursor _show_cursor _delete_objects _progress
-
-# 	int bt_welcome() {
-# 		print(STDOUT_FILENO, G"\n\t\t\tWELCOME TO "RED600"42"Y"sh"G" 1.0\n\n", RESET);
-# 		print(STDOUT_FILENO, C"\t This "BR"project"C" has been made with ",    JOIN);
-# 		print(STDOUT_FILENO, G"effort"C" and "G"care\n",                       JOIN);
-# 		print(STDOUT_FILENO, C"\t Feel "G"free"C" to try anything you want\n", JOIN);
-# 		print(STDOUT_FILENO,  "\t To get information about the "BR"builtins",  JOIN);
-# 		print(STDOUT_FILENO, C" you can type "Y"help\n\n",                     JOIN);
-# 		print(STDOUT_FILENO, C"\t Check the "G"documentation"C" for",          JOIN);
-# 		print(STDOUT_FILENO,  " a complete list of features\n\n",              PRINT);
-		
-# 		return (0);
-# 	}

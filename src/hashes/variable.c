@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:58:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 20:11:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -444,29 +444,6 @@
 			}
 
 		#pragma endregion
-
-	#pragma endregion
-
-	#pragma region "Length"
-
-		size_t variables_length(t_var **table, int type) {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_var *var = table[index];
-				while (var) {
-					if (var->key) {
-						if (type == INTERNAL && !var->exported) i++;
-						if (type == READONLY && var->readonly) i++;
-						if (type == EXPORTED && var->exported && var->value) i++;
-						if (type == EXPORTED_LIST && var->exported) i++;
-					}
-					var = var->next;
-				}
-			}
-
-			return (i);
-		}
 
 	#pragma endregion
 
