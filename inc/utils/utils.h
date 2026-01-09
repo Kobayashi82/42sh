@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:05:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:31:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,12 @@
 		JOIN,
 		PRINT,
 		RESET_ALL
+	};
+
+	enum e_sort {
+		SORT_NONE,
+		SORT_NORMAL,
+		SORT_REVERSE
 	};
 
 #pragma endregion
@@ -149,9 +155,9 @@
 
 	#pragma region "ARRAY"
 
-		void	array_nsort(char **array, size_t skip);
-		void	array_sort(char **array);
-		void	array_int_sort(int *array, int reverse);
+		void	array_nsort(char **array, int sort, size_t skip);
+		void	array_sort(char **array, int sort);
+		void	array_int_sort(int *array, int sort);
 		char	**array_clone(int length, const char **array);
 		void	array_print(const char **array, int fd, int numbered);
 		void	array_int_print(int *array, int fd);

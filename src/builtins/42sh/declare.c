@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:28:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:08:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,33 +183,53 @@
 
 	static int add_declare(char *arg) {
 		if (!arg) return (0);
-		int result = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "declare", 0, 1)) return (1);
+			if (variables_validate(arg, NULL, 0)) {
+				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": declare: `", 0),   FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+				return (1);
+			}
 			t_var *var = variables_find(shell.env->table, arg);
-			if (var) { var->exported = 1; return (0); }
+			if (var) {
+				var->exported = 1;
+				return (0);
+			}
 		}
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
-
 		int len = ft_strlen(key);
+
 		int concatenate = 0;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
-		if (variables_validate(key, value, "declare", 1, 1)) return (free(key), free(value), 1);
+		if (key && len > 0 && key[len - 1] == '+') {
+			key[len - 1] = '\0'; concatenate = 1;
+		}
+
+		if (variables_validate(key, value, 0)) {
+			if (concatenate) key[len - 1] = '+';
+			print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": declare: `", key, 3),     FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+			return (1);
+		}
 
 		t_var *var = variables_find(shell.env->table, key);
 		if (var && var->readonly) {
-			print(STDOUT_FILENO, shell.name, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
-			result = 1;
-		} else {
-			if (concatenate && variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1))	result = 1;
-			if (!concatenate && variables_add(shell.env->table, key, value, 1, -1, -1, -1))			result = 1;
+			print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": declare: `", 0), FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			free(value);
+			return (1);
 		}
 
-		return (free(key), free(value), result);
+		int ret = 0;
+
+		if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
+		if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
+
+		free(key);
+		free(value);
+
+		return (ret);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 16:39:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 15:32:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,40 +190,36 @@
 
 	#pragma region "Validate"
 
-		int variables_validate(const char *key, const char *value, int local_assing) {
+		int variables_validate(const char *key, const char *value, const char *name, int is_asign, int show_msg) {
 			if (!key) return (0);
 
-			int		ret = 0;
-			size_t	len = ft_strlen(key);
+			int result = 0;
+			size_t len = ft_strlen(key);
 
-			if (!len || (!isalpha(key[0]) && key[0] != '_'))	ret = 1;
-
-			// Valid only if in shell (!shell.env->parent)
-			// 
-			if (!strcmp(key, "42_HISTFILE"))					ret = 0;
-			if (!strcmp(key, "42_HISTSIZE"))					ret = 0;
-			if (!strcmp(key, "42_HISTFILESIZE"))				ret = 0;
-			if (!strcmp(key, "42_HISTTIMEFORMAT"))				ret = 0;
-			if (!strcmp(key, "42_HISTCONTROL"))					ret = 0;
-			if (!strcmp(key, "42_HISTIGNORE"))					ret = 0;
-			if (!strcmp(key, "42_SH"))							ret = 0;
-			if (!strcmp(key, "42_SUBSHELL"))					ret = 0;
-			if (!strcmp(key, "42_VERSION"))						ret = 0;
-			if (!strcmp(key, "42_PID"))							ret = 0;
+			if (!len || (!isalpha(key[0]) && key[0] != '_'))	result = 1;
+			if (!strcmp(key, "42_HISTFILE"))					result = 0;
+			if (!strcmp(key, "42_HISTSIZE"))					result = 0;
+			if (!strcmp(key, "42_HISTFILESIZE"))				result = 0;
+			if (!strcmp(key, "42_HISTTIMEFORMAT"))				result = 0;
+			if (!strcmp(key, "42_HISTCONTROL"))					result = 0;
+			if (!strcmp(key, "42_HISTIGNORE"))					result = 0;
+			if (!strcmp(key, "42_SH"))							result = 0;
+			if (!strcmp(key, "42_SUBSHELL"))					result = 0;
+			if (!strcmp(key, "42_VERSION"))						result = 0;
+			if (!strcmp(key, "42_PID"))							result = 0;
 
 			for (size_t i = 1; i < len; ++i) {
-				if (!isalnum(key[i]) && key[i] != '_') {		ret = 1;		break; }
+				if (!isalnum(key[i]) && key[i] != '_') {		result = 1;		break; }
 			}
 
-			if (ret && show_msg) {
-				print(STDERR_FILENO, shell.env->argv0, RESET);
-				if (value) print(STDERR_FILENO, ": ", JOIN);
+			if (result && show_msg) {
 				if (!name) name = PROYECTNAME;
 				print(STDERR_FILENO, ft_strjoin_sep(name, ": `", key, 0), FREE_RESET);
 				if (is_asign)	print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 0), FREE_PRINT);
+				else			print(STDERR_FILENO, "': not a valid identifier\n", PRINT);
 			}
 
-			return (ret);
+			return (result);
 		}
 
 	#pragma endregion
@@ -353,22 +349,22 @@
 
 		#pragma region "Print"
 
-			void variables_print(t_var **table, int type, int sort) {
+			int variables_print(t_var **table, int type, int sort) {
 				size_t i = 0;
 
-				for (int index = 0; index < HASH_SIZE; ++index) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
-						if (var->key) ++i;
+						if (var->key) i++;
 						var = var->next;
 					}
 				}
 
-				if (i == 0) return;
+				if (i == 0) return (1);
 				char **array = malloc((i + 1) * sizeof(char *));
 
 				i = 0;
-				for (int index = 0; index < HASH_SIZE; ++index) {
+				for (unsigned int index = 0; index < HASH_SIZE; index++) {
 					t_var *var = table[index];
 					while (var) {
 						i += array_value(type, array, i, var);
@@ -376,21 +372,19 @@
 					}
 				} array[i] = NULL;
 
-				if (sort) array_nsort(array, sort, 13);
+				if (sort) array_nsort(array, 13);
 
 				if (array && array[0]) {
 					print(STDOUT_FILENO, NULL, RESET);
-
-					for (int i = 0; array[i]; ++i) {
+					for (size_t i = 0; array[i]; ++i) {
 						print(STDOUT_FILENO, array[i], JOIN);
-						print(STDOUT_FILENO, "\n",     JOIN);
+						print(STDOUT_FILENO, "\n", JOIN);
 					}
-
 					print(STDOUT_FILENO, NULL, PRINT);
 				}
+				if (array) array_free(array);
 
-				array_free(array);
-				return;
+				return (0);
 			}
 
 		#pragma endregion

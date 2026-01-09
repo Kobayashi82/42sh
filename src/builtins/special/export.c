@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 17:12:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@
 
 		int bt_export_help(int format, int no_print) {
 			char *name = "export";
-			char *syntax = "export [-n] [name[=value] ...] or export -p";
+			char *syntax = "export [-fn] [name[=value] ...] or export [-fp]";
 			char *description = "Set export attribute for shell variables.";
 			char *msg =
 				"    Marks each NAME for automatic export to the environment of subsequently\n"
 				"    executed commands.  If VALUE is supplied, assign VALUE before exporting.\n\n"
 
 				"    Options:\n"
+				"      -f        refer to shell functions"
 				"      -n        remove the export property from each NAME\n"
 				"      -p        display a list of all exported variables and functions\n\n"
 
@@ -97,79 +98,225 @@
 
 #pragma region "Add"
 
-	static int add_export(char *arg) {
-		if (!arg) return (0);
-		int ret = 0;
+	#pragma region "Variable"
 
-		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
-			t_var *var = variables_find(shell.env->table, arg);
-			if (var) { var->exported = 1; return (0); }
+		static int add_export(char *arg) {
+			if (!arg) return (0);
+
+			if (!strchr(arg, '=')) {
+				if (variables_validate(arg, NULL, 0)) {
+					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+					return (1);
+				}
+				t_var *var = variables_find(shell.env->table, arg);
+				if (var) {
+					var->exported = 1;
+					return (0);
+				}
+			}
+
+			char *key = NULL, *value = NULL;
+			get_key_value(arg, &key, &value, '=');
+			int len = ft_strlen(key);
+
+			int concatenate = 0;
+			if (key && len > 0 && key[len - 1] == '+') {
+				key[len - 1] = '\0'; concatenate = 1;
+			}
+
+			if (variables_validate(key, value, 0)) {
+				if (concatenate) key[len - 1] = '+';
+				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+				return (1);
+			}
+
+			t_var *var = variables_find(shell.env->table, key);
+			if (var && var->readonly) {
+				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+				free(value);
+				return (1);
+			}
+
+			int ret = 0;
+
+			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
+			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
+
+			free(key);
+			free(value);
+
+			return (ret);
 		}
 
-		char *key = NULL, *value = NULL;
-		get_key_value(arg, &key, &value, '=');
+	#pragma endregion
 
-		int len = ft_strlen(key);
-		int	concatenate = 0;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
-		if (variables_validate(key, value, "export", 1, 1)) return (free(key), free(value), 1);
+	#pragma region "Function"
 
-		t_var *var = variables_find(shell.env->table, key);
-		if (var && var->readonly) {
-			var->exported = 1;
-			print(STDOUT_FILENO, NULL,                                        RESET);
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": ", 0),             FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
-			ret = 1;
-		} else {
-			if (concatenate && variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1))	ret = 1;
-			if (!concatenate && variables_add(shell.env->table, key, value, 1, -1, -1, -1))			ret = 1;
+		static int add_export_function(char *arg) {
+			if (!arg) return (0);
+
+			if (!strchr(arg, '=')) {
+				if (variables_validate(arg, NULL, 0)) {
+					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+					return (1);
+				}
+				t_var *var = variables_find(shell.env->table, arg);
+				if (var) {
+					var->exported = 1;
+					return (0);
+				}
+			}
+
+			char *key = NULL, *value = NULL;
+			get_key_value(arg, &key, &value, '=');
+			int len = ft_strlen(key);
+
+			int concatenate = 0;
+			if (key && len > 0 && key[len - 1] == '+') {
+				key[len - 1] = '\0'; concatenate = 1;
+			}
+
+			if (variables_validate(key, value, 0)) {
+				if (concatenate) key[len - 1] = '+';
+				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+				return (1);
+			}
+
+			t_var *var = variables_find(shell.env->table, key);
+			if (var && var->readonly) {
+				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+				free(value);
+				return (1);
+			}
+
+			int ret = 0;
+
+			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
+			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
+
+			free(key);
+			free(value);
+
+			return (ret);
 		}
 
-		free(key);
-		free(value);
-		return (ret);
-	}
+	#pragma endregion
 
 #pragma endregion
 
 #pragma region "Delete"
 
-	static int delete_export(char *arg) {
-		if (!arg) return (0);
-		int ret = 0;
+	#pragma region "Variable"
 
-		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, NULL, "export", 0, 1)) return (1);
-			t_var *var = variables_find(shell.env->table, arg);
-			if (var) var->exported = 0;
-			return (0);
+		static int delete_export(char *arg) {
+			if (!arg) return (0);
+
+			if (!strchr(arg, '=')) {
+				if (variables_validate(arg, NULL, 0)) {
+					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+					return (1);
+				}
+				t_var *var = variables_find(shell.env->table, arg);
+				if (var) var->exported = 0;
+				return (0);
+			}
+
+			char *key = NULL, *value = NULL;
+			get_key_value(arg, &key, &value, '=');
+			int len = ft_strlen(key);
+
+			int	concatenate = 0;
+			if (key && len > 0 && key[len - 1] == '+') {
+				key[len - 1] = '\0'; concatenate = 1;
+			}
+
+			if (variables_validate(key, value, 0)) {
+				if (concatenate) key[len - 1] = '+';
+				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+				return (1);
+			}
+
+			t_var *var = variables_find(shell.env->table, key);
+			if (var && var->readonly) {
+				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+				free(value);
+				return (1);
+			}
+
+			int ret = 0;
+
+			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
+			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
+
+			free(key);
+			free(value);
+
+			return (ret);
 		}
 
-		char *key = NULL, *value = NULL;
-		get_key_value(arg, &key, &value, '=');
+	#pragma endregion
 
-		int len = ft_strlen(key);
-		int	concatenate = 0;
-		if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
+	#pragma region "Function"
 
-		if (variables_validate(key, value, "export", 1, 1)) return (free(key), free(value), 1);
-		t_var *var = variables_find(shell.env->table, key);
-		if (var && var->readonly) {
-			print(STDOUT_FILENO, NULL,                                        RESET);
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": ", 0),             FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
-			ret = 1;
-		} else {
-			if (concatenate && variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1))	ret = 1;
-			if (!concatenate && variables_add(shell.env->table, key, value, 0, -1, -1, -1))			ret = 1;
+		static int delete_export_function(char *arg) {
+			if (!arg) return (0);
+
+			if (!strchr(arg, '=')) {
+				if (variables_validate(arg, NULL, 0)) {
+					print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0),   FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+					return (1);
+				}
+				t_var *var = variables_find(shell.env->table, arg);
+				if (var) var->exported = 0;
+				return (0);
+			}
+
+			char *key = NULL, *value = NULL;
+			get_key_value(arg, &key, &value, '=');
+			int len = ft_strlen(key);
+
+			int	concatenate = 0;
+			if (key && len > 0 && key[len - 1] == '+') {
+				key[len - 1] = '\0'; concatenate = 1;
+			}
+
+			if (variables_validate(key, value, 0)) {
+				if (concatenate) key[len - 1] = '+';
+				print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": export: `", key, 3),     FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+				return (1);
+			}
+
+			t_var *var = variables_find(shell.env->table, key);
+			if (var && var->readonly) {
+				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+				free(value);
+				return (1);
+			}
+
+			int ret = 0;
+
+			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
+			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
+
+			free(key);
+			free(value);
+
+			return (ret);
 		}
 
-		free(key);
-		free(value);
-		return (ret);
-	}
+	#pragma endregion
 
 #pragma endregion
 
@@ -182,7 +329,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "np", NULL, long_opts, "export [-n] [name[=value] ...] or export -p", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, "fnp", NULL, long_opts, "export [-n] [name[=value] ...] or export [-fp]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
@@ -193,19 +340,37 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variables_print(shell.env->table, EXPORTED_LIST, 1);
+			if (has_option(result, 'f'))	variables_print(shell.env->table, EXPORTED_LIST, SORT_NORMAL);	// function
+			else							variables_print(shell.env->table, EXPORTED_LIST, SORT_NORMAL);
 			return (free_options(result), 0);
 		}
 
+		print(STDERR_FILENO, NULL, RESET);
+
 		for (int i = 0; i < result->argc; ++i) {
 			if (has_option(result, 'n')) {
-				if (delete_export(result->argv[i]))	ret = 1;
+				if (has_option(result, 'f'))	ret = delete_export_function(result->argv[i]);
+				else							ret = delete_export(result->argv[i]);
 			} else {
-				if (add_export(result->argv[i]))	ret = 1;
+				if (has_option(result, 'f'))	ret = add_export_function(result->argv[i]);
+				else							ret = add_export(result->argv[i]);
 			}
 		}
 
+		print(STDERR_FILENO, NULL, PRINT);
+
 		return (free_options(result), ret);
 	}
+
+#pragma endregion
+
+#pragma region "Info"
+
+	// Funcion exportada
+	// 
+	// 42_FUNC_mi_funcion%%=() {
+	//  echo esto es prueba;
+	//  pwd
+	// }
 
 #pragma endregion

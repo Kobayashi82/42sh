@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 22:06:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/09 16:30:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@
 #pragma region "Sort"
 
 	// Sorts an array of strings alphabetically, ignoring the first 'skip' characters when comparing
-	void array_nsort(char **array, size_t skip) {
-		if (!array || !*array) return;
+	void array_nsort(char **array, int sort, size_t skip) {
+		if (!array || !*array || sort == SORT_NONE) return;
 		if (skip < 0) skip = 0;
 
 		size_t count = 0;
@@ -34,7 +34,8 @@
 				if (ft_strlen(str1) > skip) str1 += skip;
 				if (ft_strlen(str2) > skip) str2 += skip;
 
-				if (strcmp(str1, str2) > 0) {
+				int comparison = strcmp(str1, str2);
+				if ((sort == SORT_NORMAL && comparison > 0) || (sort == SORT_REVERSE && comparison < 0)) {
 					char *temp = array[j];
 					array[j] = array[j + 1];
 					array[j + 1] = temp;
@@ -44,18 +45,18 @@
 	}
 
 	// Sorts an array of strings alphabetically
-	void array_sort(char **array) { array_nsort(array, 0); }
+	void array_sort(char **array, int sort) { array_nsort(array, sort, 0); }
 
-	// Sorts an array of numbers from smallest to largest (or reverse if specified)
-	void array_int_sort(int *array, int reverse) {
-		if (!array) return;
+	// Sorts an array of numbers from smallest to largest
+	void array_int_sort(int *array, int sort) {
+		if (!array ||sort == SORT_NONE) return;
 
 		size_t count = 0;
 		while (array[count]) count++;
 
 		for (size_t i = 0; i < count - 1; i++) {
 			for (size_t j = 0; j < count - i - 1; j++) {
-				int should_swap = reverse ? (array[j] < array[j + 1]) : (array[j] > array[j + 1]);
+				int should_swap = SORT_REVERSE ? (array[j] < array[j + 1]) : (array[j] > array[j + 1]);
 				if (should_swap) {
 					int temp = array[j];
 					array[j] = array[j + 1];
