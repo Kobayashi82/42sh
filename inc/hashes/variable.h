@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 14:54:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:52:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,7 @@
 			char			*key;		// Name of the variable
 			union u_data {
 					char	*scalar;	// For scalars
-					t_var	**array;	// For numerics arrays (hash table)
-					t_var	**assoc;	// For associative arrays (hash table)
+					t_var	**array;	// For numerics and associative arrays (hash table)
 				} data;
 			t_var_type		flags;		// Type of the variable (exported, readonly, etc.)
 			t_var			*next;		// Pointer to the next variable in the slot of the hash table
@@ -61,23 +60,34 @@
 
 	char	*variables_find_value(t_var **table, const char *key);
 
-	//	---------- IMPORT ----------
-	int		variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);
-	int		variables_concatenate(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force);
-	void	variables_from_array(t_var **table, const char **array);
-	void	variables_join(t_var **dst_table, t_var **src_table);
-	int		variables_validate(const char *key, int local_assing);
-	//	---------- EXPORT ----------
-	t_var	*variables_find(t_env *env, const char *key);
-	char	**export_to_array(t_var **table);
-	void	variables_print(t_env *env, unsigned int type, int sort);
-
-	int		variables_array_add(t_env *env, const char *key, int index, const char *value, int append, int local);
-
+	//	---------- COMMON -----------
+	t_var	*variable_find(t_env *env, const char *key);
+		//	---------- SCALAR -----------
+	char	*variable_scalar_get(t_env *env, const char *key);
+	int		variable_scalar_add(t_env *env, const char *key, const char *value, int append, int local);
+	int		variable_scalar_remove(t_env *env, const char *key);
+	char	*variable_scalar_values(t_env *env, const char *key);
+	//	---------- ARRAY -----------
+	char	*variable_array_get(t_env *env, const char *key, int index);
+	int		variable_array_add(t_env *env, const char *key, int index, const char *value, int append, int local);
+	int		variable_scalar_remove(t_env *env, const char *key);
+	char	*variable_array_values(t_env *env, const char *key);
+	//	-------- ASSOCIATIVE -------
+	char	*variable_assoc(t_env *env, const char *key, const char *assoc_key);
+	int		variable_assoc_add(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local);
+	int		variable_assoc_remove(t_env *env, const char *key, const char *assoc_key);
+	char	*variable_assoc_values(t_env *env, const char *key);
 	//	---------- DELETE ----------
-	int		variables_delete(t_var **table, const char *key);
-	void	variables_clear(t_var **table);
+	void	variable_free(t_var *var);
+	int		variable_unset(t_env *env, const char *key);
+	void	variable_clear_table(t_var **table);
+	void	variable_clear(t_env *env);
+	//	---------- OTHERS ----------
+	void	variable_from_array(t_var **table, const char **array);
+	int		variable_validate(const char *key, int local_assing);
+	char	**export_to_array(t_var **table);
+	void	variable_print(t_env *env, unsigned int type, int sort);
 	//	-------- INITIALIZE --------
-	int		variables_initialize(t_var **table, const char **envp);
+	int		variable_initialize(t_var **table, const char **envp);
 
 #pragma endregion

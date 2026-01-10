@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 15:01:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:56:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,8 +102,8 @@
 		int ret = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, 0)) return (1);
-			// t_var *var = variables_find(shell.env->table, arg);
+			if (variable_validate(arg, 0)) return (1);
+			// t_var *var = variable_find(shell.env->table, arg);
 			// if (var) { var->readonly = 1; return (0); }
 		}
 
@@ -113,9 +113,9 @@
 		// int len = ft_strlen(key);
 		// int concatenate = 0;
 		// if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
-		if (variables_validate(key, 0)) return (free(key), free(value), 1);
+		if (variable_validate(key, 0)) return (free(key), free(value), 1);
 
-		// t_var *var = variables_find(shell.env->table, key);
+		// t_var *var = variable_find(shell.env->table, key);
 		// if (var && var->readonly) {
 		// 	print(STDOUT_FILENO, NULL,                                        RESET);
 		// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": ", 0),             FREE_JOIN);
@@ -151,7 +151,7 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variables_print(shell.env, VAR_READONLY, 1);
+			variable_print(shell.env, VAR_READONLY, 1);
 			return (free_options(result), 0);
 		}
 

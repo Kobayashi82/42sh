@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 15:02:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:56:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,12 +185,12 @@
 		if (!arg) return (0);
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, 0)) {
+			if (variable_validate(arg, 0)) {
 				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": declare: `", 0),   FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 				return (1);
 			}
-			t_var *var = variables_find(shell.env, arg);
+			t_var *var = variable_find(shell.env, arg);
 			if (var) {
 				// var->exported = 1;
 				return (0);
@@ -206,14 +206,14 @@
 			key[len - 1] = '\0'; concatenate = 1;
 		}
 
-		if (variables_validate(key, 0)) {
+		if (variable_validate(key, 0)) {
 			if (concatenate) key[len - 1] = '+';
 			print(STDERR_FILENO, ft_strjoin_sep(shell.env->argv0, ": declare: `", key, 3),     FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
 			return (1);
 		}
 
-		// t_var *var = variables_find(shell.env->table, key);
+		// t_var *var = variable_find(shell.env->table, key);
 		// if (var && var->readonly) {
 		// 	print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": declare: `", 0), FREE_JOIN);
 		// 	print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
@@ -241,8 +241,8 @@
 		int result = 0;
 
 		if (!strchr(arg, '=')) {
-			if (variables_validate(arg, 0)) return (1);
-			// t_var *var = variables_find(shell.env, arg);
+			if (variable_validate(arg, 0)) return (1);
+			// t_var *var = variable_find(shell.env, arg);
 			// if (var) var->exported = 0;
 			return (0);
 		}
@@ -254,8 +254,8 @@
 		// int concatenate = 0;
 		// if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
 
-		if (variables_validate(key, 0)) return (free(key), free(value), 1);
-		// t_var *var = variables_find(shell.env->table, key);
+		if (variable_validate(key, 0)) return (free(key), free(value), 1);
+		// t_var *var = variable_find(shell.env->table, key);
 		// if (var && var->readonly) {
 		// 	print(STDOUT_FILENO, shell.name, RESET);
 		// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
@@ -292,7 +292,7 @@
 		if (find_long_option(result, "version"))								return (free_options(result), version());
 
 		if (!result->argv) {
-			variables_print(shell.env, VAR_EXPORTED, 1);
+			variable_print(shell.env, VAR_EXPORTED, 1);
 			return (free_options(result), 1);
 		}
 

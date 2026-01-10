@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 15:00:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:57:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,10 @@
 	#pragma region "Variable"
 
 		static void update_variable(const char *key, const char *value) {
-			if (variables_validate(key, 0)) return;
+			if (variable_validate(key, 0)) return;
 
 			(void) value;
-			// t_var *var = variables_find(shell.env->table, key);
+			// t_var *var = variable_find(shell.env->table, key);
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, shell.name, RESET);
 			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
@@ -131,7 +131,7 @@
 			if (!silent_mode) {
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0), FREE_PRINT);
-				variables_delete(shell.env->table, "OPTARG");
+				variable_unset(shell.env, "OPTARG");
 			} else {
 				update_variable("OPTARG", opt_str);
 			}
@@ -147,7 +147,7 @@
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0), FREE_PRINT);
 				update_variable(varname, "?");
-				variables_delete(shell.env->table, "OPTARG");
+				variable_unset(shell.env, "OPTARG");
 			} else {
 				char opt_str[2] = {opt, '\0'};
 				update_variable(varname, ":");
@@ -217,7 +217,7 @@
 		if (optind > args_count) {
 			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variables_delete(shell.env->table, "OPTARG");
+			variable_unset(shell.env, "OPTARG");
 			return (1);
 		}
 
@@ -228,7 +228,7 @@
 		if (current_arg[0] != '-' || current_arg[1] == '\0') {
 			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variables_delete(shell.env->table, "OPTARG");
+			variable_unset(shell.env, "OPTARG");
 			return (1);
 		}
 
@@ -237,7 +237,7 @@
 			shell.env->optpos = 1;
 			update_optind(optind + 1);
 			update_variable(varname, "?");
-			variables_delete(shell.env->table, "OPTARG");
+			variable_unset(shell.env, "OPTARG");
 			return (1);
 		}
 

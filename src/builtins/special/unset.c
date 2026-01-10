@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 15:02:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:57:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,13 @@
 		int ret = 0;
 
 		(void) invalues;
-		// t_var *var = variables_find(shell.env->table, arg);
+		// t_var *var = variable_find(shell.env->table, arg);
 		// if (var && var->readonly) {
 		// 	char *value = ft_strjoin(shell.name, ": ", 0);
 		// 	value = ft_strjoin_sep(value, arg, ": readonly variable\n", 1);
 		// 	if (value) *invalues = ft_strjoin(*invalues, value, 3);
 		// 	ret = 1;
-		// } else variables_delete(shell.env->table, arg);
+		// } else variable_unset(shell.env, arg);
 
 		return (ret);
 	}

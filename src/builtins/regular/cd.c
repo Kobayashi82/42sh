@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 14:59:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 16:56:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -270,7 +270,7 @@
 		if (!ret) {
 			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
 
-			// t_var *var = variables_find(shell.env->table, "OLDPWD");
+			// t_var *var = variable_find(shell.env->table, "OLDPWD");
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": OLDPWD: readonly variable\n", 0), FREE_RESET_PRINT);
 			// 	ret = 1;
@@ -280,7 +280,7 @@
 
 			free(shell.cwd);
 			shell.cwd = ft_strdup(path);
-			// var = variables_find(shell.env->table, "PWD");
+			// var = variable_find(shell.env->table, "PWD");
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": PWD: readonly variable\n", 0), FREE_RESET_PRINT);
 			// 	ret = 1;
