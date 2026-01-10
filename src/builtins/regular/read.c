@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:38:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,3 +151,29 @@
 	}
 
 #pragma endregion
+
+// if (delimiter != '\n') {
+//     // Cambia a modo raw/non-canonical
+//     struct termios raw;
+//     tcgetattr(STDIN_FILENO, &raw);
+//     raw.c_lflag &= ~ICANON;  // Desactiva buffering de línea
+//     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+// }
+
+// while (read(STDIN_FILENO, &c, 1) > 0) {
+//     if (c == delimiter) break;
+    
+//     if (c == 127 || c == 8) {  // Backspace/Delete
+//         // TÚ tienes que:
+//         // 1. Borrar del buffer
+//         if (buffer_len > 0) {
+//             buffer_len--;
+//             // 2. Borrar visualmente en pantalla
+//             write(STDOUT_FILENO, "\b \b", 3);  // retrocede, espacio, retrocede
+//         }
+//     } else {
+//         buffer[buffer_len++] = c;
+//         // Echo manual si ECHO está desactivado
+//         // write(STDOUT_FILENO, &c, 1);
+//     }
+// }

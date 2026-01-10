@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:54:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 21:41:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,7 @@
 		}
 
 		if (error > NOTHING && error < END) {
-			print(STDERR_FILENO, shell.env->argv0, RESET);
+			print(STDERR_FILENO, shell.name, RESET);
 			if (value) print(STDERR_FILENO, ": ", JOIN);
 		}
 
@@ -132,9 +132,9 @@
 		builtin_msg(error, value);
 		execution_msg(error, value);
 
-		if (free_value) free(value);
-		if (code)		shell.exit_code = code;
-		if (fatal)		free_and_exit();
+		if (free_value) 		free(value);
+		if (code)				shell.exit_code = code;
+		if (fatal == EE_EXIT)	free_and_exit();
 
 		return (shell.exit_code);
 	}

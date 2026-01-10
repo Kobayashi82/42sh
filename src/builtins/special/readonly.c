@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:56:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 22:20:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 		int bt_readonly_help(int format, int no_print) {
 			char *name = "readonly";
-			char *syntax = "readonly [name[=value] ...] or readonly -p";
+			char *syntax = "readonly [-aAf] [name[=value] ...] or readonly [-fp]";
 			char *description = "Mark shell variables as unchangeable.";
 			char *msg =
 				"    Mark each NAME as read-only; the values of these NAMEs may not be\n"
@@ -32,7 +32,11 @@
 				"    before marking as read-only.\n\n"
 
 				"    Options:\n"
-				"      -p        display a list of all readonly variables.\n\n"
+				"      -a        refer to indexed array variables\n"
+				"      -A        refer to associative array variables\n"
+				"      -f        refer to shell functions\n"
+				"      -p        display a list of all readonly variables or functions,\n"
+				"                depending on whether or not the -f option is given\n\n"
 
 				"    Exit Status:\n"
 				"      Returns success unless an invalid option is given or NAME is invalid.\n";
@@ -97,36 +101,55 @@
 
 #pragma region "Add"
 
-	static int add_readonly(char *arg) {
+	static int add_readonly(t_parse_result *result, char *arg) {
 		if (!arg) return (0);
 		int ret = 0;
 
+		int type = VAR_READONLY;
+		if (has_option(result, 'A')) type = (VAR_ASSOCIATIVE | VAR_READONLY);
+		if (has_option(result, 'a')) type = (VAR_ARRAY       | VAR_READONLY);
+
 		if (!strchr(arg, '=')) {
 			if (variable_validate(arg, 0)) return (1);
-			// t_var *var = variable_find(shell.env->table, arg);
-			// if (var) { var->readonly = 1; return (0); }
+			t_var *var = variable_find(shell.env, arg);
+			if (var) {
+				var->flags |= type;
+				return (0);
+			}
 		}
 
 		char *key = NULL, *value = NULL;
 		get_key_value(arg, &key, &value, '=');
+		int len = ft_strlen(key);
 
-		// int len = ft_strlen(key);
-		// int concatenate = 0;
-		// if (key && len > 0 && key[len - 1] == '+') { key[len - 1] = '\0'; concatenate = 1; }
-		if (variable_validate(key, 0)) return (free(key), free(value), 1);
+		int append = 0;
+		if (key && len > 0 && key[len - 1] == '+') {
+			key[len - 1] = '\0'; append = 1;
+		}
 
-		// t_var *var = variable_find(shell.env->table, key);
-		// if (var && var->readonly) {
-		// 	print(STDOUT_FILENO, NULL,                                        RESET);
-		// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": ", 0),             FREE_JOIN);
-		// 	print(STDERR_FILENO, ft_strjoin(key, ": readonly variable\n", 0), FREE_PRINT);
-		// 	ret = 1;
-		// } else {
-		// 	if (concatenate && variables_concatenate(shell.env->table, key, value, -1, 1, -1, -1))	ret = 1;
-		// 	if (!concatenate && variables_add(shell.env->table, key, value, -1, 1, -1, -1))			ret = 1;
-		// }
+		if (variable_validate(key, 0)) {
+			if (append) key[len - 1] = '+';
+			print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": readonly: `", key, 3),          FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+			return (1);
+		}
 
-		return (free(key), free(value), ret);
+		t_var *var = variable_find(shell.env, key);
+		if (var && var->flags & VAR_READONLY) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": readonly: `", 0),   FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1), FREE_JOIN);
+			free(value);
+			return (1);
+		}
+
+		if		((type & VAR_ASSOCIATIVE)	|| (var && var->flags & VAR_ASSOCIATIVE))	ret = variable_assoc_set(shell.env, key, value, append, type, 0);
+		else if ((type & VAR_ARRAY)			|| (var && var->flags & VAR_ARRAY))			ret = variable_array_set(shell.env, key, value, append, type, 0);
+		else																			ret = variable_scalar_set(shell.env, key, value, append, type, 0);
+
+		free(key);
+		free(value);
+
+		return (ret);
 	}
 
 #pragma endregion
@@ -140,7 +163,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "p", NULL, long_opts, "readonly [name[=value] ...] or readonly -p", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, "aAfp", NULL, long_opts, "readonly [-aAf] [name[=value] ...] or readonly [-fp]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
@@ -151,12 +174,14 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variable_print(shell.env, VAR_READONLY, 1);
+			if (has_option(result, 'f'))	variable_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);	// function
+			else							variable_print(shell.env, VAR_READONLY, SORT_NORMAL, 0);
 			return (free_options(result), 0);
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (add_readonly(result->argv[i])) ret = 1;
+			if (has_option(result, 'f'))	ret = add_readonly(result, result->argv[i]); // function
+			else							ret = add_readonly(result, result->argv[i]);
 		}
 
 		return (free_options(result), ret);

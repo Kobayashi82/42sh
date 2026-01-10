@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 21:37:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,56 @@
 
 #pragma endregion
 
+#pragma region "Add"
+
+	static int add_local(char *arg) {
+		if (!arg) return (0);
+
+		if (!strchr(arg, '=')) {
+			if (variable_validate(arg, 0)) {
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),    FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
+				return (1);
+			}
+		}
+
+		char *key = NULL, *value = NULL;
+		get_key_value(arg, &key, &value, '=');
+		int len = ft_strlen(key);
+
+		int append = 0;
+		if (key && len > 0 && key[len - 1] == '+') {
+			key[len - 1] = '\0'; append = 1;
+		}
+
+		if (variable_validate(key, 0)) {
+			if (append) key[len - 1] = '+';
+			print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": local: `", key, 3),      FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
+			return (1);
+		}
+
+		t_var *var = variable_find(shell.env, key);
+		if (var && var->flags & VAR_READONLY) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),  FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			free(value);
+			return (1);
+		}
+
+		int ret = 0;
+
+		// Esto depende del tipo de variable (se pueden crear de tipo scalar, array o associativa si ya existia de antes... creo)
+		ret = variable_scalar_set(shell.env, key, value, append, VAR_NONE, 1);
+
+		free(key);
+		free(value);
+
+		return (ret);
+	}
+
+#pragma endregion
+
 #pragma region "Local"
 
 	int bt_local(int argc, char **argv) {
@@ -114,6 +164,23 @@
 
 		int ret = 0;
 
+		if (!result->argc) {
+			if (shell.env->sourced != SRC_FUNCTION) {
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: can only be used in a function\n", 0),  FREE_RESET_PRINT);
+				ret = 1;
+			} else {
+				variable_print(shell.env, VAR_NONE, SORT_NORMAL, 1);
+			}
+			return (free_options(result), ret);
+		}
+
+		print(STDERR_FILENO, NULL, RESET);
+
+		for (int i = 0; i < result->argc; ++i) {
+			ret = add_local(result->argv[i]);
+		}
+
+		print(STDERR_FILENO, NULL, PRINT);
 
 		return (free_options(result), ret);
 	}

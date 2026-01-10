@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/02 13:27:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 21:08:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 21:40:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,8 +361,8 @@
 				*argc = 0;
 				return (NULL);
 			}
-			current = current->next;
 			i++;
+			current = current->next;
 		}
 		argv[count] = NULL;
 		*argc = count;

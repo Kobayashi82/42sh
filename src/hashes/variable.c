@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 20:37:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 21:32:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -939,9 +939,7 @@
 				while (j < 6)							var_type[j++] = ' ';
 				var_type[j] = '\0';
 
-				// For shell variables (no export flag)
-				if (!(var->flags & VAR_EXPORTED))	array[i] = ft_strdup(var->key);
-				else								array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
+				array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
 
 				if (!array[i]) return (0);
 
@@ -979,8 +977,10 @@
 
 		#pragma region "Print"
 
-			void variable_print(t_env *env, unsigned int type, int sort) {
+			void variable_print(t_env *env, unsigned int type, int sort, int local) {
 				if (!env) return;
+
+				if (local) env->parent = NULL;
 
 				// First pass: count total variables
 				int count = 0;

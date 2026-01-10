@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:57:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 21:52:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,13 @@
 
 		int bt_unset_help(int format, int no_print) {
 			char *name = "unset";
-			char *syntax = "unset [-v] [name ...]";
+			char *syntax = "unset [-f] [-v] [name ...]";
 			char *description = "Unset values and attributes of shell variables.";
 			char *msg =
 			"    For each NAME, remove the corresponding variable.\n\n"
 
 			"    Options:\n"
+			"      -f        treat each NAME as a shell function\n"
 			"      -v        treat each NAME as a shell variable\n"
 
 			"    Without options, unset first tries to unset a variable.\n\n"
@@ -99,21 +100,23 @@
 
 #pragma region "Delete"
 
-	static int delete_variable(char *arg, char **invalues) {
+	static int delete_variable(char *arg) {
 		if (!arg) return (0);
 
-		int ret = 0;
+		t_var *var = variable_find(shell.env, arg);
+		if (var && var->flags & VAR_READONLY) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: ", 0),                    FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(arg, ": cannot unset: readonly variable\n", 0), FREE_JOIN);
+			return (1);
+		} else variable_unset(shell.env, arg);
 
-		(void) invalues;
-		// t_var *var = variable_find(shell.env->table, arg);
-		// if (var && var->readonly) {
-		// 	char *value = ft_strjoin(shell.name, ": ", 0);
-		// 	value = ft_strjoin_sep(value, arg, ": readonly variable\n", 1);
-		// 	if (value) *invalues = ft_strjoin(*invalues, value, 3);
-		// 	ret = 1;
-		// } else variable_unset(shell.env, arg);
+		return (0);
+	}
 
-		return (ret);
+	static int delete_function(char *arg) {
+		if (!arg) return (0);
+
+		return (0);
 	}
 
 #pragma endregion
@@ -127,7 +130,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "v", NULL, long_opts, "unset [-v] [name ...]", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, "vn", NULL, long_opts, "unset [-f] [-v] [name ...]", IGNORE_OFF);
 		if (!result)		return (1);
 		if (result->error)	return (free_options(result), 2);
 
@@ -137,12 +140,19 @@
 
 		int ret = 0;
 
-		char *invalues = NULL;
-		for (int i = 0; i < result->argc; ++i) {
-			if (delete_variable(result->argv[i], &invalues)) ret = 1;
+		if (has_option(result, 'f') && has_option(result, 'v')) {
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: cannot simultaneously unset a function and a variable", 0), FREE_RESET_PRINT);
+			return (free_options(result), 1);
 		}
-		
-		if (invalues) { print(STDERR_FILENO, invalues, RESET_PRINT); free(invalues); }
+
+		print(STDERR_FILENO, NULL, RESET);
+
+		for (int i = 0; i < result->argc; ++i) {
+			if (has_option(result, 'f'))	ret = delete_function(result->argv[i]);
+			else							ret = delete_variable(result->argv[i]);
+		}
+
+		print(STDERR_FILENO, NULL, PRINT);
 
 		return (free_options(result), ret);
 	}
