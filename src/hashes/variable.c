@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 20:03:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 20:37:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,23 +236,6 @@
 			}
 
 		#pragma endregion
-
-		#pragma region "From Array"
-
-			void variable_from_array(t_var **table, const char **array) {
-				if (!array) return;
-
-				(void) table;
-				for (size_t i = 0; array[i]; i++) {
-					char *key = NULL, *value = NULL;
-					get_key_value(array[i], &key, &value, '=');
-					if (!key) continue;
-					// variable_add(table, key, value, 1, 0, 0, 0);
-					free(key); free(value);
-				}
-			}
-
-	#pragma endregion
 
 	#pragma endregion
 
@@ -869,7 +852,7 @@
 				for (int i = 0; i < HASH_SIZE; ++i) {
 					t_var *var = e->table[i];
 					while (var) {
-						if (var->flags & VAR_EXPORTED && var->data.scalar && !(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE))) {
+						if (var->flags & VAR_EXPORTED && !(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && var->data.scalar) {
 
 							// Check if already in hash
 							int hash = hash_index(var->key);
@@ -1073,54 +1056,65 @@
 
 #pragma region "Initialize"
 
-	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
-		if (!value) return;
-		(void) table;
-		(void) name;
-		(void) exported;
-		(void) readonly;
-		(void) integer;
-		(void) force;
-		// if (force || !variable_find(table, name)) variable_add(table, name, value, exported, readonly, integer, 1);
+	#pragma region "From Array"
+
+		void variable_from_array(t_env *env, const char **array) {
+			if (!env || !array) return;
+
+			for (size_t i = 0; array[i]; i++) {
+				char *key = NULL, *value = NULL;
+				get_key_value(array[i], &key, &value, '=');
+				if (!key) continue;
+				variable_scalar_set(env, key, value, 0, VAR_EXPORTED, 0);
+				free(key); free(value);
+			}
+		}
+
+	#pragma endregion
+
+	// exported, readonly, integer, force, free_value
+	static void default_add(t_env *env, const char *key, char *value, int type, int force, int free_value) {
+		if (!env || !key || !value) return;
+
+		if (force || !variable_find(env, key)) variable_scalar_set(env, key, value, 0, type, 0);
 		if (value && free_value) free(value);
 	}
-
-	int variable_initialize(t_var **table, const char **envp) {
-		variable_from_array(table, envp);
+	int variable_initialize(t_env *env, const char **envp) {
+		variable_from_array(env, envp);
 
 		// History
 		char *home = get_home();
 		if (home) {
 			if (*home && home[ft_strlen(home) - 1] == '/') home[ft_strlen(home) - 1] = '\0';
 			home = ft_strjoin(home, "/.42sh_history", 1);
-			default_add(table, "42_HISTFILE", home, 0, 0, 0, 0, 1);								//	
+			default_add(env,	"42_HISTFILE",		home,							VAR_NONE,					0, 1);		//	
 		}
-		default_add(table, "42_HISTSIZE", "5", 0, 0, 0, 0, 0);									//	
-		default_add(table, "42_HISTFILESIZE", "2000", 0, 0, 0, 0, 0);							//	
-		default_add(table, "42_HISTCONTROL", "ignoreboth", 0, 0, 0, 0, 0);						//	
+		default_add(env,		"42_HISTSIZE",		"5",							VAR_NONE,					0, 0);		//	
+		default_add(env,		"42_HISTFILESIZE",	"2000",							VAR_NONE,					0, 0);		//	
+		default_add(env,		"42_HISTCONTROL",	"ignoreboth",					VAR_NONE,					0, 0);		//	
 
 		// Shell
-		default_add(table, "42_SH", "PATH OF 42SH", 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-		default_add(table, "42_SUBSHELL", "0", 0, 0, 0, 1, 0);									//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
-		default_add(table, "42_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
-		default_add(table, "42_PID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
-		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) VAR_READONLY
+		default_add(env,		"42_SH",			"PATH OF 42SH",					VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		default_add(env,		"42_SUBSHELL",		"0",							VAR_NONE,					1, 0);		//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
+		default_add(env,		"42_VERSION",		VERSION,						VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		default_add(env,		"42_PID",			ft_itoa(shell.pid),				VAR_NONE,					1, 1);		//	Can be modified, but expand dinamic value
+		default_add(env,		"PPID",				ft_itoa(shell.parent_pid),		VAR_INTEGER,				1, 1);		//	Update var when expanded (parent_pid) VAR_READONLY
 
 		// Terminal
-		default_add(table, "COLUMNS", ft_itoa(terminal.cols), 0, 0, 1, 1, 1);					//	Update var when expanded (terminal_columns)
-		default_add(table, "LINES", ft_itoa(terminal.rows), 0, 0, 1, 1, 1);						//	Update var when expanded (terminal_rows)
-		default_add(table, "SECONDS", "0", 0, 0, 0, 1, 0);										//	Can be modified, but expand dinamic value
-		default_add(table, "EPOCHSECONDS", ft_itoa(shell.epoch_seconds), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
-		default_add(table, "EPOCHREALTIME", ft_itoa(shell.epoch_realtime), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
-		default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) VAR_READONLY
-		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) VAR_READONLY
+		default_add(env,		"COLUMNS",			ft_itoa(terminal.cols),			VAR_INTEGER,				1, 1);		//	Update var when expanded (terminal_columns)
+		default_add(env,		"LINES",			ft_itoa(terminal.rows),			VAR_INTEGER,				1, 1);		//	Update var when expanded (terminal_rows)
+		default_add(env,		"SECONDS",			"0",							VAR_NONE,					1, 0);		//	Can be modified, but expand dinamic value
+		default_add(env,		"EPOCHSECONDS",		ft_itoa(shell.epoch_seconds),	VAR_READONLY | VAR_INTEGER,	1, 1);		//	Update everytime (even with env)
+		default_add(env,		"EPOCHREALTIME",	ft_itoa(shell.epoch_realtime),	VAR_READONLY | VAR_INTEGER,	1, 1);		//	Update everytime (even with env)
+		default_add(env,		"UID",				ft_itoa(shell.uid),				VAR_INTEGER,				1, 1);		//	Update var when expanded (shell_uid) VAR_READONLY
+		default_add(env,		"EUID",				ft_itoa(shell.euid),			VAR_INTEGER,				1, 1);		//	Update var when expanded (shell_euid) VAR_READONLY
 
 		// Prompt
-		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-		default_add(table, "PS2", terminal.PS2, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-		default_add(table, "PS3", terminal.PS3, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-		default_add(table, "PS4", terminal.PS4, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
-		//	BASH_COMMAND																		//	Can be modified, but expand dinamic value (dont create on startup)
+		default_add(env,		"PS1",				terminal.PS1,					VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		default_add(env,		"PS2",				terminal.PS2,					VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		default_add(env,		"PS3",				terminal.PS3,					VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		default_add(env,		"PS4",				terminal.PS4,					VAR_NONE,					1, 0);		//	Normal var but set value on start always
+		//	BASH_COMMAND																										//	Can be modified, but expand dinamic value (dont create on startup)
 
 		return (0);
 	}

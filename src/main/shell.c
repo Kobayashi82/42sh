@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:54:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 20:20:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 		builtin_initialize();
 		options_initialize();
 		alias_initialize();
-		variable_initialize(shell.env->table, envp);
+		variable_initialize(shell.env, envp);
 		prompt_initialize();
 		shell.mode = MD_NO_INTERACTIVE;
 		shell.pid = getpid();

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 20:06:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 20:51:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -357,12 +357,10 @@
 				close(terminal.bk_stderr);
 				char *const args[] = { editor, tmp_file, NULL};
 				char **env = variable_to_array(shell.env);
-				array_print((const char **)env, STDOUT_CLOSED, 1);
-				(void) args;
-				// execve(editor, args, env);
+				execve(editor, args, env);
 				tmp_delete_path(tmp_file);
-				array_free(env);
 				free_argv_original(result);
+				array_free(env);
 				free_options(result);
 				exit_error(NOTHING, 1, editor, 1, EE_EXIT);
 			}
