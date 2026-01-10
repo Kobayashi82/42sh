@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:56:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:51:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@
 		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) path = correct_path(path);
 
 		if (shell.options.cdable_vars && original && path && access(path, F_OK) == -1) {
-			char *var_path = variables_find_value(shell.env->table, original);
+			char *var_path = variable_scalar_value(shell.env, original);
 			if (var_path) {
 				free(path);
 				path = ft_strdup(var_path);
@@ -173,7 +173,7 @@
 #pragma region "Check CDPATH"
 
 	int check_CDPATH(t_parse_result *result, char **main_path, int *is_dash) {
-		char *vars = variables_find_value(shell.env->table, "CDPATH");
+		char *vars = variable_scalar_value(shell.env, "CDPATH");
 		if (vars) {
 			char *token = ft_strtok(vars, ":", 61);
 
@@ -183,7 +183,7 @@
 
 					if (!strcmp(token, "-")) {
 						*is_dash = 1;
-						path = ft_strdup(variables_find_value(shell.env->table, "OLDPWD"));
+						path = ft_strdup(variable_scalar_value(shell.env, "OLDPWD"));
 					} else {
 						path = ft_strdup(token);
 					}
@@ -230,7 +230,7 @@
 		int is_dash = 0;
 
 		if (!result->argc) {
-			path = ft_strdup(variables_find_value(shell.env->table, "HOME"));
+			path = ft_strdup(variable_scalar_value(shell.env, "HOME"));
 			if (!path) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: HOME not set\n", 0), FREE_RESET_PRINT);
 				ret = 2;
@@ -241,7 +241,7 @@
 				ret = 2;
 			} else if (!strcmp(result->argv[0], "-")) {
 				is_dash = 1;
-				path = ft_strdup(variables_find_value(shell.env->table, "OLDPWD"));
+				path = ft_strdup(variable_scalar_value(shell.env, "OLDPWD"));
 				if (!path) {
 					print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: OLDPWD not set\n", 0), FREE_RESET_PRINT);
 					ret = 2;

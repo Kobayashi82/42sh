@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:52:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:52:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,23 +58,22 @@
 
 #pragma region "Methods"
 
-	char	*variables_find_value(t_var **table, const char *key);
-
 	//	---------- COMMON -----------
 	t_var	*variable_find(t_env *env, const char *key);
+	int		variable_validate(const char *key, int local_assing);
 		//	---------- SCALAR -----------
 	char	*variable_scalar_get(t_env *env, const char *key);
-	int		variable_scalar_add(t_env *env, const char *key, const char *value, int append, int local);
-	int		variable_scalar_remove(t_env *env, const char *key);
-	char	*variable_scalar_values(t_env *env, const char *key);
+	int		variable_scalar_set(t_env *env, const char *key, const char *value, int append, int local);
+	char	*variable_scalar_value(t_env *env, const char *key);
+	void	variable_from_array(t_var **table, const char **array);
 	//	---------- ARRAY -----------
 	char	*variable_array_get(t_env *env, const char *key, int index);
-	int		variable_array_add(t_env *env, const char *key, int index, const char *value, int append, int local);
-	int		variable_scalar_remove(t_env *env, const char *key);
+	int		variable_array_set(t_env *env, const char *key, int index, const char *value, int append, int local);
+	int		variable_array_remove(t_env *env, const char *key, int index);
 	char	*variable_array_values(t_env *env, const char *key);
 	//	-------- ASSOCIATIVE -------
-	char	*variable_assoc(t_env *env, const char *key, const char *assoc_key);
-	int		variable_assoc_add(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local);
+	char	*variable_assoc_get(t_env *env, const char *key, const char *assoc_key);
+	int		variable_assoc_set(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local);
 	int		variable_assoc_remove(t_env *env, const char *key, const char *assoc_key);
 	char	*variable_assoc_values(t_env *env, const char *key);
 	//	---------- DELETE ----------
@@ -82,10 +81,8 @@
 	int		variable_unset(t_env *env, const char *key);
 	void	variable_clear_table(t_var **table);
 	void	variable_clear(t_env *env);
-	//	---------- OTHERS ----------
-	void	variable_from_array(t_var **table, const char **array);
-	int		variable_validate(const char *key, int local_assing);
-	char	**export_to_array(t_var **table);
+	//	---------- EXPORT ----------
+	char	**variable_to_array(t_env *env);
 	void	variable_print(t_env *env, unsigned int type, int sort);
 	//	-------- INITIALIZE --------
 	int		variable_initialize(t_var **table, const char **envp);

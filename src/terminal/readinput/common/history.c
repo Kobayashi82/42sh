@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 20:27:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:52:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1126,12 +1126,12 @@
 	// Initialize the history
 	int history_initialize() {
 		char *value = NULL;
-		if ((value = variables_find_value(shell.env->table, "42_HISTFILE")))		history_file_set(value);
-		if ((value = variables_find_value(shell.env->table, "42_HISTSIZE")))		history_size_set(atol(value), HIST_MEM);
-		if ((value = variables_find_value(shell.env->table, "42_HISTFILESIZE")))	history_size_set(atol(value), HIST_FILE);
-		if ((value = variables_find_value(shell.env->table, "42_HISTTIMEFORMAT")))	history_hist_timeformat_set(value);
-		if ((value = variables_find_value(shell.env->table, "42_HISTCONTROL")))		history_hist_control_set(value);
-		if ((value = variables_find_value(shell.env->table, "42_HISTIGNORE")))		history_hist_ignore_set(value);
+		if ((value = variable_scalar_value(shell.env, "42_HISTFILE")))			history_file_set(value);
+		if ((value = variable_scalar_value(shell.env, "42_HISTSIZE")))			history_size_set(atol(value), HIST_MEM);
+		if ((value = variable_scalar_value(shell.env, "42_HISTFILESIZE")))		history_size_set(atol(value), HIST_FILE);
+		if ((value = variable_scalar_value(shell.env, "42_HISTTIMEFORMAT")))	history_hist_timeformat_set(value);
+		if ((value = variable_scalar_value(shell.env, "42_HISTCONTROL")))		history_hist_control_set(value);
+		if ((value = variable_scalar_value(shell.env, "42_HISTIGNORE")))		history_hist_ignore_set(value);
 
 		history_size_set(5, HIST_MEM);
 		history_hist_control_set("ignoreboth");

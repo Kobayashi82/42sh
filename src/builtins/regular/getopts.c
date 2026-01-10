@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 16:57:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:52:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -205,12 +205,12 @@
 		// Silent mode if optstring starts with ':' or OPTERR == 0
 		if (optstring[0] == ':') optstring += silent_mode = 1;
 		if (!silent_mode) {
-			char *opterr_str = variables_find_value(shell.env->table, "OPTERR");
+			char *opterr_str = variable_scalar_value(shell.env, "OPTERR");
 			if (opterr_str && atoi(opterr_str) == 0) silent_mode = 1;
 		}
 
 		// Get current OPTIND
-		char *optind_str = variables_find_value(shell.env->table, "OPTIND");
+		char *optind_str = variable_scalar_value(shell.env, "OPTIND");
 		optind = optind_str ? atoi(optind_str) : 1;
 
 		// Check if we're done parsing

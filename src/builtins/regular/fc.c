@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 12:28:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 17:51:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,17 +244,17 @@
 
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(shell.env->table, "FCEDIT"), 0);
+				name	= get_fullpath_command(variable_scalar_value(shell.env, "FCEDIT"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(shell.env->table, "EDITOR"), 0);
+				name	= get_fullpath_command(variable_scalar_value(shell.env, "EDITOR"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
 				free(name);
-				name	= get_fullpath_command(variables_find_value(shell.env->table, "VISUAL"), 0);
+				name	= get_fullpath_command(variable_scalar_value(shell.env, "VISUAL"), 0);
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
@@ -356,7 +356,7 @@
 				close(terminal.bk_stdout);
 				close(terminal.bk_stderr);
 				char *const args[] = { editor, tmp_file, NULL};
-				char **env = export_to_array(shell.env->table);
+				char **env = variable_to_array(shell.env);
 				execve(editor, args, env);
 				tmp_delete_path(tmp_file);
 				array_free(env);
