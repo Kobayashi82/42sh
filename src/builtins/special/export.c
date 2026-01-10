@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:57:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 11:39:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -340,8 +340,8 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			if (has_option(result, 'f'))	variables_print(shell.env, EXPORTED_LIST, SORT_NORMAL);	// function
-			else							variables_print(shell.env, EXPORTED_LIST, SORT_NORMAL);
+			if (has_option(result, 'f'))	variables_print(shell.env, VAR_EXPORTED, SORT_NORMAL);	// function
+			else							variables_print(shell.env, VAR_EXPORTED, SORT_NORMAL);
 			return (free_options(result), 0);
 		}
 

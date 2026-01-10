@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:57:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 11:39:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -292,7 +292,7 @@
 		if (find_long_option(result, "version"))								return (free_options(result), version());
 
 		if (!result->argv) {
-			variables_print(shell.env, EXPORTED_LIST, 1);
+			variables_print(shell.env, VAR_EXPORTED, 1);
 			return (free_options(result), 1);
 		}
 

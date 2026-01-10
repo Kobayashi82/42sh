@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 20:11:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 11:36:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@
 	#pragma region "Enumerators"
 
 		enum e_var_type {
-			INTERNAL,
-			EXPORTED,
-			READONLY,
-			INTEGER,
-			EXPORTED_LIST
+			VAR_SHELL,
+			VAR_EXPORTED,
+			VAR_READONLY,
+			VAR_INTEGER,
+			VAR_ARRAY,
+			VAR_ASSOCIATIVE
 		};
 
 	#pragma endregion

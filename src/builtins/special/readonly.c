@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:57:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 11:30:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			variables_print(shell.env, READONLY, 1);
+			variables_print(shell.env, VAR_READONLY, 1);
 			return (free_options(result), 0);
 		}
 

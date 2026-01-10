@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 20:11:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 11:39:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,9 +278,9 @@
 				t_var *var = table[index];
 				while (var) {
 					if (var->key) {
-						if ((type == EXPORTED_LIST && var->exported) || (type == EXPORTED  && var->exported && var->value)) i++;
-						if (type == INTERNAL && !var->exported) i++;
-						if (type == READONLY && var->readonly) i++;
+						if (type == VAR_EXPORTED  && var->exported && var->value) i++;
+						if (type == VAR_SHELL && !var->exported) i++;
+						if (type == VAR_READONLY && var->readonly) i++;
 						var = var->next;
 					}
 				}
@@ -293,10 +293,10 @@
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
 				t_var *var = table[index];
 				while (var) {
-					if (var->value || (!var->value && type == EXPORTED_LIST)) {
-						if ((type == EXPORTED_LIST || type == EXPORTED) && !var->exported)	{ var = var->next; continue; }
-						if (type == INTERNAL && var->exported) 								{ var = var->next; continue; }
-						if (type == READONLY && !var->readonly)								{ var = var->next; continue; }
+					if (var->value) {
+						if (type == VAR_EXPORTED && !var->exported)		{ var = var->next; continue; }
+						if (type == VAR_SHELL && var->exported) 		{ var = var->next; continue; }
+						if (type == VAR_READONLY && !var->readonly)		{ var = var->next; continue; }
 
 						if (var->key) {
 							array[i] = ft_strjoin_sep(var->key, "=", var->value, 0);
@@ -319,11 +319,10 @@
 
 			// Check if a variable matches the requested type
 			static int matches_type(t_var *var, int type) {
-				if (!var || !var->key || type < 0 || type > 4)				return (0);
-				if (type == EXPORTED_LIST && !var->exported)				return (0);
-				if (type == EXPORTED && (!var->exported || !var->value))	return (0);
-				if (type == READONLY && !var->readonly)						return (0);
-				if (type == INTERNAL && var->exported)						return (0);
+				if (!var || !var->key || type < 0 || type > 4)		return (0);
+				if (type == VAR_EXPORTED && !var->exported)			return (0);
+				if (type == VAR_READONLY && !var->readonly)			return (0);
+				if (type == VAR_SHELL && var->exported)				return (0);
 
 				return (1);
 			}
@@ -347,7 +346,7 @@
 				while (j < 5)		var_type[j++] = ' ';
 				var_type[j] = '\0';
 
-				if (type == INTERNAL)		array[i] = ft_strdup(var->key);
+				if (type == VAR_SHELL)		array[i] = ft_strdup(var->key);
 				else 						array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
 				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
 
@@ -529,7 +528,7 @@
 		default_add(table, "42_SUBSHELL", "0", 0, 0, 0, 1, 0);									//	When modified, update (shell_level with value too) - Increment subshell_level in child when fork() or subshell
 		default_add(table, "42_VERSION", VERSION, 0, 0, 0, 1, 0);								//	Normal var but set value on start always
 		default_add(table, "42_PID", ft_itoa(shell.pid), 0, 0, 0, 1, 1);						//	Can be modified, but expand dinamic value
-		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) READONLY
+		default_add(table, "PPID", ft_itoa(shell.parent_pid), 0, 0, 1, 1, 1);					//	Update var when expanded (parent_pid) VAR_READONLY
 
 		// Terminal
 		default_add(table, "COLUMNS", ft_itoa(terminal.cols), 0, 0, 1, 1, 1);					//	Update var when expanded (terminal_columns)
@@ -537,8 +536,8 @@
 		default_add(table, "SECONDS", "0", 0, 0, 0, 1, 0);										//	Can be modified, but expand dinamic value
 		default_add(table, "EPOCHSECONDS", ft_itoa(shell.epoch_seconds), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
 		default_add(table, "EPOCHREALTIME", ft_itoa(shell.epoch_realtime), 0, 1, 1, 1, 1);		//	Update everytime (even with env)
-		default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) READONLY
-		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) READONLY
+		default_add(table, "UID", ft_itoa(shell.uid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_uid) VAR_READONLY
+		default_add(table, "EUID", ft_itoa(shell.euid), 0, 0, 1, 1, 1);							//	Update var when expanded (shell_euid) VAR_READONLY
 
 		// Prompt
 		default_add(table, "PS1", terminal.PS1, 0, 0, 0, 1, 0);									//	Normal var but set value on start always
