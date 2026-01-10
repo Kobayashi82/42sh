@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:51:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 15:00:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,14 @@
 		static void update_variable(const char *key, const char *value) {
 			if (variables_validate(key, 0)) return;
 
-			t_var *var = variables_find(shell.env->table, key);
-			if (var && var->readonly) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
-			} else {
-				variables_add(shell.env->table, key, value, -1, -1, -1, 0);
-			}
+			(void) value;
+			// t_var *var = variables_find(shell.env->table, key);
+			// if (var && var->readonly) {
+			// 	print(STDERR_FILENO, shell.name, RESET);
+			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			// } else {
+			// 	variables_add(shell.env->table, key, value, -1, -1, -1, 0);
+			// }
 		}
 
 	#pragma endregion

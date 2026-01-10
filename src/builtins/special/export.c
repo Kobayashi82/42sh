@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 11:39:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 15:03:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,11 +109,11 @@
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
 				}
-				t_var *var = variables_find(shell.env->table, arg);
-				if (var) {
-					var->exported = 1;
-					return (0);
-				}
+				// t_var *var = variables_find(shell.env->table, arg);
+				// if (var) {
+				// 	var->exported = 1;
+				// 	return (0);
+				// }
 			}
 
 			char *key = NULL, *value = NULL;
@@ -132,18 +132,18 @@
 				return (1);
 			}
 
-			t_var *var = variables_find(shell.env->table, key);
-			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
-				free(value);
-				return (1);
-			}
+			// t_var *var = variables_find(shell.env->table, key);
+			// if (var && var->readonly) {
+			// 	print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+			// 	print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			// 	free(value);
+			// 	return (1);
+			// }
 
 			int ret = 0;
 
-			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
-			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
+			// if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
+			// if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
 
 			free(key);
 			free(value);
@@ -164,11 +164,11 @@
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
 				}
-				t_var *var = variables_find(shell.env->table, arg);
-				if (var) {
-					var->exported = 1;
-					return (0);
-				}
+				// t_var *var = variables_find(shell.env->table, arg);
+				// if (var) {
+				// 	var->exported = 1;
+					// return (0);
+				// }
 			}
 
 			char *key = NULL, *value = NULL;
@@ -187,18 +187,18 @@
 				return (1);
 			}
 
-			t_var *var = variables_find(shell.env->table, key);
-			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
-				free(value);
-				return (1);
-			}
+			// t_var *var = variables_find(shell.env->table, key);
+			// if (var && var->readonly) {
+			// 	print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+			// 	print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			// 	free(value);
+			// 	return (1);
+			// }
 
 			int ret = 0;
 
-			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
-			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
+			// if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 1, -1, -1, -1);
+			// if (!concatenate)	ret = variables_add(shell.env->table, key, value, 1, -1, -1, -1);
 
 			free(key);
 			free(value);
@@ -223,8 +223,8 @@
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
 				}
-				t_var *var = variables_find(shell.env->table, arg);
-				if (var) var->exported = 0;
+				// t_var *var = variables_find(shell.env->table, arg);
+				// if (var) var->exported = 0;
 				return (0);
 			}
 
@@ -244,18 +244,18 @@
 				return (1);
 			}
 
-			t_var *var = variables_find(shell.env->table, key);
-			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
-				free(value);
-				return (1);
-			}
+			// t_var *var = variables_find(shell.env->table, key);
+			// if (var && var->readonly) {
+			// 	print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+			// 	print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			// 	free(value);
+			// 	return (1);
+			// }
 
 			int ret = 0;
 
-			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
-			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
+			// if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
+			// if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
 
 			free(key);
 			free(value);
@@ -276,8 +276,8 @@
 					print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 					return (1);
 				}
-				t_var *var = variables_find(shell.env->table, arg);
-				if (var) var->exported = 0;
+				// t_var *var = variables_find(shell.env->table, arg);
+				// if (var) var->exported = 0;
 				return (0);
 			}
 
@@ -297,18 +297,18 @@
 				return (1);
 			}
 
-			t_var *var = variables_find(shell.env->table, key);
-			if (var && var->readonly) {
-				print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
-				free(value);
-				return (1);
-			}
+			// t_var *var = variables_find(shell.env->table, key);
+			// if (var && var->readonly) {
+			// 	print(STDERR_FILENO, ft_strjoin(shell.env->argv0, ": export: `", 0), FREE_JOIN);
+			// 	print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);
+			// 	free(value);
+			// 	return (1);
+			// }
 
 			int ret = 0;
 
-			if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
-			if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
+			// if (concatenate)	ret = variables_concatenate(shell.env->table, key, value, 0, -1, -1, -1);
+			// if (!concatenate)	ret = variables_add(shell.env->table, key, value, 0, -1, -1, -1);
 
 			free(key);
 			free(value);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 11:39:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 15:04:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 
 #pragma region "Specials"
 
-	static char *specials_get(const char *key) {
+	char *specials_get(const char *key) {
 		if (!key) return (NULL);
 
 		static char special[4096];
@@ -54,7 +54,7 @@
 		return (NULL);
 	}
 
-	static void specials_set(const char *key, const char *value) {
+	void specials_set(const char *key, const char *value) {
 		if (!key) return;
 
 		// History
@@ -66,7 +66,7 @@
 		if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);
 	}
 
-	static void specials_unset(const char *key) {
+	void specials_unset(const char *key) {
 		if (!key) return;
 
 		// History
@@ -83,75 +83,75 @@
 
 	#pragma region "Variable"
 
-		int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
-			if (!key) return (0);
-			if (force == -1) force = 0;
+		// int variables_add(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
+		// 	if (!key) return (0);
+		// 	if (force == -1) force = 0;
 
-			t_var *new_var = variables_find(table, key);
-			if (new_var) {
-				if (!new_var->readonly || force) {
-					free(new_var->value);
-					new_var->value = ft_strdup(value);
-					if (readonly != -1) new_var->readonly = readonly;
-					if (exported != -1) new_var->exported = exported;
-					if (integer != -1) new_var->integer = integer;
-					specials_set(key, new_var->value);
-					return (0);
-				} else return (1);
-			}
+		// 	t_var *new_var = variables_find(table, key);
+		// 	if (new_var) {
+		// 		if (!new_var->readonly || force) {
+		// 			free(new_var->value);
+		// 			new_var->value = ft_strdup(value);
+		// 			if (readonly != -1) new_var->readonly = readonly;
+		// 			if (exported != -1) new_var->exported = exported;
+		// 			if (integer != -1) new_var->integer = integer;
+		// 			specials_set(key, new_var->value);
+		// 			return (0);
+		// 		} else return (1);
+		// 	}
 
-			unsigned int index = hash_index(key);
-			new_var = calloc(1, sizeof(t_var));
+		// 	unsigned int index = hash_index(key);
+		// 	new_var = calloc(1, sizeof(t_var));
 
-			new_var->key = ft_strdup(key);
-			if (value) new_var->value = ft_strdup(value);
+		// 	new_var->key = ft_strdup(key);
+		// 	if (value) new_var->value = ft_strdup(value);
 
-			if (readonly != -1) new_var->readonly = readonly;
-			if (exported != -1) new_var->exported = exported;
-			if (integer != -1) new_var->integer = integer;
-			new_var->next = table[index];
-			table[index] = new_var;
-			specials_set(key, new_var->value);
+		// 	if (readonly != -1) new_var->readonly = readonly;
+		// 	if (exported != -1) new_var->exported = exported;
+		// 	if (integer != -1) new_var->integer = integer;
+		// 	new_var->next = table[index];
+		// 	table[index] = new_var;
+		// 	specials_set(key, new_var->value);
 
-			return (0);
-		}
+		// 	return (0);
+		// }
 
 	#pragma endregion
 
 	#pragma region "Concatenate"
 
-		int variables_concatenate(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
-			if (!key) return (0);
-			if (force == -1) force = 0;
+		// int variables_concatenate(t_var **table, const char *key, const char *value, int exported, int readonly, int integer, int force) {
+		// 	if (!key) return (0);
+		// 	if (force == -1) force = 0;
 
-			t_var *new_var = variables_find(table, key);
-			if (new_var) {
-				if (!new_var->readonly || force) {
-					new_var->value = ft_strjoin(new_var->value, value, 1);
-					if (readonly != -1) new_var->readonly = readonly;
-					if (exported != -1) new_var->exported = exported;
-					if (integer != -1) new_var->integer = integer;
-					specials_set(key, new_var->value);
-					return (0);
-				} else return (1);
-			}
+		// 	t_var *new_var = variables_find(table, key);
+		// 	if (new_var) {
+		// 		if (!new_var->readonly || force) {
+		// 			new_var->value = ft_strjoin(new_var->value, value, 1);
+		// 			if (readonly != -1) new_var->readonly = readonly;
+		// 			if (exported != -1) new_var->exported = exported;
+		// 			if (integer != -1) new_var->integer = integer;
+		// 			specials_set(key, new_var->value);
+		// 			return (0);
+		// 		} else return (1);
+		// 	}
 
-			unsigned int index = hash_index(key);
-			new_var = calloc(1, sizeof(t_var));
+		// 	unsigned int index = hash_index(key);
+		// 	new_var = calloc(1, sizeof(t_var));
 
-			new_var->key = ft_strdup(key);
-			new_var->value = NULL;
-			if (value) new_var->value = ft_strdup(value);
+		// 	new_var->key = ft_strdup(key);
+		// 	new_var->value = NULL;
+		// 	if (value) new_var->value = ft_strdup(value);
 
-			if (readonly != -1) new_var->readonly = readonly;
-			if (exported != -1) new_var->exported = exported;
-			if (integer != -1) new_var->integer = integer;
-			new_var->next = table[index];
-			table[index] = new_var;
-			specials_set(key, new_var->value);
+		// 	if (readonly != -1) new_var->readonly = readonly;
+		// 	if (exported != -1) new_var->exported = exported;
+		// 	if (integer != -1) new_var->integer = integer;
+		// 	new_var->next = table[index];
+		// 	table[index] = new_var;
+		// 	specials_set(key, new_var->value);
 
-			return (0);
-		}
+		// 	return (0);
+		// }
 
 	#pragma endregion
 
@@ -160,33 +160,17 @@
 		void variables_from_array(t_var **table, const char **array) {
 			if (!array) return;
 
+			(void) table;
 			for (size_t i = 0; array[i]; i++) {
 				char *key = NULL, *value = NULL;
 				get_key_value(array[i], &key, &value, '=');
 				if (!key) continue;
-				variables_add(table, key, value, 1, 0, 0, 0);
+				// variables_add(table, key, value, 1, 0, 0, 0);
 				free(key); free(value);
 			}
 		}
 
 #pragma endregion
-
-	#pragma region "Join"
-
-		void variables_join(t_var **dst_table, t_var **src_table) {
-			if (dst_table == src_table) return;
-
-			for (int index = 0; index < HASH_SIZE; index++) {
-				t_var *var = src_table[index];
-				while (var) {
-					variables_add(dst_table, var->key, var->value, var->exported, var->readonly, var->integer, 0);
-					var = var->next;
-				}
-			}
-			variables_clear(src_table);
-		}
-
-	#pragma endregion
 
 	#pragma region "Validate"
 
@@ -225,106 +209,203 @@
 
 #pragma region "Export"
 
-	#pragma region "Variable"
+	#pragma region "Array ✓"
 
-		t_var *variables_find(t_var **table, const char *key) {
-			if (!key) return (NULL);
+		char **export_to_array(t_var **table) {
+			if (!table) return (NULL);
 
-			static t_var special;
-			special.key = 0;
-			special.value = specials_get(key);
-			special.exported = 0;
-			special.integer = 0;
-			special.readonly = 1;
-			special.next = NULL;
-			if (special.value) return (&special);
-
-			unsigned int index = hash_index(key);
-			t_var *var = table[index];
-
-			while (var) {
-				if (!strcmp(var->key, key)) return (var);
-				var = var->next;
-			}
-
-			return (NULL);
-		}
-
-		char *variables_find_value(t_var **table, const char *key) {
-			if (!key) return (NULL);
-
-			char *special = specials_get(key);
-			if (special) return (special);
-
-			unsigned int index = hash_index(key);
-			t_var *var = table[index];
-
-			while (var) {
-				if (!strcmp(var->key, key)) return (var->value);
-				var = var->next;
-			}
-
-			return (NULL);
-		}
-
-	#pragma endregion
-
-	#pragma region "Array"
-
-		char **variables_to_array(t_var **table, int type, int sort) {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			int count = 0;
+			for (int index = 0; index < HASH_SIZE; ++index) {
 				t_var *var = table[index];
 				while (var) {
-					if (var->key) {
-						if (type == VAR_EXPORTED  && var->exported && var->value) i++;
-						if (type == VAR_SHELL && !var->exported) i++;
-						if (type == VAR_READONLY && var->readonly) i++;
-						var = var->next;
-					}
+					if (var->flags & VAR_EXPORTED && var->data.scalar && !(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE))) count++;
+					var = var->next;
 				}
 			}
 
-			if (i == 0) return (NULL);
-			char **array = malloc((i + 1) * sizeof(char *));
+			char **array = malloc((count + 1) * sizeof(char *));
+			if (!array) return (NULL);
+			if (!count) {
+				array[0] = NULL;
+				return (array);
+			}
 
-			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			int i = 0;
+			for (int index = 0; index < HASH_SIZE; ++index) {
 				t_var *var = table[index];
 				while (var) {
-					if (var->value) {
-						if (type == VAR_EXPORTED && !var->exported)		{ var = var->next; continue; }
-						if (type == VAR_SHELL && var->exported) 		{ var = var->next; continue; }
-						if (type == VAR_READONLY && !var->readonly)		{ var = var->next; continue; }
-
-						if (var->key) {
-							array[i] = ft_strjoin_sep(var->key, "=", var->value, 0);
-							i++;
+					if (var->flags & VAR_EXPORTED && var->data.scalar && !(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE))) {
+						array[i] = ft_strjoin_sep(var->key, "=", var->data.scalar, 0);
+						if (!array[i]) {
+							array_free(array);
+							return (NULL);
 						}
+						i++;
 					}
 					var = var->next;
 				}
-			} array[i] = NULL;
+			}
+			array[i] = NULL;
 
-			if (sort) array_sort(array, sort);
 			return (array);
 		}
 
 	#pragma endregion
 
-	#pragma region "Print"
+	#pragma region "Print ✓"
 
-		#pragma region "Matches Type"
+		#pragma region "Format Array Values"
 
-			// Check if a variable matches the requested type
-			static int matches_type(t_var *var, int type) {
-				if (!var || !var->key || type < 0 || type > 4)		return (0);
-				if (type == VAR_EXPORTED && !var->exported)			return (0);
-				if (type == VAR_READONLY && !var->readonly)			return (0);
-				if (type == VAR_SHELL && var->exported)				return (0);
+			// Format array values for display: ([0]="val1" [3]="val2")
+			static char *format_array_values(t_var *var) {
+				if (!var || !(var->flags & VAR_ARRAY)) return (NULL);
+				
+				// First pass: count elements
+				int count = 0;
+				for (int i = 0; i < HASH_SIZE; ++i) {
+					t_var *elem = var->data.array[i];
+					while (elem) {
+						count++;
+						elem = elem->next;
+					}
+				}
+				
+				if (!count) return (ft_strdup("()"));
+				
+				// Allocate exact space needed
+				t_var **elements = malloc(count * sizeof(t_var *));
+				if (!elements) return (NULL);
+				
+				// Second pass: collect elements
+				int idx = 0;
+				for (int i = 0; i < HASH_SIZE; ++i) {
+					t_var *elem = var->data.array[i];
+					while (elem) {
+						elements[idx++] = elem;
+						elem = elem->next;
+					}
+				}
+				
+				// Sort by numeric index
+				for (int i = 0; i < count - 1; ++i) {
+					for (int j = 0; j < count - i - 1; ++j) {
+						if (atoi(elements[j]->key) > atoi(elements[j + 1]->key)) {
+							t_var *temp = elements[j];
+							elements[j] = elements[j + 1];
+							elements[j + 1] = temp;
+						}
+					}
+				}
+				
+				// Build result string: ([0]="val1" [3]="val2")
+				char *result = ft_strdup("(");
+				if (!result) {
+					free(elements);
+					return (NULL);
+				}
+				
+				for (int i = 0; i < count; ++i) {
+					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+					
+					char buffer[4096];
+					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", 
+							(i > 0) ? " " : "", 
+							elements[i]->key, 
+							formatted);
+					
+					free(formatted);
+					
+					// Concatenate to result
+					result = ft_strjoin(result, buffer, 1);
+					if (!result) {
+						free(elements);
+						return (NULL);
+					}
+				}
+				
+				// Add closing parenthesis
+				result = ft_strjoin(result, ")", 1);
+				free(elements);
+				
+				return (result);
+			}
 
-				return (1);
+		#pragma endregion
+
+		#pragma region "Format Assoc Values"
+
+			// Format associative array values for display: ([key1]="val1" [key2]="val2")
+			static char *format_assoc_values(t_var *var) {
+				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
+				
+				// First pass: count elements
+				int count = 0;
+				for (int i = 0; i < HASH_SIZE; ++i) {
+					t_var *elem = var->data.assoc[i];
+					while (elem) {
+						count++;
+						elem = elem->next;
+					}
+				}
+				
+				if (!count) return (ft_strdup("()"));
+				
+				// Allocate exact space needed
+				t_var **elements = malloc(count * sizeof(t_var *));
+				if (!elements) return (NULL);
+				
+				// Second pass: collect elements
+				int idx = 0;
+				for (int i = 0; i < HASH_SIZE; ++i) {
+					t_var *elem = var->data.assoc[i];
+					while (elem) {
+						elements[idx++] = elem;
+						elem = elem->next;
+					}
+				}
+				
+				// Sort alphabetically by key
+				for (int i = 0; i < count - 1; ++i) {
+					for (int j = 0; j < count - i - 1; ++j) {
+						if (strcmp(elements[j]->key, elements[j + 1]->key) > 0) {
+							t_var *temp = elements[j];
+							elements[j] = elements[j + 1];
+							elements[j + 1] = temp;
+						}
+					}
+				}
+				
+				// Build result string: ([key1]="val1" [key2]="val2")
+				char *result = ft_strdup("(");
+				if (!result) {
+					free(elements);
+					return (NULL);
+				}
+				
+				for (int i = 0; i < count; ++i) {
+					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+					
+					char buffer[4096];
+					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", 
+							(i > 0) ? " " : "", 
+							elements[i]->key, 
+							formatted);
+					
+					free(formatted);
+					
+					// Concatenate to result
+					result = ft_strjoin(result, buffer, 1);
+					if (!result) {
+						free(elements);
+						return (NULL);
+					}
+				}
+				
+				// Add closing parenthesis
+				result = ft_strjoin(result, ")", 1);
+				free(elements);
+				
+				return (result);
 			}
 
 		#pragma endregion
@@ -332,23 +413,44 @@
 		#pragma region "Array Value"
 
 			// Format a variable into a string
-			static int array_value(int type, char **array, size_t i, t_var *var) {
-				if (!matches_type(var, type)) return(0);
+			static int array_value(unsigned int type, char **array, size_t i, t_var *var) {
+				if (type && (var->flags & type) != type) return (0);
 
-				char	var_type[6]; 
-				int		j = 0;
-
+				int j = 0;
+				char var_type[6]; 
 				var_type[j++] = '-';
-				if (var->integer)	var_type[j++] = 'i';
-				if (var->readonly)	var_type[j++] = 'r';
-				if (var->exported)	var_type[j++] = 'x';
-				if (j == 1)			var_type[j++] = '-';
-				while (j < 5)		var_type[j++] = ' ';
+				if (var->flags & VAR_ARRAY)         var_type[j++] = 'a';
+				if (var->flags & VAR_ASSOCIATIVE)   var_type[j++] = 'A';
+				if (var->flags & VAR_INTEGER)       var_type[j++] = 'i';
+				if (var->flags & VAR_READONLY)      var_type[j++] = 'r';
+				if (var->flags & VAR_EXPORTED)      var_type[j++] = 'x';
+				if (j == 1) var_type[j++] = '-';
+				while (j < 5) var_type[j++] = ' ';
 				var_type[j] = '\0';
 
-				if (type == VAR_SHELL)		array[i] = ft_strdup(var->key);
-				else 						array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
-				if (array[i] && var->value) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(var->value, '\"'), 6);
+				// For shell variables (no export flag)
+				if (!(var->flags & VAR_EXPORTED))
+					array[i] = ft_strdup(var->key);
+				else
+					array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
+				
+				if (!array[i]) return (0);
+				
+				// Add value based on type
+				if (var->flags & VAR_ARRAY) {
+					char *values = format_array_values(var);
+					if (values) {
+						array[i] = ft_strjoin_sep(array[i], "=", values, 3);
+					}
+				} else if (var->flags & VAR_ASSOCIATIVE) {
+					char *values = format_assoc_values(var);
+					if (values) {
+						array[i] = ft_strjoin_sep(array[i], "=", values, 3);
+					}
+				} else if (var->data.scalar) {
+					char *formatted = format_for_shell(var->data.scalar, '\"');
+					array[i] = ft_strjoin_sep(array[i], "=", formatted, 6);
+				}
 
 				return (1);
 			}
@@ -372,8 +474,8 @@
 
 		#pragma region "Print"
 
-			void variables_print(t_env *env, int type, int sort) {
-				if (!env || type < 0 || type > 4) return;
+			void variables_print(t_env *env, unsigned int type, int sort) {
+				if (!env) return;
 
 				// First pass: count total variables
 				int count = 0;
@@ -382,7 +484,7 @@
 					for (int index = 0; index < HASH_SIZE; ++index) {
 						t_var *var = current->table[index];
 						while (var) {
-							if (var->key) count++;
+							count++;
 							var = var->next;
 						}
 					}
@@ -401,9 +503,8 @@
 					for (int index = 0; index < HASH_SIZE; ++index) {
 						t_var *var = current->table[index];
 						while (var) {
-							if (var->key && !is_shadowed(var->key, seen, count)) {
-								if (matches_type(var, type)) seen[count++] = var;
-							}
+							if (!is_shadowed(var->key, seen, count) && (!type || (var->flags & type) == type))
+								seen[count++] = var;
 							var = var->next;
 						}
 					}
@@ -448,6 +549,358 @@
 
 #pragma endregion
 
+
+char *variables_find_value(t_var **table, const char *key) {
+	(void) table;
+	(void) key;
+	return (NULL);
+}
+
+#pragma region "Find"
+
+	// Find variable with a 'key'
+	t_var *variables_find(t_env *env, const char *key) {
+		if (!env || !key) return (NULL);
+		
+		// Check specials first
+		static t_var special;
+		special.data.scalar = specials_get(key);
+		if (special.data.scalar) {
+			special.key = (char *)key;
+			special.flags = VAR_READONLY;
+			return (&special);
+		}
+
+		// Search in current environment and parents
+		while (env) {
+			t_var *var = env->table[hash_index(key)];
+			while (var) {
+				if (!strcmp(var->key, key)) return (var);
+				var = var->next;
+			}
+			env = env->parent;
+		}
+
+		return (NULL);
+	}
+
+#pragma endregion
+
+
+#pragma region "Scalar"
+
+	#pragma region "Get"
+
+		char *variables_scalar(t_env *env, const char *key) {
+			t_var *var = variables_find(env, key);
+			if (!var || var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (NULL);
+
+			return (var->data.scalar);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Array"
+
+	#pragma region "Get"
+
+		char *variables_array_get(t_env *env, const char *key, int index) {
+			if (!env || !key || index < 0) return (NULL);
+
+			t_var *var = variables_find(env, key);
+			if (!var) return (NULL);
+
+			// If scalar and requesting index 0, return the scalar
+			if (!(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && !index) return (var->data.scalar);
+
+			if (!(var->flags & VAR_ARRAY)) return (NULL);	// Not a numeric array, error
+
+			// Search in array hash
+			char idx_str[32];
+			snprintf(idx_str, sizeof(idx_str), "%d", index);
+
+			t_var *elem = var->data.array[hash_index(idx_str)];
+			while (elem) {
+				if (!strcmp(elem->key, idx_str)) return (elem->data.scalar);
+				elem = elem->next;
+			}
+
+			return (NULL);
+		}
+
+
+	#pragma endregion
+
+	#pragma region "Add"
+
+		int variables_array_add(t_env *env, const char *key, int index, const char *value, int append, int local) {
+			if (!env || !key || index < 0) return (1);
+
+			t_var *var = (local) ? NULL : variables_find(env, key);
+
+			// If not found or local, search only in current environment
+			if (!var) {
+				t_var *local_var = env->table[hash_index(key)];
+				while (local_var) {
+					if (!strcmp(local_var->key, key)) {
+						var = local_var;
+						break;
+					}
+					local_var = local_var->next;
+				}
+			}
+
+			if (var && (var->flags & VAR_ASSOCIATIVE))	return (1);		// If exists but is associative, error
+			if (var && (var->flags & VAR_READONLY))		return (1);		// If exists but is readonly, error
+
+			// If doesn't exist, create new array variable
+			if (!var) {
+				var = calloc(1, sizeof(t_var));
+				if (!var) return (1);
+
+				char *new_key = ft_strdup(key);
+				if (!new_key) {
+					free(var);
+					return (1);
+				}
+				var->key = new_key;
+				var->flags = VAR_ARRAY;
+				var->data.array = calloc(HASH_SIZE, sizeof(t_var *));
+				if (!var->data.array) {
+					free(var->key);
+					free(var);
+					return (1);
+				}
+
+				// Insert into current environment
+				unsigned int hash = hash_index(key);
+				var->next = env->table[hash];
+				env->table[hash] = var;
+			}
+
+			// If scalar, convert to array
+			if (!(var->flags & VAR_ARRAY)) {
+				char *old_value = var->data.scalar;
+				var->data.array = calloc(HASH_SIZE, sizeof(t_var *));
+				if (!var->data.array) return (1);
+
+				// Save old value at index 0
+				if (old_value) {
+					t_var *elem = calloc(1, sizeof(t_var));
+					if (!elem) {
+						free(var->data.array);
+						var->data.scalar = old_value;
+						return (1);
+					}
+					char *new_elem_key = ft_strdup("0");
+					if (!new_elem_key) {
+						free(elem);
+						free(var->data.array);
+						var->data.scalar = old_value;
+						return (1);
+					}
+					elem->key = new_elem_key;
+					elem->data.scalar = old_value;
+					elem->flags = 0;
+					var->data.array[hash_index("0")] = elem;
+				}
+
+				var->flags |= VAR_ARRAY;
+			}
+
+			// Search if element already exists
+			char idx_str[32];
+			snprintf(idx_str, sizeof(idx_str), "%d", index);
+
+			unsigned int hash = hash_index(idx_str);
+			t_var *elem = var->data.array[hash];
+
+			while (elem) {
+				if (!strcmp(elem->key, idx_str)) {
+					if (append) {
+						char *new_value = ft_strjoin(elem->data.scalar, value, 0);
+						if (!new_value) return (1);
+						free(elem->data.scalar);
+						elem->data.scalar = new_value;
+					} else {
+						char *new_value = ft_strdup(value);
+						if (!new_value) return (1);
+						free(elem->data.scalar);
+						elem->data.scalar = new_value;
+					}
+					return (0);
+				}
+				elem = elem->next;
+			}
+			
+			// Create new element
+			elem = calloc(1, sizeof(t_var));
+			if (!elem) return (1);
+
+			char *new_elem_key = ft_strdup(idx_str);
+			if (!new_elem_key) {
+				free(elem);
+				return (1);
+			}
+			elem->key = new_elem_key;
+			char *new_elem_value = ft_strdup(value);
+			if (!new_elem_value) {
+				free(elem->key);
+				free(elem);
+				return (1);
+			}
+			elem->data.scalar = new_elem_value;
+			elem->flags = 0;
+			elem->next = var->data.array[hash];
+			var->data.array[hash] = elem;
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Remove"
+
+		int variables_array_remove(t_env *env, const char *key, int index) {
+			if (!env || !key || index < 0) return (0);
+
+			t_var *var = variables_find(env, key);
+			if (!var || !(var->flags & VAR_ARRAY)) return (0);
+
+			char idx_str[32];
+			snprintf(idx_str, sizeof(idx_str), "%d", index);
+
+			unsigned int hash = hash_index(idx_str);
+			t_var *elem = var->data.array[hash];
+			t_var *prev = NULL;
+
+			while (elem) {
+				if (!strcmp(elem->key, idx_str)) {
+					if (prev)	prev->next = elem->next;
+					else		var->data.array[hash] = elem->next;
+
+					free(elem->key);
+					free(elem->data.scalar);
+					free(elem);
+					return (0);
+				}
+				prev = elem;
+				elem = elem->next;
+			}
+
+			return (1);
+		}
+
+	#pragma endregion
+
+	#pragma region "Values"
+
+		char *variables_array_values(t_env *env, const char *key) {
+			if (!env || !key) return (NULL);
+
+			t_var *var = variables_find(env, key);
+			if (!var || !(var->flags & VAR_ARRAY)) return (NULL);
+
+			// First pass: count elements
+			int count = 0;
+			for (int i = 0; i < HASH_SIZE; ++i) {
+				t_var *elem = var->data.array[i];
+				while (elem) {
+					count++;
+					elem = elem->next;
+				}
+			}
+
+			if (!count) return (NULL);
+
+			// Allocate space needed
+			t_var **elements = malloc(count * sizeof(t_var *));
+			if (!elements) return (NULL);
+
+			// Second pass: collect elements
+			int index = 0;
+			for (int i = 0; i < HASH_SIZE; ++i) {
+				t_var *elem = var->data.array[i];
+				while (elem) {
+					elements[index++] = elem;
+					elem = elem->next;
+				}
+			}
+
+			// Sort by numeric index
+			for (int i = 0; i < count - 1; ++i) {
+				for (int j = 0; j < count - i - 1; ++j) {
+					if (atoi(elements[j]->key) > atoi(elements[j + 1]->key)) {
+						t_var *temp = elements[j];
+						elements[j] = elements[j + 1];
+						elements[j + 1] = temp;
+					}
+				}
+			}
+
+			// Build string: ([0]="val1" [3]="val2")
+			char *result = ft_strdup("(");
+			if (!result) {
+				free(elements);
+				return (NULL);
+			}
+
+			for (int i = 0; i < count; ++i) {
+				char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+				if (!formatted) {
+					free(elements);
+					return (NULL);
+				}
+
+				char buffer[4096];
+				snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", (i > 0) ? " " : "", elements[i]->key, formatted);
+				free(formatted);
+
+				// Concatenate to result
+				result = ft_strjoin(result, buffer, 1);
+				if (!result) {
+					free(elements);
+					return (NULL);
+				}
+			}
+
+			// Add closing parenthesis
+			result = ft_strjoin(result, ")", 1);
+			free(elements);
+
+			return (result);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+#pragma region "Associative"
+
+	#pragma region "Get"
+
+		char *variables_assoc(t_env *env, const char *key, const char *assoc_key) {
+			t_var *var = variables_find(env, key);
+			if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
+
+			// Search in assoc hash
+			t_var *elem = var->data.assoc[hash_index(assoc_key)];
+			while (elem) {
+				if (!strcmp(elem->key, assoc_key)) return (elem->data.scalar);
+				elem = elem->next;
+			}
+
+			return (NULL);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
+
+
 #pragma region "Delete"
 
 	#pragma region "Variable"
@@ -465,7 +918,7 @@
 					else		table[index] = var->next;
 					specials_unset(key);
 					free(var->key);
-					free(var->value);
+					free(var->data.scalar);
 					free(var);
 					return (0);
 				}
@@ -481,14 +934,14 @@
 	#pragma region "Clear"
 
 		void variables_clear(t_var **table) {
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
+			for (int index = 0; index < HASH_SIZE; ++index) {
 				if (table[index]) {
 					t_var *var = table[index];
 					while (var) {
 						t_var *next = var->next;
 						specials_unset(var->key);
 						free(var->key);
-						free(var->value);
+						free(var->data.scalar);
 						free(var);
 						var = next;
 					}
@@ -505,7 +958,13 @@
 
 	static void default_add(t_var **table, const char *name, char *value, int exported, int readonly, int integer, int force, int free_value) {
 		if (!value) return;
-		if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
+		(void) table;
+		(void) name;
+		(void) exported;
+		(void) readonly;
+		(void) integer;
+		(void) force;
+		// if (force || !variables_find(table, name)) variables_add(table, name, value, exported, readonly, integer, 1);
 		if (value && free_value) free(value);
 	}
 
@@ -595,3 +1054,8 @@
 	//	PS1, PS2, PS4	Variables relacionadas con los prompts del shell.
 
 #pragma endregion
+
+// var=(valor1 valor2) 							# crea array numerado [0]=valor1 [1]=valor2
+// var=([3]=valor1 [5]=valor2)  				# crea array numerado [3]=valor1 [5]=valor2
+// declare -a var=([3]=valor1 [5]=valor2)  		# crea array numerado [3]=valor1 [5]=valor2
+// declare -A var=([key1]=valor1 [key2]=valor2)	# crea array asociativo
