@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 17:53:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 20:03:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,12 +159,17 @@
 				return (var->data.scalar);
 			}
 
+			char *variable_scalar_value(t_env *env, const char *key) {
+				return (variable_scalar_get(env, key));
+			}
+
 		#pragma endregion
 
 		#pragma region "Set"
 
-			int variable_scalar_set(t_env *env, const char *key, const char *value, int append, int local) {
+			int variable_scalar_set(t_env *env, const char *key, const char *value, int append, int type, int local) {
 				if (!env || !key) return (1);
+				if (type < VAR_NONE || type > VAR_INTEGER) type = VAR_NONE;
 
 				t_var *var = (local) ? NULL : variable_find(env, key);
 
@@ -203,9 +208,8 @@
 						}
 					}
 
-					var->flags = VAR_NONE;
+					var->flags = type;
 
-					// Insert into current environment
 					unsigned int hash = hash_index(key);
 					var->next = env->table[hash];
 					env->table[hash] = var;
@@ -226,20 +230,9 @@
 					var->data.scalar = new_value;
 				}
 
+				var->flags |= type;
+
 				return (0);
-			}
-
-		#pragma endregion
-
-		#pragma region "Values"
-
-			char *variable_scalar_value(t_env *env, const char *key) {
-				if (!env || !key) return (NULL);
-
-				t_var *var = variable_find(env, key);
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE))) return (NULL);
-
-				return (var->data.scalar);
 			}
 
 		#pragma endregion
@@ -952,39 +945,33 @@
 				if (type && (var->flags & type) != type) return (0);
 
 				int j = 0;
-				char var_type[6]; 
+				char var_type[7]; 
 				var_type[j++] = '-';
-				if (var->flags & VAR_ARRAY)         var_type[j++] = 'a';
-				if (var->flags & VAR_ASSOCIATIVE)   var_type[j++] = 'A';
-				if (var->flags & VAR_INTEGER)       var_type[j++] = 'i';
-				if (var->flags & VAR_READONLY)      var_type[j++] = 'r';
-				if (var->flags & VAR_EXPORTED)      var_type[j++] = 'x';
-				if (j == 1) var_type[j++] = '-';
-				while (j < 5) var_type[j++] = ' ';
+				if		(var->flags & VAR_ARRAY)		var_type[j++] = 'a';
+				else if (var->flags & VAR_ASSOCIATIVE)	var_type[j++] = 'A';
+				if (var->flags & VAR_INTEGER)			var_type[j++] = 'i';
+				if (var->flags & VAR_READONLY)			var_type[j++] = 'r';
+				if (var->flags & VAR_EXPORTED)			var_type[j++] = 'x';
+				if (j == 1)								var_type[j++] = '-';
+				while (j < 6)							var_type[j++] = ' ';
 				var_type[j] = '\0';
 
 				// For shell variables (no export flag)
-				if (!(var->flags & VAR_EXPORTED))
-					array[i] = ft_strdup(var->key);
-				else
-					array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
-				
+				if (!(var->flags & VAR_EXPORTED))	array[i] = ft_strdup(var->key);
+				else								array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
+
 				if (!array[i]) return (0);
-				
+
 				// Add value based on type
 				if (var->flags & VAR_ARRAY) {
 					char *values = format_array_values(var);
-					if (values) {
-						array[i] = ft_strjoin_sep(array[i], "=", values, 3);
-					}
+					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, 3);
 				} else if (var->flags & VAR_ASSOCIATIVE) {
 					char *values = format_assoc_values(var);
-					if (values) {
-						array[i] = ft_strjoin_sep(array[i], "=", values, 3);
-					}
+					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, 3);
 				} else if (var->data.scalar) {
-					char *formatted = format_for_shell(var->data.scalar, '\"');
-					array[i] = ft_strjoin_sep(array[i], "=", formatted, 6);
+					char *value = format_for_shell(var->data.scalar, '\"');
+					array[i] = ft_strjoin_sep(array[i], "=", value, 6);
 				}
 
 				return (1);
@@ -996,10 +983,10 @@
 
 			// Check if a key has already been seen (for shadowing)
 			static int is_shadowed(const char *key, t_var **seen, int count) {
-				if (!key || !seen || !*seen) return (0);
+				if (!key || !seen || count == 0) return (0);
 
 				for (int i = 0; i < count; i++) {
-					if (!strcmp(seen[i]->key, key)) return (1);
+					if (seen[i] && !strcmp(seen[i]->key, key)) return (1);
 				}
 
 				return (0);

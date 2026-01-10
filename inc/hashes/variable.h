@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 17:52:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/10 19:38:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 	int		variable_validate(const char *key, int local_assing);
 		//	---------- SCALAR -----------
 	char	*variable_scalar_get(t_env *env, const char *key);
-	int		variable_scalar_set(t_env *env, const char *key, const char *value, int append, int local);
+	int		variable_scalar_set(t_env *env, const char *key, const char *value, int append, int type, int local);
 	char	*variable_scalar_value(t_env *env, const char *key);
 	void	variable_from_array(t_var **table, const char **array);
 	//	---------- ARRAY -----------
