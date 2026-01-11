@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 21:49:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 22:04:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,7 @@
 
 				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (NULL);
+				if (errno) return (errno);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -351,12 +351,12 @@
 		#pragma region "Set"
 
 			int variable_array_set(t_env *env, const char *key, int index, const char *value, int append, int local) {
-				if (!env || !key)	return (NULL);
-				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!env || !key)	return (0);
+				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (NULL);
+				if (errno) return (errno);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -482,11 +482,11 @@
 		#pragma region "Remove"
 
 			int variable_array_remove(t_env *env, const char *key, int index) {
-				if (!env || !key)	return (NULL);
-				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!env || !key)	return (0);
+				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var) return (NULL);
+				if (!var || errno) return (errno);
 
 				if (!(var->flags & VAR_ARRAY)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
@@ -637,11 +637,11 @@
 
 			int variable_assoc_set(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local) {
 				if (!env || !key )				return (0);
-				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (NULL);
+				if (errno) return (errno);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -734,10 +734,10 @@
 
 			int variable_assoc_remove(t_env *env, const char *key, const char *assoc_key) {
 				if (!env || !key )				return (0);
-				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var) return (NULL);
+				if (!var || errno) return (errno);
 
 				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
@@ -882,7 +882,7 @@
 
 				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (NULL);
+				if (errno) return (errno);
 
 				// If not found or local, search only in current environment
 				if (!var) {
