@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 21:37:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:37:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@
 			return (1);
 		}
 
-		t_var *var = variable_find(shell.env, key);
+		t_var *var = variable_get(shell.env, key, 1);
 		if (var && var->flags & VAR_READONLY) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),  FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    FREE_JOIN);

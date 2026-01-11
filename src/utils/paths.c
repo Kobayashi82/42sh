@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 17:52:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:43:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,7 @@
 
 			if (path && path[0] != '/') {
 				if (!getcwd(cwd, sizeof(cwd))) {
-					const char *pwd = variable_scalar_value(shell.env, "PWD");	// No deberia usar shell.cwd ??
+					const char *pwd = variable_scalar_get(shell.env, "PWD");	// No deberia usar shell.cwd ??
 					if (!pwd) {
 						write(2, "Error: No se puede determinar el directorio actual\n", 52);
 						return (NULL);
@@ -195,7 +195,7 @@
 		char *get_fullpath(char *path) {
 			if (!path || strchr(path, '/')) return (resolve_path(path));
 
-			char *path_list = ft_strdup(variable_scalar_value(shell.env, "PATH"));
+			char *path_list = ft_strdup(variable_scalar_get(shell.env, "PATH"));
 			if (!path_list) return (ft_strdup(path));
 
 			char *dir = ft_strtok(path_list, ":", 2);
@@ -275,7 +275,7 @@
 				return (free(fullpath), NULL);
 			}
 
-			if (!paths && !(paths = variable_scalar_value(shell.env, "PATH"))) return (NULL);
+			if (!paths && !(paths = variable_scalar_get(shell.env, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
 
@@ -315,7 +315,7 @@
 				} return (free(fullpath), NULL);
 			}
 
-			if (!paths && !(paths = variable_scalar_value(shell.env, "PATH"))) return (NULL);
+			if (!paths && !(paths = variable_scalar_get(shell.env, "PATH"))) return (NULL);
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
 

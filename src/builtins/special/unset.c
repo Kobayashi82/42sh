@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 21:52:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:44:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,12 +103,12 @@
 	static int delete_variable(char *arg) {
 		if (!arg) return (0);
 
-		t_var *var = variable_find(shell.env, arg);
+		t_var *var = variable_get(shell.env, arg, 1);
 		if (var && var->flags & VAR_READONLY) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: ", 0),                    FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin(arg, ": cannot unset: readonly variable\n", 0), FREE_JOIN);
 			return (1);
-		} else variable_unset(shell.env, arg);
+		} else variable_unset(shell.env, arg, 1);
 
 		return (0);
 	}

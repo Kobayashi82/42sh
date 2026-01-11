@@ -479,29 +479,4 @@ Cada elemento del array se convierte en un token separado en la línea de comand
 
 ---
 
-Add/Concatenate variable
-- Si local, la crea/modifica en el env actual.
-- busca en env actual y va retrocediendo. Si no existe, la crea en la última (base).
-
-Delete variable
-- busca en env actual y va retrocediendo. La primera que encuentre la borra y ya.
-
-Find variable
-- busca en env actual y va retrocediendo. Si la encuentra, la devuelve.
-
-Variables_join (lo uso)?
-
-Variables_to_array (está es tocha)
-
-Variables_add tiene que tener:
-Table
-Key
-Value
-Join
-Exported
-Readonly
-Integer
-Force (esto no se si es necesario)
-(Que pasa con los arrays)
-
-Y se elimina variables_concatenate
+Añadir soporte para variables referenciables

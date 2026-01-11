@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 22:20:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:39:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@
 
 		if (!strchr(arg, '=')) {
 			if (variable_validate(arg, 0)) return (1);
-			t_var *var = variable_find(shell.env, arg);
+			t_var *var = variable_get(shell.env, arg, 1);
 			if (var) {
 				var->flags |= type;
 				return (0);
@@ -134,7 +134,7 @@
 			return (1);
 		}
 
-		t_var *var = variable_find(shell.env, key);
+		t_var *var = variable_get(shell.env, key, 1);
 		if (var && var->flags & VAR_READONLY) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": readonly: `", 0),   FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1), FREE_JOIN);
@@ -142,9 +142,10 @@
 			return (1);
 		}
 
-		if		((type & VAR_ASSOCIATIVE)	|| (var && var->flags & VAR_ASSOCIATIVE))	ret = variable_assoc_set(shell.env, key, value, append, type, 0);
-		else if ((type & VAR_ARRAY)			|| (var && var->flags & VAR_ARRAY))			ret = variable_array_set(shell.env, key, value, append, type, 0);
-		else																			ret = variable_scalar_set(shell.env, key, value, append, type, 0);
+		// if		((type & VAR_ASSOCIATIVE)	|| (var && var->flags & VAR_ASSOCIATIVE))	ret = variable_assoc_set(shell.env, key, value, append, type, 0);
+		// else if ((type & VAR_ARRAY)			|| (var && var->flags & VAR_ARRAY))			ret = variable_array_set(shell.env, key, value, append, type, 0);
+		// else																			ret = variable_scalar_set(shell.env, key, value, append, type, 0);
+		ret = variable_scalar_set(shell.env, key, value, append, type, 0);
 
 		free(key);
 		free(value);

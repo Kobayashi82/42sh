@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 21:32:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 18:11:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,8 @@
 	#include "terminal/readinput/history.h"
 	#include "main/shell.h"
 	#include "utils/utils.h"
+	
+	#define MAX_REFERENCES	100
 
 #pragma endregion
 
@@ -23,8 +25,8 @@
 
 	#pragma region "Specials"
 
-		char *specials_get(const char *key) {
-			if (!key) return (NULL);
+		char *specials_get(t_env *env, const char *key) {
+			if (!env || !key || env->sourced != SRC_SHELL) return (NULL);
 
 			static char special[4096];
 
@@ -44,8 +46,8 @@
 			return (NULL);
 		}
 
-		void specials_set(const char *key, const char *value) {
-			if (!key) return;
+		void specials_set(t_env *env, const char *key, const char *value) {
+			if (!env || !key || env->sourced != SRC_SHELL) return;
 
 			// History
 			if (!strcmp(key, "42_HISTFILE"))		history_file_set(value);
@@ -56,8 +58,8 @@
 			if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);
 		}
 
-		void specials_unset(const char *key) {
-			if (!key) return;
+		void specials_unset(t_env *env, const char *key) {
+			if (!env || !key || env->sourced != SRC_SHELL) return;
 
 			// History
 			if (!strcmp(key, "42_HISTFILE"))		history_file_set(NULL);
@@ -84,12 +86,12 @@
 	#pragma region "Find"
 
 		// Find variable by 'key'
-		t_var *variable_find(t_env *env, const char *key) {
+		static t_var *variable_find(t_env *env, const char *key) {
 			if (!env || !key) return (NULL);
-			
+
 			// Check specials first
 			static t_var special;
-			special.data.scalar = specials_get(key);
+			special.data.scalar = specials_get(env, key);
 			if (special.data.scalar) {
 				special.key = (char *)key;
 				special.flags = VAR_READONLY;
@@ -111,19 +113,78 @@
 
 	#pragma endregion
 
+	#pragma region "Get"
+
+		// Find variable by 'key' (support referenced variables)
+		t_var *variable_get(t_env *env, const char *key, int reference) {
+			if (!env || !key) return (NULL);
+
+			int count = 0;
+			t_var *var = variable_find(env, key);
+			if (reference && var && var->flags & VAR_REFERENCE) {
+				t_var*visited[HASH_SIZE] = {NULL};
+				t_var *visited_var = malloc(sizeof(t_var));
+				char *key = ft_strdup(key);
+				if (!key || !visited_var) {
+					free(key);
+					variable_clear_table(visited);
+					return (NULL);	// malloc failed
+				}
+				visited_var->key = key;
+				unsigned int hash = hash_index(key);
+				visited_var->next = visited[hash];
+				visited[hash] = visited_var;
+				count = 1;
+				while (count < MAX_REFERENCES) {
+					char *target = var->data.scalar;
+
+					// Check target in visited
+					t_var *check_var = visited[hash_index(target)];
+					while (check_var) {
+						if (!strcmp(check_var->key, target)) {
+							variable_clear_table(visited);
+							return (NULL);	// Cycle detected
+						}
+						check_var = check_var->next;
+					}
+
+					// Find target
+					var = variable_find(env, target);
+					if (!var || !(var->flags & VAR_REFERENCE)) {
+						variable_clear_table(visited);
+						break;		// Found final target
+					}
+
+					// Add target to visited
+					t_var *visited_var = malloc(sizeof(t_var));
+					target = ft_strdup(target);
+					if (!target || !visited_var) {
+						free(target);
+						variable_clear_table(visited);
+						return (NULL);	// malloc failed
+					}
+					visited_var->key = target;
+					unsigned int hash = hash_index(target);
+					visited_var->next = visited[hash];
+					visited[hash] = visited_var;
+					count++;
+				}
+			}
+
+			return ((count == MAX_REFERENCES) ? NULL : var);
+		}
+
+	#pragma endregion
+
 	#pragma region "Validate"
 
-		int variable_validate(const char *key, int local_assing) {
+		int variable_validate(const char *key) {
 			if (!key) return (0);
 
 			int		ret = 0;
 			size_t	len = ft_strlen(key);
 
 			if (!len || (!isalpha(key[0]) && key[0] != '_'))	ret = 1;
-
-			(void) local_assing;
-			// Valid only if in shell (!shell.env->parent)
-			// 
 			if (!strcmp(key, "42_HISTFILE"))					ret = 0;
 			if (!strcmp(key, "42_HISTSIZE"))					ret = 0;
 			if (!strcmp(key, "42_HISTFILESIZE"))				ret = 0;
@@ -153,14 +214,10 @@
 		#pragma region "Get"
 
 			char *variable_scalar_get(t_env *env, const char *key) {
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (NULL);
 
 				return (var->data.scalar);
-			}
-
-			char *variable_scalar_value(t_env *env, const char *key) {
-				return (variable_scalar_get(env, key));
 			}
 
 		#pragma endregion
@@ -169,9 +226,9 @@
 
 			int variable_scalar_set(t_env *env, const char *key, const char *value, int append, int type, int local) {
 				if (!env || !key) return (1);
-				if (type < VAR_NONE || type > VAR_INTEGER) type = VAR_NONE;
+				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER);
 
-				t_var *var = (local) ? NULL : variable_find(env, key);
+				t_var *var = (local) ? NULL : variable_get(env, key, 1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -185,8 +242,8 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (1);  // If exists but is array/associative, error
-				if (var && (var->flags & VAR_READONLY))						return (1);  // If exists but is readonly, error
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (1);  // Is associative/reference
+				if (var && (var->flags & VAR_READONLY))						return (1);  // Is readonly
 
 				// If doesn't exist, create new variable
 				if (!var) {
@@ -232,6 +289,8 @@
 
 				var->flags |= type;
 
+				specials_set(env, key, value);
+
 				return (0);
 			}
 
@@ -246,7 +305,7 @@
 			char *variable_array_get(t_env *env, const char *key, int index) {
 				if (!env || !key || index < 0) return (NULL);
 
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
 				// If scalar and requesting index 0, return the scalar
@@ -275,7 +334,7 @@
 			int variable_array_set(t_env *env, const char *key, int index, const char *value, int append, int local) {
 				if (!env || !key || index < 0) return (1);
 
-				t_var *var = (local) ? NULL : variable_find(env, key);
+				t_var *var = (local) ? NULL : variable_get(env, key, 1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -403,7 +462,7 @@
 			int variable_array_remove(t_env *env, const char *key, int index) {
 				if (!env || !key || index < 0) return (1);
 
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || !(var->flags & VAR_ARRAY)) return (1);
 
 				char idx_str[32];
@@ -506,7 +565,7 @@
 			char *variable_array_values(t_env *env, const char *key) {
 				if (!env || !key) return (NULL);
 
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || !(var->flags & VAR_ARRAY)) return (NULL);
 
 				return (format_array_values(var));
@@ -521,7 +580,7 @@
 		#pragma region "Get"
 
 			char *variable_assoc_get(t_env *env, const char *key, const char *assoc_key) {
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
 
 				// Search in assoc hash
@@ -542,7 +601,7 @@
 				if (!env || !key || !assoc_key)	return (1);
 				if (!*assoc_key)				return (2);
 
-				t_var *var = (local) ? NULL : variable_find(env, key);
+				t_var *var = (local) ? NULL : variable_get(env, key, 1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -637,7 +696,7 @@
 				if (!env || !key)	return (1);
 				if (!*assoc_key)	return (2);
 
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (1);
 
 				unsigned int hash = hash_index(assoc_key);
@@ -742,7 +801,7 @@
 			char *variable_assoc_values(t_env *env, const char *key) {
 				if (!env || !key) return (NULL);
 
-				t_var *var = variable_find(env, key);
+				t_var *var = variable_get(env, key, 1);
 				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
 
 				return (format_assoc_values(var));
@@ -752,85 +811,103 @@
 
 	#pragma endregion
 
-#pragma endregion
+	#pragma region "Reference"
 
-#pragma region "Delete"
+		#pragma region "Get"
 
-	#pragma region "Free"
+			char *variable_reference_get(t_env *env, const char *key) {
+				t_var *var = variable_get(env, key, 0);
+				if (!var || !(var->flags & VAR_REFERENCE)) return (NULL);
 
-		void variable_free(t_var *var) {
-			if (!var) return;
-
-			free(var->key);
-			if (var->flags & VAR_ARRAY || var->flags & VAR_ASSOCIATIVE) {
-				if (var->data.array) {
-					for (int i = 0; var->data.array[i]; ++i)
-						variable_free(var->data.array[i]);
-					free(var->data.array);
-				}
-			} else {
-				free(var->data.scalar);
+				return (var->data.scalar);
 			}
 
-			free(var);
-		}
+		#pragma endregion
 
-	#pragma endregion
+		#pragma region "Set"
 
-	#pragma region "Unset"
+			int variable_reference_set(t_env *env, const char *key, const char *value, int append, int type, int local) {
+				if (!env || !key) return (1);
+				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER | VAR_REFERENCE);
 
-		int variable_unset(t_env *env, const char *key) {
-			if (!env || !key) return (1);
+				t_var *var = (local) ? NULL : variable_get(env, key, 1);
 
-			int hash = hash_index(key);
-			t_var *current = env->table[hash];
-			t_var *prev = NULL;
+				// If not found or local, search only in current environment
+				if (!var) {
+					t_var *local_var = env->table[hash_index(key)];
+					while (local_var) {
+						if (!strcmp(local_var->key, key)) {
+							var = local_var;
+							break;
+						}
+						local_var = local_var->next;
+					}
+				}
 
-			while (current) {
-				if (!strcmp(current->key, key)) {
-					if (current->flags & VAR_READONLY) return (1);
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (1);  // Is associative/reference
+				if (var && (var->flags & VAR_READONLY))						return (1);  // Is readonly
 
-					if (prev)	prev->next = current->next;
-					else		env->table[hash] = current->next;
+				// If doesn't exist, create new variable
+				if (!var) {
+					var = calloc(1, sizeof(t_var));
+					if (!var) return (1);
 
-					variable_free(current);
+					var->key = ft_strdup(key);
+					if (!var->key) {
+						free(var);
+						return (1);
+					}
+
+					if (value) {
+						var->data.scalar = ft_strdup(value);
+						if (!var->data.scalar) {
+							free(var->key);
+							free(var);
+							return (1);
+						}
+					}
+
+					var->flags = type;
+
+					unsigned int hash = hash_index(key);
+					var->next = env->table[hash];
+					env->table[hash] = var;
+
 					return (0);
 				}
-				prev = current;
-				current = current->next;
-			}
 
-			if (env->parent) return variable_unset(env->parent, key);
-
-			return (1);
-		}
-
-	#pragma endregion
-
-	#pragma region "Clear Table"
-
-		void variable_clear_table(t_var **table) {
-			for (int i = 0; i < HASH_SIZE; ++i) {
-				t_var *var = table[i];
-				while (var) {
-					t_var *next = var->next;
-					variable_free(var);
-					var = next;
+				// Variable exists, update value
+				if (append) {
+					char *new_value = ft_strjoin(var->data.scalar, value, 0);
+					if (!new_value) return (1);
+					free(var->data.scalar);
+					var->data.scalar = new_value;
+				} else {
+					char *new_value = ft_strdup(value);
+					if (!new_value) return (1);
+					free(var->data.scalar);
+					var->data.scalar = new_value;
 				}
-				table[i] = NULL;
+
+				var->flags |= type;
+
+				return (0);
 			}
-		}
 
-	#pragma endregion
+		#pragma endregion
 
-	#pragma region "Clear"
+		#pragma region "Del"
 
-		void variable_clear(t_env *env) {
-			if (!env) return;
+			int variable_reference_del(t_env *env, const char *key) {
+				if (!env || !key) return (1);
 
-			variable_clear_table(env->table);
-			if (env->parent) variable_clear(env->parent);
-		}
+				t_var *var = variable_get(env, key, 1);
+				if (var) var->flags &= ~VAR_REFERENCE;
+
+				return (0);
+			}
+
+		#pragma endregion
 
 	#pragma endregion
 
@@ -1054,6 +1131,89 @@
 
 #pragma endregion
 
+#pragma region "Delete"
+
+	#pragma region "Free"
+
+		static void variable_free(t_var *var) {
+			if (!var) return;
+
+			free(var->key);
+			if (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) {
+				if (var->data.array) {
+					for (int i = 0; var->data.array[i]; ++i)
+						variable_free(var->data.array[i]);
+					free(var->data.array);
+				}
+			} else {
+				free(var->data.scalar);
+			}
+
+			free(var);
+		}
+
+	#pragma endregion
+
+	#pragma region "Unset"
+
+		int variable_unset(t_env *env, const char *key, int reference) {
+			if (!env || !key) return (1);
+
+			int hash = hash_index(key);
+			t_var *current = env->table[hash];
+			t_var *prev = NULL;
+
+			while (current) {
+				if (!strcmp(current->key, key)) {
+					if (current->flags & VAR_READONLY) return (1);
+
+					if (prev)	prev->next = current->next;
+					else		env->table[hash] = current->next;
+
+					variable_free(current);
+					specials_unset(env, key);
+					return (0);
+				}
+				prev = current;
+				current = current->next;
+			}
+
+			if (env->parent) return variable_unset(env->parent, key, reference);
+
+			return (1);
+		}
+
+	#pragma endregion
+
+	#pragma region "Clear Table"
+
+		void variable_clear_table(t_var **table) {
+			for (int i = 0; i < HASH_SIZE; ++i) {
+				t_var *var = table[i];
+				while (var) {
+					t_var *next = var->next;
+					variable_free(var);
+					var = next;
+				}
+				table[i] = NULL;
+			}
+		}
+
+	#pragma endregion
+
+	#pragma region "Clear"
+
+		void variable_clear(t_env *env) {
+			if (!env) return;
+
+			variable_clear_table(env->table);
+			if (env->parent) variable_clear(env->parent);
+		}
+
+	#pragma endregion
+
+#pragma endregion
+
 #pragma region "Initialize"
 
 	#pragma region "From Array"
@@ -1076,7 +1236,7 @@
 	static void default_add(t_env *env, const char *key, char *value, int type, int force, int free_value) {
 		if (!env || !key || !value) return;
 
-		if (force || !variable_find(env, key)) variable_scalar_set(env, key, value, 0, type, 0);
+		if (force || !variable_get(env, key, 1)) variable_scalar_set(env, key, value, 0, type, 0);
 		if (value && free_value) free(value);
 	}
 	int variable_initialize(t_env *env, const char **envp) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 17:52:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 17:44:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@
 			if (!silent_mode) {
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0), FREE_PRINT);
-				variable_unset(shell.env, "OPTARG");
+				variable_unset(shell.env, "OPTARG", 1);
 			} else {
 				update_variable("OPTARG", opt_str);
 			}
@@ -147,7 +147,7 @@
 				print(STDERR_FILENO, shell.name, RESET);
 				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0), FREE_PRINT);
 				update_variable(varname, "?");
-				variable_unset(shell.env, "OPTARG");
+				variable_unset(shell.env, "OPTARG", 1);
 			} else {
 				char opt_str[2] = {opt, '\0'};
 				update_variable(varname, ":");
@@ -205,19 +205,19 @@
 		// Silent mode if optstring starts with ':' or OPTERR == 0
 		if (optstring[0] == ':') optstring += silent_mode = 1;
 		if (!silent_mode) {
-			char *opterr_str = variable_scalar_value(shell.env, "OPTERR");
+			char *opterr_str = variable_scalar_get(shell.env, "OPTERR");
 			if (opterr_str && atoi(opterr_str) == 0) silent_mode = 1;
 		}
 
 		// Get current OPTIND
-		char *optind_str = variable_scalar_value(shell.env, "OPTIND");
+		char *optind_str = variable_scalar_get(shell.env, "OPTIND");
 		optind = optind_str ? atoi(optind_str) : 1;
 
 		// Check if we're done parsing
 		if (optind > args_count) {
 			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variable_unset(shell.env, "OPTARG");
+			variable_unset(shell.env, "OPTARG", 1);
 			return (1);
 		}
 
@@ -228,7 +228,7 @@
 		if (current_arg[0] != '-' || current_arg[1] == '\0') {
 			shell.env->optpos = 1;
 			update_variable(varname, "?");
-			variable_unset(shell.env, "OPTARG");
+			variable_unset(shell.env, "OPTARG", 1);
 			return (1);
 		}
 
@@ -237,7 +237,7 @@
 			shell.env->optpos = 1;
 			update_optind(optind + 1);
 			update_variable(varname, "?");
-			variable_unset(shell.env, "OPTARG");
+			variable_unset(shell.env, "OPTARG", 1);
 			return (1);
 		}
 
