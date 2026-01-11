@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 21:41:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -392,7 +392,7 @@
 				return (free(line), tmp);
 			}
 
-			len = (line ? ft_strlen(line) : 0);
+			len = (line) ? ft_strlen(line) : 0;
 			blen = ft_strlen(buffer);
 			tmp = malloc(len + blen + 1);
 			if (!tmp) return (free(line), NULL);
@@ -481,7 +481,7 @@
 			return (0);
 		}
 
-		size_t str_len = str ? ft_strlen(str) : 0;
+		size_t str_len = (str) ? ft_strlen(str) : 0;
 
 		//	Reset the buffer if necessary
 		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && msg[fd]) {
@@ -497,16 +497,27 @@
 			if (!msg[fd]) {
 				cap[fd] = (str_len > 1024) ? str_len : 1024;
 				msg[fd] = malloc(cap[fd]);
+				if (!msg[fd]) {
+					len[fd] = 0;
+					cap[fd] = 0;
+					errno = 290;
+					return (-1);
+				}
 				len[fd] = 0;
 			}
 
 			//	Resize the buffer if there's not enough space
 			if (len[fd] + str_len >= cap[fd]) {
 				size_t new_cap = cap[fd] * 2;
-				while (len[fd] + str_len >= new_cap)
-					new_cap *= 2;
-
+				while (len[fd] + str_len >= new_cap) new_cap *= 2;
 				char *new_msg = realloc(msg[fd], new_cap);
+				if (!new_msg) {
+					free(msg[fd]);
+					len[fd] = 0;
+					cap[fd] = 0;
+					errno = 290;
+					return (-1);
+				}
 				msg[fd] = new_msg;
 				cap[fd] = new_cap;
 			}

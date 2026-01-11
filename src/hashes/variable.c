@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 18:11:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 21:49:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,8 @@
 	#pragma region "Index"
 
 		static unsigned int hash_index(const char *key) {
+			if (!key) return (errno = E_VAR_INVALID_INDEX, 0);
+
 			unsigned int hash = 0;
 
 			while (*key) hash = (hash * 31) + *key++;
@@ -119,19 +121,21 @@
 		t_var *variable_get(t_env *env, const char *key, int reference) {
 			if (!env || !key) return (NULL);
 
+			errno = 0;
 			int count = 0;
 			t_var *var = variable_find(env, key);
 			if (reference && var && var->flags & VAR_REFERENCE) {
 				t_var*visited[HASH_SIZE] = {NULL};
 				t_var *visited_var = malloc(sizeof(t_var));
-				char *key = ft_strdup(key);
-				if (!key || !visited_var) {
-					free(key);
+				char *key_copy = ft_strdup(key);
+				if (!key_copy || !visited_var) {
+					free(key_copy);
 					variable_clear_table(visited);
-					return (NULL);	// malloc failed
+					errno = E_NO_MEMORY;
+					return (NULL);
 				}
-				visited_var->key = key;
-				unsigned int hash = hash_index(key);
+				visited_var->key = key_copy;
+				unsigned int hash = hash_index(key_copy);
 				visited_var->next = visited[hash];
 				visited[hash] = visited_var;
 				count = 1;
@@ -143,7 +147,8 @@
 					while (check_var) {
 						if (!strcmp(check_var->key, target)) {
 							variable_clear_table(visited);
-							return (NULL);	// Cycle detected
+							errno = E_VAR_CYCLE_REFERENCE;
+							return (NULL);
 						}
 						check_var = check_var->next;
 					}
@@ -152,26 +157,33 @@
 					var = variable_find(env, target);
 					if (!var || !(var->flags & VAR_REFERENCE)) {
 						variable_clear_table(visited);
-						break;		// Found final target
+						break;
 					}
 
 					// Add target to visited
-					t_var *visited_var = malloc(sizeof(t_var));
-					target = ft_strdup(target);
-					if (!target || !visited_var) {
-						free(target);
+					visited_var = malloc(sizeof(t_var));
+					char *target_copy = ft_strdup(target);
+					if (!target_copy || !visited_var) {
+						free(target_copy);
 						variable_clear_table(visited);
-						return (NULL);	// malloc failed
+						errno = E_NO_MEMORY;
+						return (NULL);
 					}
-					visited_var->key = target;
-					unsigned int hash = hash_index(target);
+					visited_var->key = target_copy;
+					unsigned int hash = hash_index(target_copy);
 					visited_var->next = visited[hash];
 					visited[hash] = visited_var;
 					count++;
 				}
+
+				if (count == MAX_REFERENCES) {
+					variable_clear_table(visited);
+					errno = E_VAR_MAX_REFERENCES;
+					return (NULL);
+				}
 			}
 
-			return ((count == MAX_REFERENCES) ? NULL : var);
+			return (var);
 		}
 
 	#pragma endregion
@@ -214,8 +226,12 @@
 		#pragma region "Get"
 
 			char *variable_scalar_get(t_env *env, const char *key) {
+				if (!env || !key) return (NULL);
+
 				t_var *var = variable_get(env, key, 1);
-				if (!var || var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (NULL);
+				if (!var) return (NULL);
+
+				if (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				return (var->data.scalar);
 			}
@@ -225,10 +241,13 @@
 		#pragma region "Set"
 
 			int variable_scalar_set(t_env *env, const char *key, const char *value, int append, int type, int local) {
-				if (!env || !key) return (1);
+				if (!env || !key) return (0);
+
 				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER);
 
+				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
+				if (errno) return (NULL);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -242,18 +261,18 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (1);  // Is associative/reference
-				if (var && (var->flags & VAR_READONLY))						return (1);  // Is readonly
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (1);
+					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 					var->key = ft_strdup(key);
 					if (!var->key) {
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					if (value) {
@@ -261,7 +280,7 @@
 						if (!var->data.scalar) {
 							free(var->key);
 							free(var);
-							return (1);
+							return (errno = E_NO_MEMORY, E_NO_MEMORY);
 						}
 					}
 
@@ -277,12 +296,12 @@
 				// Variable exists, update value
 				if (append) {
 					char *new_value = ft_strjoin(var->data.scalar, value, 0);
-					if (!new_value) return (1);
+					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				} else {
 					char *new_value = ft_strdup(value);
-					if (!new_value) return (1);
+					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				}
@@ -303,15 +322,15 @@
 		#pragma region "Get"
 
 			char *variable_array_get(t_env *env, const char *key, int index) {
-				if (!env || !key || index < 0) return (NULL);
+				if (!env || !key)	return (NULL);
+				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
 
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
 				// If scalar and requesting index 0, return the scalar
-				if (!(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && !index) return (var->data.scalar);
-
-				if (!(var->flags & VAR_ARRAY)) return (NULL);	// Not a numeric array, error
+				if (!(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && !index)	return (var->data.scalar);
+				if (!(var->flags & VAR_ARRAY))									return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				// Search in array hash
 				char idx_str[32];
@@ -332,9 +351,12 @@
 		#pragma region "Set"
 
 			int variable_array_set(t_env *env, const char *key, int index, const char *value, int append, int local) {
-				if (!env || !key || index < 0) return (1);
+				if (!env || !key)	return (NULL);
+				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
 
+				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
+				if (errno) return (NULL);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -348,18 +370,18 @@
 					}
 				}
 
-				if (var && (var->flags & VAR_ASSOCIATIVE))	return (1);		// If exists but is associative, error
-				if (var && (var->flags & VAR_READONLY))		return (1);		// If exists but is readonly, error
+				if (var && (var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))		return (errno = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new array variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (1);
+					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 					char *new_key = ft_strdup(key);
 					if (!new_key) {
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 					var->key = new_key;
 					var->flags = VAR_ARRAY;
@@ -367,7 +389,7 @@
 					if (!var->data.array) {
 						free(var->key);
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					// Insert into current environment
@@ -380,7 +402,7 @@
 				if (!(var->flags & VAR_ARRAY)) {
 					char *old_value = var->data.scalar;
 					var->data.array = calloc(HASH_SIZE, sizeof(t_var *));
-					if (!var->data.array) return (1);
+					if (!var->data.array) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 					// Save old value at index 0
 					if (old_value) {
@@ -388,14 +410,14 @@
 						if (!elem) {
 							free(var->data.array);
 							var->data.scalar = old_value;
-							return (1);
+							return (errno = E_NO_MEMORY, E_NO_MEMORY);
 						}
 						char *new_elem_key = ft_strdup("0");
 						if (!new_elem_key) {
 							free(elem);
 							free(var->data.array);
 							var->data.scalar = old_value;
-							return (1);
+							return (errno = E_NO_MEMORY, E_NO_MEMORY);
 						}
 						elem->key = new_elem_key;
 						elem->data.scalar = old_value;
@@ -417,12 +439,12 @@
 					if (!strcmp(elem->key, idx_str)) {
 						if (append) {
 							char *new_value = ft_strjoin(elem->data.scalar, value, 0);
-							if (!new_value) return (1);
+							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						} else {
 							char *new_value = ft_strdup(value);
-							if (!new_value) return (1);
+							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						}
@@ -433,19 +455,19 @@
 				
 				// Create new element
 				elem = calloc(1, sizeof(t_var));
-				if (!elem) return (1);
+				if (!elem) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 				char *new_elem_key = ft_strdup(idx_str);
 				if (!new_elem_key) {
 					free(elem);
-					return (1);
+					return (errno = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->key = new_elem_key;
 				char *new_elem_value = ft_strdup(value);
 				if (!new_elem_value) {
 					free(elem->key);
 					free(elem);
-					return (1);
+					return (errno = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->data.scalar = new_elem_value;
 				elem->flags = 0;
@@ -460,10 +482,13 @@
 		#pragma region "Remove"
 
 			int variable_array_remove(t_env *env, const char *key, int index) {
-				if (!env || !key || index < 0) return (1);
+				if (!env || !key)	return (NULL);
+				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || !(var->flags & VAR_ARRAY)) return (1);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_ARRAY)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
 				char idx_str[32];
 				snprintf(idx_str, sizeof(idx_str), "%d", index);
@@ -486,7 +511,7 @@
 					elem = elem->next;
 				}
 
-				return (1);
+				return (0);
 			}
 
 		#pragma endregion
@@ -495,7 +520,8 @@
 
 			// Format array values for display: ([0]="val1" [3]="val2")
 			static char *format_array_values(t_var *var) {
-				if (!var || !(var->flags & VAR_ARRAY)) return (NULL);
+				if (!var)								return (NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				// First pass: count elements
 				int count = 0;
@@ -507,11 +533,15 @@
 					}
 				}
 
-				if (!count) return (ft_strdup("()"));
+				if (!count) {
+					char *result = ft_strdup("()");
+					if (result) errno = E_NO_MEMORY;
+					return (result);
+				}
 
 				// Allocate exact space needed
 				t_var **elements = malloc(count * sizeof(t_var *));
-				if (!elements) return (NULL);
+				if (!elements) return (errno = E_NO_MEMORY, NULL);
 
 				// Second pass: collect elements
 				int index = 0;
@@ -538,7 +568,7 @@
 				char *result = ft_strdup("(");
 				if (!result) {
 					free(elements);
-					return (NULL);
+					return (errno = E_NO_MEMORY, NULL);
 				}
 
 				for (int i = 0; i < count; ++i) {
@@ -551,12 +581,13 @@
 					result = ft_strjoin(result, buffer, 1);
 					if (!result) {
 						free(elements);
-						return (NULL);
+						return (errno = E_NO_MEMORY, NULL);
 					}
 				}
 
 				// Add closing parenthesis
 				result = ft_strjoin(result, ")", 1);
+				if (!result) errno = E_NO_MEMORY;
 				free(elements);
 
 				return (result);
@@ -566,7 +597,9 @@
 				if (!env || !key) return (NULL);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || !(var->flags & VAR_ARRAY)) return (NULL);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_ARRAY)) return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				return (format_array_values(var));
 			}
@@ -580,8 +613,13 @@
 		#pragma region "Get"
 
 			char *variable_assoc_get(t_env *env, const char *key, const char *assoc_key) {
+				if (!env || !key)				return (NULL);
+				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
+
 				t_var *var = variable_get(env, key, 1);
-				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_INDEX, NULL);
 
 				// Search in assoc hash
 				t_var *elem = var->data.array[hash_index(assoc_key)];
@@ -598,10 +636,12 @@
 		#pragma region "Set"
 
 			int variable_assoc_set(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local) {
-				if (!env || !key || !assoc_key)	return (1);
-				if (!*assoc_key)				return (2);
+				if (!env || !key )				return (0);
+				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
 
+				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
+				if (errno) return (NULL);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -615,18 +655,18 @@
 					}
 				}
 
-				if (var && !(var->flags & VAR_ASSOCIATIVE))	return (1);		// If exists but is no associative, error
-				if (var && (var->flags & VAR_READONLY))		return (1);		// If exists but is readonly, error
+				if (var && !(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))		return (errno = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new associative variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (1);
+					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 					char *new_key = ft_strdup(key);
 					if (!new_key) {
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 					var->key = new_key;
 					var->flags = VAR_ASSOCIATIVE;
@@ -634,7 +674,7 @@
 					if (!var->data.array) {
 						free(var->key);
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					// Insert into current environment
@@ -650,12 +690,12 @@
 					if (!strcmp(elem->key, assoc_key)) {
 						if (append) {
 							char *new_value = ft_strjoin(elem->data.scalar, value, 0);
-							if (!new_value) return (1);
+							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						} else {
 							char *new_value = ft_strdup(value);
-							if (!new_value) return (1);
+							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						}
@@ -666,19 +706,19 @@
 
 				// Create new element
 				elem = calloc(1, sizeof(t_var));
-				if (!elem) return (1);
+				if (!elem) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 				char *new_elem_key = ft_strdup(assoc_key);
 				if (!new_elem_key) {
 					free(elem);
-					return (1);
+					return (errno = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->key = new_elem_key;
 				char *new_elem_value = ft_strdup(value);
 				if (!new_elem_value) {
 					free(elem->key);
 					free(elem);
-					return (1);
+					return (errno = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->data.scalar = new_elem_value;
 				elem->flags = 0;
@@ -693,11 +733,13 @@
 		#pragma region "Remove"
 
 			int variable_assoc_remove(t_env *env, const char *key, const char *assoc_key) {
-				if (!env || !key)	return (1);
-				if (!*assoc_key)	return (2);
+				if (!env || !key )				return (0);
+				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (1);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
 				unsigned int hash = hash_index(assoc_key);
 				t_var *elem = var->data.array[hash];
@@ -717,7 +759,7 @@
 					elem = elem->next;
 				}
 
-				return (1);
+				return (0);
 			}
 
 		#pragma endregion
@@ -726,7 +768,8 @@
 
 			// Format associative array values for display: ([key1]="val1" [key2]="val2")
 			static char *format_assoc_values(t_var *var) {
-				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
+				if (!var)								return (NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				// First pass: count elements
 				int count = 0;
@@ -738,11 +781,15 @@
 					}
 				}
 
-				if (!count) return (ft_strdup("()"));
+				if (!count) {
+					char *result = ft_strdup("()");
+					if (result) errno = E_NO_MEMORY;
+					return (result);
+				}
 
 				// Allocate exact space needed
 				t_var **elements = malloc(count * sizeof(t_var *));
-				if (!elements) return (NULL);
+				if (!elements) return (errno = E_NO_MEMORY, NULL);
 
 				// Second pass: collect elements
 				int idx = 0;
@@ -769,30 +816,26 @@
 				char *result = ft_strdup("(");
 				if (!result) {
 					free(elements);
-					return (NULL);
+					return (errno = E_NO_MEMORY, NULL);
 				}
 
 				for (int i = 0; i < count; ++i) {
-					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
-					
 					char buffer[4096];
-					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", 
-							(i > 0) ? " " : "", 
-							elements[i]->key, 
-							formatted);
-					
+					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", (i > 0) ? " " : "", elements[i]->key, formatted);
 					free(formatted);
 					
 					// Concatenate to result
 					result = ft_strjoin(result, buffer, 1);
 					if (!result) {
 						free(elements);
-						return (NULL);
+						return (errno = E_NO_MEMORY, NULL);
 					}
 				}
 
 				// Add closing parenthesis
 				result = ft_strjoin(result, ")", 1);
+				if (!result) errno = E_NO_MEMORY;
 				free(elements);
 				
 				return (result);
@@ -802,7 +845,9 @@
 				if (!env || !key) return (NULL);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || !(var->flags & VAR_ASSOCIATIVE)) return (NULL);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				return (format_assoc_values(var));
 			}
@@ -816,8 +861,12 @@
 		#pragma region "Get"
 
 			char *variable_reference_get(t_env *env, const char *key) {
+				if (!env || !key) return (NULL);
+
 				t_var *var = variable_get(env, key, 0);
-				if (!var || !(var->flags & VAR_REFERENCE)) return (NULL);
+				if (!var) return (NULL);
+
+				if (!(var->flags & VAR_REFERENCE)) return (errno = E_VAR_INVALID_INDEX, NULL);
 
 				return (var->data.scalar);
 			}
@@ -827,10 +876,13 @@
 		#pragma region "Set"
 
 			int variable_reference_set(t_env *env, const char *key, const char *value, int append, int type, int local) {
-				if (!env || !key) return (1);
+				if (!env || !key) return (0);
+
 				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER | VAR_REFERENCE);
 
+				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
+				if (errno) return (NULL);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -844,18 +896,18 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (1);  // Is associative/reference
-				if (var && (var->flags & VAR_READONLY))						return (1);  // Is readonly
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (1);
+					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 
 					var->key = ft_strdup(key);
 					if (!var->key) {
 						free(var);
-						return (1);
+						return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					if (value) {
@@ -863,7 +915,7 @@
 						if (!var->data.scalar) {
 							free(var->key);
 							free(var);
-							return (1);
+							return (errno = E_NO_MEMORY, E_NO_MEMORY);
 						}
 					}
 
@@ -879,12 +931,12 @@
 				// Variable exists, update value
 				if (append) {
 					char *new_value = ft_strjoin(var->data.scalar, value, 0);
-					if (!new_value) return (1);
+					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				} else {
 					char *new_value = ft_strdup(value);
-					if (!new_value) return (1);
+					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				}
@@ -899,9 +951,11 @@
 		#pragma region "Del"
 
 			int variable_reference_del(t_env *env, const char *key) {
-				if (!env || !key) return (1);
+				if (!env || !key) return (0);
 
 				t_var *var = variable_get(env, key, 1);
+				if (errno) return (errno);
+
 				if (var) var->flags &= ~VAR_REFERENCE;
 
 				return (0);
@@ -918,7 +972,7 @@
 	#pragma region "Array"
 
 		char **variable_to_array(t_env *env) {
-			if (!env) return NULL;
+			if (!env) return (NULL);
 
 			// Temporary hash table
 			t_var *seen[HASH_SIZE] = {NULL};
@@ -949,7 +1003,7 @@
 								t_var *entry = malloc(sizeof(t_var));
 								if (!entry) {
 									variable_clear_table(seen);
-									return (NULL);
+									return (errno = E_NO_MEMORY, NULL);
 								}
 								entry->key = ft_strdup(var->key);
 								entry->data.scalar = ft_strjoin_sep(var->key, "=", var->data.scalar, 0);
@@ -959,7 +1013,7 @@
 
 								if (!entry->key || !entry->data.scalar) {
 									variable_clear_table(seen);
-									return (NULL);
+									return (errno = E_NO_MEMORY, NULL);
 								}
 
 								count++;
@@ -974,7 +1028,7 @@
 			char **array = malloc((count + 1) * sizeof(char *));
 			if (!array) {
 				variable_clear_table(seen);
-				return (NULL);
+				return (errno = E_NO_MEMORY, NULL);
 			}
 
 			// Extract values from hash
@@ -1017,8 +1071,7 @@
 				var_type[j] = '\0';
 
 				array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
-
-				if (!array[i]) return (0);
+				if (!array[i]) return (errno = E_NO_MEMORY, 0);
 
 				// Add value based on type
 				if (var->flags & VAR_ARRAY) {
@@ -1041,7 +1094,7 @@
 
 			// Check if a key has already been seen (for shadowing)
 			static int is_shadowed(const char *key, t_var **seen, int count) {
-				if (!key || !seen || count == 0) return (0);
+				if (!key || !seen || !count) return (0);
 
 				for (int i = 0; i < count; i++) {
 					if (seen[i] && !strcmp(seen[i]->key, key)) return (1);
@@ -1057,6 +1110,7 @@
 			void variable_print(t_env *env, unsigned int type, int sort, int local) {
 				if (!env) return;
 
+				errno = 0;
 				if (local) env->parent = NULL;
 
 				// First pass: count total variables
@@ -1076,7 +1130,10 @@
 
 				// Allocate memory for tracking seen variables
 				t_var **seen = malloc(count * sizeof(t_var *));
-				if (!seen) return;
+				if (!seen) {
+					errno = E_NO_MEMORY;
+					return;
+				}
 
 				// Second pass: collect unique variables respecting shadowing
 				count = 0;
@@ -1092,16 +1149,29 @@
 					}
 					current = current->parent;
 				}
-				if (!count) { free(seen); return; }
+				if (!count) {
+					free(seen);
+					errno = E_NO_MEMORY;
+					return;
+				}
 
 				// Create string array for printing
 				char **array = malloc((count + 1) * sizeof(char *));
-				if (!array) { free(seen); return; }
+				if (!array) {
+					free(seen);
+					errno = E_NO_MEMORY;
+					return;
+				}
 
 				// Third pass: format variables
 				int i = 0;
 				for (int j = 0; j < count; ++j) {
 					i += array_value(type, array, i, seen[j]);
+					if (errno) {
+						array_free(array);
+						errno = E_NO_MEMORY;
+						return ;
+					}
 				}
 				array[i] = NULL;
 
@@ -1157,30 +1227,17 @@
 	#pragma region "Unset"
 
 		int variable_unset(t_env *env, const char *key, int reference) {
-			if (!env || !key) return (1);
+			if (!env || !key) return (0);
 
-			int hash = hash_index(key);
-			t_var *current = env->table[hash];
-			t_var *prev = NULL;
+			t_var *var = variable_get(env, key, reference);
+			if (!var || errno) return (errno);
 
-			while (current) {
-				if (!strcmp(current->key, key)) {
-					if (current->flags & VAR_READONLY) return (1);
+			if (var->flags & VAR_READONLY) return (errno = E_VAR_READONLY, E_VAR_READONLY);
 
-					if (prev)	prev->next = current->next;
-					else		env->table[hash] = current->next;
+			variable_free(var);
+			specials_unset(env, key);
 
-					variable_free(current);
-					specials_unset(env, key);
-					return (0);
-				}
-				prev = current;
-				current = current->next;
-			}
-
-			if (env->parent) return variable_unset(env->parent, key, reference);
-
-			return (1);
+			return (0);
 		}
 
 	#pragma endregion
@@ -1237,9 +1294,12 @@
 		if (!env || !key || !value) return;
 
 		if (force || !variable_get(env, key, 1)) variable_scalar_set(env, key, value, 0, type, 0);
-		if (value && free_value) free(value);
+		if (free_value) free(value);
 	}
+
 	int variable_initialize(t_env *env, const char **envp) {
+		if (!env) return (0);
+
 		variable_from_array(env, envp);
 
 		// History

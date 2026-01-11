@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 21:41:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 20:22:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,13 @@
 
 		//	Print catastrophic error messages
 		static void catastrophic_msg(int error, char *value) {
-			if (error == SEGQUIT)			print(STDERR_FILENO, "Quit\n", PRINT);
-			if (error == SEGFAULT)			print(STDERR_FILENO, "CATASTROPHIC - Segmentation fault\n", PRINT);
-			if (error == STDIN_CLOSED)		print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n", PRINT);
-			if (error == STDOUT_CLOSED)		print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", PRINT);
-			if (error == NO_MEMORY)			print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", PRINT);
-			if (error == START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", PRINT);
-			if (error == START_BIN)			print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0), FREE_PRINT);
-			if (error == START_DIR)			print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
-			if (error == SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), FREE_PRINT);
+			if (error == E_STDIN_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n", PRINT);
+			if (error == E_STDOUT_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", PRINT);
+			if (error == E_NO_MEMORY)		print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", PRINT);
+			if (error == E_START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", PRINT);
+			if (error == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0), FREE_PRINT);
+			if (error == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
+			// if (error == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -44,19 +42,19 @@
 
 		//	Print redirections error messages
 		static void redirection_msg(int error, char *value) {
-			if (error == TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == TMP_WRITE)			print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), FREE_JOIN);
-			if (error == TMP_READ)			print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == TMP_CREATE || error == TMP_WRITE || error == TMP_READ)	print(STDERR_FILENO, "\n",                                    PRINT);
+			if (error == E_TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == E_TMP_WRITE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), FREE_JOIN);
+			if (error == E_TMP_READ)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == E_TMP_CREATE || error == E_TMP_WRITE || error == E_TMP_READ)	print(STDERR_FILENO, "\n",                            PRINT);
 
-			if (error == REDIR_AMB)			print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0), FREE_PRINT);
-			if (error == OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == OPEN_READ)			print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0), FREE_PRINT);
-			if (error == OPEN_DIR)			print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
-			if (error == OPEN_FAIL)			print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == DUP_FAIL)			print(STDERR_FILENO, "error duplicating file descriptor\n", PRINT);
-			if (error == PIPE_FAIL)			print(STDERR_FILENO, "pipe failed\n", PRINT);
-			if (error == SUB_HEREDOC)		print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0), FREE_PRINT);
+			if (error == E_REDIR_AMB)		print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0), FREE_PRINT);
+			if (error == E_OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
+			if (error == E_OPEN_READ)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0), FREE_PRINT);
+			if (error == E_OPEN_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
+			if (error == E_OPEN_FAIL)		print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
+			if (error == E_DUP_FAIL)		print(STDERR_FILENO, "error duplicating file descriptor\n", PRINT);
+			if (error == E_PIPE_FAIL)		print(STDERR_FILENO, "pipe failed\n", PRINT);
+			if (error == E_SUB_HEREDOC)		print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0), FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -75,13 +73,13 @@
 
 		//	Print execution error messages
 		static void execution_msg(int error, char *value) {
-			if (error == FORK_FAIL)			print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == EXECVE_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 FREE_JOIN);
-			if (error == FORK_FAIL || error == EXECVE_FAIL) print(STDERR_FILENO, "\n",                                            PRINT);
+			if (error == E_FORK_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), FREE_JOIN);
+			if (error == E_EXECVE_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 FREE_JOIN);
+			if (error == E_FORK_FAIL || error == E_EXECVE_FAIL) print(STDERR_FILENO, "\n",                                        PRINT);
 
-			if (error == CMD_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                   FREE_PRINT);
-			if (error == CMD_ISDIR)			print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                      FREE_PRINT);
-			if (error == CMD_EXEC)			print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                   FREE_PRINT);
+			if (error == E_CMD_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                   FREE_PRINT);
+			if (error == E_CMD_ISDIR)		print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                      FREE_PRINT);
+			if (error == E_CMD_EXEC)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                   FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -122,7 +120,7 @@
 			free_value = 0;
 		}
 
-		if (error > NOTHING && error < END) {
+		if (error > NOTHING && error < E_END) {
 			print(STDERR_FILENO, shell.name, RESET);
 			if (value) print(STDERR_FILENO, ": ", JOIN);
 		}

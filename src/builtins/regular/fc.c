@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 17:42:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 20:24:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,20 +275,20 @@
 			}
 
 			if (!*editor || access(*editor, F_OK) == -1) {
-				if (name)		exit_error(CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
 				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", 0), FREE_RESET_PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (is_directory((char *)(*editor))) {
-				exit_error(CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
-				exit_error(CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				exit_error(E_CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
@@ -304,7 +304,7 @@
 		static int fc_edit(t_parse_result *result) {
 			// Find editor command
 			char *editor = NULL;
-			if (default_editor(result, &editor, get_option_value(result, 'e')))				return (1);
+			if (default_editor(result, &editor, get_option_value(result, 'e')))		return (1);
 
 			// Remove fc command from the history
 			history_remove_last_if_added(1);
@@ -326,7 +326,7 @@
 			int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
 			if (fd == -1) {
 				free(editor);
-				return (exit_error(TMP_CREATE, 1, "fc", 0, EE_RETURN));
+				return (exit_error(E_TMP_CREATE, 1, "fc", 0, EE_RETURN));
 			}
 
 			for (size_t i = start; i <= end; ++i) {
@@ -336,7 +336,7 @@
 					if (write(fd, entry->line, entry->length) == -1) {
 						free(editor);
 						tmp_delete_fd(fd);
-						return (exit_error(TMP_WRITE, 1, "fc", 0, EE_RETURN));
+						return (exit_error(E_TMP_WRITE, 1, "fc", 0, EE_RETURN));
 					}
 				}
 			}
@@ -349,7 +349,7 @@
 			if (pid < 0) {	// Error
 				free(editor);
 				tmp_delete_path(tmp_file);
-				return (exit_error(FORK_FAIL, 1, "fc", 0, EE_RETURN));
+				return (exit_error(E_FORK_FAIL, 1, "fc", 0, EE_RETURN));
 			}
 			if (pid == 0) {	// Child
 				close(terminal.bk_stdin);

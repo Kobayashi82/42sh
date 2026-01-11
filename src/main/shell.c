@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 20:20:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 20:24:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@
 
 	int initialize(int argc, const char **argv, const char **envp) {
 		t_env *env = calloc(1, sizeof(t_env));
-		if (!env) exit_error(NO_MEMORY, 1, NULL, 0, EE_EXIT);
+		if (!env) exit_error(E_NO_MEMORY, 1, NULL, 0, EE_EXIT);
 
 		shell.name_exec = (argv[0][0] == '-') ? argv[0] + 1 : argv[0];
 		shell.name_bin = strrchr(shell.name_exec, '/');

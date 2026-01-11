@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 18:06:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 22:00:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,13 @@
 			VAR_REFERENCE		= 1 << 5 	// 0x20
 		} t_var_type;
 
-		// Set:			var->flags |= VAR_EXPORTED
-		// Remove:		var->flags &= ~VAR_EXPORTED
-		// Check:		if (var->flags & VAR_EXPORTED)
-		// Múltiples:	var->flags |= (VAR_READONLY | VAR_INTEGER)
+		// Set:					var->flags |= VAR_EXPORTED
+		// Set multiples:		var->flags |= (VAR_EXPORTED | VAR_READONLY)
+		// Remove:				var->flags &= ~VAR_EXPORTED
+		// Remove multiples:	var->flags &= ~(VAR_EXPORTED | VAR_READONLY);
+		// Check:				if (var->flags & VAR_EXPORTED)
+		// Check multiples:		if (var->flags & (VAR_EXPORTED | VAR_READONLY))
+		// Check todos:			if ((var->flags & (VAR_EXPORTED | VAR_READONLY)) == (VAR_EXPORTED | VAR_READONLY))
 
 	#pragma endregion
 

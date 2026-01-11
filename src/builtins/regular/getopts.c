@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 17:44:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 20:03:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@
 	#pragma region "Variable"
 
 		static void update_variable(const char *key, const char *value) {
-			if (variable_validate(key, 0)) return;
+			if (variable_validate(key)) return;
 
 			(void) value;
 			// t_var *var = variable_find(shell.env->table, key);

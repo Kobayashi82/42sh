@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 17:37:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/11 20:03:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@
 		if (!arg) return (0);
 
 		if (!strchr(arg, '=')) {
-			if (variable_validate(arg, 0)) {
+			if (variable_validate(arg)) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),    FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), FREE_JOIN);
 				return (1);
@@ -117,7 +117,7 @@
 			key[len - 1] = '\0'; append = 1;
 		}
 
-		if (variable_validate(key, 0)) {
+		if (variable_validate(key)) {
 			if (append) key[len - 1] = '+';
 			print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": local: `", key, 3),      FREE_JOIN);
 			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), FREE_JOIN);
