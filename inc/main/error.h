@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 16:11:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 21:40:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,11 @@
 	#pragma region "Builtin"
 
 		enum e_error_builtin {
+			E_OPT_MAX				= 300,		// 
+			E_OPT_INVALID			= 301,		//
+			E_OPT_NO_ARGUMENT		= 302,		//
+			E_OPT_ARGUMENT			= 303,		//
+
 			E_CD_PATH				= 310,		// 
 			E_CD_ARGS				= 311,		// 
 			E_CD_HOME				= 312,		// 

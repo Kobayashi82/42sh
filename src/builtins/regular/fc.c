@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:02:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -408,7 +408,6 @@
 		t_parse_result *result = parse_options(argc, argv, "se:lnr", NULL, long_opts, "fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]", IGNORE_NUMBER);
 
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_fc_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

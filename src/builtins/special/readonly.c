@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 17:50:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 21:38:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 
 		int bt_readonly_help(int format, int no_print) {
 			char *name = "readonly";
-			char *syntax = "readonly [-aAf] [name[=value] ...] or readonly [-fp]";
+			char *syntax = "readonly [-aAfn] [name[=value] ...] or readonly [-fp]";
 			char *description = "Mark shell variables as unchangeable.";
 			char *msg =
 				"    Mark each NAME as read-only; the values of these NAMEs may not be\n"
@@ -100,9 +100,9 @@
 
 #pragma endregion
 
-#pragma region "Add"
+#pragma region "Variable"
 
-	static int add_readonly(t_parse_result *result, char *arg) {
+	static int variable_readonly(t_parse_result *result, char *arg) {
 		if (!arg) return (0);
 
 		int reference = 1;
@@ -175,18 +175,32 @@
 
 #pragma endregion
 
+#pragma region "Funcion"
+
+	static int funcion_readonly(t_parse_result *result, char *arg) {
+		if (!arg) return (0);
+
+		(void) result;
+		int ret = 0;
+
+		return (ret);
+	}
+
+#pragma endregion
+
 #pragma region "Readonly"
 
 	int bt_readonly(int argc, char **argv) {
 		t_long_option long_opts[] = {
 			{"help",	NO_ARGUMENT, 0},
 			{"version",	NO_ARGUMENT, 0},
-			{NULL, 0, 0}
+			{NULL,		NO_ARGUMENT, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "aAfp", NULL, long_opts, "readonly [-aAf] [name[=value] ...] or readonly [-fp]", IGNORE_OFF);
-		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 2);
+		t_parse_result *result = parse_options(argc, argv, "aAfnp", NULL, long_opts, "readonly [-aAfn] [name[=value] ...] or readonly [-fp]", IGNORE_OFF);
+		if (errno == E_NO_MEMORY)	return (exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN));
+		if (errno == E_OPT_MAX)		return (exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN));
+		if (errno)					return (1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_readonly_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -195,14 +209,15 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			if (has_option(result, 'f'))	variable_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);	// function
-			else							variable_print(shell.env, VAR_READONLY, SORT_NORMAL, 0);
-			return (free_options(result), 0);
+			// if (has_option(result, 'f'))	function_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);
+			// else							variable_print(shell.env, VAR_READONLY, SORT_NORMAL, 0);
+											variable_print(shell.env, VAR_READONLY, SORT_NORMAL, 0);
+			return (free_options(result), ret);
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (has_option(result, 'f'))	ret = add_readonly(result, result->argv[i]); // function
-			else							ret = add_readonly(result, result->argv[i]);
+			if (has_option(result, 'f'))	ret = funcion_readonly(result, result->argv[i]);
+			else							ret = variable_readonly(result, result->argv[i]);
 		}
 
 		return (free_options(result), ret);

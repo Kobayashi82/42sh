@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 15:56:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@
 
 		t_parse_result *result = parse_options(argc, argv, "vn", NULL, long_opts, "unset [-f] [-v] [name ...]", IGNORE_OFF);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_unset_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 17:49:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 20:57:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,10 @@
 	#pragma region "Builtin"
 
 		static void builtin_msg(int error_type, char *value1, char *value2) {
-			(void) error_type;
-			(void) value1;
-			(void) value2;
+			if (error_type == E_OPT_MAX) {
+				print(STDERR_FILENO, value1,                                                                 P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": Too many options (max ", value2, ")\n", J_FREE_NONE), P_FREE_JOIN);
+			}
 		}
 
 	#pragma endregion

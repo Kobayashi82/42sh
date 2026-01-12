@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 23:17:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 21:37:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@
 		typedef struct s_long_option {
 			const char			*name;				// Long option name
 			int					has_arg;			// NO_ARG, REQUIRED_ARG, OPTIONAL_ARG
-			char				short_equiv;		// Short equivalent option (0 if none)
+			char				opt;				// Short option (0 if none)
 		} t_long_option;
 
 		typedef struct s_opt_value {
+			char				*long_name;			// Long option name (NULL if short option)
 			char				opt;				// Option character
 			char				*value;				// Option value (NULL if none)
 			int					is_long;			// 1 if long option, 0 if short option
-			char				*long_name;			// Long option name (NULL if short option)
 			struct s_opt_value	*next;
 		} t_opt_value;
 
@@ -56,12 +56,6 @@
 			char				**argv;				// Non-option arguments
 			const char			*name;				// Name of the command calling getopt
 			const char			*usage;				// Usage syntax of the calling command
-			char				*invalid_opt;		// Invalid option (NULL if none)
-			char				*invalid_long;		// Invalid long option (NULL if none)
-			char				missing_arg;		// Option missing a required argument (0 if none)
-			int					error;				// 2 if MAX_OPTIONS, 1 if any error, 0 if no error
-			int					silent_mode;		// Suppress error messages for '-' options
-			int					silent_mode_plus;	// Suppress error messages for '+' options
 		} t_parse_result;
 
 	#pragma endregion

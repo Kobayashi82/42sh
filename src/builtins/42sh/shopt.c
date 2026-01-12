@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:52:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,7 +123,6 @@
 
 		t_parse_result *result = parse_options(argc, argv, "pqsuo", NULL, long_opts, "shopt [-pqsu] [-o] [optname ...]", IGNORE_OFF);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_shopt_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

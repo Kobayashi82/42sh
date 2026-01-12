@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:22:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,7 +268,6 @@
 
 		t_parse_result *result = parse_options(argc, argv, "Lls:n:", NULL, long_opts, "kill [-s sig_spec | -n signum | -sig_spec] pid | job_spec ... or kill -l [sig_spec]", IGNORE_STRING);
 		if (!result)		return (1);
-		if (result->error)	return (free_options(result), 2);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_kill_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

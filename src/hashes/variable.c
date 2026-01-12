@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 17:05:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 21:56:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,7 @@
 				char *key_copy = ft_strdup(key);
 				if (!key_copy || !visited_var) {
 					free(key_copy);
+					free(visited_var);
 					variable_clear_table(visited);
 					errno = E_NO_MEMORY;
 					return (NULL);
@@ -199,6 +200,7 @@
 					char *target_copy = ft_strdup(target);
 					if (!target_copy || !visited_var) {
 						free(target_copy);
+						free(visited_var);
 						variable_clear_table(visited);
 						errno = E_NO_MEMORY;
 						return (NULL);
@@ -540,8 +542,7 @@
 
 				if (!count) {
 					char *result = ft_strdup("()");
-					if (result) errno = E_NO_MEMORY;
-					return (result);
+					if (!result) return (errno = E_NO_MEMORY, result);
 				}
 
 				// Allocate exact space needed
@@ -1216,7 +1217,7 @@
 			free(var->key);
 			if (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) {
 				if (var->data.array) {
-					for (int i = 0; var->data.array[i]; ++i)
+					for (int i = 0; i < HASH_SIZE; ++i)
 						variable_free(var->data.array[i]);
 					free(var->data.array);
 				}
@@ -1237,10 +1238,29 @@
 			t_var *var = variable_get(env, key, reference);
 			if (!var || errno) return (errno);
 
-			if (var->flags & VAR_READONLY) return (errno = E_VAR_READONLY, E_VAR_READONLY);
+			char *last_key = var->key;
 
-			variable_free(var);
-			specials_unset(env, key);
+			while (env) {
+				unsigned int hash = hash_index(last_key);
+				var = env->table[hash];
+				t_var *prev = NULL;
+
+				while (var) {
+					if (!strcmp(var->key, last_key)) {
+						if (var->flags & VAR_READONLY) return (errno = E_VAR_READONLY, E_VAR_READONLY);
+
+						if (prev)	prev->next = var->next;
+						else		env->table[hash] = var->next;
+
+						variable_free(var);
+						specials_unset(env, last_key);
+
+						return (0);
+					}
+					var = var->next;
+				}
+				env = env->parent;
+			}
 
 			return (0);
 		}
