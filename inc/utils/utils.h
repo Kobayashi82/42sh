@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:57:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:24:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@
 
 #pragma region "Enumerators"
 
+	enum e_sort {
+		SORT_NONE,
+		SORT_NORMAL,
+		SORT_REVERSE
+	};
+
 	enum e_print {
 		P_RESET,
 		P_RESET_PRINT,
@@ -39,28 +45,15 @@
 		P_RESET_ALL
 	};
 
-	enum e_sort {
-		SORT_NONE,
-		SORT_NORMAL,
-		SORT_REVERSE
-	};
-
-// " P_FREE_RESET_PRINT"
-
-			// EE_FREE_NONE			= 294,		// Dont free any value
-			// EE_FREE_VAL1			= 295,		// Free 'value1'
-			// EE_FREE_VAL2			= 296,		// Free 'value2'
-			// EE_FREE_BOTH			= 297,		// Free 'value1' and 'value2'
-
-	enum e_join_free {
+	enum e_join {
 		J_FREE_NONE			= 290,		// Dont free any value
-		J_FREE_VAL1			= 291,		// Free 'value1'
-		J_FREE_VAL2			= 292,		// Free 'value2'
-		J_FREE_VAL3			= 293,		// Free 'value3'
-		J_FREE_VAL1_2		= 294,		// Free 'value1' and 'value2'
-		J_FREE_VAL1_3		= 295,		// Free 'value1' and 'value3'
-		J_FREE_VAL2_3		= 296,		// Free 'value2' and 'value3'
-		J_FREE_VAL1_2_3		= 297,		// Free 'value1' and 'value2' and 'value3'
+		J_FREE_VAL_1		= 291,		// Free 'value1'
+		J_FREE_VAL_2		= 292,		// Free 'value2'
+		J_FREE_VAL_3		= 293,		// Free 'value3'
+		J_FREE_VAL_1_2		= 294,		// Free 'value1' and 'value2'
+		J_FREE_VAL_1_3		= 295,		// Free 'value1' and 'value3'
+		J_FREE_VAL_2_3		= 296,		// Free 'value2' and 'value3'
+		J_FREE_VAL_1_2_3	= 297,		// Free 'value1' and 'value2' and 'value3'
 	};
 
 #pragma endregion

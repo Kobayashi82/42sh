@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/18 20:14:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:19:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,9 +341,9 @@
 				path = ft_strdup(path);
 			}
 
-			if (*path && path[ft_strlen(path) - 1] != '/') path = ft_strjoin(path, "/", J_FREE_VAL1);
+			if (*path && path[ft_strlen(path) - 1] != '/') path = ft_strjoin(path, "/", J_FREE_VAL_1);
 			char *template = random_template();
-			char *fullpath = ft_strjoin_sep(path, name, template, J_FREE_VAL1_3);
+			char *fullpath = ft_strjoin_sep(path, name, template, J_FREE_VAL_1_3);
 
 			int fd = open(fullpath, O_RDWR | O_CREAT | O_EXCL, 0600);
 			if (fd == -1) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:56:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,8 @@
 
 			char *line = NULL;
 			for (int i = 0; i < result->argc; i++) {
-				line = ft_strjoin(line, result->argv[i], J_FREE_VAL1);
-				if (i + 1 < result->argc) line = ft_strjoin(line, " ", J_FREE_VAL1);
+				line = ft_strjoin(line, result->argv[i], J_FREE_VAL_1);
+				if (i + 1 < result->argc) line = ft_strjoin(line, " ", J_FREE_VAL_1);
 			}
 
 			if (line) {
@@ -167,7 +167,7 @@
 			for (int i = 0; i < result->argc; i++) {
 				char *line = ft_strdup(result->argv[i]);
 				expand_history(&line, 0);
-				print(STDOUT_FILENO, ft_strjoin(line, "\n", J_FREE_VAL1), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(line, "\n", J_FREE_VAL_1), P_FREE_JOIN);
 			}
 
 			print(STDOUT_FILENO, NULL, P_PRINT);

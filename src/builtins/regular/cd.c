@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:00:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@
 		char *path = ft_strdup(original);
 
 		if (*path != '/') {
-			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL3);
+			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL_3);
 			path = resolve_path(tmp);
 			free(tmp);
 		} else {
@@ -137,7 +137,7 @@
 				path = ft_strdup(var_path);
 
 				if (*path != '/') {
-					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL3);
+					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL_3);
 					path = resolve_path(tmp);
 					free(tmp);
 				} else {

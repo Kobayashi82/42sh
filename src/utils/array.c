@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:16:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@
 		print(fd, NULL, P_RESET);
 
 		for (int i = 0; array[i]; ++i) {
-			if (numbered) print(fd, ft_strjoin(ft_itoa(i), " ", J_FREE_VAL1), P_FREE_JOIN);
+			if (numbered) print(fd, ft_strjoin(ft_itoa(i), " ", J_FREE_VAL_1), P_FREE_JOIN);
 			print(fd, ft_strjoin(array[i], "\n",                J_FREE_NONE), P_FREE_JOIN);
 		}
 

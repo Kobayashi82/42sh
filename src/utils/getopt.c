@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:19:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -404,7 +404,7 @@
 			static int max_options(t_parse_result *result, int opt_count) {
 				if (opt_count >= MAX_OPTIONS) {
 					print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name,                      J_FREE_NONE), P_FREE_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep("Too many options (max ", ft_itoa(MAX_OPTIONS), ")\n", J_FREE_VAL2), P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep("Too many options (max ", ft_itoa(MAX_OPTIONS), ")\n", J_FREE_VAL_2), P_FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ",                                 J_FREE_NONE), P_FREE_JOIN);
 					print(STDERR_FILENO, ft_strjoin(result->usage, "\n",                                       J_FREE_NONE), P_FREE_PRINT);
 					result->error = 2;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:11:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,7 @@
 					
 					if (alias->name) {
 						array[i] = ft_strjoin("alias ", alias->name, J_FREE_NONE);
-						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), J_FREE_VAL1_3);
+						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), J_FREE_VAL_1_3);
 						i++;
 					}
 					alias = alias->next;

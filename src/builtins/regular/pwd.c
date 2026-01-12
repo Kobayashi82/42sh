@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:04:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@
 			// Modo físico: mostrar ruta real sin symlinks
 			char *cwd = get_cwd("cwd");
 			if (!cwd)	ret = 1;
-			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL1), P_FREE_RESET_PRINT);
+			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL_1), P_FREE_RESET_PRINT);
 		} else {
 			// Modo lógico (por defecto): mostrar PWD del shell
 			if (shell.cwd) {

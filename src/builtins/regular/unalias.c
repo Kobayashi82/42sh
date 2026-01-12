@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:06:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,8 @@
 
 		if (!alias) {
 			char *value = ft_strjoin(shell.name, ": unalias: ", J_FREE_NONE);
-			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL1);
-			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL1_2);
+			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL_1);
+			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL_1_2);
 			return (1);
 		}
 

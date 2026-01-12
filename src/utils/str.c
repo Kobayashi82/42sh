@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:45:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,8 +150,8 @@
 				}
 			}
 
-			if (free_mode == J_FREE_VAL1 || free_mode == J_FREE_VAL1_2) free((void *)value1);
-			if (free_mode == J_FREE_VAL2 || free_mode == J_FREE_VAL1_2) free((void *)value2);
+			if (free_mode == J_FREE_VAL_1 || free_mode == J_FREE_VAL_1_2) free((void *)value1);
+			if (free_mode == J_FREE_VAL_2 || free_mode == J_FREE_VAL_1_2) free((void *)value2);
 
 			return (new_str);
 		}
@@ -179,9 +179,9 @@
 				}
 			}
 
-			if (value1 && (free_mode == J_FREE_VAL1 || free_mode == J_FREE_VAL1_2 || free_mode == J_FREE_VAL1_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value1);
-			if (value2 && (free_mode == J_FREE_VAL2 || free_mode == J_FREE_VAL1_2 || free_mode == J_FREE_VAL2_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value2);
-			if (value3 && (free_mode == J_FREE_VAL3 || free_mode == J_FREE_VAL1_3 || free_mode == J_FREE_VAL2_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value3);
+			if (value1 && (free_mode == J_FREE_VAL_1 || free_mode == J_FREE_VAL_1_2 || free_mode == J_FREE_VAL_1_3 || free_mode == J_FREE_VAL_1_2_3)) free((void *)value1);
+			if (value2 && (free_mode == J_FREE_VAL_2 || free_mode == J_FREE_VAL_1_2 || free_mode == J_FREE_VAL_2_3 || free_mode == J_FREE_VAL_1_2_3)) free((void *)value2);
+			if (value3 && (free_mode == J_FREE_VAL_3 || free_mode == J_FREE_VAL_1_3 || free_mode == J_FREE_VAL_2_3 || free_mode == J_FREE_VAL_1_2_3)) free((void *)value3);
 
 			return (new_str);
 		}

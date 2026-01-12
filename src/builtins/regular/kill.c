@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:22:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:04:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@
 				ret = 1;
 			} else {
 				if (!mode)	print(STDOUT_FILENO, ft_strjoin(signal_to_str(signal), "\n", J_FREE_NONE), P_FREE_JOIN);
-				else		print(STDOUT_FILENO, ft_strjoin(ft_itoa(signal), "\n",       J_FREE_VAL1), P_FREE_JOIN);
+				else		print(STDOUT_FILENO, ft_strjoin(ft_itoa(signal), "\n",       J_FREE_VAL_1), P_FREE_JOIN);
 			}
 		}
 
@@ -245,7 +245,7 @@
 			}
 
 			if (kill(0, sig_num)) {
-				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": kill: (", ft_itoa(pid), J_FREE_VAL3), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": kill: (", ft_itoa(pid), J_FREE_VAL_3), P_FREE_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep(") - : ", strerror(errno), "\n",       J_FREE_NONE), P_FREE_JOIN);
 			}
 		}

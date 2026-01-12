@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:09:06 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,15 +127,15 @@
 
 			if (variable_validate(key)) {
 				if (append) key[len - 1] = '+';
-				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": export: `", key,            J_FREE_VAL3), P_FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", J_FREE_VAL2), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": export: `", key,            J_FREE_VAL_3), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", J_FREE_VAL_2), P_FREE_JOIN);
 				return (1);
 			}
 
 			t_var *var = variable_get(shell.env, key, 1);
 			if (var && var->flags & VAR_READONLY) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": export: `",     J_FREE_NONE), P_FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", J_FREE_VAL1), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", J_FREE_VAL_1), P_FREE_JOIN);
 				free(value);
 				return (1);
 			}
@@ -198,15 +198,15 @@
 
 			if (variable_validate(key)) {
 				if (append) key[len - 1] = '+';
-				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": export: `", key,            J_FREE_VAL3), P_FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", J_FREE_VAL2), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": export: `", key,            J_FREE_VAL_3), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", J_FREE_VAL_2), P_FREE_JOIN);
 				return (1);
 			}
 
 			t_var *var = variable_get(shell.env, key, 1);
 			if (var && var->flags & VAR_READONLY) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": export: `",     J_FREE_NONE), P_FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", J_FREE_VAL1), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", J_FREE_VAL_1), P_FREE_JOIN);
 				free(value);
 				return (1);
 			}

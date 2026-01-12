@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:59:27 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,14 +120,14 @@
 		t_alias *alias = alias_find(arg);
 		if (alias && alias->name) {
 			char *value = ft_strjoin_sep("alias ", alias->name, "='", J_FREE_NONE);
-			if (alias->value) value = ft_strjoin_sep(value, alias->value, "'\n", J_FREE_VAL1);
-			if (value) *values = ft_strjoin(*values, value, J_FREE_VAL1_2);
+			if (alias->value) value = ft_strjoin_sep(value, alias->value, "'\n", J_FREE_VAL_1);
+			if (value) *values = ft_strjoin(*values, value, J_FREE_VAL_1_2);
 		}
 
 		if (!alias) {
 			char *value = ft_strjoin(shell.name, ": alias: ", J_FREE_NONE);
-			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL1);
-			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL1_2);
+			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL_1);
+			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL_1_2);
 		}
 
 		return (0);

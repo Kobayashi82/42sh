@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:55:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@
 					else 							builtin->disabled = 0;
 				} else {
 					char *value = ft_strjoin_sep(": enable: ", result->argv[i], ": not a shell builtin\n", J_FREE_NONE);
-					if (value) invalues = ft_strjoin_sep(invalues, shell.name, value, J_FREE_VAL1_3);
+					if (value) invalues = ft_strjoin_sep(invalues, shell.name, value, J_FREE_VAL_1_3);
 					ret = 1;
 				}
 			}
