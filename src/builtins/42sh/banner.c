@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:28:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:24:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,38 +29,38 @@
 			char *description = "Display 42sh banner.";
 			char *msg = "    Displays the 42sh banner in ASCII art\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -78,7 +78,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -103,20 +103,20 @@
 		if (find_long_option(result, "help"))		return (free_options(result), bt_banner_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		print(STDOUT_FILENO, RED600"\n\t        ,--,                                        \n",   RESET);
-		print(STDOUT_FILENO,         "\t      ,--.'|      ,----,  "Y"           ,---,     \n",     JOIN);
-		print(STDOUT_FILENO,         "\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n",    JOIN);
-		print(STDOUT_FILENO,         "\t,---.'|  : '  ,----,'    |"Y"         |  |  :     \n",     JOIN);
-		print(STDOUT_FILENO,         "\t;   : |  | ;  |    :  .  ;"Y".--.--.  :  :  :     \n",     JOIN);
-		print(STDOUT_FILENO,         "\t|   | : _' |  ;    |.'  /"Y"/  /    ' :  |  |,--. \n",     JOIN);
-		print(STDOUT_FILENO,         "\t:   : |.'  |  `----'/  ;"Y"|  :  /`./ |  :  '   | \n",     JOIN);
-		print(STDOUT_FILENO,         "\t|   ' '  ; :    /  ;  / "Y"|  :  ;_   |  |   /' : \n",     JOIN);
-		print(STDOUT_FILENO,         "\t\\   \\  .'. |   ;  /  /-,"Y" \\  \\    `.'  :  | | | \n", JOIN);
-		print(STDOUT_FILENO,         "\t `---`:  | '  /  /  /.`|"Y"  `----.   \\  |  ' | : \n",    JOIN);
-		print(STDOUT_FILENO,         "\t      '  ; |./__;      :"Y" /  /`--'  /  :  :_:,' \n",     JOIN);
-		print(STDOUT_FILENO,         "\t      |  : ;|   :    .' "Y"'--'.     /|  | ,'     \n",     JOIN);
-		print(STDOUT_FILENO,         "\t      '  ,/ ;   | .'     "Y" `--'---' `--''       \n",     JOIN);
-		print(STDOUT_FILENO,         "\t      '--'  `---'                                \n\n"NC,  PRINT);
+		print(STDOUT_FILENO, RED600"\n\t        ,--,                                        \n",   P_RESET);
+		print(STDOUT_FILENO,         "\t      ,--.'|      ,----,  "Y"           ,---,     \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n",    P_JOIN);
+		print(STDOUT_FILENO,         "\t,---.'|  : '  ,----,'    |"Y"         |  |  :     \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t;   : |  | ;  |    :  .  ;"Y".--.--.  :  :  :     \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t|   | : _' |  ;    |.'  /"Y"/  /    ' :  |  |,--. \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t:   : |.'  |  `----'/  ;"Y"|  :  /`./ |  :  '   | \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t|   ' '  ; :    /  ;  / "Y"|  :  ;_   |  |   /' : \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t\\   \\  .'. |   ;  /  /-,"Y" \\  \\    `.'  :  | | | \n", P_JOIN);
+		print(STDOUT_FILENO,         "\t `---`:  | '  /  /  /.`|"Y"  `----.   \\  |  ' | : \n",    P_JOIN);
+		print(STDOUT_FILENO,         "\t      '  ; |./__;      :"Y" /  /`--'  /  :  :_:,' \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t      |  : ;|   :    .' "Y"'--'.     /|  | ,'     \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t      '  ,/ ;   | .'     "Y" `--'---' `--''       \n",     P_JOIN);
+		print(STDOUT_FILENO,         "\t      '--'  `---'                                \n\n"NC,  P_PRINT);
 
 		return (free_options(result), 0);
 	}

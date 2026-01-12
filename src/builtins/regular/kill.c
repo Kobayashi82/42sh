@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:22:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,38 +51,38 @@
 				"    Exit Status:\n"
 				"      Returns success unless an invalid option is given or an error occurs.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -100,7 +100,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -128,15 +128,15 @@
 				"58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2\n"
 				"63) SIGRTMAX-1  64) SIGRTMAX\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 			return (0);
 		}
 
 		int ret = 0;
 		int signal = 0;
 
-		print(STDOUT_FILENO, NULL, RESET);
-		print(STDERR_FILENO, NULL, RESET);
+		print(STDOUT_FILENO, NULL, P_RESET);
+		print(STDERR_FILENO, NULL, P_RESET);
 
 		for (int i = 0; i < result->argc; ++i) {
 			int mode = 0;
@@ -149,17 +149,17 @@
 			}
 
 			if (signal < 0 || signal > 64) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                              FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": invalid signal specification\n", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                              P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": invalid signal specification\n", 0), P_FREE_JOIN);
 				ret = 1;
 			} else {
-				if (!mode)	print(STDOUT_FILENO, ft_strjoin(signal_to_str(signal), "\n", 0), FREE_JOIN);
-				else		print(STDOUT_FILENO, ft_strjoin(ft_itoa(signal), "\n", 1),       FREE_JOIN);
+				if (!mode)	print(STDOUT_FILENO, ft_strjoin(signal_to_str(signal), "\n", 0), P_FREE_JOIN);
+				else		print(STDOUT_FILENO, ft_strjoin(ft_itoa(signal), "\n", 1),       P_FREE_JOIN);
 			}
 		}
 
-		print(STDOUT_FILENO, NULL, PRINT);
-		print(STDERR_FILENO, NULL, PRINT);
+		print(STDOUT_FILENO, NULL,P_PRINT);
+		print(STDERR_FILENO, NULL,P_PRINT);
 
 		return (ret);
 	}
@@ -196,8 +196,8 @@
 		}
 
 		if (sig_num < 0 || sig_num > 64) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                            FREE_RESET);
-			print(STDERR_FILENO, ft_strjoin(failed_signal, ": invalid signal specification\n", 0), FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                            P_FREE_RESET);
+			print(STDERR_FILENO, ft_strjoin(failed_signal, ": invalid signal specification\n", 0),P_FREE_PRINT);
 
 			return (-1);
 		}
@@ -213,20 +213,20 @@
 		if (sig_num < 0 || sig_num > 64) return (1);
 
 		if (!result->argc) {
-			print(STDERR_FILENO, "kill: usage: kill [-s sig_spec | -n signum | -sig_spec] pid | job_spec ... or kill -l [sig_spec]\n", RESET_PRINT);
+			print(STDERR_FILENO, "kill: usage: kill [-s sig_spec | -n signum | -sig_spec] pid | job_spec ... or kill -l [sig_spec]\n", P_RESET_PRINT);
 			return (2);
 		}
 
 		int ret = 0;
 
-		print(STDERR_FILENO, NULL, RESET);
+		print(STDERR_FILENO, NULL, P_RESET);
 
 		for (int i = 0; i < result->argc; ++i) {
 			int pid = -1;
 
 			if (result->argv[i][0] != '%' && !ft_isdigit_s(result->argv[i])) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                                      FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": arguments must be process or job IDs\n", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),                                      P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(result->argv[i], ": arguments must be process or job IDs\n", 0), P_FREE_JOIN);
 				ret = 1;
 				continue;
 			}
@@ -234,8 +234,8 @@
 			if (result->argv[i][0] == '%') {
 				char *job = NULL;
 				if (!job) {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),             FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin(result->argv[i], ": no such job\n", 0), FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": kill: ", 0),             P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(result->argv[i], ": no such job\n", 0), P_FREE_JOIN);
 					ret = 1;
 					continue;
 				}
@@ -245,12 +245,12 @@
 			}
 
 			if (kill(0, sig_num)) {
-				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": kill: (", ft_itoa(pid), 3), FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(") - : ", strerror(errno), "\n", 0),       FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": kill: (", ft_itoa(pid), 3), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(") - : ", strerror(errno), "\n", 0),       P_FREE_JOIN);
 			}
 		}
 
-		print(STDERR_FILENO, NULL, PRINT);
+		print(STDERR_FILENO, NULL,P_PRINT);
 
 		return (ret);
 	}

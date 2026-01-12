@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:24:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,38 +52,38 @@
 			"    Exit Status:\n"
 			"      Returns success unless an invalid option is given or an error occurs.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -101,7 +101,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -119,8 +119,8 @@
 				history_print(history_length(), 0);
 			} else {
 				if (!ft_isdigit_s(result->argv[0])) {
-					print(STDERR_FILENO, shell.name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", 0), FREE_PRINT);
+					print(STDERR_FILENO, shell.name, P_RESET);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", 0), P_FREE_PRINT);
 					return (1);
 				} else {
 					history_print(atoi(result->argv[0]), 0);
@@ -162,15 +162,15 @@
 
 			history_remove_last_if_added(1);
 
-			print(STDOUT_FILENO, NULL, RESET);
+			print(STDOUT_FILENO, NULL, P_RESET);
 
 			for (int i = 0; i < result->argc; i++) {
 				char *line = ft_strdup(result->argv[i]);
 				expand_history(&line, 0);
-				print(STDOUT_FILENO, ft_strjoin(line, "\n", 1), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(line, "\n", 1), P_FREE_JOIN);
 			}
 
-			print(STDOUT_FILENO, NULL, PRINT);
+			print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -195,8 +195,8 @@
 			const char *offset_str = get_option_value(result, 'd');
 
 			if (!offset_str) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ": history: -d: option requires an argument\n", PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ": history: -d: option requires an argument\n", P_PRINT);
 				return (2);
 			}
 
@@ -204,8 +204,8 @@
 
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
-					print(STDERR_FILENO, shell.name, RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
+					print(STDERR_FILENO, shell.name, P_RESET);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
 					return (1);
 				}
 				history_remove_offset_range(start, end);
@@ -213,14 +213,14 @@
 			}
 
 			if (!ft_isdigit_s(offset_str)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
 				return (1);
 			}
 
 			if (history_remove_offset(atoi(offset_str))) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
 				return (1);
 			}
 
@@ -235,8 +235,8 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_write(filename, 0);
@@ -253,12 +253,12 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), P_FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_read(filename);
@@ -275,8 +275,8 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_write(filename, 1);
@@ -293,12 +293,12 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), P_FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_read_append(filename);
@@ -335,8 +335,8 @@
 		local_options += has_option(result, 'w');
 
 		if (local_options > 1) {
-			print(STDERR_FILENO, shell.name, RESET);
-			print(STDERR_FILENO, ": history: cannot use more than one of -anrw\n", PRINT);
+			print(STDERR_FILENO, shell.name, P_RESET);
+			print(STDERR_FILENO, ": history: cannot use more than one of -anrw\n", P_PRINT);
 			return (free_options(result), 1);
 		}
 

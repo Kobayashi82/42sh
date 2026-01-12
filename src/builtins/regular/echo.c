@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,38 +59,38 @@
 				"    Exit Status:\n"
 				"      Returns success unless a write error occurs.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -108,7 +108,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -233,16 +233,16 @@
 			if (curr->opt == 'e') enable_ansi = 1;
 		}
 
-		print(STDOUT_FILENO, NULL, RESET);
+		print(STDOUT_FILENO, NULL, P_RESET);
 
 		for (int i = 0; i < result->argc; ++i) {
 			if (enable_ansi) ansi_escapes(result->argv[i]);
-			print(STDOUT_FILENO, result->argv[i],               JOIN);
-			if (i + 1 < result->argc) print(STDOUT_FILENO, " ", JOIN);
+			print(STDOUT_FILENO, result->argv[i],               P_JOIN);
+			if (i + 1 < result->argc) print(STDOUT_FILENO, " ", P_JOIN);
 		}
 
-		if (has_option(result, 'n'))	print(STDOUT_FILENO, NULL, PRINT);
-		else							print(STDOUT_FILENO, "\n", PRINT);
+		if (has_option(result, 'n'))	print(STDOUT_FILENO, NULL,P_PRINT);
+		else							print(STDOUT_FILENO, "\n",P_PRINT);
 
 		return (free_options(result), ret);
 	}

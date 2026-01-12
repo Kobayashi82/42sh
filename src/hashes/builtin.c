@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:48:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,12 +166,12 @@
 			if (sort) array_nsort(array, sort, 8);
 
 			if (array && array[0]) {
-				print(STDOUT_FILENO, NULL, RESET);
+				print(STDOUT_FILENO, NULL, P_RESET);
 				for (size_t i = 0; array[i]; ++i) {
-					print(STDOUT_FILENO, array[i], JOIN);
-					print(STDOUT_FILENO, "\n", JOIN);
+					print(STDOUT_FILENO, array[i], P_JOIN);
+					print(STDOUT_FILENO, "\n", P_JOIN);
 				}
-				print(STDOUT_FILENO, NULL, PRINT);
+				print(STDOUT_FILENO, NULL,P_PRINT);
 			}
 			if (array) array_free(array);
 

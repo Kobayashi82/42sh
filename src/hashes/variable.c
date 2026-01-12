@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 22:04:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1180,14 +1180,14 @@
 
 				// Print
 				if (array && array[0]) {
-					print(STDOUT_FILENO, NULL, RESET);
+					print(STDOUT_FILENO, NULL, P_RESET);
 
 					for (int j = 0; array[j]; ++j) {
-						print(STDOUT_FILENO, array[j], JOIN);
-						print(STDOUT_FILENO, "\n",     JOIN);
+						print(STDOUT_FILENO, array[j], P_JOIN);
+						print(STDOUT_FILENO, "\n",     P_JOIN);
 					}
 
-					print(STDOUT_FILENO, NULL, PRINT);
+					print(STDOUT_FILENO, NULL,P_PRINT);
 				}
 
 				// Cleanup

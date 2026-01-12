@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 23:16:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,10 +86,10 @@
 					result->invalid_long = ft_strdup(arg);
 					result->error = 1;
 					if (!result->silent_mode) {
-						print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0), FREE_RESET);
-						print(STDERR_FILENO, ": --: invalid option\n",                            JOIN);
-						print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),            FREE_JOIN);
-						print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                  FREE_PRINT);
+						print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0), P_FREE_RESET);
+						print(STDERR_FILENO, ": --: invalid option\n",                            P_JOIN);
+						print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),            P_FREE_JOIN);
+						print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                 P_FREE_PRINT);
 					}
 					return (-1);
 				}
@@ -110,10 +110,10 @@
 						result->invalid_long = ft_strdup(opt->name);
 						result->error = 1;
 						if (!result->silent_mode) {
-							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                                FREE_RESET);
-							print(STDERR_FILENO, ft_strjoin_sep(": --", result->invalid_long, ": option requires an argument\n", 0), FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                           FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                                 FREE_PRINT);
+							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                                P_FREE_RESET);
+							print(STDERR_FILENO, ft_strjoin_sep(": --", result->invalid_long, ": option requires an argument\n", 0), P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                           P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                                P_FREE_PRINT);
 						}
 						return (-1);
 					}
@@ -127,10 +127,10 @@
 						result->invalid_long = ft_strdup(arg);
 						result->error = 1;
 						if (!result->silent_mode) {
-							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                              FREE_RESET);
-							print(STDERR_FILENO, ft_strjoin_sep(": --", result->invalid_long, ": doesn't allow an argument\n", 0), FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                         FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                               FREE_PRINT);
+							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                              P_FREE_RESET);
+							print(STDERR_FILENO, ft_strjoin_sep(": --", result->invalid_long, ": doesn't allow an argument\n", 0), P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                         P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                              P_FREE_PRINT);
 						}
 						return (-1);
 					}
@@ -209,11 +209,11 @@
 						result->invalid_opt = ft_strdup(utf8_char);
 						result->error = 1;
 						if (!silent_mode) {
-							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                       FREE_RESET);
-							if (is_plus)	print(STDERR_FILENO, ft_strjoin_sep(": +", utf8_char, ": invalid option\n", 0), FREE_JOIN);
-							else			print(STDERR_FILENO, ft_strjoin_sep(": -", utf8_char, ": invalid option\n", 0), FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                  FREE_JOIN);
-							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                        FREE_PRINT);
+							print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                       P_FREE_RESET);
+							if (is_plus)	print(STDERR_FILENO, ft_strjoin_sep(": +", utf8_char, ": invalid option\n", 0), P_FREE_JOIN);
+							else			print(STDERR_FILENO, ft_strjoin_sep(": -", utf8_char, ": invalid option\n", 0), P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                  P_FREE_JOIN);
+							print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                       P_FREE_PRINT);
 						}
 						return (-1);
 					}
@@ -235,10 +235,10 @@
 							result->error = 1;
 							if (!silent_mode) {
 								char buff[2] = {opt, '\0'};
-								print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),               FREE_RESET);
-								print(STDERR_FILENO, ft_strjoin_sep(": -", buff, ": option requires an argument\n", 0), FREE_JOIN);
-								print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                          FREE_JOIN);
-								print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                FREE_PRINT);
+								print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),               P_FREE_RESET);
+								print(STDERR_FILENO, ft_strjoin_sep(": -", buff, ": option requires an argument\n", 0), P_FREE_JOIN);
+								print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                          P_FREE_JOIN);
+								print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                               P_FREE_PRINT);
 							}
 							return (-1);
 						}
@@ -403,10 +403,10 @@
 
 			static int max_options(t_parse_result *result, int opt_count) {
 				if (opt_count >= MAX_OPTIONS) {
-					print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                        FREE_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep("Too many options (max ", ft_itoa(MAX_OPTIONS), ")\n", 2), FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                 FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                       FREE_PRINT);
+					print(STDERR_FILENO, ft_strjoin_sep(result->name, ": ", result->name, 0),                        P_FREE_RESET);
+					print(STDERR_FILENO, ft_strjoin_sep("Too many options (max ", ft_itoa(MAX_OPTIONS), ")\n", 2), P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(result->name, ": usage: ", 0),                                 P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin(result->usage, "\n", 0),                                      P_FREE_PRINT);
 					result->error = 2;
 					return (1);
 				}

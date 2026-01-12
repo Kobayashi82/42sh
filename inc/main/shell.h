@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 20:58:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 11:39:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 	#include "hashes/builtin.h"
 	#include "hashes/hash.h"
 	#include "hashes/variable.h"
+	#include "main/error.h"
 	#include "main/options.h"
 
 #pragma endregion
@@ -28,76 +29,9 @@
 	#define VERSION		"1.0"
 	#define DEVELOPER	"Kobayashi82"
 	#define LOGIN42		"vzurera-"
-
-	#define HASH_SIZE 101
+	#define HASH_SIZE	101
 
 	#pragma region "Enumerators"
-
-		#pragma region "Error"
-
-			enum e_error {
-				NOTHING					= 0,		// No error (used to free and exit)
-				E_START_ARGS			= 200,		// 
-				E_START_BIN				= 201,		// 
-				E_START_DIR				= 202,		// 
-				E_NO_MEMORY				= 290,		// No more memory available (usually an allocation failed)
-				E_END					= 297,		// 
-				EE_RETURN				= 298,		// Flag for exit_error() indicating that the shell must continue
-				EE_EXIT					= 299		// Flag for exit_error() indicating that the shell must exit
-			};
-
-			enum e_error_variables {
-				E_VAR_MAX_REFERENCES	= 250,		// 
-				E_VAR_CYCLE_REFERENCE	= 251,		// 
-				E_VAR_INVALID_TYPE		= 252,		// 
-				E_VAR_INVALID_INDEX		= 253,		// 
-				E_VAR_READONLY			= 254		// 
-			};
-
-			enum e_error_builtsin {
-				E_CD_PATH				= 310,		// 
-				E_CD_ARGS				= 311,		// 
-				E_CD_HOME				= 312,		// 
-				E_CD_OLDPWD				= 313,		// 
-				E_CD_ERROR				= 314,		// 
-				E_CD_PER				= 315,		// 
-				E_HIS_ARGS				= 340,		// 
-				E_HIS_DIG				= 341,		// 
-				E_EXIT_NUM				= 380,		// 
-				E_EXIT_ARGS				= 381		// 
-			};
-
-			enum e_error_redirection {
-				E_STDIN_CLOSED			= 520,		// 
-				E_STDOUT_CLOSED			= 521,		// 
-				E_TMP_CREATE			= 525,		// Temporary file creation failed
-				E_TMP_WRITE				= 526,		// Temporary file write failed
-				E_TMP_READ				= 527,		// Temporary file read failed
-				E_OPEN_NOT_FOUND		= 530,		// File not found
-				E_OPEN_READ				= 531,		// ??
-				E_OPEN_WRITE			= 532,		// ??
-				E_OPEN_DIR				= 533,		// File is a directory
-				E_OPEN_FAIL				= 534,		// Open failed
-				E_DUP_FAIL				= 536,		// Dup failed
-				E_DUP2_FAIL				= 537,		// Dup2 failed
-				E_PIPE_FAIL				= 538,		// Pipe failed
-				E_REDIR_AMB				= 540,		// Ambiguous redirection (more than one argumment)
-				E_SUB_HEREDOC			= 541		// ??
-			};
-
-			enum e_error_execution {
-				E_CMD_LAST				= 600,		// ??
-				E_CMD_NOT_FOUND			= 601,		// Command not found
-				E_CMD_EXEC				= 602,		// Permission for execution
-				E_CMD_ISDIR				= 603,		// Command is a directory
-				E_CMD_FAIL				= 604,		// ??
-				E_FORK_FAIL				= 605,		// Fork failed
-				E_EXECVE_FAIL			= 606		// Execve failed
-			};
-
-		#pragma endregion
-
-		#pragma region "Shell"
 
 			typedef enum e_mode {
 				MD_INTERACTIVE,						// The input comes from the standard input typed by the user
@@ -112,8 +46,6 @@
 				SRC_SOURCE,							// For sourced scripts (independent positional parameters only)
 				SRC_FUNCTION,						// For functions (independent positional parameters and variables)
 			} t_source;
-
-		#pragma endregion
 
 	#pragma endregion
 
@@ -164,6 +96,5 @@
 #pragma region "Methods"
 
 	int	initialize(int argc, const char **argv, const char **envp);
-	int	exit_error(int error, int code, char *value, int free_value, int fatal);
 
 #pragma endregion

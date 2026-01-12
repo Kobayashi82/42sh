@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,38 +101,38 @@
 				"    Exit Status:\n"
 				"      Returns success unless an invalid option is supplied or an error occurs.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -150,7 +150,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -177,10 +177,10 @@
 
 				char header[64];
 				snprintf(header, sizeof(header), "(%-c) %-35s ", limits[i].opt, limits[i].name);
-				print(STDOUT_FILENO, header, JOIN);
+				print(STDOUT_FILENO, header, P_JOIN);
 
 				if (value == RLIM_INFINITY) {
-					print(STDOUT_FILENO, "unlimited\n", JOIN);
+					print(STDOUT_FILENO, "unlimited\n", P_JOIN);
 				} else {
 					char buf[64];
 					long scaled_value = (long)(value / limits[i].divisor);
@@ -188,13 +188,13 @@
 					if (*limits[i].unit)	snprintf(buf, sizeof(buf), "%ld %s\n", scaled_value, limits[i].unit);
 					else					snprintf(buf, sizeof(buf), "%ld\n", scaled_value);
 					
-					print(STDOUT_FILENO, buf, JOIN);
+					print(STDOUT_FILENO, buf, P_JOIN);
 				}
 
 				return (0);
 			}
 
-			print(STDOUT_FILENO, NULL, RESET);
+			print(STDOUT_FILENO, NULL, P_RESET);
 
 			int ret = 0;
 
@@ -209,10 +209,10 @@
 
 				char header[64];
 				snprintf(header, sizeof(header), "(%-c) %-35s ", limits[i].opt, limits[i].name);
-				print(STDOUT_FILENO, header, JOIN);
+				print(STDOUT_FILENO, header, P_JOIN);
 
 				if (value == RLIM_INFINITY) {
-					print(STDOUT_FILENO, "unlimited\n", JOIN);
+					print(STDOUT_FILENO, "unlimited\n", P_JOIN);
 				} else {
 					char buf[64];
 					long scaled_value = (long)(value / limits[i].divisor);
@@ -220,11 +220,11 @@
 					if (*limits[i].unit)	snprintf(buf, sizeof(buf), "%ld %s\n", scaled_value, limits[i].unit);
 					else					snprintf(buf, sizeof(buf), "%ld\n", scaled_value);
 
-					print(STDOUT_FILENO, buf, JOIN);
+					print(STDOUT_FILENO, buf, P_JOIN);
 				}
 			}
 
-			print(STDOUT_FILENO, NULL, PRINT);
+			print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (ret);
 		}
@@ -279,8 +279,8 @@
 			if		(ret == 3)	new_limit = rlim.rlim_cur;
 			else if (ret == 2)	new_limit = rlim.rlim_max;
 			else if (ret == 1) {
-				print(STDERR_FILENO, shell.name,                                                   JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", value, ": invalid number\n", 0), FREE_JOIN);
+				print(STDERR_FILENO, shell.name,                                                   P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", value, ": invalid number\n", 0), P_FREE_JOIN);
 				return (1);
 			}
 
@@ -288,21 +288,21 @@
 			else		rlim.rlim_cur = new_limit;
 
 			if (setrlimit(resource, &rlim) == -1) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ", 0), JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ", 0), P_JOIN);
 
 				for (int i = 0; limits[i].resource != -1; i++) {
 					if (limits[i].resource == resource) {
-						print(STDERR_FILENO, limits[i].name, JOIN);
+						print(STDERR_FILENO, limits[i].name, P_JOIN);
 						break;
 					}
 				}
 
-				print(STDERR_FILENO, ": cannot modify limit: ", JOIN);
+				print(STDERR_FILENO, ": cannot modify limit: ", P_JOIN);
 
 				if (errno == EINVAL && (resource == RLIMIT_RTPRIO || resource == RLIMIT_NICE || resource == RLIMIT_MEMLOCK)) {
-					print(STDERR_FILENO, "Operation not permitted\n", JOIN);
+					print(STDERR_FILENO, "Operation not permitted\n", P_JOIN);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", 0), JOIN);
+					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", 0), P_JOIN);
 				}
 
 				return (1);
@@ -340,8 +340,8 @@
 		if (has_option(result,'S')) hard = 0;
 		if (has_option(result,'a')) return (free_options(result), show_limits(hard, -1));
 
-		print(STDOUT_FILENO, NULL, RESET);
-		print(STDERR_FILENO, NULL, RESET);
+		print(STDOUT_FILENO, NULL, P_RESET);
+		print(STDERR_FILENO, NULL, P_RESET);
 
 		if (!result->options       && process_resource(limit_str, NULL, hard, RLIMIT_FSIZE))								ret = 1;	// file size
 		if (has_option(result,'c') && process_resource(limit_str, get_option_value(result, 'c'), hard, RLIMIT_CORE))		ret = 1;	// core file size
@@ -361,8 +361,8 @@
 		if (has_option(result,'x') && process_resource(limit_str, get_option_value(result, 'x'), hard, RLIMIT_LOCKS))		ret = 1;	// file locks
 		if (has_option(result,'R') && process_resource(limit_str, get_option_value(result, 'R'), hard, RLIMIT_RTTIME))		ret = 1;	// real-time timeout
 
-		print(STDOUT_FILENO, NULL, PRINT);
-		print(STDERR_FILENO, NULL, PRINT);
+		print(STDOUT_FILENO, NULL,P_PRINT);
+		print(STDERR_FILENO, NULL,P_PRINT);
 
 		return (free_options(result), ret);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 16:31:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,21 +28,28 @@
 #pragma region "Enumerators"
 
 	enum e_print {
-		RESET,
-		RESET_PRINT,
-		FREE_RESET,
-		FREE_RESET_PRINT,
-		FREE_JOIN,
-		FREE_PRINT,
-		JOIN,
-		PRINT,
-		RESET_ALL
+		P_RESET,
+		P_RESET_PRINT,
+		P_FREE_RESET,
+		P_FREE_RESET_PRINT,
+		P_FREE_JOIN,
+		P_FREE_PRINT,
+		P_JOIN,
+		P_PRINT,
+		P_RESET_ALL
 	};
 
 	enum e_sort {
 		SORT_NONE,
 		SORT_NORMAL,
 		SORT_REVERSE
+	};
+
+	enum e_join_free {
+		J_FREE_NONE			= 294,		// Dont free any value
+		J_FREE_VAL1			= 295,		// Free 'value1'
+		J_FREE_VAL2			= 296,		// Free 'value2'
+		J_FREE_BOTH			= 297,		// Free 'value1' and 'value2'
 	};
 
 #pragma endregion
@@ -81,7 +88,7 @@
 
 		#pragma endregion
 
-		#pragma region "JOIN"
+		#pragma region "P_JOIN"
 
 			char	*ft_strjoin(const char *str1, const char *str2, int frees);
 			char	*ft_strjoin_sep(const char *s1, const char *sep, const char *s2, int frees);

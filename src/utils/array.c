@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/10 20:51:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,27 +96,27 @@
 	void array_print(const char **array, int fd, int numbered) {
 		if (!array) return;
 
-		print(fd, NULL, RESET);
+		print(fd, NULL, P_RESET);
 
 		for (int i = 0; array[i]; ++i) {
-			if (numbered) print(fd, ft_strjoin(ft_itoa(i), " ", 1), FREE_JOIN);
-			print(fd, ft_strjoin(array[i], "\n", 0),                FREE_JOIN);
+			if (numbered) print(fd, ft_strjoin(ft_itoa(i), " ", 1), P_FREE_JOIN);
+			print(fd, ft_strjoin(array[i], "\n", 0),                P_FREE_JOIN);
 		}
 
-		print(fd, NULL, PRINT);
+		print(fd, NULL,P_PRINT);
 	}
 
 	void array_int_print(int *array, int fd) {
 		if (!array) return;
 
-		print(fd, NULL, RESET);
+		print(fd, NULL, P_RESET);
 
 		for (int i = 0; array[i]; ++i) {
-			print(fd, ft_itoa(array[i]), FREE_JOIN);
-			print(fd, "\n",              JOIN);
+			print(fd, ft_itoa(array[i]), P_FREE_JOIN);
+			print(fd, "\n",              P_JOIN);
 		}
 
-		print(fd, NULL, PRINT);
+		print(fd, NULL,P_PRINT);
 	}
 
 #pragma endregion

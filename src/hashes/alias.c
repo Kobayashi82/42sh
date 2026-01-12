@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 17:48:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@
 				if (!isalnum(key[i]) && key[i] != '_') { result = 1; break; }
 
 			if (result && show_msg) {
-				print(STDERR_FILENO, ft_strjoin("alias: `", key, 0), FREE_RESET);
-				print(STDERR_FILENO, "': invalid alias name\n", PRINT);
+				print(STDERR_FILENO, ft_strjoin("alias: `", key, 0), P_FREE_RESET);
+				print(STDERR_FILENO, "': invalid alias name\n",P_PRINT);
 			}
 
 			return (result);
@@ -187,12 +187,12 @@
 			if (sort) array_nsort(array, sort, 6);
 
 			if (array && array[0]) {
-				print(STDOUT_FILENO, NULL, RESET);
+				print(STDOUT_FILENO, NULL, P_RESET);
 				for (size_t i = 0; array[i]; ++i) {
-					print(STDOUT_FILENO, array[i], JOIN);
-					print(STDOUT_FILENO, "\n", JOIN);
+					print(STDOUT_FILENO, array[i], P_JOIN);
+					print(STDOUT_FILENO, "\n", P_JOIN);
 				}
-				print(STDOUT_FILENO, NULL, PRINT);
+				print(STDOUT_FILENO, NULL,P_PRINT);
 			}
 			if (array) array_free(array);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 17:42:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,38 +54,38 @@
 				"      Returns 0 if the directory is changed, and if $PWD is set successfully when\n"
 				"      -P is used; non-zero otherwise.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -103,7 +103,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -232,18 +232,18 @@
 		if (!result->argc) {
 			path = ft_strdup(variable_scalar_get(shell.env, "HOME"));
 			if (!path) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: HOME not set\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: HOME not set\n", 0), P_FREE_RESET_PRINT);
 				ret = 2;
 			}
 		} else {
 			if (result->argc > 1) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: too many arguments\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: too many arguments\n", 0), P_FREE_RESET_PRINT);
 				ret = 2;
 			} else if (!strcmp(result->argv[0], "-")) {
 				is_dash = 1;
 				path = ft_strdup(variable_scalar_get(shell.env, "OLDPWD"));
 				if (!path) {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: OLDPWD not set\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: OLDPWD not set\n", 0), P_FREE_RESET_PRINT);
 					ret = 2;
 				}
 			} else {
@@ -256,23 +256,23 @@
 		if (ret == 1) {
 			if		(!check_CDPATH(result, &path, &is_dash))				ret = 0;
 			else if	(access(path, F_OK) != -1 && !is_directory(path)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                   FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                   P_FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0),P_FREE_PRINT);
 			} else if (access(path, F_OK) != -1 && access(path, X_OK) == -1) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                     FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                     P_FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0),P_FREE_PRINT);
 			} else {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                             FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                             P_FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0),P_FREE_PRINT);
 			}
 		}
 
 		if (!ret) {
-			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), FREE_RESET_PRINT);
+			if (is_dash) print(STDOUT_FILENO, ft_strjoin(path, "\n", 0), P_FREE_RESET_PRINT);
 
 			// t_var *var = variable_find(shell.env->table, "OLDPWD");
 			// if (var && var->readonly) {
-			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": OLDPWD: readonly variable\n", 0), FREE_RESET_PRINT);
+			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": OLDPWD: readonly variable\n", 0), P_FREE_RESET_PRINT);
 			// 	ret = 1;
 			// } else {
 			// 	variables_add(shell.env->table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
@@ -282,7 +282,7 @@
 			shell.cwd = ft_strdup(path);
 			// var = variable_find(shell.env->table, "PWD");
 			// if (var && var->readonly) {
-			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": PWD: readonly variable\n", 0), FREE_RESET_PRINT);
+			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": PWD: readonly variable\n", 0), P_FREE_RESET_PRINT);
 			// 	ret = 1;
 			// } else {
 			// 	variables_add(shell.env->table, "PWD", path, -1, -1, -1, -1);

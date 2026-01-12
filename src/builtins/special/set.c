@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,38 +104,38 @@
 				"    Exit Status:\n"
 				"      Returns success unless an invalid option is given.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+				print(STDOUT_FILENO, "NAME\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -153,7 +153,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -182,34 +182,34 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			print(STDOUT_FILENO, "main\n", RESET_PRINT);
+			print(STDOUT_FILENO, "main\n", P_RESET_PRINT);
 		}
 
 		if (result->argv) {
 			int add_newline = 0;
-			print(STDOUT_FILENO, NULL, RESET);
-			print(STDERR_FILENO, NULL, RESET);
+			print(STDOUT_FILENO, NULL, P_RESET);
+			print(STDERR_FILENO, NULL, P_RESET);
 			for (int i = 0; i < result->argc; ++i) {
 				t_builtin *builtin = builtin_find(result->argv[i]);
 				if (builtin) {
 					if		(has_option(result, 'd'))	builtin->help(HELP_DESCRIPTION, 1);
 					else if	(has_option(result, 'm')) {
-						if (add_newline) print(STDOUT_FILENO, "\n", JOIN);
+						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
 						builtin->help(HELP_MANPAGE, 1);
 					} else if	(has_option(result, 's'))	builtin->help(HELP_SYNTAX, 1);
 					else {
-						if (add_newline) print(STDOUT_FILENO, "\n", JOIN);
+						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
 						builtin->help(HELP_NORMAL, 1);
 					}
 					add_newline = 1;
 				} else {
-					print(STDERR_FILENO, shell.name,                                                                  JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.", 0),  FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", 0), FREE_JOIN);
+					print(STDERR_FILENO, shell.name,                                                                  P_JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.", 0),  P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", 0), P_FREE_JOIN);
 				}
 			}
-			print(STDOUT_FILENO, NULL, PRINT);
-			print(STDERR_FILENO, NULL, PRINT);
+			print(STDOUT_FILENO, NULL,P_PRINT);
+			print(STDERR_FILENO, NULL,P_PRINT);
 		}
 
 		return (free_options(result), ret);

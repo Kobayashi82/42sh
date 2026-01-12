@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,38 +51,38 @@
 			"    Exit Status:\n"
 			"      Returns success if all of the NAMEs are found; fails if any are not found.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    JOIN);
+				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -100,7 +100,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -117,14 +117,14 @@
 			if (!arg) return (0);
 
 			if (!strchr(opts, 'P') && strchr(opts, 't') && alias_find(arg)) {
-				print(STDOUT_FILENO, "alias\n", JOIN);
+				print(STDOUT_FILENO, "alias\n", P_JOIN);
 				return (1);
 			} if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 				t_alias *alias = alias_find(arg);
 				if (alias) {
 					if (!strchr(opts, 't')) {
-						print(STDOUT_FILENO, alias->name, JOIN);
-						print(STDOUT_FILENO, ft_strjoin_sep(" is aliased to `", alias->value, "'\n", 0), FREE_JOIN);
+						print(STDOUT_FILENO, alias->name, P_JOIN);
+						print(STDOUT_FILENO, ft_strjoin_sep(" is aliased to `", alias->value, "'\n", 0), P_FREE_JOIN);
 					}
 					return (1);
 				}
@@ -143,14 +143,14 @@
 			if ((!opts || !*opts || !strcmp(opts, "t")) && alias_find(arg)) return (0);
 
 			if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
-				print(STDOUT_FILENO, "builtin\n", JOIN);
+				print(STDOUT_FILENO, "builtin\n", P_JOIN);
 				return (1);
 			} else if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 				t_builtin *builtin = builtin_find(arg);
 				if (builtin && !builtin->disabled) {
 					if (!strchr(opts, 't')) {
-						print(STDOUT_FILENO, builtin->name, JOIN);
-						print(STDOUT_FILENO, " is a shell builtin\n", JOIN);
+						print(STDOUT_FILENO, builtin->name, P_JOIN);
+						print(STDOUT_FILENO, " is a shell builtin\n", P_JOIN);
 					}
 					return (1);
 				}
@@ -169,14 +169,14 @@
 			if ((!opts || !*opts || !strcmp(opts, "t")) && (alias_find(arg) || builtin_isactive(arg))) return (0);
 
 			// if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
-			// 	print(STDOUT_FILENO, "builtin\n", JOIN);
+			// 	print(STDOUT_FILENO, "builtin\n", P_JOIN);
 			// 	return (1);
 			// } else if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
 			// 	t_builtin *builtin = builtin_find(arg);
 			// 	if (builtin && !builtin->disabled) {
 			// 		if (!strchr(opts, 't')) {
-			// 			print(STDOUT_FILENO, builtin->name, JOIN);
-			// 			print(STDOUT_FILENO, " is a shell builtin\n", JOIN);
+			// 			print(STDOUT_FILENO, builtin->name, P_JOIN);
+			// 			print(STDOUT_FILENO, " is a shell builtin\n", P_JOIN);
 			// 		}
 			// 		return (1);
 			// 	}
@@ -197,21 +197,21 @@
 				t_hash *hash = hash_find(arg, 0);
 				if (hash) {
 					if (access(hash->path, F_OK) != -1) {
-						print(STDOUT_FILENO, hash->name, JOIN);
-						print(STDOUT_FILENO, ft_strjoin_sep(" is hashed (", hash->path, ")\n", 0), FREE_JOIN);
+						print(STDOUT_FILENO, hash->name, P_JOIN);
+						print(STDOUT_FILENO, ft_strjoin_sep(" is hashed (", hash->path, ")\n", 0), P_FREE_JOIN);
 						return (1);
 					}
 				}
 
 				char *path = path_find_first(arg, NULL);
 				if (path) {
-					print(STDOUT_FILENO, arg, JOIN);
-					print(STDOUT_FILENO, ft_strjoin_sep(" is ", path, "\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, arg, P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep(" is ", path, "\n", 0), P_FREE_JOIN);
 					return (free(path), 1);
 				}
 
-				if (is_command)	print(STDERR_FILENO, ft_strjoin_sep("command: ", arg, ": not found\n", 0), FREE_JOIN);
-				else			print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
+				if (is_command)	print(STDERR_FILENO, ft_strjoin_sep("command: ", arg, ": not found\n", 0), P_FREE_JOIN);
+				else			print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), P_FREE_JOIN);
 				return (free(path), 0);
 			}
 
@@ -223,17 +223,17 @@
 				if (!strchr(opts, 'a') && i > 0) break;
 
 				if (strchr(opts, 't'))
-					print(STDOUT_FILENO, "file\n", JOIN);
+					print(STDOUT_FILENO, "file\n", P_JOIN);
 				else if (strchr(opts, 'P') || strchr(opts, 'p'))
-					print(STDOUT_FILENO, ft_strjoin(paths[i], "\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(paths[i], "\n", 0), P_FREE_JOIN);
 				else if (strchr(opts, 'a')) {
-					print(STDOUT_FILENO, arg, JOIN);
-					print(STDOUT_FILENO, ft_strjoin_sep(" is ", paths[i], "\n", 0), FREE_JOIN);
+					print(STDOUT_FILENO, arg, P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep(" is ", paths[i], "\n", 0), P_FREE_JOIN);
 				}
 			}
 
 			if ((!paths || !*paths) && (!opts || !*opts)) {
-				print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep("type: ", arg, ": not found\n", 0), P_FREE_JOIN);
 				return (array_free(paths), 0);
 			}
 
@@ -281,8 +281,8 @@
 		// if (strchr(opts->valid, '?')) return (free(opts), print_help());
 		// if (strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
 
-		// print(STDOUT_FILENO, NULL, RESET);
-		// print(STDERR_FILENO, NULL, RESET);
+		// print(STDOUT_FILENO, NULL, P_RESET);
+		// print(STDERR_FILENO, NULL, P_RESET);
 
 		// int result = 0;
 		// while (opts->args) {
@@ -298,14 +298,14 @@
 		// 		} else if (!tmp_result) result = 1;
 
 		// 		if (!tmp_result && strchr(opts->valid, 'a'))
-		// 			print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), FREE_JOIN);
+		// 			print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), P_FREE_JOIN);
 		// 	}
 		// 	opts->args = opts->args->next;
 		// }
 		
 
-		// print(STDOUT_FILENO, NULL, PRINT);
-		// print(STDERR_FILENO, NULL, PRINT);
+		// print(STDOUT_FILENO, NULL,P_PRINT);
+		// print(STDERR_FILENO, NULL,P_PRINT);
 
 		// if (result == 2) result = 0;
 		// return (free(opts), result);

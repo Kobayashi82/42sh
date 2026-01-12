@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 21:41:44 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:29:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@
 
 #pragma endregion
 
-#pragma region "STR_JOIN"
+#pragma region "STR_P_JOIN"
 
 	#pragma region "StrJoin"
 
@@ -449,15 +449,15 @@
 	//		- fd: The file descriptor to write to (standars by default)
 	//		- str: The string to append to the buffer (can be NULL)
 	//		- mode: Controls the behavior based on the following enum values:
-	//			- RESET:			Resets the buffer
-	//			- RESET_PRINT:		Resets the buffer and writes its content
-	//			- FREE_RESET:		Frees the input string and resets the buffer
-	//			- FREE_RESET_PRINT:	Frees the input string, resets the buffer, and writes its content
-	//			- FREE_JOIN:		Frees the input string and appends its content to the buffer
-	//			- FREE_PRINT:		Frees the input string and writes the buffer content
-	//			- JOIN:				Appends the input string to the buffer
-	//			- PRINT:			Writes the buffer content
-	//			- RESET_ALL:		Resets all buffers
+	//			- P_RESET:			Resets the buffer
+	//			- P_RESET_PRINT:		Resets the buffer and writes its content
+	//			- P_FREE_RESET:		Frees the input string and resets the buffer
+	//			- P_FREE_RESET_PRINT:	Frees the input string, resets the buffer, and writes its content
+	//			- P_FREE_JOIN:		Frees the input string and appends its content to the buffer
+	//			-P_FREE_PRINT:		Frees the input string and writes the buffer content
+	//			- P_JOIN:				Appends the input string to the buffer
+	//			-P_PRINT:			Writes the buffer content
+	//			- P_RESET_ALL:		Resets all buffers
 	//
 	//	Returns: 0 on success, 1 on failure
 	//
@@ -469,11 +469,11 @@
 		static size_t	len[1024];					//	Current size of the content stored for each file descriptor
 		static size_t	cap[1024];					//	Total allocated capacity of the buffer for each file descriptor
 
-		if (fd < 0 || fd >= PRINT_TOTAL_FD) return (1);
+		if (fd < 0 || fd >=PRINT_TOTAL_FD) return (1);
 
-		if (mode == RESET_ALL) {
+		if (mode == P_RESET_ALL) {
 			//	Reset and free all buffers
-			for (int i = 0; i < PRINT_TOTAL_FD; ++i) {
+			for (int i = 0; i <PRINT_TOTAL_FD; ++i) {
 				free(msg[i]);
 				len[i] = 0;
 				cap[i] = 0;
@@ -484,7 +484,7 @@
 		size_t str_len = (str) ? ft_strlen(str) : 0;
 
 		//	Reset the buffer if necessary
-		if ((mode >= RESET && mode <= FREE_RESET_PRINT) && msg[fd]) {
+		if ((mode >= P_RESET && mode <= P_FREE_RESET_PRINT) && msg[fd]) {
 			free(msg[fd]);
 			msg[fd] = NULL;
 			len[fd] = 0;
@@ -539,7 +539,7 @@
 		}
 
 		//	Free the input string if necessary
-		if ((mode >= FREE_RESET && mode <= FREE_PRINT) && str) free((void *)str);
+		if ((mode >= P_FREE_RESET && mode <=P_FREE_PRINT) && str) free((void *)str);
 
 		return (result == -1);
 	}

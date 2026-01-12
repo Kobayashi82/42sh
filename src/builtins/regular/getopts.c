@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 20:03:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@
 				"      Returns success if an option is found; fails if the end of options is\n"
 				"      encountered or an error occurs.\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -80,7 +80,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -99,8 +99,8 @@
 			(void) value;
 			// t_var *var = variable_find(shell.env->table, key);
 			// if (var && var->readonly) {
-			// 	print(STDERR_FILENO, shell.name, RESET);
-			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), FREE_PRINT);
+			// 	print(STDERR_FILENO, shell.name, P_RESET);
+			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0),P_FREE_PRINT);
 			// } else {
 			// 	variables_add(shell.env->table, key, value, -1, -1, -1, 0);
 			// }
@@ -129,8 +129,8 @@
 			update_variable(varname, "?");
 
 			if (!silent_mode) {
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0),P_FREE_PRINT);
 				variable_unset(shell.env, "OPTARG", 1);
 			} else {
 				update_variable("OPTARG", opt_str);
@@ -144,8 +144,8 @@
 		static void missing_argument(char opt, const char *varname, int silent_mode, int optind) {
 			if (!silent_mode) {
 				char opt_str[2] = {opt, '\0'};
-				print(STDERR_FILENO, shell.name, RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0), FREE_PRINT);
+				print(STDERR_FILENO, shell.name, P_RESET);
+				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0),P_FREE_PRINT);
 				update_variable(varname, "?");
 				variable_unset(shell.env, "OPTARG", 1);
 			} else {
@@ -178,15 +178,15 @@
 		// Validate options
 		if (opt_offset == 1 && argc > 1 && argv[1][0] == '-' && argv[1][1] != '\0') {
 			char buf[2] = {argv[1][1], '\0'};
-			print(STDERR_FILENO, shell.name, RESET);
-			print(STDERR_FILENO, ft_strjoin_sep(": getopts: -", buf, ": invalid option\n", 0), FREE_JOIN);
-			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n", PRINT);
+			print(STDERR_FILENO, shell.name, P_RESET);
+			print(STDERR_FILENO, ft_strjoin_sep(": getopts: -", buf, ": invalid option\n", 0), P_FREE_JOIN);
+			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n",P_PRINT);
 			return (2);
 		}
 
 		// Validate argument count
 		if (argc < opt_offset + 2) {
-			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n", RESET_PRINT);
+			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n", P_RESET_PRINT);
 			return (2);
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 17:43:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1030,28 +1030,28 @@
 			if (end >= length) end = length - 1;
 			if (start > end) return (1);
 
-			print(STDOUT_FILENO, NULL, RESET);
+			print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (!reverse) {
 				for (size_t i = start; i <= end && history[i]; ++i) {
 					if (!hide_pos) {
 						char *txt_line = ft_itoa(first_cmd + i);
 						int spaces = 5 - ft_strlen(txt_line);
-						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-						print(STDOUT_FILENO, txt_line, FREE_JOIN);
-						print(STDOUT_FILENO, "  ", JOIN);
+						while (spaces--) print(STDOUT_FILENO, " ", P_JOIN);
+						print(STDOUT_FILENO, txt_line, P_FREE_JOIN);
+						print(STDOUT_FILENO, "  ", P_JOIN);
 					}
 
 					if (hist_timeformat[0] != '\0') {
 						char time_buffer[128];
 						struct tm *tm_info = localtime(&history[i]->timestamp);
 						if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
-							print(STDOUT_FILENO, time_buffer, JOIN);
+							print(STDOUT_FILENO, time_buffer, P_JOIN);
 						}
 					}
 
-					print(STDOUT_FILENO, history[i]->line, JOIN);
-					print(STDOUT_FILENO, "\n", JOIN);
+					print(STDOUT_FILENO, history[i]->line, P_JOIN);
+					print(STDOUT_FILENO, "\n", P_JOIN);
 				}
 			} else {
 				for (size_t i = end + 1; i > start && history[i - 1]; --i) {
@@ -1059,25 +1059,25 @@
 					if (!hide_pos) {
 						char *txt_line = ft_itoa(first_cmd + idx);
 						int spaces = 5 - ft_strlen(txt_line);
-						while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-						print(STDOUT_FILENO, txt_line, FREE_JOIN);
-						print(STDOUT_FILENO, "  ", JOIN);
+						while (spaces--) print(STDOUT_FILENO, " ", P_JOIN);
+						print(STDOUT_FILENO, txt_line, P_FREE_JOIN);
+						print(STDOUT_FILENO, "  ", P_JOIN);
 					}
 
 					if (hist_timeformat[0] != '\0') {
 						char time_buffer[128];
 						struct tm *tm_info = localtime(&history[idx]->timestamp);
 						if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
-							print(STDOUT_FILENO, time_buffer, JOIN);
+							print(STDOUT_FILENO, time_buffer, P_JOIN);
 						}
 					}
 
-					print(STDOUT_FILENO, history[idx]->line, JOIN);
-					print(STDOUT_FILENO, "\n", JOIN);
+					print(STDOUT_FILENO, history[idx]->line, P_JOIN);
+					print(STDOUT_FILENO, "\n", P_JOIN);
 				}
 			}
 
-			print(STDOUT_FILENO, NULL, PRINT);
+			print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -1089,30 +1089,30 @@
 			if (!history || !length) return (1);
 			if (offset > length) offset = length;
 
-			print(STDOUT_FILENO, NULL, RESET);
+			print(STDOUT_FILENO, NULL, P_RESET);
 
 			for (size_t i = length - offset; i < length && history[i]; ++i) {
 				if (!hide_pos) {
 					char *txt_line = ft_itoa(first_cmd + i);
 					int spaces = 5 - ft_strlen(txt_line);
-					while (spaces--) print(STDOUT_FILENO, " ", JOIN);
-					print(STDOUT_FILENO, txt_line, FREE_JOIN);
-					print(STDOUT_FILENO, "  ", JOIN);
+					while (spaces--) print(STDOUT_FILENO, " ", P_JOIN);
+					print(STDOUT_FILENO, txt_line, P_FREE_JOIN);
+					print(STDOUT_FILENO, "  ", P_JOIN);
 				}
 
 				if (hist_timeformat[0] != '\0') {
 					char time_buffer[128];
 					struct tm *tm_info = localtime(&history[i]->timestamp);
 					if (tm_info && strftime(time_buffer, sizeof(time_buffer), hist_timeformat, tm_info) > 0) {
-						print(STDOUT_FILENO, time_buffer, JOIN);
+						print(STDOUT_FILENO, time_buffer, P_JOIN);
 					}
 				}
 
-				print(STDOUT_FILENO, history[i]->line, JOIN);
-				print(STDOUT_FILENO, "\n", JOIN);
+				print(STDOUT_FILENO, history[i]->line, P_JOIN);
+				print(STDOUT_FILENO, "\n", P_JOIN);
 			}
 
-			print(STDOUT_FILENO, NULL, PRINT);
+			print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}

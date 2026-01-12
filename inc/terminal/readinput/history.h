@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/10 20:50:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/08 00:19:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@
 	char		*history_next();
 	void		history_set_pos(size_t pos);
 	void		history_set_pos_last();
-	//	---------- PRINT -----------
+	//	----------P_PRINT -----------
 	void		history_hist_timeformat_set(const char *format);
 	int			history_print_range(size_t start, size_t end, int reverse, int hide_pos);
 	int			history_print(size_t offset, int hide_pos);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 20:22:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:27:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,73 +23,78 @@
 
 #pragma region "Messages"
 
-	#pragma region "Catastrophic"
+	#pragma region "Shell"
 
-		//	Print catastrophic error messages
-		static void catastrophic_msg(int error, char *value) {
-			if (error == E_STDIN_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n", PRINT);
-			if (error == E_STDOUT_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", PRINT);
-			if (error == E_NO_MEMORY)		print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", PRINT);
-			if (error == E_START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", PRINT);
-			if (error == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0), FREE_PRINT);
-			if (error == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
-			// if (error == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), FREE_PRINT);
+		static void shell_msg(int error_type, char *value) {
+			if (error_type == E_STDIN_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n",P_PRINT);
+			if (error_type == E_STDOUT_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n",P_PRINT);
+			if (error_type == E_NO_MEMORY)		print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n",P_PRINT);
+			if (error_type == E_START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n",P_PRINT);
+			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0),P_FREE_PRINT);
+			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0),P_FREE_PRINT);
+			// if (error_type == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0),P_FREE_PRINT);
 		}
 
 	#pragma endregion
 
-	#pragma region "Redirection"
+	#pragma region "Variable"
 
-		//	Print redirections error messages
-		static void redirection_msg(int error, char *value) {
-			if (error == E_TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == E_TMP_WRITE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), FREE_JOIN);
-			if (error == E_TMP_READ)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == E_TMP_CREATE || error == E_TMP_WRITE || error == E_TMP_READ)	print(STDERR_FILENO, "\n",                            PRINT);
-
-			if (error == E_REDIR_AMB)		print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0), FREE_PRINT);
-			if (error == E_OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == E_OPEN_READ)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0), FREE_PRINT);
-			if (error == E_OPEN_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0), FREE_PRINT);
-			if (error == E_OPEN_FAIL)		print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0), FREE_PRINT);
-			if (error == E_DUP_FAIL)		print(STDERR_FILENO, "error duplicating file descriptor\n", PRINT);
-			if (error == E_PIPE_FAIL)		print(STDERR_FILENO, "pipe failed\n", PRINT);
-			if (error == E_SUB_HEREDOC)		print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0), FREE_PRINT);
+		static void variable_msg(int error_type, char *value) {
+			(void) error_type;
+			(void) value;
 		}
 
 	#pragma endregion
 
 	#pragma region "Builtin"
 
-		//	Print builtin error messages
-		static void builtin_msg(int error, char *value) {
-			(void) error;
+		static void builtin_msg(int error_type, char *value) {
+			(void) error_type;
 			(void) value;
+		}
+
+	#pragma endregion
+
+	#pragma region "Redirection"
+
+		static void redirection_msg(int error_type, char *value) {
+			if (error_type == E_TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), P_FREE_JOIN);
+			if (error_type == E_TMP_WRITE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), P_FREE_JOIN);
+			if (error_type == E_TMP_READ)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), P_FREE_JOIN);
+			if (error_type == E_TMP_CREATE || error_type == E_TMP_WRITE || error_type == E_TMP_READ)	print(STDERR_FILENO, "\n",               P_PRINT);
+
+			if (error_type == E_REDIR_AMB)		print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0),P_FREE_PRINT);
+			if (error_type == E_OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0),P_FREE_PRINT);
+			if (error_type == E_OPEN_READ)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),P_FREE_PRINT);
+			if (error_type == E_OPEN_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0),P_FREE_PRINT);
+			if (error_type == E_OPEN_FAIL)		print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0),P_FREE_PRINT);
+			if (error_type == E_DUP_FAIL)		print(STDERR_FILENO, "error duplicating file descriptor\n",P_PRINT);
+			if (error_type == E_PIPE_FAIL)		print(STDERR_FILENO, "pipe failed\n",P_PRINT);
+			if (error_type == E_SUB_HEREDOC)	print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0),P_FREE_PRINT);
 		}
 
 	#pragma endregion
 
 	#pragma region "Execution"
 
-		//	Print execution error messages
-		static void execution_msg(int error, char *value) {
-			if (error == E_FORK_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), FREE_JOIN);
-			if (error == E_EXECVE_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 FREE_JOIN);
-			if (error == E_FORK_FAIL || error == E_EXECVE_FAIL) print(STDERR_FILENO, "\n",                                        PRINT);
+		static void execution_msg(int error_type, char *value) {
+			if (error_type == E_FORK_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), P_FREE_JOIN);
+			if (error_type == E_EXECVE_FAIL)	print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 P_FREE_JOIN);
+			if (error_type == E_FORK_FAIL || error_type == E_EXECVE_FAIL) print(STDERR_FILENO, "\n",                                 P_PRINT);
 
-			if (error == E_CMD_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                   FREE_PRINT);
-			if (error == E_CMD_ISDIR)		print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                      FREE_PRINT);
-			if (error == E_CMD_EXEC)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                   FREE_PRINT);
+			if (error_type == E_CMD_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                  P_FREE_PRINT);
+			if (error_type == E_CMD_ISDIR)		print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                     P_FREE_PRINT);
+			if (error_type == E_CMD_EXEC)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                  P_FREE_PRINT);
 		}
 
 	#pragma endregion
 
 #pragma endregion
 
-#pragma region "Exit_Error"
+#pragma region "Free & Exit"
 
 	static void free_and_exit() {
-		print(0, NULL, RESET_ALL);
+		print(0, NULL, P_RESET_ALL);
 		history_clear();
 		alias_clear();
 		builtin_clear();
@@ -113,26 +118,51 @@
 		exit(shell.exit_code % 256);
 	}
 
-	//	Print the error message and exit if required
-	int	exit_error(int error, int code, char *value, int free_value, int fatal) {
-		if (!value) {
-			value = "";
-			free_value = 0;
+#pragma endregion
+
+#pragma region "Exit Error"
+
+	// Prints the error message and exits if required
+	//
+	// error_type   = Determines the error type (see enum values)
+	// exit_code    = If 0, uses 'shell.exit_code'; otherwise set to 'exit_code'
+	// value1       = Builtin name or error source
+	// value2       = Argument or additional error information
+	// free_mode    = Specifies whether 'value1' and/or 'value2' must be freed  (EE_FREE_NONE, EE_FREE_VAL1, EE_FREE_VAL2, EE_FREE_BOTH)
+	// exit_mode    = Specifies whether to return or exit the shell             (EE_RETURN, EE_EXIT)
+	//
+	// Example:
+	//
+	// value1 ↘            ↙ value2
+	//   42sh: cd: Makefile: Not a directory
+	int	exit_error(int error_type, int exit_code, char *value1, char *value2, int free_mode, int exit_mode) {
+		if (!value1) {
+			value1 = "";
+			if (free_mode == EE_FREE_VAL1) free_mode = EE_FREE_NONE;
+			if (free_mode == EE_FREE_BOTH) free_mode = EE_FREE_VAL2;
+		}
+		if (!value2) {
+			value2 = "";
+			if (free_mode == EE_FREE_VAL2) free_mode = EE_FREE_NONE;
+			if (free_mode == EE_FREE_BOTH) free_mode = EE_FREE_VAL1;
 		}
 
-		if (error > NOTHING && error < E_END) {
-			print(STDERR_FILENO, shell.name, RESET);
-			if (value) print(STDERR_FILENO, ": ", JOIN);
+		if (error_type >= E_START_ARGS && error_type < E_END) {
+			print(STDERR_FILENO, shell.name, P_RESET);
+			if (value1 && *value1) print(STDERR_FILENO, ": ", P_JOIN);
 		}
 
-		catastrophic_msg(error, value);
-		redirection_msg(error, value);
-		builtin_msg(error, value);
-		execution_msg(error, value);
+		shell_msg(error_type, value1);
+		variable_msg(error_type, value1);
+		redirection_msg(error_type, value1);
+		builtin_msg(error_type, value1);
+		execution_msg(error_type, value1);
 
-		if (free_value) 		free(value);
-		if (code)				shell.exit_code = code;
-		if (fatal == EE_EXIT)	free_and_exit();
+		if (free_mode == EE_FREE_VAL1 || free_mode == EE_FREE_BOTH)	free(value1);
+		if (free_mode == EE_FREE_VAL2 || free_mode == EE_FREE_BOTH)	free(value2);
+
+		if (exit_code)				shell.exit_code = exit_code;
+		if (exit_mode == EE_EXIT)	free_and_exit();
 
 		return (shell.exit_code);
 	}

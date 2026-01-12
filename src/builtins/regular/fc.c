@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 20:24:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,38 +53,38 @@
 			"    Exit Status:\n"
 			"      Returns success or status of executed command; non-zero if an error occurs.\n";
 
-			if (!no_print) print(STDOUT_FILENO, NULL, RESET);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0), P_FREE_JOIN);
 			}
 
 			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n", JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", JOIN);
+				print(STDOUT_FILENO, "NAME\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "SYNOPSYS\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "DESCRIPTION\n", P_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0), P_FREE_JOIN);
+				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n", P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL, PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
 
 			return (0);
 		}
@@ -102,7 +102,7 @@
 
 				"Written by "DEVELOPER" ("LOGIN42").\n";
 
-			print(STDOUT_FILENO, msg, RESET_PRINT);
+			print(STDOUT_FILENO, msg, P_RESET_PRINT);
 
 			return (0);
 		}
@@ -116,13 +116,13 @@
 	static int fc_get_position(int offset, char *query, size_t *out) {
 		if (!ft_isdigit_s(query)) {
 			if (history_position_query(offset , query, out)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", 0), P_FREE_RESET_PRINT);
 				return (1);
 			}
 		} else {
 			int number = atoi(query);
 			if (!strcmp(query, "-0")) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", 0), FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", 0), P_FREE_RESET_PRINT);
 				return (1);
 			}
 			if (!strcmp(query, "0")) number = -1;
@@ -143,7 +143,7 @@
 		for (int i = 0; i < result->argc; ++i) {
 			if (!strchr(result->argv[i], '=')) {
 				if (i < result->argc - 1) {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", 0), P_FREE_RESET_PRINT);
 					return (1);
 				}
 				no_command = 0;
@@ -179,7 +179,7 @@
 					free(key);
 					free(value);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", 0), FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", 0), P_FREE_RESET_PRINT);
 					free(command);
 					free(key);
 					free(value);
@@ -275,20 +275,20 @@
 			}
 
 			if (!*editor || access(*editor, F_OK) == -1) {
-				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
-				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", 0), FREE_RESET_PRINT);
+				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
+				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", 0), P_FREE_RESET_PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (is_directory((char *)(*editor))) {
-				exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
-				exit_error(E_CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), 1, EE_RETURN);
+				exit_error(E_CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
@@ -326,7 +326,7 @@
 			int fd = tmp_find_fd_path(ft_mkdtemp(NULL, "fc_edit"));
 			if (fd == -1) {
 				free(editor);
-				return (exit_error(E_TMP_CREATE, 1, "fc", 0, EE_RETURN));
+				return (exit_error(E_TMP_CREATE, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN));
 			}
 
 			for (size_t i = start; i <= end; ++i) {
@@ -336,7 +336,7 @@
 					if (write(fd, entry->line, entry->length) == -1) {
 						free(editor);
 						tmp_delete_fd(fd);
-						return (exit_error(E_TMP_WRITE, 1, "fc", 0, EE_RETURN));
+						return (exit_error(E_TMP_WRITE, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN));
 					}
 				}
 			}
@@ -349,7 +349,7 @@
 			if (pid < 0) {	// Error
 				free(editor);
 				tmp_delete_path(tmp_file);
-				return (exit_error(E_FORK_FAIL, 1, "fc", 0, EE_RETURN));
+				return (exit_error(E_FORK_FAIL, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN));
 			}
 			if (pid == 0) {	// Child
 				close(terminal.bk_stdin);
@@ -362,7 +362,7 @@
 				free_argv_original(result);
 				array_free(env);
 				free_options(result);
-				exit_error(NOTHING, 1, editor, 1, EE_EXIT);
+				exit_error(NOTHING, 1, editor, NULL, EE_FREE_VAL1, EE_EXIT);
 			}
 			if (pid > 0) {	// Parent
 				int status;

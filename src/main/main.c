@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 20:23:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:12:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@
 			ast_free(&shell.ast);
 
 			int ret = builtin_exec(argc, argv);
-			if (!ret) exit_error(E_CMD_NOT_FOUND, 127, argv[0], 0, EE_RETURN);
+			if (!ret) exit_error(E_CMD_NOT_FOUND, 127, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
 
 			array_free(argv);
 		} else {
@@ -58,7 +58,7 @@
 		initialize(argc, argv, envp);
 
 		if (argc == 2 && !strcmp(argv[1], "-c")) {
-			exit_error(E_START_ARGS, 2, NULL, 0, EE_EXIT);
+			exit_error(E_START_ARGS, 2, NULL, NULL, EE_FREE_NONE, EE_EXIT);
 		} else if (argc > 2 && !strcmp(argv[1], "-c")) {
 			shell.mode = MD_ARGUMENT;
 			read_input((char *)argv[2]);
@@ -77,7 +77,7 @@
 		}
 
 		if (terminal.signal) shell.exit_code = 128 + terminal.signal;
-		exit_error(E_END, 0, NULL, 0, EE_EXIT);
+		exit_error(E_END, 0, NULL, NULL, EE_FREE_NONE, EE_EXIT);
 	}
 
 #pragma endregion
