@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@
 				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -257,13 +257,13 @@
 			if		(!check_CDPATH(result, &path, &is_dash))				ret = 0;
 			else if	(access(path, F_OK) != -1 && !is_directory(path)) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                   P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0),P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", 0) P_FREE_PRINT);
 			} else if (access(path, F_OK) != -1 && access(path, X_OK) == -1) {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                     P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0),P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", 0) P_FREE_PRINT);
 			} else {
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ", 0),                             P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0),P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", 0) P_FREE_PRINT);
 			}
 		}
 

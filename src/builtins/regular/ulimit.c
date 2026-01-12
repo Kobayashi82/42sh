@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@
 				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -224,7 +224,7 @@
 				}
 			}
 
-			print(STDOUT_FILENO, NULL,P_PRINT);
+			print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (ret);
 		}
@@ -361,8 +361,8 @@
 		if (has_option(result,'x') && process_resource(limit_str, get_option_value(result, 'x'), hard, RLIMIT_LOCKS))		ret = 1;	// file locks
 		if (has_option(result,'R') && process_resource(limit_str, get_option_value(result, 'R'), hard, RLIMIT_RTTIME))		ret = 1;	// real-time timeout
 
-		print(STDOUT_FILENO, NULL,P_PRINT);
-		print(STDERR_FILENO, NULL,P_PRINT);
+		print(STDOUT_FILENO, NULL, P_PRINT);
+		print(STDERR_FILENO, NULL, P_PRINT);
 
 		return (free_options(result), ret);
 	}

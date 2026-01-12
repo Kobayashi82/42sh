@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -361,7 +361,7 @@
 				print(STDERR_FILENO, ": error retrieving current directory: ", P_JOIN);
 				print(STDERR_FILENO, "getcwd: cannot access parent directories: ", P_JOIN);
 				print(STDERR_FILENO, strerror(errno), P_JOIN);
-				print(STDERR_FILENO, "\n",P_PRINT);
+				print(STDERR_FILENO, "\n", P_PRINT);
 			}
 			return (NULL);
 		}

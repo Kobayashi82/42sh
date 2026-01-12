@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@
 					print(STDOUT_FILENO, array[i], P_JOIN);
 					print(STDOUT_FILENO, "\n", P_JOIN);
 				}
-				print(STDOUT_FILENO, NULL,P_PRINT);
+				print(STDOUT_FILENO, NULL, P_PRINT);
 			}
 			if (array) array_free(array);
 

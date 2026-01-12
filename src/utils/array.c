@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 15:48:12 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@
 			print(fd, ft_strjoin(array[i], "\n", 0),                P_FREE_JOIN);
 		}
 
-		print(fd, NULL,P_PRINT);
+		print(fd, NULL, P_PRINT);
 	}
 
 	void array_int_print(int *array, int fd) {
@@ -116,7 +116,7 @@
 			print(fd, "\n",              P_JOIN);
 		}
 
-		print(fd, NULL,P_PRINT);
+		print(fd, NULL, P_PRINT);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:29:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:30:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -469,11 +469,11 @@
 		static size_t	len[1024];					//	Current size of the content stored for each file descriptor
 		static size_t	cap[1024];					//	Total allocated capacity of the buffer for each file descriptor
 
-		if (fd < 0 || fd >=PRINT_TOTAL_FD) return (1);
+		if (fd < 0 || fd >= PRINT_TOTAL_FD) return (1);
 
 		if (mode == P_RESET_ALL) {
 			//	Reset and free all buffers
-			for (int i = 0; i <PRINT_TOTAL_FD; ++i) {
+			for (int i = 0; i < PRINT_TOTAL_FD; ++i) {
 				free(msg[i]);
 				len[i] = 0;
 				cap[i] = 0;
@@ -539,7 +539,7 @@
 		}
 
 		//	Free the input string if necessary
-		if ((mode >= P_FREE_RESET && mode <=P_FREE_PRINT) && str) free((void *)str);
+		if ((mode >= P_FREE_RESET && mode <= P_FREE_PRINT) && str) free((void *)str);
 
 		return (result == -1);
 	}

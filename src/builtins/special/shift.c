@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@
 				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -110,7 +110,7 @@
 
 		if (result->argc && !ft_isdigit_s(result->argv[0])) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ", 0),                          P_FREE_RESET);
-			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": numeric argument required\n", 0),P_FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": numeric argument required\n", 0) P_FREE_PRINT);
 			return (free_options(result), 1);
 		}
 
@@ -123,7 +123,7 @@
 
 		if (number < 0) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ", 0),                         P_FREE_RESET);
-			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": shift count out of range\n", 0),P_FREE_PRINT);
+			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": shift count out of range\n", 0) P_FREE_PRINT);
 			return (free_options(result), 1);
 		}
 

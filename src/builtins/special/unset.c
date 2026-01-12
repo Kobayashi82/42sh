@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:28:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@
 				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -152,7 +152,7 @@
 			else							ret = delete_variable(result->argv[i]);
 		}
 
-		print(STDERR_FILENO, NULL,P_PRINT);
+		print(STDERR_FILENO, NULL, P_PRINT);
 
 		return (free_options(result), ret);
 	}

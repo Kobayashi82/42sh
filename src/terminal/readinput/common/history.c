@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1077,7 +1077,7 @@
 				}
 			}
 
-			print(STDOUT_FILENO, NULL,P_PRINT);
+			print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -1112,7 +1112,7 @@
 				print(STDOUT_FILENO, "\n", P_JOIN);
 			}
 
-			print(STDOUT_FILENO, NULL,P_PRINT);
+			print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}

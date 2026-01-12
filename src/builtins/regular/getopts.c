@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@
 			// t_var *var = variable_find(shell.env->table, key);
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, shell.name, P_RESET);
-			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0),P_FREE_PRINT);
+			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0) P_FREE_PRINT);
 			// } else {
 			// 	variables_add(shell.env->table, key, value, -1, -1, -1, 0);
 			// }
@@ -130,7 +130,7 @@
 
 			if (!silent_mode) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0),P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": illegal option -- ", opt_str, "\n", 0) P_FREE_PRINT);
 				variable_unset(shell.env, "OPTARG", 1);
 			} else {
 				update_variable("OPTARG", opt_str);
@@ -145,7 +145,7 @@
 			if (!silent_mode) {
 				char opt_str[2] = {opt, '\0'};
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0),P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": option requires an argument -- ", opt_str, "\n", 0) P_FREE_PRINT);
 				update_variable(varname, "?");
 				variable_unset(shell.env, "OPTARG", 1);
 			} else {
@@ -180,7 +180,7 @@
 			char buf[2] = {argv[1][1], '\0'};
 			print(STDERR_FILENO, shell.name, P_RESET);
 			print(STDERR_FILENO, ft_strjoin_sep(": getopts: -", buf, ": invalid option\n", 0), P_FREE_JOIN);
-			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n",P_PRINT);
+			print(STDERR_FILENO, "getopts: usage: getopts optstring name [arg ...]\n", P_PRINT);
 			return (2);
 		}
 

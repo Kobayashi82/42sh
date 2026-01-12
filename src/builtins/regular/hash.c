@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:27:02 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@
 				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
 			}
 
-			if (!no_print) print(STDOUT_FILENO, NULL,P_PRINT);
+			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
 			return (0);
 		}
@@ -133,8 +133,8 @@
 			}
 		}
 
-		if (!total) { print(STDERR_FILENO, "hash: hash table empty\n",P_PRINT); return (1); }
-		else print(STDOUT_FILENO, NULL,P_PRINT);
+		if (!total) { print(STDERR_FILENO, "hash: hash table empty\n", P_PRINT); return (1); }
+		else print(STDOUT_FILENO, NULL, P_PRINT);
 
 		return (0);
 	}
@@ -196,8 +196,8 @@
 			return (free_options(result), ret);
 		}
 
-		print(STDOUT_FILENO, NULL,P_PRINT);
-		print(STDERR_FILENO, NULL,P_PRINT);
+		print(STDOUT_FILENO, NULL, P_PRINT);
+		print(STDERR_FILENO, NULL, P_PRINT);
 
 		return (free_options(result), 0);
 	}
