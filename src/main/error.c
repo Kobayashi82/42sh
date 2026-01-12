@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:14:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 17:49:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,13 +25,14 @@
 
 	#pragma region "Shell"
 
-		static void shell_msg(int error_type, char *value) {
+		static void shell_msg(int error_type, char *value1, char *value2) {
+			if (error_type == E_NO_MEMORY)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": memory allocation failed\n", J_FREE_NONE), P_FREE_PRINT);
+
 			if (error_type == E_STDIN_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard input closed\n", P_PRINT);
 			if (error_type == E_STDOUT_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", P_PRINT);
-			if (error_type == E_NO_MEMORY)		print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", P_PRINT);
 			if (error_type == E_START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", P_PRINT);
-			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value1, ": cannot execute binary file\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value1, ": is a directory\n", J_FREE_NONE), P_FREE_PRINT);
 			// if (error_type == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), P_FREE_PRINT);
 		}
 
@@ -39,18 +40,23 @@
 
 	#pragma region "Variable"
 
-		static void variable_msg(int error_type, char *value) {
-			(void) error_type;
-			(void) value;
+		static void variable_msg(int error_type, char *value1, char *value2) {
+			if (error_type == E_VAR_IDENTIFIER)			print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not a valid identifier\n",  J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_VAR_MAX_REFERENCES)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": too many references\n",     J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_VAR_CYCLE_REFERENCE)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": circular name reference\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_VAR_READONLY)			print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": readonly variable\n",       J_FREE_NONE), P_FREE_PRINT);
+
+
 		}
 
 	#pragma endregion
 
 	#pragma region "Builtin"
 
-		static void builtin_msg(int error_type, char *value) {
+		static void builtin_msg(int error_type, char *value1, char *value2) {
 			(void) error_type;
-			(void) value;
+			(void) value1;
+			(void) value2;
 		}
 
 	#pragma endregion
@@ -153,10 +159,10 @@
 			if (value1 && *value1) print(STDERR_FILENO, ": ", P_JOIN);
 		}
 
-		shell_msg(error_type, value1);
-		variable_msg(error_type, value1);
+		shell_msg(error_type, value1, value2);
+		variable_msg(error_type, value1, value2);
 		redirection_msg(error_type, value1);
-		builtin_msg(error_type, value1);
+		builtin_msg(error_type, value1, value2);
 		execution_msg(error_type, value1);
 
 		if (free_mode == EE_FREE_VAL1 || free_mode == EE_FREE_BOTH)	free(value1);

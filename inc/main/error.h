@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:36:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 16:11:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@
 			E_VAR_CYCLE_REFERENCE	= 251,		// 
 			E_VAR_INVALID_TYPE		= 252,		// 
 			E_VAR_INVALID_INDEX		= 253,		// 
-			E_VAR_READONLY			= 254		// 
+			E_VAR_IDENTIFIER		= 254,		// 
+			E_VAR_READONLY			= 255		// 
 		};
 
 	#pragma endregion

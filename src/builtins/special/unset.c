@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:10:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 15:56:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,9 +105,7 @@
 
 		t_var *var = variable_get(shell.env, arg, 1);
 		if (var && var->flags & VAR_READONLY) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: ",                    J_FREE_NONE), P_FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin(arg, ": cannot unset: readonly variable\n", J_FREE_NONE), P_FREE_JOIN);
-			return (1);
+			return (exit_error(E_VAR_READONLY, 1, "unset: cannot unset", NULL, EE_FREE_NONE, EE_RETURN));
 		} else variable_unset(shell.env, arg, 1);
 
 		return (0);

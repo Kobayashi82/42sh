@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:23:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 17:05:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,35 @@
 
 	#pragma endregion
 
+	#pragma region "Validate"
+
+		int variable_validate(const char *key) {
+			if (!key) return (0);
+
+			int		ret = 0;
+			size_t	len = ft_strlen(key);
+
+			if (!len || (!isalpha(key[0]) && key[0] != '_'))	ret = 1;
+			if (!strcmp(key, "42_HISTFILE"))					ret = 0;
+			if (!strcmp(key, "42_HISTSIZE"))					ret = 0;
+			if (!strcmp(key, "42_HISTFILESIZE"))				ret = 0;
+			if (!strcmp(key, "42_HISTTIMEFORMAT"))				ret = 0;
+			if (!strcmp(key, "42_HISTCONTROL"))					ret = 0;
+			if (!strcmp(key, "42_HISTIGNORE"))					ret = 0;
+			if (!strcmp(key, "42_SH"))							ret = 0;
+			if (!strcmp(key, "42_SUBSHELL"))					ret = 0;
+			if (!strcmp(key, "42_VERSION"))						ret = 0;
+			if (!strcmp(key, "42_PID"))							ret = 0;
+
+			for (size_t i = 1; i < len; ++i) {
+				if (!isalnum(key[i]) && key[i] != '_') {		ret = 1;		break; }
+			}
+
+			return (ret);
+		}
+
+	#pragma endregion
+
 	#pragma region "Find"
 
 		// Find variable by 'key'
@@ -123,6 +152,11 @@
 
 			errno = 0;
 			int count = 0;
+			if (variable_validate(key)) {
+				errno = E_VAR_IDENTIFIER;
+				return (NULL);
+			}
+
 			t_var *var = variable_find(env, key);
 			if (reference && var && var->flags & VAR_REFERENCE) {
 				t_var*visited[HASH_SIZE] = {NULL};
@@ -184,35 +218,6 @@
 			}
 
 			return (var);
-		}
-
-	#pragma endregion
-
-	#pragma region "Validate"
-
-		int variable_validate(const char *key) {
-			if (!key) return (0);
-
-			int		ret = 0;
-			size_t	len = ft_strlen(key);
-
-			if (!len || (!isalpha(key[0]) && key[0] != '_'))	ret = 1;
-			if (!strcmp(key, "42_HISTFILE"))					ret = 0;
-			if (!strcmp(key, "42_HISTSIZE"))					ret = 0;
-			if (!strcmp(key, "42_HISTFILESIZE"))				ret = 0;
-			if (!strcmp(key, "42_HISTTIMEFORMAT"))				ret = 0;
-			if (!strcmp(key, "42_HISTCONTROL"))					ret = 0;
-			if (!strcmp(key, "42_HISTIGNORE"))					ret = 0;
-			if (!strcmp(key, "42_SH"))							ret = 0;
-			if (!strcmp(key, "42_SUBSHELL"))					ret = 0;
-			if (!strcmp(key, "42_VERSION"))						ret = 0;
-			if (!strcmp(key, "42_PID"))							ret = 0;
-
-			for (size_t i = 1; i < len; ++i) {
-				if (!isalnum(key[i]) && key[i] != '_') {		ret = 1;		break; }
-			}
-
-			return (ret);
 		}
 
 	#pragma endregion
