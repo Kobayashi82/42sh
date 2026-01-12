@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:25:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:57:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,34 +39,34 @@
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
-			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",   J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ",       J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
-			}
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",                      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n",                    J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n",                       J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
-			}
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                                 P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ",         J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n",             J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                             P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n",      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                          P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n",                     J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                              P_JOIN);
+				}
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
@@ -102,8 +102,8 @@
 
 		if (!strchr(arg, '=')) {
 			if (variable_validate(arg)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),    P_FREE_JOIN);
-				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", 0), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `",           J_FREE_NONE), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(arg, "': not a valid identifier\n", J_FREE_NONE), P_FREE_JOIN);
 				return (1);
 			}
 		}
@@ -119,15 +119,15 @@
 
 		if (variable_validate(key)) {
 			if (append) key[len - 1] = '+';
-			print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": local: `", key, 3),      P_FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", 2), P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin_sep(shell.name, ": local: `", key,             J_FREE_VAL3), P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin_sep("=", value, "': not a valid identifier\n", J_FREE_VAL2), P_FREE_JOIN);
 			return (1);
 		}
 
 		t_var *var = variable_get(shell.env, key, 1);
 		if (var && var->flags & VAR_READONLY) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `", 0),  P_FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", 1),    P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": local: `",      J_FREE_NONE), P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(key, "': readonly variable\n", J_FREE_VAL1), P_FREE_JOIN);
 			free(value);
 			return (1);
 		}
@@ -166,7 +166,7 @@
 
 		if (!result->argc) {
 			if (shell.env->sourced != SRC_FUNCTION) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: can only be used in a function\n", 0),  P_FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: can only be used in a function\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 				ret = 1;
 			} else {
 				variable_print(shell.env, VAR_NONE, SORT_NORMAL, 1);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 20:58:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:15:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,10 @@
 		if (!hist || ft_strlen(number) > 9) {
 
 			if (is_double)
-				print(STDERR_FILENO, ft_strjoin(PROYECTNAME, " !!: event not found\n", 0), P_FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(PROYECTNAME, " !!: event not found\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 			else {
-				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !-", number, 0), P_FREE_RESET);
-				print(STDERR_FILENO, ": event not found\n", P_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !-", number, J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, ": event not found\n",                                    P_PRINT);
 			}
 		
 			free(number);
@@ -66,8 +66,8 @@
 
 		if (!hist || ft_strlen(number) > 9) {
 
-			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, 0), P_FREE_RESET);
-			print(STDERR_FILENO, ": event not found\n", P_PRINT);
+			print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", number, J_FREE_NONE), P_FREE_RESET);
+			print(STDERR_FILENO, ": event not found\n",                                   P_PRINT);
 
 			free(number);
 			value[0] = '\0'; return (NULL);
@@ -105,11 +105,11 @@
 
 		if (!result) {
 			if (at_start) {
-				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", sub_value, 0), P_FREE_RESET);
-				print(STDERR_FILENO, ": event not found\n", P_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !", sub_value, J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, ": event not found\n",                                      P_PRINT);
 			} else {
-				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !?", sub_value, 0), P_FREE_RESET);
-				if (value[*end] == '?') print(STDERR_FILENO, "?", P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(PROYECTNAME, ": !?", sub_value, J_FREE_NONE), P_FREE_RESET);
+				if (value[*end] == '?') print(STDERR_FILENO, "?",                                 P_JOIN);
 				print(STDERR_FILENO, ": event not found\n", P_PRINT);
 			}
 

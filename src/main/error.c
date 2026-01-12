@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:14:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@
 			if (error_type == E_STDOUT_CLOSED)	print(STDERR_FILENO, "CATASTROPHIC - Standard output closed\n", P_PRINT);
 			if (error_type == E_NO_MEMORY)		print(STDERR_FILENO, "CATASTROPHIC - No memory left on the device\n", P_PRINT);
 			if (error_type == E_START_ARGS)		print(STDERR_FILENO, "-c: option requires an argument\n", P_PRINT);
-			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", 0) P_FREE_PRINT);
-			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0) P_FREE_PRINT);
-			// if (error_type == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0) P_FREE_PRINT);
+			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value, ": cannot execute binary file\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", J_FREE_NONE), P_FREE_PRINT);
+			// if (error_type == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), P_FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -58,19 +58,19 @@
 	#pragma region "Redirection"
 
 		static void redirection_msg(int error_type, char *value) {
-			if (error_type == E_TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), P_FREE_JOIN);
-			if (error_type == E_TMP_WRITE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), 0), P_FREE_JOIN);
-			if (error_type == E_TMP_READ)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), 0), P_FREE_JOIN);
+			if (error_type == E_TMP_CREATE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), J_FREE_NONE), P_FREE_JOIN);
+			if (error_type == E_TMP_WRITE)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot write to temp file - ", strerror(errno), J_FREE_NONE), P_FREE_JOIN);
+			if (error_type == E_TMP_READ)		print(STDERR_FILENO, ft_strjoin_sep(value, ": cannot create temp file - ",   strerror(errno), J_FREE_NONE), P_FREE_JOIN);
 			if (error_type == E_TMP_CREATE || error_type == E_TMP_WRITE || error_type == E_TMP_READ)	print(STDERR_FILENO, "\n",               P_PRINT);
 
-			if (error_type == E_REDIR_AMB)		print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", 0) P_FREE_PRINT);
-			if (error_type == E_OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0) P_FREE_PRINT);
-			if (error_type == E_OPEN_READ)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0) P_FREE_PRINT);
-			if (error_type == E_OPEN_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", 0) P_FREE_PRINT);
-			if (error_type == E_OPEN_FAIL)		print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", 0) P_FREE_PRINT);
+			if (error_type == E_REDIR_AMB)		print(STDERR_FILENO, ft_strjoin(value, ": ambiguous redirect\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_OPEN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_OPEN_READ)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_OPEN_DIR)		print(STDERR_FILENO, ft_strjoin(value, ": is a directory\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_OPEN_FAIL)		print(STDERR_FILENO, ft_strjoin(value, ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DUP_FAIL)		print(STDERR_FILENO, "error duplicating file descriptor\n", P_PRINT);
 			if (error_type == E_PIPE_FAIL)		print(STDERR_FILENO, "pipe failed\n", P_PRINT);
-			if (error_type == E_SUB_HEREDOC)	print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", 0) P_FREE_PRINT);
+			if (error_type == E_SUB_HEREDOC)	print(STDERR_FILENO, ft_strjoin_sep("<< ", value, ": here-document in subshell\n", J_FREE_NONE), P_FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -78,13 +78,13 @@
 	#pragma region "Execution"
 
 		static void execution_msg(int error_type, char *value) {
-			if (error_type == E_FORK_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), 0), P_FREE_JOIN);
-			if (error_type == E_EXECVE_FAIL)	print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), 0),                 P_FREE_JOIN);
+			if (error_type == E_FORK_FAIL)		print(STDERR_FILENO, ft_strjoin_sep(value, ": fork failed - ",   strerror(errno), J_FREE_NONE), P_FREE_JOIN);
+			if (error_type == E_EXECVE_FAIL)	print(STDERR_FILENO, ft_strjoin_sep(value, ": ", strerror(errno), J_FREE_NONE),                 P_FREE_JOIN);
 			if (error_type == E_FORK_FAIL || error_type == E_EXECVE_FAIL) print(STDERR_FILENO, "\n",                                 P_PRINT);
 
-			if (error_type == E_CMD_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", 0),                  P_FREE_PRINT);
-			if (error_type == E_CMD_ISDIR)		print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", 0),                     P_FREE_PRINT);
-			if (error_type == E_CMD_EXEC)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", 0),                  P_FREE_PRINT);
+			if (error_type == E_CMD_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin(value, ": command not found\n", J_FREE_NONE),                  P_FREE_PRINT);
+			if (error_type == E_CMD_ISDIR)		print(STDERR_FILENO, ft_strjoin(value, ": Is a directory\n", J_FREE_NONE),                     P_FREE_PRINT);
+			if (error_type == E_CMD_EXEC)		print(STDERR_FILENO, ft_strjoin(value, ": Permission denied\n", J_FREE_NONE),                  P_FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -135,6 +135,7 @@
 	//
 	// value1 ↘            ↙ value2
 	//   42sh: cd: Makefile: Not a directory
+
 	int	exit_error(int error_type, int exit_code, char *value1, char *value2, int free_mode, int exit_mode) {
 		if (!value1) {
 			value1 = "";

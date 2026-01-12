@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:10:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,9 +203,9 @@
 					}
 					add_newline = 1;
 				} else {
-					print(STDERR_FILENO, shell.name,                                                                  P_JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.", 0),  P_FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", 0), P_FREE_JOIN);
+					print(STDERR_FILENO, shell.name,                                                                            P_JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.",  J_FREE_NONE), P_FREE_JOIN);
+					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", J_FREE_NONE), P_FREE_JOIN);
 				}
 			}
 			print(STDOUT_FILENO, NULL, P_PRINT);

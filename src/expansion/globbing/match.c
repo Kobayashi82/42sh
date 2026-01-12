@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/27 15:44:59 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 20:44:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:11:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,8 @@
 	// 	if ((!strcmp(filename, ".") || !strcmp(filename, "..")) && strcmp(filename, pattern->value)) return;
 
 	// 	new_node = calloc(1, sizeof(t_arg));
-	// 	if (is_dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", 0);
-	// 	else		new_node->value = ft_strjoin(dir, filename, 0);
+	// 	if (is_dir)	new_node->value = ft_strjoin_sep(dir, filename, "/", J_FREE_NONE);
+	// 	else		new_node->value = ft_strjoin(dir, filename, J_FREE_NONE);
 
 	// 	if (*files) (*files)->prev = new_node;
 	// 	new_node->next = *files;
@@ -87,7 +87,7 @@
 	// static int	match_files(struct dirent *de, t_pattern *pattern, char *fulldir, char *dir, t_arg **files) {
 	// 	struct stat		stbuf;
 
-	// 	char *tmp = ft_strjoin_sep(fulldir, "/", de->d_name, 0);
+	// 	char *tmp = ft_strjoin_sep(fulldir, "/", de->d_name, J_FREE_NONE);
 	// 	fulldir = resolve_path(tmp); free(tmp);
 
 	// 	if (stat(fulldir, &stbuf) == -1) return (free(fulldir), 1);
@@ -115,7 +115,7 @@
 	// 	struct dirent	*de;
 	// 	t_arg			*files = NULL;
 
-	// 	char *tmp = ft_strjoin_sep(basedir, "/", dir, 0);
+	// 	char *tmp = ft_strjoin_sep(basedir, "/", dir, J_FREE_NONE);
 	// 	char *fulldir = resolve_path(tmp); free(tmp);
 	// 	if (!fulldir) return (NULL);
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:28:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:57:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,11 +45,22 @@
 		SORT_REVERSE
 	};
 
+// " P_FREE_RESET_PRINT"
+
+			// EE_FREE_NONE			= 294,		// Dont free any value
+			// EE_FREE_VAL1			= 295,		// Free 'value1'
+			// EE_FREE_VAL2			= 296,		// Free 'value2'
+			// EE_FREE_BOTH			= 297,		// Free 'value1' and 'value2'
+
 	enum e_join_free {
-		J_FREE_NONE			= 294,		// Dont free any value
-		J_FREE_VAL1			= 295,		// Free 'value1'
-		J_FREE_VAL2			= 296,		// Free 'value2'
-		J_FREE_BOTH			= 297,		// Free 'value1' and 'value2'
+		J_FREE_NONE			= 290,		// Dont free any value
+		J_FREE_VAL1			= 291,		// Free 'value1'
+		J_FREE_VAL2			= 292,		// Free 'value2'
+		J_FREE_VAL3			= 293,		// Free 'value3'
+		J_FREE_VAL1_2		= 294,		// Free 'value1' and 'value2'
+		J_FREE_VAL1_3		= 295,		// Free 'value1' and 'value3'
+		J_FREE_VAL2_3		= 296,		// Free 'value2' and 'value3'
+		J_FREE_VAL1_2_3		= 297,		// Free 'value1' and 'value2' and 'value3'
 	};
 
 #pragma endregion
@@ -88,10 +99,10 @@
 
 		#pragma endregion
 
-		#pragma region "P_JOIN"
+		#pragma region "STRJOIN"
 
-			char	*ft_strjoin(const char *str1, const char *str2, int frees);
-			char	*ft_strjoin_sep(const char *s1, const char *sep, const char *s2, int frees);
+			char	*ft_strjoin(const char *value1, const char *value2, int free_mode);
+			char	*ft_strjoin_sep(const char *value1, const char *value2, const char *value3, int free_mode);
 
 		#pragma endregion
 
@@ -102,7 +113,7 @@
 
 		#pragma endregion
 
-		#pragma region "LEN"
+		#pragma region "STRLEN"
 
 			size_t	ft_strlen(const char *str);
 
@@ -114,7 +125,7 @@
 
 		#pragma endregion
 
-		#pragma region "TOK"
+		#pragma region "STRTOK"
 
 			char	*ft_strtok(char *str, const char *delim, int id);
 

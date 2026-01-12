@@ -130,14 +130,14 @@
 				int len = ft_strlen(option_names[idx]);
 				int spaces = max_len - len + 1;
 
-				opt_str = ft_strjoin_sep(opt_str, CYAN300, option_names[idx], 1);
+				opt_str = ft_strjoin_sep(opt_str, CYAN300, option_names[idx], J_FREE_VAL1);
 
 				// Add spaces
 				char *padding = malloc(spaces + 1);
 				if (padding) {
 					memset(padding, ' ', spaces);
 					padding[spaces] = '\0';
-					opt_str = ft_strjoin_sep(opt_str, padding, (*option_values[idx]) ? GREEN500"on\n" : RED500"off\n", 4);
+					opt_str = ft_strjoin_sep(opt_str, padding, (*option_values[idx]) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL1_2);
 				}
 			}
 			free(sorted_indices);
@@ -145,8 +145,8 @@
 			// Single option string
 			for (int i = 0; i < num_options; ++i) {
 				if (strcmp(value, option_names[i]) == 0 && option_types[i] == type) {
-					opt_str = ft_strjoin_sep(CYAN300, option_names[i], " ", 0);
-					opt_str = ft_strjoin(opt_str, *option_values[i] ? GREEN500"on\n" : RED500"off\n", 1);
+					opt_str = ft_strjoin_sep(CYAN300, option_names[i], " ", J_FREE_NONE);
+					opt_str = ft_strjoin(opt_str, *option_values[i] ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL1);
 					break;
 				}
 			}

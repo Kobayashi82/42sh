@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 11:03:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 20:43:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:11:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@
 	// 		char cwd[4096];
 	// 		if (!getcwd(cwd, sizeof(cwd))) return (pattern_clear(&patterns), NULL);
 	// 		if (!strcmp(cwd, "/"))	basedir = ft_strdup(cwd);
-	// 		else						basedir = ft_strjoin(cwd, "/", 0);
+	// 		else						basedir = ft_strjoin(cwd, "/", J_FREE_NONE);
 	// 	} else							dir = ft_strdup("/");
 
 	// 	t_arg *files = search(patterns, basedir, dir);

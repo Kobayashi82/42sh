@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:13:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,7 +295,7 @@
 
 				// Variable exists, update value
 				if (append) {
-					char *new_value = ft_strjoin(var->data.scalar, value, 0);
+					char *new_value = ft_strjoin(var->data.scalar, value, J_FREE_NONE);
 					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
@@ -438,7 +438,7 @@
 				while (elem) {
 					if (!strcmp(elem->key, idx_str)) {
 						if (append) {
-							char *new_value = ft_strjoin(elem->data.scalar, value, 0);
+							char *new_value = ft_strjoin(elem->data.scalar, value, J_FREE_NONE);
 							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
@@ -578,7 +578,7 @@
 					free(formatted);
 
 					// Concatenate to result
-					result = ft_strjoin(result, buffer, 1);
+					result = ft_strjoin(result, buffer, J_FREE_VAL1);
 					if (!result) {
 						free(elements);
 						return (errno = E_NO_MEMORY, NULL);
@@ -586,7 +586,7 @@
 				}
 
 				// Add closing parenthesis
-				result = ft_strjoin(result, ")", 1);
+				result = ft_strjoin(result, ")", J_FREE_VAL1);
 				if (!result) errno = E_NO_MEMORY;
 				free(elements);
 
@@ -689,7 +689,7 @@
 				while (elem) {
 					if (!strcmp(elem->key, assoc_key)) {
 						if (append) {
-							char *new_value = ft_strjoin(elem->data.scalar, value, 0);
+							char *new_value = ft_strjoin(elem->data.scalar, value, J_FREE_NONE);
 							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
@@ -826,7 +826,7 @@
 					free(formatted);
 					
 					// Concatenate to result
-					result = ft_strjoin(result, buffer, 1);
+					result = ft_strjoin(result, buffer, J_FREE_VAL1);
 					if (!result) {
 						free(elements);
 						return (errno = E_NO_MEMORY, NULL);
@@ -834,7 +834,7 @@
 				}
 
 				// Add closing parenthesis
-				result = ft_strjoin(result, ")", 1);
+				result = ft_strjoin(result, ")", J_FREE_VAL1);
 				if (!result) errno = E_NO_MEMORY;
 				free(elements);
 				
@@ -930,7 +930,7 @@
 
 				// Variable exists, update value
 				if (append) {
-					char *new_value = ft_strjoin(var->data.scalar, value, 0);
+					char *new_value = ft_strjoin(var->data.scalar, value, J_FREE_NONE);
 					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
@@ -1006,7 +1006,7 @@
 									return (errno = E_NO_MEMORY, NULL);
 								}
 								entry->key = ft_strdup(var->key);
-								entry->data.scalar = ft_strjoin_sep(var->key, "=", var->data.scalar, 0);
+								entry->data.scalar = ft_strjoin_sep(var->key, "=", var->data.scalar, J_FREE_NONE);
 								entry->flags = VAR_NONE;
 								entry->next = seen[hash];
 								seen[hash] = entry;
@@ -1076,13 +1076,13 @@
 				// Add value based on type
 				if (var->flags & VAR_ARRAY) {
 					char *values = format_array_values(var);
-					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, 3);
+					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, J_FREE_VAL3);
 				} else if (var->flags & VAR_ASSOCIATIVE) {
 					char *values = format_assoc_values(var);
-					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, 3);
+					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, J_FREE_VAL3);
 				} else if (var->data.scalar) {
 					char *value = format_for_shell(var->data.scalar, '\"');
-					array[i] = ft_strjoin_sep(array[i], "=", value, 6);
+					array[i] = ft_strjoin_sep(array[i], "=", value, J_FREE_VAL1_3);
 				}
 
 				return (1);
@@ -1306,7 +1306,7 @@
 		char *home = get_home();
 		if (home) {
 			if (*home && home[ft_strlen(home) - 1] == '/') home[ft_strlen(home) - 1] = '\0';
-			home = ft_strjoin(home, "/.42sh_history", 1);
+			home = ft_strjoin(home, "/.42sh_history", J_FREE_VAL1);
 			default_add(env,	"42_HISTFILE",		home,							VAR_NONE,					0, 1);		//	
 		}
 		default_add(env,		"42_HISTSIZE",		"5",							VAR_NONE,					0, 0);		//	

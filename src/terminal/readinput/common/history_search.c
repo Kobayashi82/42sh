@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:41:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:16:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,8 +209,8 @@
 			
 			static int process_match(HIST_ENTRY *hist, size_t pos, int update) {
 				no_match = 0;
-				match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, 1);
-				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), 1);
+				match_show = ft_strjoin_sep(ft_strndup(hist->line, pos), "\033[30;47m", search_buffer.value, J_FREE_VAL1);
+				match_show = ft_strjoin_sep(match_show, "\033[0m", hist->line + pos + ft_strlen(search_buffer.value), J_FREE_VAL1);
 
 				// Expand buffer if necessary
 				while (hist->length >= buffer.size - 1) {

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:14:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:36:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@
 	#pragma region "Error"
 
 		enum e_error {
-			EE_FREE_NONE			= 294,		// Dont free any value
-			EE_FREE_VAL1			= 295,		// Free 'value1'
-			EE_FREE_VAL2			= 296,		// Free 'value2'
-			EE_FREE_BOTH			= 297,		// Free 'value1' and 'value2'
+			EE_FREE_NONE			= 290,		// Dont free any value
+			EE_FREE_VAL1			= 291,		// Free 'value1'
+			EE_FREE_VAL2			= 292,		// Free 'value2'
+			EE_FREE_BOTH			= 294,		// Free 'value1' and 'value2'
 			EE_RETURN				= 298,		// The shell must continue
 			EE_EXIT					= 299		// The shell must exit
 		};

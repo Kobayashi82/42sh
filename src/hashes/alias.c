@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:11:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,8 +74,8 @@
 				if (!isalnum(key[i]) && key[i] != '_') { result = 1; break; }
 
 			if (result && show_msg) {
-				print(STDERR_FILENO, ft_strjoin("alias: `", key, 0), P_FREE_RESET);
-				print(STDERR_FILENO, "': invalid alias name\n", P_PRINT);
+				print(STDERR_FILENO, ft_strjoin("alias: `", key, J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, "': invalid alias name\n",                P_PRINT);
 			}
 
 			return (result);
@@ -176,8 +176,8 @@
 				while (alias) {
 					
 					if (alias->name) {
-						array[i] = ft_strjoin("alias ", alias->name, 0);
-						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), 6);
+						array[i] = ft_strjoin("alias ", alias->name, J_FREE_NONE);
+						if (array[i]) array[i] = ft_strjoin_sep(array[i], "=", format_for_shell(alias->value, '\''), J_FREE_VAL1_3);
 						i++;
 					}
 					alias = alias->next;

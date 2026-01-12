@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:10:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,34 +42,34 @@
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
-			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",   J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ",       J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
-			}
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",                      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n",                    J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n",                       J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
-			}
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                                 P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ",         J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n",             J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                             P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n",      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                          P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n",                     J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                              P_JOIN);
+				}
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
@@ -105,8 +105,8 @@
 
 		t_var *var = variable_get(shell.env, arg, 1);
 		if (var && var->flags & VAR_READONLY) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: ", 0),                    P_FREE_JOIN);
-			print(STDERR_FILENO, ft_strjoin(arg, ": cannot unset: readonly variable\n", 0), P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: ",                    J_FREE_NONE), P_FREE_JOIN);
+			print(STDERR_FILENO, ft_strjoin(arg, ": cannot unset: readonly variable\n", J_FREE_NONE), P_FREE_JOIN);
 			return (1);
 		} else variable_unset(shell.env, arg, 1);
 
@@ -141,7 +141,7 @@
 		int ret = 0;
 
 		if (has_option(result, 'f') && has_option(result, 'v')) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: cannot simultaneously unset a function and a variable", 0), P_FREE_RESET_PRINT);
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: cannot simultaneously unset a function and a variable", J_FREE_NONE), P_FREE_RESET_PRINT);
 			return (free_options(result), 1);
 		}
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:04:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,34 +40,34 @@
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
-			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",   J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ",       J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
-			}
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",                      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n",                    J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n",                       J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
-			}
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                                 P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ",         J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n",             J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                             P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n",      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                          P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n",                     J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                              P_JOIN);
+				}
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
@@ -118,11 +118,11 @@
 			// Modo físico: mostrar ruta real sin symlinks
 			char *cwd = get_cwd("cwd");
 			if (!cwd)	ret = 1;
-			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", 1), P_FREE_RESET_PRINT);
+			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL1), P_FREE_RESET_PRINT);
 		} else {
 			// Modo lógico (por defecto): mostrar PWD del shell
 			if (shell.cwd) {
-				print(STDOUT_FILENO, ft_strjoin(shell.cwd, "\n", 0), P_FREE_RESET_PRINT);
+				print(STDOUT_FILENO, ft_strjoin(shell.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 			} else {
 				print(STDERR_FILENO, "pwd: no se ha encontrado nada\n", P_RESET_PRINT);
 				ret = 1;

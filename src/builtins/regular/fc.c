@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:02:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,13 @@
 	static int fc_get_position(int offset, char *query, size_t *out) {
 		if (!ft_isdigit_s(query)) {
 			if (history_position_query(offset , query, out)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", 0), P_FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 				return (1);
 			}
 		} else {
 			int number = atoi(query);
 			if (!strcmp(query, "-0")) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", 0), P_FREE_RESET_PRINT);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 				return (1);
 			}
 			if (!strcmp(query, "0")) number = -1;
@@ -143,7 +143,7 @@
 		for (int i = 0; i < result->argc; ++i) {
 			if (!strchr(result->argv[i], '=')) {
 				if (i < result->argc - 1) {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", 0), P_FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 					return (1);
 				}
 				no_command = 0;
@@ -179,7 +179,7 @@
 					free(key);
 					free(value);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", 0), P_FREE_RESET_PRINT);
+					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 					free(command);
 					free(key);
 					free(value);
@@ -275,20 +275,20 @@
 			}
 
 			if (!*editor || access(*editor, F_OK) == -1) {
-				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
-				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", 0), P_FREE_RESET_PRINT);
+				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, J_FREE_NONE), NULL, EE_FREE_VAL1, EE_RETURN);
+				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (is_directory((char *)(*editor))) {
-				exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
+				exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, J_FREE_NONE), NULL, EE_FREE_VAL1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
 
 			if (access(*editor, X_OK) == -1) {
-				exit_error(E_CMD_EXEC, 1, ft_strjoin("fc: ", name, 0), NULL, EE_FREE_VAL1, EE_RETURN);
+				exit_error(E_CMD_EXEC, 1, ft_strjoin("fc: ", name, J_FREE_NONE), NULL, EE_FREE_VAL1, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}

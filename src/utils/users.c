@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:57:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:19:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@
 
 			char *user = getenv("USER");
 			if (!user)	user = getenv("LOGNAME");
-			if (user)	return (ft_strjoin("/home/", user, 0));
+			if (user)	return (ft_strjoin("/home/", user, J_FREE_NONE));
 
 			return (NULL);
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:12:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,9 +154,9 @@
 				
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
 						if ( builtin->disabled && (disabled == 1 || disabled == 2))
-							array[i] = ft_strjoin("disable ", builtin->name, 0);
+							array[i] = ft_strjoin("disable ", builtin->name, J_FREE_NONE);
 						if (!builtin->disabled && (disabled == 0 || disabled == 2))
-							array[i] = ft_strjoin("enable  ", builtin->name, 0);
+							array[i] = ft_strjoin("enable  ", builtin->name, J_FREE_NONE);
 						i++;
 					}
 					builtin = builtin->next;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:24:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:56:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,34 +54,34 @@
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_RESET);
 
-			if (format == HELP_SYNTAX) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),   P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_SYNTAX) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",   J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_DESCRIPTION) {
-				print(STDOUT_FILENO, ft_strjoin(name, " - ", 0),       P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n", 0), P_FREE_JOIN);
-			}
+				if (format == HELP_DESCRIPTION) {
+					print(STDOUT_FILENO, ft_strjoin(name, " - ",       J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n", J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_NORMAL) {
-				print(STDOUT_FILENO, ft_strjoin(name, ": ", 0),                      P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(syntax, "\n", 0),                    P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n", 0),                       P_FREE_JOIN);
-			}
+				if (format == HELP_NORMAL) {
+					print(STDOUT_FILENO, ft_strjoin(name, ": ",                      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(syntax, "\n",                    J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n",                       J_FREE_NONE), P_FREE_JOIN);
+				}
 
-			if (format == HELP_MANPAGE) {
-				print(STDOUT_FILENO, "NAME\n",                                       P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ", 0),         P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(description, "\n\n", 0),             P_FREE_JOIN);
-				print(STDOUT_FILENO, "SYNOPSYS\n",                                   P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n", 0),      P_FREE_JOIN);
-				print(STDOUT_FILENO, "DESCRIPTION\n",                                P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", 0), P_FREE_JOIN);
-				print(STDOUT_FILENO, ft_strjoin(msg, "\n\n", 0),                     P_FREE_JOIN);
-				print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                    P_JOIN);
-			}
+				if (format == HELP_MANPAGE) {
+					print(STDOUT_FILENO, "NAME\n",                                                 P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", name, " - ",         J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(description, "\n\n",             J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SYNOPSYS\n",                                             P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", syntax, "\n\n",      J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "DESCRIPTION\n",                                          P_JOIN);
+					print(STDOUT_FILENO, ft_strjoin_sep("    ", description, "\n\n", J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, ft_strjoin(msg, "\n\n",                     J_FREE_NONE), P_FREE_JOIN);
+					print(STDOUT_FILENO, "SEE ALSO\n    42sh(1)\n\n",                              P_JOIN);
+				}
 
 			if (!no_print) print(STDOUT_FILENO, NULL, P_PRINT);
 
@@ -120,7 +120,7 @@
 			} else {
 				if (!ft_isdigit_s(result->argv[0])) {
 					print(STDERR_FILENO, shell.name, P_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", 0), P_FREE_PRINT);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", J_FREE_NONE), P_FREE_PRINT);
 					return (1);
 				} else {
 					history_print(atoi(result->argv[0]), 0);
@@ -141,8 +141,8 @@
 
 			char *line = NULL;
 			for (int i = 0; i < result->argc; i++) {
-				line = ft_strjoin(line, result->argv[i], 1);
-				if (i + 1 < result->argc) line = ft_strjoin(line, " ", 1);
+				line = ft_strjoin(line, result->argv[i], J_FREE_VAL1);
+				if (i + 1 < result->argc) line = ft_strjoin(line, " ", J_FREE_VAL1);
 			}
 
 			if (line) {
@@ -167,7 +167,7 @@
 			for (int i = 0; i < result->argc; i++) {
 				char *line = ft_strdup(result->argv[i]);
 				expand_history(&line, 0);
-				print(STDOUT_FILENO, ft_strjoin(line, "\n", 1), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin(line, "\n", J_FREE_VAL1), P_FREE_JOIN);
 			}
 
 			print(STDOUT_FILENO, NULL, P_PRINT);
@@ -205,7 +205,7 @@
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
 					print(STDERR_FILENO, shell.name, P_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
+					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
 					return (1);
 				}
 				history_remove_offset_range(start, end);
@@ -214,13 +214,13 @@
 
 			if (!ft_isdigit_s(offset_str)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			}
 
 			if (history_remove_offset(atoi(offset_str))) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			}
 
@@ -236,7 +236,7 @@
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_write(filename, 0);
@@ -254,11 +254,11 @@
 
 			if (filename && access(filename, F_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_read(filename);
@@ -276,7 +276,7 @@
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_write(filename, 1);
@@ -294,11 +294,11 @@
 
 			if (filename && access(filename, F_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
 				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", 0), P_FREE_PRINT);
+				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			} else {
 				history_read_append(filename);

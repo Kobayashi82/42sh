@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:30:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 12:45:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 #pragma endregion
 
-#pragma region "STR_STRING"
+#pragma region "IS"
 
 
 	int	ft_isspace_s(const char *str) { while (str && *str) { if (!isspace(*str++)) return (0); } return (1); }
@@ -58,7 +58,7 @@
 
 #pragma endregion
 
-#pragma region "STR_TRIM"
+#pragma region "TRIM"
 
 	#pragma region "StrTrim"
 
@@ -95,59 +95,63 @@
 
 #pragma endregion
 
-#pragma region "StrLCat"
+#pragma region "STRCAT"
 
-	int	ft_strlcat(char *dst, const char *src, int dstsize) {
-		int src_len = 0, dest_len = 0, i;
+	#pragma region "StrLCat"
 
-		while (dst[dest_len] && dest_len < dstsize) dest_len++;
-		while (src[src_len]) src_len++;
-		if (dstsize == 0 || dest_len >= dstsize) return (dest_len + src_len);
-		i = dest_len - 1;
-		while (++i < dstsize - 1 && src[i - dest_len]) dst[i] = src[i - dest_len];
-		dst[i] = '\0';
-		return (dest_len + src_len);
-	}
+		int	ft_strlcat(char *dst, const char *src, int dstsize) {
+			int src_len = 0, dest_len = 0, i;
 
-#pragma endregion
-
-#pragma region "StrLCpy"
-
-	int	ft_strlcpy(char *dst, const char *src, int dstsize) {
-		int		i = 0, srclen = 0;
-
-		if (!src) return (0);
-		while (src[srclen]) ++srclen;
-		if (dstsize > 0) {
-			while (dstsize > 0 && src[i] && i < dstsize - 1) { dst[i] = src[i]; ++i; }
+			while (dst[dest_len] && dest_len < dstsize) dest_len++;
+			while (src[src_len]) src_len++;
+			if (dstsize == 0 || dest_len >= dstsize) return (dest_len + src_len);
+			i = dest_len - 1;
+			while (++i < dstsize - 1 && src[i - dest_len]) dst[i] = src[i - dest_len];
 			dst[i] = '\0';
+			return (dest_len + src_len);
 		}
 
-		return (srclen);
-	}
+	#pragma endregion
+
+	#pragma region "StrLCpy"
+
+		int	ft_strlcpy(char *dst, const char *src, int dstsize) {
+			int		i = 0, srclen = 0;
+
+			if (!src) return (0);
+			while (src[srclen]) ++srclen;
+			if (dstsize > 0) {
+				while (dstsize > 0 && src[i] && i < dstsize - 1) { dst[i] = src[i]; ++i; }
+				dst[i] = '\0';
+			}
+
+			return (srclen);
+		}
+
+	#pragma endregion
 
 #pragma endregion
 
-#pragma region "STR_P_JOIN"
+#pragma region "STRJOIN"
 
 	#pragma region "StrJoin"
 
-		char *ft_strjoin(const char *str1, const char *str2, int frees) {
-			if (!str1 && !str2) return (NULL);
+		char *ft_strjoin(const char *value1, const char *value2, int free_mode) {
+			if (!value1 && !value2) return (NULL);
 
-			int len = ft_strlen(str1) + ft_strlen(str2) + 1;
+			int len = ft_strlen(value1) + ft_strlen(value2) + 1;
 			char *new_str = malloc(len);
 			if (new_str) {
-				if (str1) {
-					ft_strlcpy(new_str, str1, len);
-					if (str2) ft_strlcat(new_str, str2, len);
-				} else if (str2) {
-					strcpy(new_str, str2);
+				if (value1) {
+					ft_strlcpy(new_str, value1, len);
+					if (value2) ft_strlcat(new_str, value2, len);
+				} else if (value2) {
+					strcpy(new_str, value2);
 				}
 			}
 
-			if (frees == 1 || frees == 3) free((void *)str1);
-			if (frees == 2 || frees == 3) free((void *)str2);
+			if (free_mode == J_FREE_VAL1 || free_mode == J_FREE_VAL1_2) free((void *)value1);
+			if (free_mode == J_FREE_VAL2 || free_mode == J_FREE_VAL1_2) free((void *)value2);
 
 			return (new_str);
 		}
@@ -156,28 +160,28 @@
 
 	#pragma region "StrJoinSep"
 
-		char *ft_strjoin_sep(const char *str1, const char *sep, const char *str2, int frees) {
-			int	len = ft_strlen(str1) + ft_strlen(sep) + ft_strlen(str2);
+		char *ft_strjoin_sep(const char *value1, const char *value2, const char *value3, int free_mode) {
+			int	len = ft_strlen(value1) + ft_strlen(value2) + ft_strlen(value3);
 
-			if (!str1 && !sep && !str2) return (NULL);
+			if (!value1 && !value2 && !value3) return (NULL);
 
 			char *new_str = malloc(len + 1);
 			if (new_str) {
-				if (str1) {
-					ft_strlcpy(new_str, str1, len + 1);
-					if (sep)  ft_strlcat(new_str, sep, len + 1);
-					if (str2) ft_strlcat(new_str, str2, len + 1);
-				} else if (sep) {
-					ft_strlcpy(new_str, sep, len + 1);
-					if (str2) ft_strlcat(new_str, str2, len + 1);
-				} else if (str2) {
-					ft_strlcpy(new_str, str2, len + 1);
+				if (value1) {
+					ft_strlcpy(new_str, value1, len + 1);
+					if (value2)  ft_strlcat(new_str, value2, len + 1);
+					if (value3) ft_strlcat(new_str, value3, len + 1);
+				} else if (value2) {
+					ft_strlcpy(new_str, value2, len + 1);
+					if (value3) ft_strlcat(new_str, value3, len + 1);
+				} else if (value3) {
+					ft_strlcpy(new_str, value3, len + 1);
 				}
 			}
 
-			if (str1 && (frees == 1 || frees == 4 || frees == 6 || frees == 7)) free((void *)str1);
-			if (sep  && (frees == 2 || frees == 4 || frees == 5 || frees == 7)) free((void *)sep);
-			if (str2 && (frees == 3 || frees == 5 || frees == 6 || frees == 7)) free((void *)str2);
+			if (value1 && (free_mode == J_FREE_VAL1 || free_mode == J_FREE_VAL1_2 || free_mode == J_FREE_VAL1_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value1);
+			if (value2 && (free_mode == J_FREE_VAL2 || free_mode == J_FREE_VAL1_2 || free_mode == J_FREE_VAL2_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value2);
+			if (value3 && (free_mode == J_FREE_VAL3 || free_mode == J_FREE_VAL1_3 || free_mode == J_FREE_VAL2_3 || free_mode == J_FREE_VAL1_2_3)) free((void *)value3);
 
 			return (new_str);
 		}
@@ -186,7 +190,7 @@
 
 #pragma endregion
 
-#pragma region "STR_DUP"
+#pragma region "STRDUP"
 
 	#pragma region "StrDup"
 
@@ -224,7 +228,7 @@
 
 #pragma endregion
 
-#pragma region "STR_LEN"
+#pragma region "STRLEN"
 
 	size_t ft_strlen(const char *str) {
 		size_t i = 0;
@@ -235,7 +239,7 @@
 
 #pragma endregion
 
-#pragma region "STR_SPLIT"
+#pragma region "SPLIT"
 
 	char **ft_split(char *str, char c) {
 		if (!str) return (NULL);
@@ -270,7 +274,7 @@
 
 #pragma endregion
 
-#pragma region "STR_TOK"
+#pragma region "STRTOK"
 
 	char *ft_strtok(char *str, const char *delim, int id) {
 		static char *static_str[100];
@@ -460,7 +464,6 @@
 	//			- P_RESET_ALL:		Resets all buffers
 	//
 	//	Returns: 0 on success, 1 on failure
-	//
 
 	#define PRINT_TOTAL_FD	3						//	Total of FDs to manage
 

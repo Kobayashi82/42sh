@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:31:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/12 13:19:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,7 +209,7 @@
 				}
 
 				if (search_dir) {
-					char *fullpath = ft_strjoin_sep(search_dir, "/", path, 0);
+					char *fullpath = ft_strjoin_sep(search_dir, "/", path, J_FREE_NONE);
 					char *resolved_path = resolve_path(fullpath);
 					free(fullpath);
 					fullpath = resolved_path;
@@ -282,7 +282,7 @@
 			char *final_path = NULL;
 			for (int i = 0; search_paths[i]; ++i) {
 
-				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, 0);
+				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, J_FREE_NONE);
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
@@ -328,7 +328,7 @@
 			int j = 0;
 			for (int i = 0; search_paths[i]; ++i) {
 
-				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, 0);
+				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, J_FREE_NONE);
 				if (!fullpath) break;
 
 				char *resolved_path = resolve_path(resolve_symlink(fullpath));
