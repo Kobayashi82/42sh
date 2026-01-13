@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 13:30:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:49:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:37:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 	//	---------- WRITE -----------
 	int		write_value(int fd, const char *value, size_t length);
 	//	-------- INITIALIZE --------
+	void	terminal_update_limits();
 	int		terminal_initialize();
-	void	terminal_release();
 
 #pragma endregion

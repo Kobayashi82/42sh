@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:42:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:39:36 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,7 +233,7 @@
 
 				while (moves--) {
 					if (col >= terminal.cols - 1)	cursor_set(row + 1, 0);
-					else								cursor_set(row, col + 1);
+					else							cursor_set(row, col + 1);
 				}
 			}
 
@@ -366,7 +366,16 @@
 
 #pragma region "Initialize"
 
+	void terminal_update_limits() {
+		terminal.rows = tgetnum("li");
+		terminal.cols = tgetnum("co");
+	}
+
 	int terminal_initialize() {
+		static int initialize = 0;
+		if (initialize) return (0);
+		initialize = 1;
+
 		char *termtype = getenv("TERM");
 		if (!termtype) { termtype = "dumb"; shell.options.emacs = 0; shell.options.vi = 0; }
 
@@ -374,12 +383,7 @@
 		if (success < 0)	{ write(STDERR_FILENO, "Could not access the termcap data base.\n", 41);	return (1); }
 		if (success == 0)	{ write(STDERR_FILENO, "Terminal type is not defined.\n", 31);				return (1); }
 
-		terminal.rows = tgetnum("li");
-		terminal.cols = tgetnum("co");
-
 		return (0);
 	}
-
-	void terminal_release() { tgetent(NULL, "none"); }
 
 #pragma endregion

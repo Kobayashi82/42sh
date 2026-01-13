@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:39:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:39:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@
 			raw_mode = 1;
 			tcgetattr(STDIN_FILENO, &terminal.term);
 			terminal_initialize();
+			terminal_update_limits();
 
 			struct termios raw = terminal.term;
 			raw.c_lflag &= ~(ECHO | ICANON | ISIG | IEXTEN);			//	Disable echo (ECHO), canonical mode (ICANON), signals (ISIG), and extended input processing (IEXTEN)

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:46:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/13 13:38:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,7 +195,7 @@
 
 	static void sigwinch_handler(int sig) {
 		(void) sig;
-		terminal_initialize();
+		terminal_update_limits();
 		if (raw_mode) cursor_get();
 	}
 

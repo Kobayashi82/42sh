@@ -1,236 +1,84 @@
 {
-   ignore_libtinfo
+   <termcap>
    Memcheck:Leak
    ...
    obj:/usr/lib/x86_64-linux-gnu/libtinfo.so.*
    ...
 }
 {
-   ignore_regcomp
-   Memcheck:Leak
-   ...
-   obj:/lib/x86_64-linux-gnu/libc.so.*
-   ...
-}
-
-{
-   <ignore_nano>
+   <nano>
    Memcheck:Leak
    ...
    obj:/usr/bin/nano
    ...
 }
 {
-   <ignore_vi>
+   <vi>
    Memcheck:Leak
    ...
    obj:/usr/bin/vi
    ...
 }
 {
-   <ignore_vim>
+   <vim>
    Memcheck:Leak
    ...
    obj:/usr/bin/vim.basic
    ...
 }
-
 {
-   <ignore_all_grep_errors>
+   <grep>
    Memcheck:Leak
    ...
    obj:/usr/bin/grep
    ...
 }
-
 {
-   <ignore_all_gawk_errors>
+   <gawk>
    Memcheck:Leak
    ...
    obj:/usr/bin/gawk
    ...
 }
-
 {
-   <ignore_all_sort_errors>
+   <sort>
    Memcheck:Leak
    ...
    obj:/usr/bin/sort
    ...
 }
-
 {
-   <ignore_all_ls_errors>
+   <ls>
    Memcheck:Leak
    ...
    obj:/usr/bin/ls
    ...
 }
-
 {
-   <ignore_all_date_errors>
+   <date>
    Memcheck:Leak
    ...
    obj:/usr/bin/date
    ...
 }
-
 {
-   <ignore_all_clear_errors>
+   <clear>
    Memcheck:Leak
    ...
    obj:/usr/bin/clear
    ...
 }
-
 {
-   <ignore_all_cat_errors>
+   <cat>
    Memcheck:Leak
    ...
    obj:/usr/bin/cat
    ...
 }
-
 {
-   <ignore_all_head_errors>
+   <head>
    Memcheck:Leak
    ...
    obj:/usr/bin/head
    ...
-}
-
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:calloc
-   fun:parse_bracket_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse_sub_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse_sub_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse
-   fun:re_compile_internal
-   fun:regcomp
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:re_node_set_merge
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:re_node_set_merge
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure
-   fun:analyze
-   fun:re_compile_internal
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:re_node_set_merge
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure
-   fun:analyze
-   fun:re_compile_internal
-   fun:regcomp
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:re_node_set_alloc
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure
-   fun:analyze
-   fun:re_compile_internal
-   fun:regcomp
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:malloc
-   fun:re_node_set_alloc
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-   fun:calc_eclosure_iter
-}
-{
-   <insert_a_suppression_name_here>
-   Memcheck:Leak
-   match-leak-kinds: reachable
-   fun:realloc
-   fun:build_charclass
-   fun:parse_bracket_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse_sub_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse_sub_exp
-   fun:parse_expression
-   fun:parse_branch
-   fun:parse_reg_exp
-   fun:parse
-   fun:re_compile_internal
 }
