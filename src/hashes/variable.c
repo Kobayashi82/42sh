@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 21:56:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/13 16:39:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1415,3 +1415,8 @@
 	// declare -A var=([key1]=valor1 [key2]=valor2)	# crea array asociativo
 
 #pragma endregion
+
+
+	// Tendría que detectar [ y si el caracter anterior no es isspace o es ([ y buscando el final (cumpliendo contextos) termina en ]= entonces es un indice
+	// Todo esto se hace en el parseo, de forma que cuando llega como argumento, tenemos algo... no se que, pero algo
+	// Quién me mandaría meterme en ese lío
