@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/13 16:39:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/15 20:57:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1415,6 +1415,16 @@
 	// declare -A var=([key1]=valor1 [key2]=valor2)	# crea array asociativo
 
 #pragma endregion
+
+
+	// Nueva idea:
+	//
+	// Funcion que pasandole una asignacion, detecta si tiene [] y devuelva el indice como char *
+	// Funcion que pasandole value, devuelva lista con indices y values (para cuando es =(...))
+	// Si key tiene indice [] y asignacion tambien: 'cannot assign list to array member'
+
+	// Entonces una funcion que le pasas el arg y te devuelve key, indices y values 
+	// o key, indice 0 y value si no tiene indices
 
 
 	// Tendría que detectar [ y si el caracter anterior no es isspace o es ([ y buscando el final (cumpliendo contextos) termina en ]= entonces es un indice
