@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 17:07:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,8 @@
 			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL_1), P_FREE_RESET_PRINT);
 		} else {
 			// Modo lógico (por defecto): mostrar PWD del shell
-			if (shell.cwd) {
-				print(STDOUT_FILENO, ft_strjoin(shell.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+			if (shell.dirs.cwd) {
+				print(STDOUT_FILENO, ft_strjoin(shell.dirs.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 			} else {
 				print(STDERR_FILENO, "pwd: no se ha encontrado nada\n", P_RESET_PRINT);
 				ret = 1;

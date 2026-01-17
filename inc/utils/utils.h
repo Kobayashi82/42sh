@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 14:08:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 18:40:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,8 @@
 
 	#pragma region "PATH"
 
-		#define PATH	"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+		#define PATH		"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+		#define PATH_MAX	4096
 
 		char	*normalize_path(char *path, int free_mode);
 		char	*resolve_symlink(const char *path);

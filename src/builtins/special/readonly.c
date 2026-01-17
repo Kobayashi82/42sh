@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/13 16:39:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 19:06:35 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,22 +191,20 @@
 #pragma region "Readonly"
 
 	int bt_readonly(int argc, char **argv) {
+		int ret = 0;
 		t_long_option long_opts[] = {
 			{"help",	NO_ARGUMENT, 0},
 			{"version",	NO_ARGUMENT, 0},
 			{NULL,		NO_ARGUMENT, 0}
 		};
-
+		
 		t_parse_result *result = parse_options(argc, argv, "aAfnp", NULL, long_opts, "readonly [-aAfn] [name[=value] ...] or readonly [-fp]", IGNORE_OFF);
-		if (errno == E_NO_MEMORY)	return (exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN));
-		if (errno == E_OPT_MAX)		return (exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN));
-		if (errno)					return (1);
+		if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN);
+		if (errno == E_OPT_MAX)		ret = exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
+		if (errno)					return (free_options(result), ret);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_readonly_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
-
-
-		int ret = 0;
 
 		if (!result->argc) {
 			// if (has_option(result, 'f'))	function_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);

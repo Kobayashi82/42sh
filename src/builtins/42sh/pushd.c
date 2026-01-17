@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 17:38:46 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,8 +120,10 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "pushd [-n] [+N | -N | dir]", IGNORE_OFF);
-		if (!result)		return (1);
+		t_parse_result *result = parse_options(argc, argv, "n", NULL, long_opts, "pushd [-n] [+N | -N | dir]", IGNORE_OFF);
+		if (errno == E_NO_MEMORY)	return (exit_error(E_NO_MEMORY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN));
+		if (errno == E_OPT_MAX)		return (exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN));
+		if (errno)					return (1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_pushd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

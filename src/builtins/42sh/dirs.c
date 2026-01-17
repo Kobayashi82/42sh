@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 19:07:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,22 +111,58 @@
 
 #pragma region "Dirs"
 
+	// -c -v -p -l
+
 	int bt_dirs(int argc, char **argv) {
+		int ret = 0;
 		t_long_option long_opts[] = {
 			{"help",	NO_ARGUMENT, 0},
 			{"version",	NO_ARGUMENT, 0},
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "dirs [-clpv] [+N] [-N]", IGNORE_OFF);
-		if (!result)		return (1);
+		t_parse_result *result = parse_options(argc, argv, "clpv", NULL, long_opts, "dirs [-clpv] [+N] [-N]", IGNORE_OFF);
+		if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN);
+		if (errno == E_OPT_MAX)		ret = exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
+		if (errno)					return (free_options(result), ret);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_dirs_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		int ret = 0;
+		int offset = 0;
 
+		if (has_option(result, 'c')) {
+			dirs_clear();
+			return (free_options(result), ret);
+		}
+
+		if (result->argc > 1) {
+			exit_error(E_CD_ARGS, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
+
+		if (result->argc == 1) {
+			if (!ft_isdigit_s(result->argv[0])) {
+				exit_error(E_DIRS_INVALID, 2, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				return (free_options(result), 2);
+			}
+			if (result->argv[0][0] == '-')	offset = atoi(result->argv[0]) - 1;
+			else							offset = atoi(result->argv[0]);
+		}
+
+		int line_mode = 0;
+		if (has_option(result, 'p')) line_mode = 1;
+		if (has_option(result, 'v')) line_mode = 2;
+
+		if (dirs_print(offset, line_mode, has_option(result, 'l'), !result->argc)) {
+			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_RANGE) {
+				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				else					ret = exit_error(E_DIRS_RANGE, 1, "dirs", "0", EE_FREE_NONE, EE_RETURN);
+			}
+		}
 
 		return (free_options(result), ret);
 	}

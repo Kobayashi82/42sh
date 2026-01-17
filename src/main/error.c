@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:57:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 17:31:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,18 @@
 				print(STDERR_FILENO, value1,                                                                 P_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep(": Too many options (max ", value2, ")\n", J_FREE_NONE), P_FREE_JOIN);
 			}
+
+			if (error_type == E_DIRS_EMPTY)	print(STDERR_FILENO, ft_strjoin(value1, ": directory stack empty\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_INVALID) {
+				print(STDERR_FILENO, value1,                                                                              P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": invalid number\n", J_FREE_NONE), P_FREE_PRINT);
+			}
+			if (error_type == E_DIRS_RANGE) {
+				print(STDERR_FILENO, value1,                                                                              P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": directory stack index out of range\n", J_FREE_NONE), P_FREE_PRINT);
+			}
+
+			if (error_type == E_CD_ARGS)	print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n", J_FREE_NONE), P_FREE_PRINT);
 		}
 
 	#pragma endregion
@@ -109,7 +121,8 @@
 		tmp_clear();
 		prompt_clear(BOTH);
 		ast_free(&shell.ast);
-		free(shell.cwd);
+		free(shell.dirs.cwd);
+		dirs_clear();
 
 		while (shell.env) {
 			t_env *parent = shell.env->parent;

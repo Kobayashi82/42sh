@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/09 20:32:56 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/17 17:09:09 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -108,6 +108,7 @@ SRCS	=	main/main.c										\
 															\
 			hashes/alias.c									\
 			hashes/builtin.c								\
+			hashes/dirs.c									\
 			hashes/hash.c									\
 			hashes/variable.c								\
 															\
