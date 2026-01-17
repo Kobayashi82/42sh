@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 11:39:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 10:50:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 	#include "hashes/alias.h"
 	#include "hashes/builtin.h"
+	#include "hashes/dirs.h"
 	#include "hashes/hash.h"
 	#include "hashes/variable.h"
 	#include "main/error.h"
@@ -75,10 +76,10 @@
 			int			seconds;					// Elapsed time since shell start (in seconds)
 			int			epoch_seconds;				// Current UNIX time in seconds since the Epoch
 			float		epoch_realtime;				// High-resolution current time since the Epoch (seconds, fractional)
-			char		*cwd;						// Internal representation of the current working directory
 			const char	*name_exec;					// Command used to invoke the shell (argv[0] without leading '-' for login shells)
 			const char	*name_bin;					// Binary name only (extracted after the last '/' of 'name_exec')
 			const char	*name;						// Name used in messages ("42sh" or "-42sh" for login shells)
+			t_dirs		dirs;						// Internal representation of the current working directory and directory stack
 			t_alias		*alias_table[HASH_SIZE];	// 
 			t_builtin	*builtin_table[HASH_SIZE];	// 
 			t_hash		*hash_table[HASH_SIZE];		// 

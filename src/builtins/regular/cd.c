@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 10:50:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@
 		char *path = ft_strdup(original);
 
 		if (*path != '/') {
-			char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL_3);
+			char *tmp = ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_VAL_3);
 			path = resolve_path(tmp);
 			free(tmp);
 		} else {
@@ -137,7 +137,7 @@
 				path = ft_strdup(var_path);
 
 				if (*path != '/') {
-					char *tmp = ft_strjoin_sep(shell.cwd, "/", path, J_FREE_VAL_3);
+					char *tmp = ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_VAL_3);
 					path = resolve_path(tmp);
 					free(tmp);
 				} else {
@@ -277,8 +277,8 @@
 			// 	variables_add(shell.env->table, "OLDPWD", shell.cwd, -1, -1, -1, -1);
 			// }
 
-			free(shell.cwd);
-			shell.cwd = ft_strdup(path);
+			free(shell.dirs.cwd);
+			shell.dirs.cwd = ft_strdup(path);
 			// var = variable_find(shell.env->table, "PWD");
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, ft_strjoin(shell.name, ": PWD: readonly variable\n", 0), P_FREE_RESET_PRINT);

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:25:46 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 10:50:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@
 		shell.subshell_level = 0;
 		shell.started = seconds_since(0);
 		srand(shell.started);
-		shell.cwd = get_cwd("shell-init");
+		shell.dirs.cwd = get_cwd("shell-init");
 
 		terminal.bk_stdin = dup(STDIN_FILENO);
 		terminal.bk_stdout = dup(STDOUT_FILENO);

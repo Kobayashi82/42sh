@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:19:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 14:21:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,82 @@
 
 	#include <sys/stat.h>
 	#include <dirent.h>
+
+#pragma endregion
+
+#pragma region "Normalize"
+
+	char *normalize_path(char *path, int free_mode) {
+		errno = 0;
+		if (!path) {
+			if (free_mode == J_FREE_VAL_1) free(path);
+			return (NULL);
+		}
+
+		char *new_path = ft_strdup(path);
+		if (free_mode == J_FREE_VAL_1) free(path);
+		if (!new_path) return (errno = E_NO_MEMORY, NULL);
+
+		// Remove duplicate slashes
+		int i = 0;
+		while (new_path[i]) {
+			if (new_path[i] == '/' && new_path[i + 1] == '/') {
+				memmove(&new_path[i], &new_path[i + 1], ft_strlen(&new_path[i]));
+			} else {
+				i++;
+			}
+		}
+
+		// Remove trailing slash
+		int len = ft_strlen(new_path);
+		if (len > 1 && new_path[len - 1] == '/') new_path[len - 1] = '\0';
+		
+		int count = 0;
+		char *components[1024] = {NULL};
+		char *copy = ft_strdup(new_path);
+		if (!copy) return (free(new_path), errno = E_NO_MEMORY, NULL);
+		char *token = ft_strtok(copy, "/", 17);
+
+		// Handle . and ..
+		while (token) {
+			if (!strcmp(token, "..")) {
+				if (count > 0) free(components[--count]);
+			} else if (strcmp(token, ".")) {
+				components[count] = ft_strdup(token);
+				if (!components[count]) {
+					array_free(components);
+					free(copy);
+					free(new_path);
+					return (errno = E_NO_MEMORY, NULL);
+				}
+				count++;
+			}
+			token = ft_strtok(NULL, "/", 17);
+		}
+		free(copy);
+		free(new_path);
+
+		// Rebuild path
+		new_path = ft_strdup("/");
+		if (!new_path) {
+			array_free(components);
+			return (errno = E_NO_MEMORY, NULL);
+		}
+
+		for (int j = 0; j < count; ++j) {
+			new_path = ft_strjoin(new_path, components[j], J_FREE_VAL_1);
+			if (new_path && j < count - 1) {
+				new_path = ft_strjoin(new_path, "/", J_FREE_VAL_1);
+			}
+			if (!new_path) {
+				array_free(components);
+				return (errno = E_NO_MEMORY, NULL);
+			}
+		}
+
+		array_free(components);
+		return (new_path);
+	}
 
 #pragma endregion
 
@@ -350,7 +426,7 @@
 
 #pragma endregion
 
-#pragma region "Working Dir"
+#pragma region "new_path Dir"
 
 	char *get_cwd(char *sender) {
 		char cwd[4096];

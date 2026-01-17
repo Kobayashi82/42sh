@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 10:40:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,97 +114,6 @@
 		}
 
 	#pragma endregion
-
-#pragma endregion
-
-#pragma region "ANSI Escapes"
-
-	static void ansi_escapes(char *value) {
-		int i = 0;
-		int j = 0;
-
-		while (value[i]) {
-			if (value[i] == '\\' && value[i + 1]) {
-				i++;
-				if		(value[i] == 'a')						value[j++] = '\a';
-				else if (value[i] == 'b')						value[j++] = '\b';
-				else if (value[i] == 'c') {						value[j]   = '\0';		return; }
-				else if (value[i] == 'e' || value[i] == 'E')	value[j++] = '\033';
-				else if (value[i] == 'f')						value[j++] = '\f';
-				else if (value[i] == 'n')						value[j++] = '\n';
-				else if (value[i] == 'r')						value[j++] = '\r';
-				else if (value[i] == 't')						value[j++] = '\t';
-				else if (value[i] == 'v')						value[j++] = '\v';
-				else if (value[i] == '\\')						value[j++] = '\\';
-				else if (value[i] == '0' && value[i + 1] >= '0' && value[i + 1] <= '7') {
-					int octal = 0, count = 0;
-					i++;
-					while (count < 3 && value[i] >= '0' && value[i] <= '7') {
-						octal = octal * 8 + (value[i] - '0');
-						i++;
-						count++;
-					}
-					value[j++] = (char)octal;
-					i--;
-				}
-				else if (value[i] == 'x') {
-					int hex = 0, count = 0;
-					i++;
-					while (count < 2 && ((value[i] >= '0' && value[i] <= '9') ||
-						(value[i] >= 'a' && value[i] <= 'f') ||
-						(value[i] >= 'A' && value[i] <= 'F'))) {
-						if		(value[i] >= '0' && value[i] <= '9')	hex = hex * 16 + (value[i] - '0');
-						else if (value[i] >= 'a' && value[i] <= 'f')	hex = hex * 16 + (value[i] - 'a' + 10);
-						else											hex = hex * 16 + (value[i] - 'A' + 10);
-						i++;
-						count++;
-					}
-					value[j++] = (char)hex;
-					i--;
-				}
-				else if (value[i] == 'u' || value[i] == 'U') {
-					int max_digits = (value[i] == 'u') ? 4 : 8;
-					int unicode = 0, count = 0;
-					i++;
-					while (count < max_digits && ((value[i] >= '0' && value[i] <= '9') ||
-						(value[i] >= 'a' && value[i] <= 'f') ||
-						(value[i] >= 'A' && value[i] <= 'F'))) {
-						if		(value[i] >= '0' && value[i] <= '9')	unicode = unicode * 16 + (value[i] - '0');
-						else if (value[i] >= 'a' && value[i] <= 'f')	unicode = unicode * 16 + (value[i] - 'a' + 10);
-						else											unicode = unicode * 16 + (value[i] - 'A' + 10);
-						i++;
-						count++;
-					}
-					if (unicode < 0x80) value[j++] = (char)unicode;
-					else if (unicode < 0x800) {
-						value[j++] = 0xC0 | (unicode >> 6);
-						value[j++] = 0x80 | (unicode & 0x3F);
-					}
-					else if (unicode < 0x10000) {
-						value[j++] = 0xE0 | (unicode >> 12);
-						value[j++] = 0x80 | ((unicode >> 6) & 0x3F);
-						value[j++] = 0x80 | (unicode & 0x3F);
-					}
-					else {
-						value[j++] = 0xF0 | (unicode >> 18);
-						value[j++] = 0x80 | ((unicode >> 12) & 0x3F);
-						value[j++] = 0x80 | ((unicode >> 6) & 0x3F);
-						value[j++] = 0x80 | (unicode & 0x3F);
-					}
-					i--;
-				}
-				else {
-					value[j++] = '\\';
-					value[j++] = value[i];
-				}
-				i++;
-			}
-			else {
-				value[j++] = value[i++];
-			}
-		}
-		value[j] = '\0';
-	}
 
 #pragma endregion
 

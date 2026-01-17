@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:24:25 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/17 14:08:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -232,6 +232,7 @@
 
 		#define PATH	"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
+		char	*normalize_path(char *path, int free_mode);
 		char	*resolve_symlink(const char *path);
 		char	*resolve_path(const char *path);
 		char	*path_find_first(char *cmd, char *paths);
@@ -241,6 +242,12 @@
 		char	*get_cwd(char *sender);
 		char	*correct_path(char *path);
 		int		is_directory(const char *path);
+
+	#pragma endregion
+
+	#pragma region "ANSI Escapes"
+
+		void	ansi_escapes(char *value);
 
 	#pragma endregion
 
