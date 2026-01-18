@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 17:31:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 22:50:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,94 +117,85 @@
 
 #pragma region "Change Dir"
 
-	static int change_dir(t_parse_result *result, char *final_path) {
-		char *original = final_path;
-		char *path = ft_strdup(original);
+	static int change_dir(t_parse_result *result, char *final_path, int show_path) {
+		if (!final_path) return (1);
 
-		if (*path != '/') {
-			char *tmp = ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_VAL_3);
-			path = resolve_path(tmp);
-			free(tmp);
+		char *path = ft_strdup(final_path);
+		int physical = 0;
+
+		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) {
+			char *corrected = correct_path(final_path);
+			if (!corrected) return (errno = E_NO_MEMORY, 1);
+			if (strcmp(corrected, final_path)) show_path = 1;
+			path = corrected;
+		}
+
+		if ((shell.options.cd_resolve && !result->options)  || has_option(result, 'P')) {
+			char *tmp = realpath(path, NULL);
+			free(path);
+			path = tmp;
+			physical = 1;
 		} else {
 			char *tmp = resolve_path(path);
 			free(path);
 			path = tmp;
 		}
 
-		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) path = correct_path(path);
+		if (!path) return (errno = E_NO_MEMORY, 1);
 
-		if (shell.options.cdable_vars && original && path && access(path, F_OK) == -1) {
-			char *var_path = variable_scalar_get(shell.env, original);
-			if (var_path) {
-				free(path);
-				path = ft_strdup(var_path);
+		if (access(path, X_OK) == -1 || !is_directory(path) || chdir(path)) {
+			free(path);
+			return (errno = E_CD_PATH, 1);
+		}
 
-				if (*path != '/') {
-					char *tmp = ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_VAL_3);
-					path = resolve_path(tmp);
-					free(tmp);
-				} else {
-					char *tmp = resolve_path(path);
+		char *new_cwd = NULL;
+		if (physical) {
+			new_cwd = getcwd(NULL, 0);
+			if (!new_cwd) {
+				if (((shell.options.cd_resolve && !result->options) || has_option(result, 'P')) && has_option(result, 'e')) {
 					free(path);
-					path = tmp;
+					return (1);
 				}
-
-				if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) path = correct_path(path);
+				new_cwd = path;
+				path = NULL;
 			}
+		} else {
+			new_cwd = path;
+			path = NULL;
 		}
 
-		if ((!shell.options.cd_resolve && !result->options) || has_option(result, 'L')) {
-			;
-		} else if ((shell.options.cd_resolve && !result->options) || has_option(result, 'P')) {
-			char *tmp = ft_strdup(resolve_symlink(path));
-			free(path);
-			path = tmp;
+		int ret = 0;
+
+		// Update OLDPWD
+		char ret_var = variable_scalar_set(shell.env, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
+		if (ret_var) {
+			if (errno == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
+			if (errno == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
+			ret = 1;
 		}
 
-		if (chdir(path)) {
-			free(path);
-			return (1);
+		// Update shell state
+		free(shell.dirs.cwd);
+		shell.dirs.cwd = new_cwd;
+
+		// Update PWD
+		ret_var = variable_scalar_set(shell.env, "PWD", shell.dirs.cwd, 0, VAR_NONE, 0);
+		if (ret_var) {
+			if (errno == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
+			if (errno == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
+			ret = 1;
 		}
 
-		free(final_path);
-		final_path = path;
-		return (0);
+		// Print path (only if OLDPWD or CDPATH or )
+		if (show_path) print(STDOUT_FILENO, ft_strjoin(shell.dirs.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+
+		free(path);
+		return (ret);
 	}
 
 #pragma endregion
 
-#pragma region "Check CDPATH"
-
-	// int cdpath(t_parse_result *result, char **main_path) {
-	// 	char *cdpath = variable_scalar_get(shell.env, "CDPATH");
-	// 	if (!cdpath) return (1);
-
-	// 	char *start = cdpath;
-	// 	char *end;
-
-	// 	while (1) {
-	// 		end = strchr(start, ':');
-	// 		size_t len = (end) ? (size_t)(end - start) : ft_strlen(start);
-
-	// 		char *token;
-	// 		if (!len)	token = ft_strdup(".");
-	// 		else		token = ft_strndup(start, len);
-
-	// 		if (token) {			
-	// 			if (token && !change_dir(result, &token)) {
-	// 				free(*main_path);
-	// 				*main_path = token;
-	// 				return (0);
-	// 			}
-	// 			free(token);
-	// 		}
-
-	// 		if (!end) break;
-	// 		start = end + 1;
-	// 	}
-
-	// 	return (1);
-	// }
+#pragma region "CDPATH"
 
 	char *cdpath(char *path) {
 		char *cdpath = variable_scalar_get(shell.env, "CDPATH");
@@ -235,7 +226,7 @@
 				continue;
 			}
 
-			if (access(absolute_path, F_OK) == -1 || access(absolute_path, X_OK) == -1 || !is_directory(absolute_path)) {
+			if (access(absolute_path, X_OK) == -1 || !is_directory(absolute_path)) {
 				free(absolute_path);
 				if (!end) break;
 				start = end + 1;
@@ -266,6 +257,7 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
+		char *name = (char *)result->name;
 		int ret = 0;
 		int no_cdpath = 0;
 		int show_path = 0;
@@ -273,13 +265,13 @@
 
 		// Get initial path
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_CD_ARGS, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		} else if (!result->argc) {
 			path = variable_scalar_get(shell.env, "HOME");
 			no_cdpath = 1;
 			if (!path) {
-				exit_error(E_CD_HOME, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_CD_HOME, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else if (!strcmp(result->argv[0], "-")) {
@@ -287,102 +279,91 @@
 			no_cdpath = 1;
 			show_path = 1;
 			if (!path) {
-				exit_error(E_CD_OLDPWD, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_CD_OLDPWD, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else path = result->argv[0];
 
-		// Set final path ()
+		if (path[0] == '/' || !strcmp(path, ".") || !strcmp(path, "..") || !strncmp(path, "./", 2) || !strncmp(path, "../", 3)) no_cdpath = 1;
+
+		// Set final path
 		char *final_path = NULL;
 		if (no_cdpath) {
 			final_path = ft_strdup(path);
 			if (!final_path) {
 				errno = E_NO_MEMORY;
-				exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else {
 			final_path = cdpath(path);
 			if (!final_path) {
 				if (errno == E_NO_MEMORY) {
-					exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
+					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
 				final_path = ft_strdup(path);
+				if (!final_path) {
+					errno = E_NO_MEMORY;
+					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+					return (free_options(result), 1);
+				}
+
 			} else show_path = 1;
 		}
 
-		// Change path
-		if (change_dir(result, &path)) {
-			if (access(path, F_OK) != -1 && !is_directory(path)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ",                   J_FREE_NONE), P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Not a directory\n", J_FREE_NONE), P_FREE_PRINT);
-			} else if (access(path, F_OK) != -1 && access(path, X_OK) == -1) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ",                     J_FREE_NONE), P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": Permission denied\n", J_FREE_NONE), P_FREE_PRINT);
+		// Check vars
+		if (!no_cdpath && shell.options.cdable_vars) {
+			char *absolute_path = resolve_path(final_path);
+			if (!absolute_path) {
+				if (errno == E_NO_MEMORY) {
+					free(final_path);
+					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+					return (free_options(result), 1);
+				}
 			} else {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": cd: ",                             J_FREE_NONE), P_FREE_RESET);
-				print(STDERR_FILENO, ft_strjoin(result->argv[0], ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
-			}
-			free(final_path);
-			return (free_options(result), 1);
-		}
-
-		// Print path (only if OLDPWD or CDPATH)
-		if (show_path) print(STDOUT_FILENO, ft_strjoin(final_path, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-
-
-		// Update OLDPWD
-		char ret_var = variable_scalar_set(shell.env, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
-		if (ret_var) {
-			if (errno == E_NO_MEMORY) {
-				exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
-				return (free_options(result), 1);
-			}
-			if (errno == E_VAR_IDENTIFIER) {
-				exit_error(E_VAR_IDENTIFIER, 1, "cd: ", "OLDPWD",  EE_FREE_NONE, EE_RETURN);
-			}
-			if (errno == E_VAR_READONLY) {
-				exit_error(E_VAR_READONLY, 1, "cd: ", "OLDPWD",  EE_FREE_NONE, EE_RETURN);
-			}
-			ret = 1;
-		}
-
-		// Update internal CWD
-		char *absolute_path = resolve_path(final_path);
-		free(final_path);
-		if (!absolute_path) {
-			errno = E_NO_MEMORY;
-			exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
-			return (free_options(result), 1);
-		}
-		free(shell.dirs.cwd);
-		shell.dirs.cwd = ft_strdup(absolute_path);
-		if (!shell.dirs.cwd) {
-			errno = E_NO_MEMORY;
-			exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
-			free(absolute_path);
-			return (free_options(result), 1);
-		}
-
-		// Update PWD
-		ret_var = variable_scalar_set(shell.env, "PWD", absolute_path, 0, VAR_NONE, 0);
-		if (ret_var) {
-			if (errno == E_NO_MEMORY) {
+				if (access(absolute_path, F_OK) == -1 || access(absolute_path, X_OK) == -1 || !is_directory(absolute_path)) {
+					char *var = variable_scalar_get(shell.env, final_path);
+					if (var) {
+						free(absolute_path);
+						absolute_path = resolve_path(var);
+						if (!absolute_path) {
+							if (errno == E_NO_MEMORY) {
+								free(final_path);
+								exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+								return (free_options(result), 1);
+							}
+						} else {
+							if (access(absolute_path, X_OK) != -1 && is_directory(absolute_path)) {
+								free(final_path);
+								final_path = ft_strdup(var);
+								if (!final_path) {
+									errno = E_NO_MEMORY;
+									free(absolute_path);
+									exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+									return (free_options(result), 1);
+								}
+								show_path = 1;
+							}
+						}
+					}
+				}
 				free(absolute_path);
-				exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
-				return (free_options(result), 1);
 			}
-			if (errno == E_VAR_IDENTIFIER) {
-				exit_error(E_VAR_IDENTIFIER, 1, "cd: ", "OLDPWD",  EE_FREE_NONE, EE_RETURN);
-			}
-			if (errno == E_VAR_READONLY) {
-				exit_error(E_VAR_READONLY, 1, "cd: ", "OLDPWD",  EE_FREE_NONE, EE_RETURN);
+		}
+
+		// Change path
+		if (change_dir(result, final_path, show_path)) {
+			if (errno == E_NO_MEMORY)										exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_CD_PATH) {
+				if		(access(path, F_OK) != -1 && !is_directory(path))		exit_error(E_CD_NODIR, 1, name, final_path, EE_FREE_NONE, EE_RETURN);
+				else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	exit_error(E_CD_PER,   1, name, final_path, EE_FREE_NONE, EE_RETURN);
+				else if (access(path, F_OK) == -1)								exit_error(E_CD_PATH,  1, name, final_path, EE_FREE_NONE, EE_RETURN);
 			}
 			ret = 1;
 		}
 
-		free(absolute_path);
+		free(final_path);
 		return (free_options(result), ret);
 	}
 
@@ -390,23 +371,23 @@
 
 #pragma region "Info"
 
-	// /home/pollon/
+	// /home/dir/
 	// ├── real_dir/
 	// │	   ├── real_subdir/
-	// ├── symlink -> /home/pollon/real_dir/real_subdir
+	// ├── symlink -> /home/dir/real_dir/real_subdir
 
 	// Inicialmente:
-	// - symlink apunta a /home/pollon/real_dir/real_subdir.
+	// - symlink apunta a /home/dir/real_dir/real_subdir.
 
 	// Caso 1: cd symlink
-	//   pwd: /home/pollon/symlink
+	//   pwd: /home/dir/symlink
 
 	// Caso 2: cd symlink; cd -L ..    (o cd .. sin el -L)
-	//   pwd: /home/pollon
+	//   pwd: /home/dir
 	//   (Usa el directorio lógico: trata symlink como parte del árbol lógico)
 
 	// Caso 3: cd symlink; cd -P ..
-	//   pwd: /home/pollon/real_dir
+	//   pwd: /home/dir/real_dir
 	//   (Usa el directorio físico real: ignora el enlace simbólico y sube desde real_subdir)
 	//	Si la opción [-e] se establece y el directorio del nivel inferior no se puede obtener, sale con un codigo diferente a 0 (1 probablemente)
 

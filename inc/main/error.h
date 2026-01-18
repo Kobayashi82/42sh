@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 17:31:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 20:58:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@
 			E_CD_ARGS				= 311,		// 
 			E_CD_HOME				= 312,		// 
 			E_CD_OLDPWD				= 313,		// 
-			E_CD_ERROR				= 314,		// 
+			E_CD_NODIR				= 314,		// 
 			E_CD_PER				= 315,		// 
 			E_HIS_ARGS				= 340,		// 
 			E_HIS_DIG				= 341,		// 

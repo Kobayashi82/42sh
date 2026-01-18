@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 18:40:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 21:30:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,7 +234,6 @@
 		#define PATH_MAX	4096
 
 		char	*normalize_path(char *path, int free_mode);
-		char	*resolve_symlink(const char *path);
 		char	*resolve_path(const char *path);
 		char	*path_find_first(char *cmd, char *paths);
 		char	**path_find_all(char *cmd, char *paths);

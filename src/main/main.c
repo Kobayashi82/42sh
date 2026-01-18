@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 12:12:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 20:23:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,10 @@
 			char	**argv = get_argv_from_ast(shell.ast, &argc);
 			ast_free(&shell.ast);
 
-			int ret = builtin_exec(argc, argv);
-			if (!ret) exit_error(E_CMD_NOT_FOUND, 127, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
-
+			if (argc) {
+				int ret = builtin_exec(argc, argv);
+				if (!ret) exit_error(E_CMD_NOT_FOUND, 127, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+			}
 			array_free(argv);
 		} else {
 			free(terminal.input);

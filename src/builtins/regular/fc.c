@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 21:30:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@
 				*editor = get_fullpath_command(name, 1);
 			}
 			if (!cmd && !*editor) {
-				*editor = get_fullpath_command(resolve_symlink("/usr/bin/editor"), 1);
+				*editor = get_fullpath_command(realpath("/usr/bin/editor", NULL), 1);
 				if (access(*editor, X_OK) == -1) { free(*editor); *editor = NULL; }
 			}
 			if (!cmd && !*editor) {

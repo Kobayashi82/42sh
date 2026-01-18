@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 17:20:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 22:43:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,163 +98,62 @@
 
 #pragma region "Resolve"
 
-	#pragma region "Symlink"
-
-		char *resolve_symlink(const char *path) {
-			static char resolved_path[4096];
-			char buffer[4096];
-			ssize_t len;
-
-			if (!path) return (NULL);
-
-			strncpy(resolved_path, path, sizeof(resolved_path) - 1);
-			resolved_path[sizeof(resolved_path) - 1] = '\0';
-			
-			if ((len = readlink(path, buffer, sizeof(buffer) - 1)) != -1) {
-				buffer[len] = '\0';
-				strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
-				resolved_path[sizeof(resolved_path) - 1] = '\0';
-				return (resolved_path);
-			}
-
-			if (!strchr(path, '/')) return (resolved_path);
-
-			char temp[4096];
-			strncpy(temp, path, sizeof(temp) - 1);
-			temp[sizeof(temp) - 1] = '\0';
-
-			char *last_slash = NULL;
-			char *p = temp;
-
-			while ((p = strchr(p, '/'))) {
-				*p = '\0';
-
-				if (*temp) {
-					if ((len = readlink(temp, buffer, sizeof(buffer) - 1)) != -1) {
-						buffer[len] = '\0';
-
-						if (buffer[0] == '/')
-							strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
-						else {
-							char base_dir[4096] = "";
-							if (last_slash) {
-								strncpy(base_dir, temp, last_slash - temp + 1);
-								base_dir[last_slash - temp + 1] = '\0';
-							}
-							strncpy(resolved_path, base_dir, sizeof(resolved_path) - 1);
-
-							size_t base_len = ft_strlen(resolved_path);
-							size_t buffer_len = ft_strlen(buffer);
-							if (base_len + buffer_len < sizeof(resolved_path) - 1) {
-								strncpy(resolved_path + base_len, buffer, sizeof(resolved_path) - base_len - 1);
-								resolved_path[base_len + buffer_len] = '\0';
-							}
-						}
-
-						if (*(p + 1)) {
-							size_t current_len = ft_strlen(resolved_path);
-							if (current_len < sizeof(resolved_path) - 2) {
-								resolved_path[current_len] = '/';
-								strncpy(resolved_path + current_len + 1, p + 1, sizeof(resolved_path) - current_len - 2);
-								resolved_path[sizeof(resolved_path) - 1] = '\0';
-							}
-						}
-
-						return (resolved_path);
-					}
-				}
-
-				last_slash = p;
-				*p = '/';
-				p++;
-			}
-
-			if (*temp && (len = readlink(temp, buffer, sizeof(buffer) - 1)) != -1) {
-				buffer[len] = '\0';
-				strncpy(resolved_path, buffer, sizeof(resolved_path) - 1);
-				resolved_path[sizeof(resolved_path) - 1] = '\0';
-			}
-
-			return (resolved_path);
-		}	
-
-	#pragma endregion
-
 	#pragma region "Path"
 
 		char *resolve_path(const char *path) {
+			errno = 0;
 			if (!path) return (NULL);
-			char abs_path[4096];
-			char *cwd = shell.dirs.cwd;
 
-			if (path[0] == '~') {
-				char *home = NULL;
+			// Make absolute if relative
+			char *abs_path = (path[0] != '/') ? ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_NONE) : ft_strdup(path);
+			if (!abs_path) return (errno = E_NO_MEMORY, NULL);
 
-				if (path[1] == '/' || path[1] == '\0') {
-					home = get_home();
-					path++;
+			// Split into components
+			char **components = ft_split(abs_path, '/');
+			free(abs_path);
+			if (!components) return (errno = E_NO_MEMORY, NULL);
+
+			// Filter . and .. 
+			char *stack[256];
+			int count = 0;
+
+			for (int i = 0; components[i]; i++) {
+				if (!strcmp(components[i], ".") || !*components[i]) {
+					// Skip . and empty components
+					continue;
+				} else if (!strcmp(components[i], "..")) {
+					// Go up if possible
+					if (count > 0) count--;
 				} else {
-					char username[256] = {0}; size_t i = 1;
-					while (path[i] && path[i] != '/' && i < sizeof(username) - 1) {
-						username[i - 1] = path[i]; i++;
-					} username[i - 1] = '\0';
-
-					home = get_home_by_name(username);
-					if (home) path += i;
-				}
-
-				if (ft_strlen(home) + ft_strlen(path) >= 4096) {
-					write(2, "Error: Ruta demasiado larga\n", 28);
-					free(home);
-					return (NULL);
-				}
-
-				if (home) {
-					strcpy(abs_path, home);
-					strcat(abs_path, path);
-					path = abs_path;
-					free(home);
+					// Add component
+					if (count < 256) stack[count++] = components[i];
 				}
 			}
 
-			if (path && path[0] != '/') {
-				if (ft_strlen(cwd) + ft_strlen(path) + 1 >= 4096) {
-					write(2, "Error: Ruta demasiado larga\n", 28);
-					return (NULL);
-				}
-				strcpy(abs_path, cwd);
-				strcat(abs_path, "/");
-				strcat(abs_path, path);
-			} else {
-				if (ft_strlen(path) >= 4096) {
-					write(2, "Error: Ruta demasiado larga\n", 28);
-					return (NULL);
-				}
-				strcpy(abs_path, path);
+			// Build result
+			size_t total_len = 1;
+			for (int i = 0; i < count; ++i) {
+				total_len += ft_strlen(stack[i]) + 1;  // component + '/'
 			}
 
-			char *components[4096 / 2];
-			int index = 0;
-
-			char *token = ft_strtok(abs_path, "/", 1);
-			while (token) {
-				if (!strcmp(token, "."))			{ ; } // Ignore '.'
-				else if (!strcmp(token, ".."))	{ if (index > 0) index--; }
-				else								{ components[index++] = token; }
-				token = ft_strtok(NULL, "/", 1);
+			char *result = malloc(total_len + 1);
+			if (!result) {
+				array_free(components);
+				return (errno = E_NO_MEMORY, NULL);
 			}
 
-			char final_path[4096] = "/";
-			for (int i = 0; i < index; ++i) {
-				if (ft_strlen(final_path) + ft_strlen(components[i]) + 1 >= 4096) {
-					write(2, "Error: Ruta demasiado larga\n", 28);
-					return (NULL);
-				}
-				strcat(final_path, components[i]);
-				if (i < index - 1) strcat(final_path, "/");
+			char *ptr = result;
+			*ptr++ = '/';
+			for (int i = 0; i < count; i++) {
+				size_t len = ft_strlen(stack[i]);
+				memcpy(ptr, stack[i], len);
+				ptr += len;
+				if (i < count - 1) *ptr++ = '/';
 			}
+			*ptr = '\0';
 
-			return (ft_strdup(final_path));
+			array_free(components);
+			return (result);
 		}
 
 	#pragma endregion
@@ -339,7 +238,7 @@
 		char *path_find_first(char *cmd, char *paths) {
 			if (!cmd) return (NULL);
 			if (strchr(cmd, '/')) {
-				char *fullpath = resolve_path(resolve_symlink(cmd));
+				char *fullpath = realpath(cmd, NULL);
 				if (access(fullpath, F_OK) != -1) return (fullpath);
 				return (free(fullpath), NULL);
 			}
@@ -354,7 +253,7 @@
 				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, J_FREE_NONE);
 				if (!fullpath) break;
 
-				char *resolved_path = resolve_path(resolve_symlink(fullpath));
+				char *resolved_path = realpath(fullpath, NULL);
 				free(fullpath);
 				if (!resolved_path) break;
 
@@ -377,7 +276,7 @@
 
 			if (strchr(cmd, '/')) {
 				char **final_paths = calloc(2, sizeof (char *));
-				char *fullpath = resolve_path(resolve_symlink(cmd));
+				char *fullpath = realpath(cmd, NULL);
 				if (access(fullpath, F_OK) != -1) {
 					final_paths[0] = ft_strdup(fullpath);
 					return (final_paths);
@@ -400,7 +299,7 @@
 				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, J_FREE_NONE);
 				if (!fullpath) break;
 
-				char *resolved_path = resolve_path(resolve_symlink(fullpath));
+				char *resolved_path = realpath(fullpath, NULL);
 				free(fullpath);
 				if (!resolved_path) break;
 
@@ -419,7 +318,7 @@
 
 #pragma endregion
 
-#pragma region "new_path Dir"
+#pragma region "Get CWD"
 
 	char *get_cwd(char *sender) {
 		char cwd[4096];
@@ -510,14 +409,15 @@
 
 		// Corrects a potentially misspelled directory path using fuzzy matching
 		char *correct_path(char *path) {
-			char resolved_path[1024] = {0};
+			char resolved_path[4096] = {0};
 			char *token, *temp_path = ft_strdup(path);
 
 			// Handle absolute and relative paths
 			if (path[0] == '/') strcpy(resolved_path, "/");
 			else {
 				if (getcwd(resolved_path, sizeof(resolved_path)) == NULL) {
-					free(temp_path); return (path);
+					free(temp_path);
+					return (ft_strdup(path));
 				}
 				size_t len = ft_strlen(resolved_path);
 				if (len == 0 || resolved_path[len - 1] != '/') {
@@ -543,8 +443,7 @@
 			if (len > 1 && resolved_path[len - 1] == '/') resolved_path[len - 1] = '\0';
 
 			// Resolve final path and copy it back
-			free(path);
-			return (resolve_path(resolved_path));
+			return (ft_strdup(resolved_path));
 		}
 
 	#pragma endregion
@@ -556,15 +455,9 @@
 	// Checks whether a path refers to a directory, resolving symlinks if needed
 	int is_directory(const char *path) {
 		struct stat path_stat;
-		char *resolved_path;
 
-		if (lstat(path, &path_stat) == -1) return (0);
-		if (S_ISLNK(path_stat.st_mode)) {
-			resolved_path = resolve_symlink(path);
-			if (resolved_path && *resolved_path && lstat(resolved_path, &path_stat) == -1) return (0);
-		}
-
-		return ((S_ISDIR(path_stat.st_mode)) ? 1 : 0);
+		if (stat(path, &path_stat) == -1) return (0);
+		return (S_ISDIR(path_stat.st_mode));
 	}
 
 #pragma endregion
