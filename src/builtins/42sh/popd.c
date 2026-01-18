@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 13:37:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:38:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@
 
 		if (!offset && !has_option(result, 'n')) {
 			char *cd_argv[4] = {"cd", "--", path, NULL};
-			builtin_exec(3, cd_argv); {
+			builtin_exec(3, cd_argv);
 			if (shell.exit_code) {
 				if (dirs_add(path)) exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
