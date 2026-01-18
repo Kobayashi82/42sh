@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 19:07:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:28:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,9 +122,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "clpv", NULL, long_opts, "dirs [-clpv] [+N] [-N]", IGNORE_OFF);
-		if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN);
-		if (errno == E_OPT_MAX)		ret = exit_error(E_OPT_MAX, 2, (argc) ? argv[0] : NULL, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
-		if (errno)					return (free_options(result), ret);
+		if (errno || !result) return (free_options(result), (errno == E_OPT_MAX) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_dirs_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

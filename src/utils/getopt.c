@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 21:33:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 11:49:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 	#include "main/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
+
+	#define MAX_OPTIONS	128
 
 #pragma endregion
 
@@ -197,10 +199,12 @@
 
 		#pragma region "Parse Short"
 
-			static int parse_short_option(t_parse_result *result, char **argv, int *idx, int argc, const char *short_opts, int is_plus, int silent_mode, int ignore_mode) {
+			static int parse_short_option(t_parse_result *result, char **argv, int *idx, int argc, const char *short_opts, int is_plus, int silent_mode, int ignore_mode, int opt_count) {
 				const char	*arg = argv[*idx] + 1;
 
 				for (int i = 0; arg[i]; ++i) {
+					if (opt_count++ >= MAX_OPTIONS) return (errno = E_OPT_MAX, 1);										// Note: max_option error may trigger even when the option is an argument in ignore_mode = 2
+
 					char opt = arg[i];
 					int arg_type = get_short_type(short_opts, opt);
 
@@ -437,7 +441,8 @@
 						if (!tmp_args[arg_count++]) {
 							free(result);
 							array_free(tmp_args);
-							return (errno = E_NO_MEMORY, NULL);
+							errno = E_NO_MEMORY;
+							break;
 						}
 						continue;
 					}
@@ -456,7 +461,8 @@
 						if (!tmp_args[arg_count++]) {
 							free(result);
 							array_free(tmp_args);
-							return (errno = E_NO_MEMORY, NULL);
+							errno = E_NO_MEMORY;
+							break;
 						}
 						done_with_opts = 1;
 						continue;
@@ -468,7 +474,8 @@
 						if (!tmp_args[arg_count++]) {
 							free(result);
 							array_free(tmp_args);
-							return (errno = E_NO_MEMORY, NULL);
+							errno = E_NO_MEMORY;
+							break;
 						}
 						done_with_opts = 1;
 						continue;
@@ -483,8 +490,7 @@
 
 					// Options with '-'
 					if (arg[0] == '-' && arg[1]) {
-						if (opt_count >= MAX_OPTIONS) { errno = E_OPT_MAX; break; }								// Note: max_option error may trigger even when the option is an argument in ignore_mode = 2
-						int ret = parse_short_option(result, argv, &i, argc, short_opts, 0, silent_mode, ignore_mode);
+						int ret = parse_short_option(result, argv, &i, argc, short_opts, 0, silent_mode, ignore_mode, opt_count);
 						if (ret == 0) opt_count++;
 						if (ret == 1) break;
 						if (ret == 2) {
@@ -492,7 +498,8 @@
 							if (!tmp_args[arg_count++]) {
 								free(result);
 								array_free(tmp_args);
-								return (errno = E_NO_MEMORY, NULL);
+								errno = E_NO_MEMORY;
+								break;
 							}
 							done_with_opts = 1;
 						}
@@ -501,8 +508,7 @@
 
 					// Options with '+'
 					if (arg[0] == '+' && arg[1]) {
-						if (opt_count >= MAX_OPTIONS) { errno = E_OPT_MAX; break; }								// Note: max_option error may trigger even when the option is an argument in ignore_mode = 2
-						int ret = parse_short_option(result, argv, &i, argc, short_opts_plus, 1, silent_mode_plus, ignore_mode);
+						int ret = parse_short_option(result, argv, &i, argc, short_opts_plus, 1, silent_mode_plus, ignore_mode, opt_count);
 						if (ret == 0) opt_count++;
 						if (ret == 1) break;
 						if (ret == 2) {
@@ -510,7 +516,8 @@
 							if (!tmp_args[arg_count++]) {
 								free(result);
 								array_free(tmp_args);
-								return (errno = E_NO_MEMORY, NULL);
+								errno = E_NO_MEMORY;
+								break;
 							}
 							done_with_opts = 1;
 						}
@@ -522,13 +529,16 @@
 					if (!tmp_args[arg_count++]) {
 						free(result);
 						array_free(tmp_args);
-						return (errno = E_NO_MEMORY, NULL);
+						errno = E_NO_MEMORY;
+						break;
 					}
 					done_with_opts = 1;
 				}
 
 				if (errno) {
-					free(result);
+					if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
+					if (errno == E_OPT_MAX)		exit_error(E_OPT_MAX, 2, (char *)result->name, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
+					free_options(result);
 					array_free(tmp_args);
 					return (NULL);
 				}
