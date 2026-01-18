@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 13:32:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 15:15:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,12 @@
 				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": directory stack index out of range\n", J_FREE_NONE), P_FREE_PRINT);
 			}
 
+			if (error_type == E_CD_HOME)	print(STDERR_FILENO, ft_strjoin(value1, ": HOME not set\n", J_FREE_NONE),       P_FREE_PRINT);
+			if (error_type == E_CD_OLDPWD)	print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n", J_FREE_NONE),     P_FREE_PRINT);
 			if (error_type == E_CD_ARGS)	print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n", J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_CD_PATH) {
-				print(STDERR_FILENO, value1,                                                                     P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
+				print(STDERR_FILENO, value1,                                                                                P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": No such file or directory\n", J_FREE_NONE),            P_FREE_PRINT);
 			}
 		}
 
