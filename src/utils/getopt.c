@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 11:49:39 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 12:04:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,7 +83,9 @@
 
 		#pragma region "Parse Long"
 
-			static int parse_long_option(t_parse_result *result, char **argv, int *idx, int argc, const t_long_option *long_opts, int silent_mode) {
+			static int parse_long_option(t_parse_result *result, char **argv, int *idx, int argc, const t_long_option *long_opts, int silent_mode, int opt_count) {
+				if (opt_count >= MAX_OPTIONS) return (errno = E_OPT_MAX, 1);
+
 				const char	*arg = argv[*idx] + 2;
 				const char	*equals = strchr(arg, '=');
 
@@ -403,166 +405,134 @@
 
 	#pragma region "Parse Options"
 
-		#pragma region "Parse"
+		t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_mode) {
+			if (!argv || argc < 1) return (NULL);
 
-			t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_mode) {
-				if (!argv || argc < 1) return (NULL);
-
-				errno = 0;
-				t_parse_result *result = calloc(1, sizeof(t_parse_result));
-				if (!result) return (errno = E_NO_MEMORY, NULL);
-
-				char **tmp_args = calloc(argc, sizeof(char*));
-				if (!tmp_args) return (free(result), errno = E_NO_MEMORY, NULL);
-
-				int opt_count = 0;
-				int arg_count = 0;
-				int done_with_opts = 0;
-				int silent_mode = 0;
-				int silent_mode_plus = 0;
-
-				if (short_opts && *short_opts == ':') {
-					silent_mode = 1;
-					short_opts++;
-				}
-
-				if (short_opts_plus && *short_opts_plus == ':') {
-					silent_mode_plus = 1;
-					short_opts_plus++;
-				}
-
-				result->argv_original = argv;
-				result->argc_original = argc;
-				result->usage = usage;
-				result->name = argv[0];
-				for (int i = 1; i < argc; i++) {
-					if (done_with_opts) {
-						tmp_args[arg_count] = ft_strdup(argv[i]);
-						if (!tmp_args[arg_count++]) {
-							free(result);
-							array_free(tmp_args);
-							errno = E_NO_MEMORY;
-							break;
-						}
-						continue;
-					}
-
-					const char *arg = argv[i];
-
-					// End of options '--'
-					if (!strcmp(arg, "--")) {
-						done_with_opts = 1;
-						continue;
-					}
-
-					// Ignore -number or +number if ignore_numbers is active
-					if (ignore_mode == IGNORE_NUMBER && (arg[0] == '-' || arg[0] == '+') && arg[1] != '\0' && ft_isnum_s(&arg[1])) {
-						tmp_args[arg_count] = ft_strdup(arg);
-						if (!tmp_args[arg_count++]) {
-							free(result);
-							array_free(tmp_args);
-							errno = E_NO_MEMORY;
-							break;
-						}
-						done_with_opts = 1;
-						continue;
-					}
-
-					// Detect "-" or "+" alone (they are arguments, not options)
-					if (!strcmp(arg, "-") || !strcmp(arg, "+")) {
-						tmp_args[arg_count] = ft_strdup(arg);
-						if (!tmp_args[arg_count++]) {
-							free(result);
-							array_free(tmp_args);
-							errno = E_NO_MEMORY;
-							break;
-						}
-						done_with_opts = 1;
-						continue;
-					}
-
-					// Long options (--...)
-					if (arg[0] == '-' && arg[1] == '-') {
-						if (opt_count++ >= MAX_OPTIONS) { errno = E_OPT_MAX; break; }
-						if (parse_long_option(result, argv, &i, argc, long_opts, silent_mode) == 1) break;
-						continue;
-					}
-
-					// Options with '-'
-					if (arg[0] == '-' && arg[1]) {
-						int ret = parse_short_option(result, argv, &i, argc, short_opts, 0, silent_mode, ignore_mode, opt_count);
-						if (ret == 0) opt_count++;
-						if (ret == 1) break;
-						if (ret == 2) {
-							tmp_args[arg_count] = ft_strdup(arg);
-							if (!tmp_args[arg_count++]) {
-								free(result);
-								array_free(tmp_args);
-								errno = E_NO_MEMORY;
-								break;
-							}
-							done_with_opts = 1;
-						}
-						continue;
-					}
-
-					// Options with '+'
-					if (arg[0] == '+' && arg[1]) {
-						int ret = parse_short_option(result, argv, &i, argc, short_opts_plus, 1, silent_mode_plus, ignore_mode, opt_count);
-						if (ret == 0) opt_count++;
-						if (ret == 1) break;
-						if (ret == 2) {
-							tmp_args[arg_count] = ft_strdup(arg);
-							if (!tmp_args[arg_count++]) {
-								free(result);
-								array_free(tmp_args);
-								errno = E_NO_MEMORY;
-								break;
-							}
-							done_with_opts = 1;
-						}
-						continue;
-					}
-
-					// Argument
-					tmp_args[arg_count] = ft_strdup(arg);
-					if (!tmp_args[arg_count++]) {
-						free(result);
-						array_free(tmp_args);
-						errno = E_NO_MEMORY;
-						break;
-					}
-					done_with_opts = 1;
-				}
-
-				if (errno) {
-					if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
-					if (errno == E_OPT_MAX)		exit_error(E_OPT_MAX, 2, (char *)result->name, ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
-					free_options(result);
-					array_free(tmp_args);
-					return (NULL);
-				}
-
-				result->argc = arg_count;
-				if (arg_count > 0) {
-					result->argv = calloc(arg_count + 1, sizeof(char*));
-					if (!result->argv) {
-						free(result);
-						array_free(tmp_args);
-						return (errno = E_NO_MEMORY, NULL);
-					}
-					if (result->argv) {
-						for (int i = 0; i < arg_count; i++)
-							result->argv[i] = tmp_args[i];
-						result->argv[arg_count] = NULL;
-					}
-				}
-
-				free(tmp_args);
-				return (result);
+			errno = 0;
+			t_parse_result *result = calloc(1, sizeof(t_parse_result));
+			if (!result) {
+				exit_error(E_NO_MEMORY, 1, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+				return (errno = E_NO_MEMORY, NULL);
 			}
 
-		#pragma endregion
+			char **tmp_args = calloc(argc, sizeof(char*));
+			if (!tmp_args) {
+				exit_error(E_NO_MEMORY, 1, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+				free_options(result);
+				return (errno = E_NO_MEMORY, NULL);
+			}
+
+			int opt_count = 0;
+			int arg_count = 0;
+			int done_with_opts = 0;
+			int silent_mode = 0;
+			int silent_mode_plus = 0;
+
+			if (short_opts && *short_opts == ':') {
+				silent_mode = 1;
+				short_opts++;
+			}
+
+			if (short_opts_plus && *short_opts_plus == ':') {
+				silent_mode_plus = 1;
+				short_opts_plus++;
+			}
+
+			result->argv_original = argv;
+			result->argc_original = argc;
+			result->usage = usage;
+			result->name = argv[0];
+			for (int i = 1; i < argc; i++) {
+				if (done_with_opts) {
+					tmp_args[arg_count] = ft_strdup(argv[i]);
+					if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+					continue;
+				}
+
+				const char *arg = argv[i];
+
+				// End of options '--'
+				if (!strcmp(arg, "--")) {
+					done_with_opts = 1;
+					continue;
+				}
+
+				// Ignore -number or +number if ignore_numbers is active
+				if (ignore_mode == IGNORE_NUMBER && (arg[0] == '-' || arg[0] == '+') && arg[1] != '\0' && ft_isnum_s(&arg[1])) {
+					tmp_args[arg_count] = ft_strdup(arg);
+					if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+					done_with_opts = 1;
+					continue;
+				}
+
+				// Detect "-" or "+" alone (they are arguments, not options)
+				if (!strcmp(arg, "-") || !strcmp(arg, "+")) {
+					tmp_args[arg_count] = ft_strdup(arg);
+					if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+					done_with_opts = 1;
+					continue;
+				}
+
+				// Long options (--...)
+				if (arg[0] == '-' && arg[1] == '-') {
+					if (parse_long_option(result, argv, &i, argc, long_opts, silent_mode, opt_count++) == 1) break;
+					continue;
+				}
+
+				// Options with '-'
+				if (arg[0] == '-' && arg[1]) {
+					int ret = parse_short_option(result, argv, &i, argc, short_opts, 0, silent_mode, ignore_mode, opt_count);
+					if (ret == 0) opt_count++;
+					if (ret == 1) break;
+					if (ret == 2) {
+						tmp_args[arg_count] = ft_strdup(arg);
+						if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+						done_with_opts = 1;
+					}
+					continue;
+				}
+
+				// Options with '+'
+				if (arg[0] == '+' && arg[1]) {
+					int ret = parse_short_option(result, argv, &i, argc, short_opts_plus, 1, silent_mode_plus, ignore_mode, opt_count);
+					if (ret == 0) opt_count++;
+					if (ret == 1) break;
+					if (ret == 2) {
+						tmp_args[arg_count] = ft_strdup(arg);
+						if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+						done_with_opts = 1;
+					}
+					continue;
+				}
+
+				// Argument
+				tmp_args[arg_count] = ft_strdup(arg);
+				if (!tmp_args[arg_count++]) { errno = E_NO_MEMORY; break; }
+				done_with_opts = 1;
+			}
+
+			result->argc = arg_count;
+			if (!errno && arg_count > 0) {
+				result->argv = calloc(arg_count + 1, sizeof(char*));
+				if (!result->argv) errno = E_NO_MEMORY;
+				else {
+					for (int i = 0; i < arg_count; i++)
+						result->argv[i] = tmp_args[i];
+					result->argv[arg_count] = NULL;
+				}
+			}
+
+			if (errno) {
+				if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY, 1, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+				if (errno == E_OPT_MAX)		exit_error(E_OPT_MAX, 2, argv[0], ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
+				array_free(tmp_args);
+				free_options(result);
+				return (NULL);
+			}
+
+			free(tmp_args);
+			return (result);
+		}
 
 	#pragma endregion
 
