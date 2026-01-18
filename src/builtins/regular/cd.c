@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 10:50:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:35:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "LP", NULL, long_opts, "cd [-L|[-P] [dir]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_cd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -290,7 +290,7 @@
 
 		free(path);
 
-		return (free_options(result), (ret != 0));
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:10:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:37:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,60 @@
 
 
 		int ret = 0;
+		int offset = 0;
+		int is_offset = 0;
 
+		if (result->argc > 1) {
+			exit_error(E_CD_ARGS, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
+
+		if (result->argc == 1) {
+			if (result->argv[0][0] == '-' || result->argv[0][0] == '+') {
+				if (ft_isdigit_s(result->argv[0])) {
+					if (result->argv[0][0] == '-')	offset = atoi(result->argv[0]) - 1;
+					else							offset = atoi(result->argv[0]);
+					is_offset = 1;
+				} else {
+					ret = exit_error(E_DIRS_INVALID, 2, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				}
+			} else if (!is_directory(result->argv[0])) {
+				if (ft_isdigit_s(result->argv[0])) {
+					offset = atoi(result->argv[0]);
+					is_offset = 1;
+				} else {
+					ret = exit_error(E_CD_PATH, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				}
+			}
+		}
+
+		if (!ret) {
+			if (is_offset) {
+				if (dirs_rotate(offset)) {
+					if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+					if (errno == E_DIRS_EMPTY)	exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+					if (errno == E_DIRS_RANGE) {
+						if (result->argc)		exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+						else					exit_error(E_DIRS_RANGE, 1, "pushd", "0", EE_FREE_NONE, EE_RETURN);
+					}
+					ret = 1;
+				}
+			} else {
+				if (dirs_push()) {
+					if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+					ret = 1;
+				} else {
+					if (!has_option(result, 'n')) {
+						char *cd_argv[4] = {"cd", "--", result->argv[0], NULL};
+						builtin_exec(3, cd_argv);
+						if (shell.exit_code) {
+							// if (dirs_add(result->argv[0])) exit_error(E_NO_MEMORY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+							ret = 1;
+						}
+					}
+				}
+			}
+		}
 
 		return (free_options(result), ret);
 	}

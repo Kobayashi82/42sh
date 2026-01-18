@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 11:42:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:32:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,10 @@
 			}
 
 			if (error_type == E_CD_ARGS)	print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_CD_PATH) {
+				print(STDERR_FILENO, value1,                                                                     P_JOIN);
+				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
+			}
 		}
 
 	#pragma endregion

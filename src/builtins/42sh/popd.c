@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:06:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:37:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@
 #pragma region "Popd"
 
 	int bt_popd(int argc, char **argv) {
-		int ret = 0;
 		t_long_option long_opts[] = {
 			{"help",	NO_ARGUMENT, 0},
 			{"version",	NO_ARGUMENT, 0},
@@ -123,6 +122,7 @@
 		if (find_long_option(result, "help"))		return (free_options(result), bt_popd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
+		int ret = 0;
 		int offset = 0;
 
 		if (result->argc > 1) {
@@ -144,19 +144,19 @@
 			return (free_options(result), 1);
 		}
 
-		char *path = dirs_remove(offset);
+		char *path = dirs_pop(offset);
 		if (!path) {
 			if (result->argc)	exit_error(E_DIRS_RANGE, 1, "popd", result->argv[0], EE_FREE_NONE, EE_RETURN);
 			else				exit_error(E_DIRS_RANGE, 1, "popd", "0", EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
-		if (!offset && has_option(result, 'n')) {
-			char *cd_argv[3] = {"cd", path, NULL};
-			if ((ret = builtin_exec(1, cd_argv))) {
-				if (!dirs_add(path)) {
-					ret = exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
-				}
+		if (!offset && !has_option(result, 'n')) {
+			char *cd_argv[4] = {"cd", "--", path, NULL};
+			builtin_exec(3, cd_argv); {
+			if (shell.exit_code) {
+				if (dirs_add(path)) exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+				ret = 1;
 			}
 		}
 

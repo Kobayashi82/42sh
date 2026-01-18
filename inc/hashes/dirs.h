@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 10:47:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 18:52:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:12:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,10 @@
 
 #pragma region "Methods"
 
-	char	*dirs_rotate(int offset);
-	char	*dirs_add(char *path);
-	char	*dirs_remove(int offset);
+	int		dirs_add(char *path);
+	int		dirs_rotate(int offset);
+	int		dirs_push();
+	char	*dirs_pop(int offset);
 	void	dirs_clear();
 	int		dirs_print(int offset, int line_mode, int no_tilde, int no_offset);
 	void	dirs_initialize();

@@ -6,11 +6,12 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 10:43:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 19:09:41 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 13:13:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
+
 
 	#include "main/shell.h"
 	#include "utils/utils.h"
@@ -19,102 +20,104 @@
 
 #pragma region "Add"
 
-	#pragma region "Rotate"
+	int dirs_add(char *path) {
+		errno = 0;
+		if (!path) return (1);
 
-		char *dirs_rotate(int offset) {
-			(void) offset;
-			return (NULL);
-		}
+		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
+		if (!new_dir) return (errno = E_NO_MEMORY, 1);
 
-	#pragma endregion
+		new_dir->path = ft_strdup(path);
+		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, 1);
+		new_dir->prev = NULL;
+		new_dir->next = shell.dirs.stack;
 
-	#pragma region "Add"
+		if (shell.dirs.stack) shell.dirs.stack->prev = new_dir;
+		shell.dirs.stack = new_dir;
 
-		char *dirs_add(char *path) {
-			if (!path) return (NULL);
-			
-			errno = 0;
-			char *fullpath = (path[0] == '/') ? ft_strdup(path) : ft_strjoin_sep(shell.dirs.cwd, "/", path, 0);
-			if (!fullpath) {
-				errno = E_NO_MEMORY;
-				return (NULL);
-			}
-
-			fullpath = normalize_path(fullpath, J_FREE_VAL_1);
-			if (!fullpath) return (NULL);
-
-			t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
-			if (!new_dir) {
-				free(fullpath);
-				errno = E_NO_MEMORY;
-				return (NULL);
-			}
-
-			new_dir->path = fullpath;
-			new_dir->prev = NULL;
-			new_dir->next = shell.dirs.stack;
-
-			if (shell.dirs.stack) shell.dirs.stack->prev = new_dir;
-			shell.dirs.stack = new_dir;
-
-			return (fullpath);
-		}
-
-	#pragma endregion
+		return (0);
+	}
 
 #pragma endregion
 
-#pragma region "Delete"
+#pragma region "Rotate"
 
-	#pragma region "Delete"
+	int dirs_rotate(int offset) {
+		(void) offset;
+		return (0);
+	}
 
-		char *dirs_remove(int offset) {
+#pragma endregion
+
+#pragma region "Push"
+
+	int dirs_push() {
+		errno = 0;
+		if (!shell.dirs.cwd) return (1);
+
+		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
+		if (!new_dir) return (errno = E_NO_MEMORY, 1);
+
+		new_dir->path = ft_strdup(shell.dirs.cwd);
+		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, 1);
+		new_dir->prev = NULL;
+		new_dir->next = shell.dirs.stack;
+
+		if (shell.dirs.stack) shell.dirs.stack->prev = new_dir;
+		shell.dirs.stack = new_dir;
+
+		return (0);
+	}
+
+#pragma endregion
+
+#pragma region "Pop"
+
+	char *dirs_pop(int offset) {
+		t_dir_stack *current = shell.dirs.stack;
+		if (!current) return (NULL);
+
+		if (offset < 0) {
+			while (current->next) current = current->next;
+			while (offset < -1 && current) {
+				current = current->prev;
+				offset++;
+			}
+		} else {
+			while (offset > 0 && current) {
+				current = current->next;
+				offset--;
+			}
+		}
+
+		if (offset < -1 || offset > 0 || !current) return (NULL);
+
+		if (current->prev)	current->prev->next = current->next;
+		else				shell.dirs.stack = current->next;
+
+		if (current->next) current->next->prev = current->prev;
+		char *path = current->path;
+		free(current);
+
+		return (path);
+	}
+
+#pragma endregion
+
+#pragma region "Clear"
+
+	void dirs_clear() {
+		while (shell.dirs.stack) {
 			t_dir_stack *current = shell.dirs.stack;
-			if (!current) return (NULL);
-
-			if (offset < 0) {
-				while (current->next) current = current->next;
-				while (offset < -1 && current) {
-					current = current->prev;
-					offset++;
-				}
-			} else {
-				while (offset > 0 && current) {
-					current = current->next;
-					offset--;
-				}
-			}
-
-			if (offset < -1 || offset > 0 || !current) return (NULL);
-
-			if (current->prev)	current->prev->next = current->next;
-			else				shell.dirs.stack = current->next;
-
-			if (current->next) current->next->prev = current->prev;
-			char *path = current->path;
+			shell.dirs.stack = shell.dirs.stack->next;
+			free(current->path);
 			free(current);
-
-			return (path);
 		}
-
-	#pragma endregion
-
-	#pragma region "Clear"
-
-		void dirs_clear() {
-			while (shell.dirs.stack) {
-				t_dir_stack *current = shell.dirs.stack;
-				shell.dirs.stack = shell.dirs.stack->next;
-				free(current->path);
-				free(current);
-			}
-		}
-
-	#pragma endregion
+	}
 
 #pragma endregion
 
-#pragma region "Initialize"
+#pragma region "Print"
 
 	int dirs_print(int offset, int line_mode, int no_tilde, int no_offset) {
 		int index = 0;

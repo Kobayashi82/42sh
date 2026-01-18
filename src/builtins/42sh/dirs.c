@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:09:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 12:57:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,7 @@
 
 #pragma region "Dirs"
 
-	// -c -v -p -l
-
 	int bt_dirs(int argc, char **argv) {
-		int ret = 0;
 		t_long_option long_opts[] = {
 			{"help",	NO_ARGUMENT, 0},
 			{"version",	NO_ARGUMENT, 0},
@@ -128,6 +125,7 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
+		int ret = 0;
 		int offset = 0;
 
 		if (has_option(result, 'c')) {
@@ -136,7 +134,7 @@
 		}
 
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_CD_ARGS, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
@@ -154,7 +152,7 @@
 		if (has_option(result, 'v')) line_mode = 2;
 
 		if (dirs_print(offset, line_mode, has_option(result, 'l'), !result->argc)) {
-			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (errno == E_DIRS_RANGE) {
 				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
