@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 16:44:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 17:31:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 			char *description = "Change the shell working directory.";
 			char *msg =
 				"    Change the current directory to DIR.  The default DIR is the value of the\n"
-				"    HOME shell variable. If DIR is "-", it is converted to $OLDPWD.\n\n"
+				"    HOME shell variable. If DIR is \"-\", it is converted to $OLDPWD.\n\n"
 
 				"    The variable CDPATH defines the search path for the directory containing\n"
 				"    DIR.  Alternative directory names in CDPATH are separated by a colon (:).\n"
@@ -175,7 +175,7 @@
 
 #pragma region "Check CDPATH"
 
-	// int check_CDPATH(t_parse_result *result, char **main_path) {
+	// int cdpath(t_parse_result *result, char **main_path) {
 	// 	char *cdpath = variable_scalar_get(shell.env, "CDPATH");
 	// 	if (!cdpath) return (1);
 
@@ -206,36 +206,47 @@
 	// 	return (1);
 	// }
 
-	// char *check_CDPATH(char *path) {
-	// 	char *cdpath = variable_scalar_get(shell.env, "CDPATH");
-	// 	if (!cdpath) return (NULL);
+	char *cdpath(char *path) {
+		char *cdpath = variable_scalar_get(shell.env, "CDPATH");
+		if (!cdpath) return (NULL);
 
-	// 	char *start = cdpath;
-	// 	char *end;
+		char *start = cdpath;
+		char *end;
 
-	// 	while (1) {
-	// 		end = strchr(start, ':');
-	// 		size_t len = (end) ? (size_t)(end - start) : ft_strlen(start);
+		while (1) {
+			end = strchr(start, ':');
+			size_t len = (end) ? (size_t)(end - start) : ft_strlen(start);
 
-	// 		char *token;
-	// 		if (!len)	token = ft_strdup(".");
-	// 		else		token = ft_strndup(start, len);
+			char *token;
+			if (!len)	token = ft_strdup(".");
+			else		token = ft_strndup(start, len);
+			if (!token) return (errno = E_NO_MEMORY, NULL);
 
-	// 		if (token) {			
-	// 			if (token && !change_dir(result, &token)) {
-	// 				free(*main_path);
-	// 				*main_path = token;
-	// 				return (0);
-	// 			}
-	// 			free(token);
-	// 		}
+			char *check_path = ft_strjoin_sep(token, "/", path, J_FREE_NONE);
+			free(token);
+			if (!check_path) return (errno = E_NO_MEMORY, NULL);
 
-	// 		if (!end) break;
-	// 		start = end + 1;
-	// 	}
+			char *absolute_path = resolve_path(check_path);
+			free(check_path);
+			if (!absolute_path) {
+				if (errno == E_NO_MEMORY) return (NULL);
+				if (!end) break;
+				start = end + 1;
+				continue;
+			}
 
-	// 	return (1);
-	// }
+			if (access(absolute_path, F_OK) == -1 || access(absolute_path, X_OK) == -1 || !is_directory(absolute_path)) {
+				free(absolute_path);
+				if (!end) break;
+				start = end + 1;
+				continue;
+			}
+
+			return (absolute_path);
+		}
+
+		return (NULL);
+	}
 
 #pragma endregion
 
@@ -286,12 +297,12 @@
 		if (no_cdpath) {
 			final_path = ft_strdup(path);
 			if (!final_path) {
-				errno == E_NO_MEMORY;
+				errno = E_NO_MEMORY;
 				exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else {
-			final_path = check_CDPATH(path);
+			final_path = cdpath(path);
 			if (!final_path) {
 				if (errno == E_NO_MEMORY) {
 					exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
@@ -322,7 +333,7 @@
 
 
 		// Update OLDPWD
-		char ret_var = variable_scalar_set(shell.env->table, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
+		char ret_var = variable_scalar_set(shell.env, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
 		if (ret_var) {
 			if (errno == E_NO_MEMORY) {
 				exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
@@ -341,21 +352,21 @@
 		char *absolute_path = resolve_path(final_path);
 		free(final_path);
 		if (!absolute_path) {
-			errno == E_NO_MEMORY;
+			errno = E_NO_MEMORY;
 			exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 		free(shell.dirs.cwd);
 		shell.dirs.cwd = ft_strdup(absolute_path);
 		if (!shell.dirs.cwd) {
-			errno == E_NO_MEMORY;
+			errno = E_NO_MEMORY;
 			exit_error(E_NO_MEMORY, 1, "cd", NULL, EE_FREE_NONE, EE_RETURN);
 			free(absolute_path);
 			return (free_options(result), 1);
 		}
 
 		// Update PWD
-		ret_var = variable_scalar_set(shell.env->table, "PWD", absolute_path, 0, VAR_NONE, 0);
+		ret_var = variable_scalar_set(shell.env, "PWD", absolute_path, 0, VAR_NONE, 0);
 		if (ret_var) {
 			if (errno == E_NO_MEMORY) {
 				free(absolute_path);

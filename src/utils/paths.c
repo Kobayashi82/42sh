@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:44:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/18 17:20:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,8 @@
 
 		char *resolve_path(const char *path) {
 			if (!path) return (NULL);
-			char abs_path[4096], cwd[4096];
+			char abs_path[4096];
+			char *cwd = shell.dirs.cwd;
 
 			if (path[0] == '~') {
 				char *home = NULL;
@@ -217,14 +218,6 @@
 			}
 
 			if (path && path[0] != '/') {
-				if (!getcwd(cwd, sizeof(cwd))) {
-					const char *pwd = variable_scalar_get(shell.env, "PWD");	// No deberia usar shell.cwd ??
-					if (!pwd) {
-						write(2, "Error: No se puede determinar el directorio actual\n", 52);
-						return (NULL);
-					}
-					strcpy(cwd, pwd);
-				}
 				if (ft_strlen(cwd) + ft_strlen(path) + 1 >= 4096) {
 					write(2, "Error: Ruta demasiado larga\n", 28);
 					return (NULL);
