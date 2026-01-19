@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 22:50:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/19 22:12:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -403,3 +403,7 @@
 	//	Exit Status: returns 0 if the directory is changed, and if $PWD is set successfully when -P is used; non-zero otherwise.
 
 #pragma endregion
+
+// Variable dinámica.
+// Autocd
+// Cd errno diferentes errores de directorio
