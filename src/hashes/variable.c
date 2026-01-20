@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 14:26:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 23:24:04 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,10 @@
 			if (!env || !key || env->sourced != SRC_SHELL) return (NULL);
 
 			static char special[4096];
+
+			if (!strcmp(key, "DIRSTACK")) {
+				return (shell.dirs.cwd);
+			}
 
 			// History
 			if (!strcmp(key, "42_HISTCMD")) {

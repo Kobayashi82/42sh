@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 18:07:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 21:55:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,14 @@
 		if (shell.mode != MD_INTERACTIVE && no_interactive_input(value))	return (1);
  
 		if (shell.ast) {
-			if (!strcmp(terminal.input, "$?"))	printf("Exit code: %d\n", shell.exit_code);
-			else								printf("Input: %s\n", terminal.input);
+			if (!strcmp(terminal.input, "$?"))	{
+				printf("%d\n", shell.exit_code % 255);
+				free(terminal.input);
+				terminal.input = NULL;
+				ast_free(&shell.ast);
+				return (0);
+			}
+			// else								printf("Input: %s\n", terminal.input);
 
 			free(terminal.input);
 			terminal.input = NULL;
@@ -53,7 +59,7 @@
 					free(resolved_path);
 				}
 
-				printf("$? = %d\n", shell.exit_code % 255);
+				// printf("$? = %d\n", shell.exit_code % 255);
 			}
 			array_free(argv);
 		} else {

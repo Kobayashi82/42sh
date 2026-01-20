@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 17:50:34 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 23:10:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,6 +130,7 @@
 		int ret = 0;
 		int offset = 0;
 		int is_offset = 0;
+		int is_rotate = 0;
 
 		if (result->argc > 1) {
 			exit_error(E_DIRS_ARGS, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
@@ -158,21 +159,30 @@
 
 		char *new_path = NULL;
 
+		if (!result->argc) {
+			new_path = dirs_pop(0);
+			if (!new_path) {
+				if (errno == E_DIRS_EMPTY) exit_error(E_DIRS_EMPTY_DIR, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				return (free_options(result), 1);
+			}
+		}
+
 		// Rotate
-		if (is_offset || !result->argc) {
-			if ((offset < -1 && (dirs_length() + (offset + 1)) == 0) || (!offset && result->argc)) {
+		if (is_offset) {
+			if ((offset < -1 && (dirs_length() + (offset + 1)) == 0) || !offset) {
 				if (dirs_print(0, 0, 0, 1) && errno == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), ret);
 			}
-			if (!result->argc) { offset = 1; is_offset = 1; }
+			is_rotate = 1;
+			if (!result->argc) { offset = 1; is_offset = 1; is_rotate = 0; }
 			if (offset > 0) offset--;
 			new_path = dirs_rotate(offset);
 			if (!new_path) {
-				if (errno == E_DIRS_EMPTY && !result->argc)	exit_error(E_DIRS_EMPTY_DIR, 1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
-				if (errno == E_DIRS_EMPTY && result->argc)	exit_error(E_DIRS_EMPTY,     1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (errno == E_NO_MEMORY)		exit_error(E_NO_MEMORY,  1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (errno == E_DIRS_EMPTY)		exit_error(E_DIRS_EMPTY, 1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
 				if (errno == E_DIRS_RANGE) {
-					if (result->argc)						exit_error(E_DIRS_RANGE,     1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-					else									exit_error(E_DIRS_RANGE,     1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
+					if (result->argc)			exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+					else						exit_error(E_DIRS_RANGE, 1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
 				}
 				return (free_options(result), 1);
 			}
@@ -195,14 +205,14 @@
 
 		// Push
 		if (has_option(result, 'n')) {
-			if (dirs_push(new_path)) {
+			if (!is_offset && dirs_push(new_path)) {
 				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}
 		} else {
 			char *cd_argv[4] = {"pushd", "--", new_path, NULL};
 			ret = bt_cd(3, cd_argv);
-			if (dirs_push(old_path)) {
+			if (!ret && !is_rotate && dirs_push(old_path)) {
 				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}
@@ -210,7 +220,7 @@
 
 		free(new_path);
 		free(old_path);
-		if (dirs_print(0, 0, 0, 1)) {
+		if (!ret && dirs_print(0, 0, 0, 1)) {
 			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 			if (errno == E_DIRS_RANGE) {

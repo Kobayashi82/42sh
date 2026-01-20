@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 10:50:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 21:34:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@
 		options_initialize();
 		alias_initialize();
 		variable_initialize(shell.env, envp);
-		prompt_initialize();
 		shell.mode = MD_NO_INTERACTIVE;
 		shell.pid = getpid();
 		shell.parent_pid = getppid();
@@ -77,6 +76,7 @@
 		terminal.bk_stdin = dup(STDIN_FILENO);
 		terminal.bk_stdout = dup(STDOUT_FILENO);
 		terminal.bk_stderr = dup(STDERR_FILENO);
+		prompt_initialize();
 		//	Execute ~/.42shrc
 		history_initialize();
 

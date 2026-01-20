@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:38:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 21:40:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,14 +106,15 @@
 	int interactive_input() {
 		char *input = NULL;
 
+		prompt_set(PS1, NULL);
 		input = readinput(prompt_PS1);
 		if (!input)							return(1);
 		if (ft_isspace_s(input))			return(free(input), 0);
 
 		shell.ast = parse(input, more_input, 1, NULL, 1);
 
-		ast_print(shell.ast);
-		printf("\n");
+		// ast_print(shell.ast);
+		// printf("\n");
 
 		return (0);
 	}

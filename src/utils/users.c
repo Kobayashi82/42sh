@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 22:03:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:19:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 22:24:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "main/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
@@ -207,7 +208,8 @@
 	#pragma region "Current"
 
 		char *get_home() {
-			return (get_home_by_var());
+			// return (get_home_by_var());
+			return (ft_strdup(variable_scalar_get(shell.env, "HOME")));
 		}
 
 	#pragma endregion

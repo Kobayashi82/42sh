@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 14:38:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 23:15:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,9 +153,18 @@
 
 		if (!offset && !has_option(result, 'n')) {
 			char *cd_argv[4] = {"popd", "--", path, NULL};
-			if (bt_builtin(3, cd_argv)) {
+			if (bt_cd(3, cd_argv)) {
 				if (dirs_add(path)) exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
+			}
+		}
+
+		if (!ret && dirs_print(0, 0, 0, 1)) {
+			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_RANGE) {
+				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "popd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				else					ret = exit_error(E_DIRS_RANGE, 1, "popd", "0",             EE_FREE_NONE, EE_RETURN);
 			}
 		}
 
