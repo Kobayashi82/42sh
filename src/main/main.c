@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 20:23:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:07:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,20 @@
 
 			if (argc) {
 				int ret = builtin_exec(argc, argv);
-				if (!ret) exit_error(E_CMD_NOT_FOUND, 127, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+				if (!ret) {
+					char *resolved_path = resolve_path(argv[0]);
+					if (shell.options.autocd && is_directory(resolved_path)) {
+						print(STDOUT_FILENO, ft_strjoin_sep("cd -- ", argv[0], "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+						char *cd_argv[4] = {"cd", "--", argv[0], NULL};
+						ret = builtin_exec(3, cd_argv);
+						if (!ret) shell.exit_code = exit_error(E_CMD_NOT_FOUND, 127, cd_argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+					} else {
+						shell.exit_code = exit_error(E_CMD_NOT_FOUND, 127, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
+					}
+					free(resolved_path);
+				}
+
+				printf("$? = %d\n", shell.exit_code % 255);
 			}
 			array_free(argv);
 		} else {

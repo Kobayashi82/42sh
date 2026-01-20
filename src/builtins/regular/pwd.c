@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 17:07:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 14:03:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,28 +106,25 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "LP", NULL, long_opts, "pwd [-LP]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_pwd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
+
 		int ret = 0;
 
 		if (has_option(result, 'P')) {
-			// Modo físico: mostrar ruta real sin symlinks
+			// Physical mode: Show real path (no symlinks)
 			char *cwd = get_cwd("cwd");
-			if (!cwd)	ret = 1;
-			else		print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL_1), P_FREE_RESET_PRINT);
+			if (cwd)			print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL_1), P_FREE_RESET_PRINT);
+			else				ret = 1;
 		} else {
-			// Modo lógico (por defecto): mostrar PWD del shell
-			if (shell.dirs.cwd) {
-				print(STDOUT_FILENO, ft_strjoin(shell.dirs.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-			} else {
-				print(STDERR_FILENO, "pwd: no se ha encontrado nada\n", P_RESET_PRINT);
-				ret = 1;
-			}
+			// Logical mode (default)
+			if (shell.dirs.cwd)	print(STDOUT_FILENO, ft_strjoin(shell.dirs.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+			else				ret = 1;
 		}
-		
+
 		return (free_options(result), ret);
 	}
 

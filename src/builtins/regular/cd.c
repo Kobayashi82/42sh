@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/19 22:12:24 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:59:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,7 +145,7 @@
 
 		if (access(path, X_OK) == -1 || !is_directory(path) || chdir(path)) {
 			free(path);
-			return (errno = E_CD_PATH, 1);
+			return (errno = E_DIRS_NOT_FOUND, 1);
 		}
 
 		char *new_cwd = NULL;
@@ -257,7 +257,6 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		char *name = (char *)result->name;
 		int ret = 0;
 		int no_cdpath = 0;
 		int show_path = 0;
@@ -265,21 +264,20 @@
 
 		// Get initial path
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_DIRS_ARGS, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		} else if (!result->argc) {
 			path = variable_scalar_get(shell.env, "HOME");
 			no_cdpath = 1;
 			if (!path) {
-				exit_error(E_CD_HOME, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_DIRS_HOME, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else if (!strcmp(result->argv[0], "-")) {
 			path = variable_scalar_get(shell.env, "OLDPWD");
-			no_cdpath = 1;
-			show_path = 1;
+			no_cdpath = show_path = 1;
 			if (!path) {
-				exit_error(E_CD_OLDPWD, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_DIRS_OLDPWD, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else path = result->argv[0];
@@ -292,20 +290,20 @@
 			final_path = ft_strdup(path);
 			if (!final_path) {
 				errno = E_NO_MEMORY;
-				exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+				exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else {
 			final_path = cdpath(path);
 			if (!final_path) {
 				if (errno == E_NO_MEMORY) {
-					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
 				final_path = ft_strdup(path);
 				if (!final_path) {
 					errno = E_NO_MEMORY;
-					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
 
@@ -318,7 +316,7 @@
 			if (!absolute_path) {
 				if (errno == E_NO_MEMORY) {
 					free(final_path);
-					exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
 			} else {
@@ -330,7 +328,7 @@
 						if (!absolute_path) {
 							if (errno == E_NO_MEMORY) {
 								free(final_path);
-								exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+								exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 								return (free_options(result), 1);
 							}
 						} else {
@@ -340,7 +338,7 @@
 								if (!final_path) {
 									errno = E_NO_MEMORY;
 									free(absolute_path);
-									exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
+									exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 									return (free_options(result), 1);
 								}
 								show_path = 1;
@@ -354,11 +352,11 @@
 
 		// Change path
 		if (change_dir(result, final_path, show_path)) {
-			if (errno == E_NO_MEMORY)										exit_error(E_NO_MEMORY, 1, name, NULL, EE_FREE_NONE, EE_RETURN);
-			if (errno == E_CD_PATH) {
-				if		(access(path, F_OK) != -1 && !is_directory(path))		exit_error(E_CD_NODIR, 1, name, final_path, EE_FREE_NONE, EE_RETURN);
-				else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	exit_error(E_CD_PER,   1, name, final_path, EE_FREE_NONE, EE_RETURN);
-				else if (access(path, F_OK) == -1)								exit_error(E_CD_PATH,  1, name, final_path, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_NO_MEMORY)											exit_error(E_NO_MEMORY,       1, (char *)result->name, NULL,       EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_NOT_FOUND) {
+				if		(access(path, F_OK) != -1 && !is_directory(path))		exit_error(E_DIRS_NOT_DIR,    1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);
+				else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	exit_error(E_DIRS_PERMISSION, 1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);
+				else if (access(path, F_OK) == -1)								exit_error(E_DIRS_NOT_FOUND,  1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);
 			}
 			ret = 1;
 		}
@@ -405,5 +403,3 @@
 #pragma endregion
 
 // Variable dinámica.
-// Autocd
-// Cd errno diferentes errores de directorio

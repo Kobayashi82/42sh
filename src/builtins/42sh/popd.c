@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 13:38:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 14:38:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,13 +126,13 @@
 		int offset = 0;
 
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_DIRS_ARGS, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
 		if (result->argc == 1) {
 			if (!ft_isdigit_s(result->argv[0])) {
-				exit_error(E_DIRS_INVALID, 2, "popd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				exit_error(E_DIRS_OFFSET, 2, "popd", result->argv[0], EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 2);
 			}
 			if (result->argv[0][0] == '-')	offset = atoi(result->argv[0]) - 1;
@@ -147,14 +147,13 @@
 		char *path = dirs_pop(offset);
 		if (!path) {
 			if (result->argc)	exit_error(E_DIRS_RANGE, 1, "popd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-			else				exit_error(E_DIRS_RANGE, 1, "popd", "0", EE_FREE_NONE, EE_RETURN);
+			else				exit_error(E_DIRS_RANGE, 1, "popd", "0",             EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
 		if (!offset && !has_option(result, 'n')) {
-			char *cd_argv[4] = {"cd", "--", path, NULL};
-			builtin_exec(3, cd_argv);
-			if (shell.exit_code) {
+			char *cd_argv[4] = {"popd", "--", path, NULL};
+			if (bt_builtin(3, cd_argv)) {
 				if (dirs_add(path)) exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}

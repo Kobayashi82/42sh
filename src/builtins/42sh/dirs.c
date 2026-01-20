@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:57:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 14:32:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,13 +134,13 @@
 		}
 
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_DIRS_ARGS, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
 		if (result->argc == 1) {
 			if (!ft_isdigit_s(result->argv[0])) {
-				exit_error(E_DIRS_INVALID, 2, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				exit_error(E_DIRS_OFFSET, 2, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 2);
 			}
 			if (result->argv[0][0] == '-')	offset = atoi(result->argv[0]) - 1;
@@ -156,7 +156,7 @@
 			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (errno == E_DIRS_RANGE) {
 				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
-				else					ret = exit_error(E_DIRS_RANGE, 1, "dirs", "0", EE_FREE_NONE, EE_RETURN);
+				else					ret = exit_error(E_DIRS_RANGE, 1, "dirs", "0",             EE_FREE_NONE, EE_RETURN);
 			}
 		}
 

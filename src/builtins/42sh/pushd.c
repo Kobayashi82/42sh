@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 23:02:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:50:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "n", NULL, long_opts, "pushd [-n] [+N | -N | dir]", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, "n", NULL, long_opts, "pushd [-n] [+N | -N | dir]", IGNORE_NUMBER);
 		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_pushd_help(HELP_NORMAL, 0));
@@ -132,10 +132,11 @@
 		int is_offset = 0;
 
 		if (result->argc > 1) {
-			exit_error(E_CD_ARGS, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			exit_error(E_DIRS_ARGS, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
+		// Path or offset
 		if (result->argc == 1) {
 			char *resolved_path = resolve_path(result->argv[0]);
 			if (result->argv[0][0] == '-' || result->argv[0][0] == '+') {
@@ -144,51 +145,79 @@
 					else							offset = atoi(result->argv[0]);
 					is_offset = 1;
 				} else {
-					ret = exit_error(E_DIRS_INVALID, 2, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+					free(resolved_path);
+					exit_error(E_DIRS_OFFSET, 2, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+					return (free_options(result), 2);
 				}
-			} else if (access(resolved_path, X_OK) == -1 && ft_isdigit_s(result->argv[0])) {
+			} else if (access(resolved_path, F_OK) == -1 && ft_isdigit_s(result->argv[0])) {
 				offset = atoi(result->argv[0]);
 				is_offset = 1;
 			}
 			free(resolved_path);
 		}
 
-		if (!ret) {
-			if (is_offset) {
-				if (dirs_rotate(offset)) {
-					if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-					if (errno == E_DIRS_EMPTY)	exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-					if (errno == E_DIRS_RANGE) {
-						if (result->argc)		exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-						else					exit_error(E_DIRS_RANGE, 1, "pushd", "0", EE_FREE_NONE, EE_RETURN);
-					}
-					ret = 1;
-				}
-			} else {
-				char *resolved_path = resolve_path(result->argv[0]);
-				if		(access(resolved_path, F_OK) != -1 && !is_directory(resolved_path))			ret = exit_error(E_CD_NODIR, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-				else if (access(resolved_path, F_OK) != -1 && access(resolved_path, X_OK) == -1)	ret = exit_error(E_CD_PER,   1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-				else if (access(resolved_path, F_OK) == -1)											ret = exit_error(E_CD_PATH,  1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
-				free(resolved_path);
+		char *new_path = NULL;
 
-				if (!ret) {
-					if (dirs_push()) {
-						if (errno == E_NO_MEMORY)	exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-						ret = 1;
-					} else {
-						if (!has_option(result, 'n')) {
-							char *cd_argv[4] = {"cd", "--", result->argv[0], NULL};
-							builtin_exec(3, cd_argv);
-							if (shell.exit_code) {
-								// if (dirs_add(result->argv[0])) exit_error(E_NO_MEMORY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-								ret = 1;
-							}
-						}
-					}
+		// Rotate
+		if (is_offset || !result->argc) {
+			if ((offset < -1 && (dirs_length() + (offset + 1)) == 0) || (!offset && result->argc)) {
+				if (dirs_print(0, 0, 0, 1) && errno == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				return (free_options(result), ret);
+			}
+			if (!result->argc) { offset = 1; is_offset = 1; }
+			if (offset > 0) offset--;
+			new_path = dirs_rotate(offset);
+			if (!new_path) {
+				if (errno == E_DIRS_EMPTY && !result->argc)	exit_error(E_DIRS_EMPTY_DIR, 1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (errno == E_DIRS_EMPTY && result->argc)	exit_error(E_DIRS_EMPTY,     1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (errno == E_DIRS_RANGE) {
+					if (result->argc)						exit_error(E_DIRS_RANGE,     1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+					else									exit_error(E_DIRS_RANGE,     1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
 				}
+				return (free_options(result), 1);
 			}
 		}
 
+		// Path
+		if (!new_path) new_path = ft_strdup(result->argv[0]);
+		if (!new_path) {
+			errno = E_NO_MEMORY;
+			exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
+		char *old_path = ft_strdup(shell.dirs.cwd);
+		if (!old_path) {
+			free(new_path);
+			errno = E_NO_MEMORY;
+			exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
+
+		// Push
+		if (has_option(result, 'n')) {
+			if (dirs_push(new_path)) {
+				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				ret = 1;
+			}
+		} else {
+			char *cd_argv[4] = {"pushd", "--", new_path, NULL};
+			ret = bt_cd(3, cd_argv);
+			if (dirs_push(old_path)) {
+				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				ret = 1;
+			}
+		}
+
+		free(new_path);
+		free(old_path);
+		if (dirs_print(0, 0, 0, 1)) {
+			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (errno == E_DIRS_RANGE) {
+				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
+				else					ret = exit_error(E_DIRS_RANGE, 1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
+			}
+		}
 		return (free_options(result), ret);
 	}
 

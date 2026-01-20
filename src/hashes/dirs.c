@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 10:43:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 13:13:18 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:47:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,27 +42,68 @@
 
 #pragma region "Rotate"
 
-	int dirs_rotate(int offset) {
-		(void) offset;
-		return (0);
+	char *dirs_rotate(int offset) {
+		t_dir_stack *current = shell.dirs.stack;
+		if (!current) return (errno = E_DIRS_EMPTY, NULL);
+
+		// Find target node
+		if (offset < 0) {
+			while (current->next) current = current->next;
+			while (offset < -1 && current) {
+				current = current->prev;
+				offset++;
+			}
+		} else {
+			while (offset > 0 && current) {
+				current = current->next;
+				offset--;
+			}
+		}
+
+		if (offset < -1 || offset > 0 || !current) return (errno = E_DIRS_RANGE, NULL);
+
+		char *path = current->path;
+
+		if (current != shell.dirs.stack) {
+			t_dir_stack *last = current->next;
+			if (last) {
+				while (last->next) last = last->next;
+				last->next = shell.dirs.stack;
+				shell.dirs.stack->prev = last;
+			} else {
+				current->next = shell.dirs.stack;
+				shell.dirs.stack->prev = current;
+			}
+			if (current->prev) {
+				current->prev->next = NULL;
+				current->prev = NULL;
+			}
+			shell.dirs.stack = current;
+		}
+
+		shell.dirs.stack = current->next;
+		if (shell.dirs.stack) shell.dirs.stack->prev = NULL;
+
+		free(current);
+		return (path);
 	}
 
 #pragma endregion
 
 #pragma region "Push"
 
-	int dirs_push() {
+	int dirs_push(char *path) {
 		errno = 0;
-		if (!shell.dirs.cwd) return (1);
 
 		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
 		if (!new_dir) return (errno = E_NO_MEMORY, 1);
 
-		new_dir->path = ft_strdup(shell.dirs.cwd);
+		new_dir->path = ft_strdup(path);
 		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, 1);
+
 		new_dir->prev = NULL;
 		new_dir->next = shell.dirs.stack;
-
+			
 		if (shell.dirs.stack) shell.dirs.stack->prev = new_dir;
 		shell.dirs.stack = new_dir;
 
@@ -74,8 +115,9 @@
 #pragma region "Pop"
 
 	char *dirs_pop(int offset) {
+		errno = 0;
 		t_dir_stack *current = shell.dirs.stack;
-		if (!current) return (NULL);
+		if (!current) return (errno = E_DIRS_EMPTY, NULL);
 
 		if (offset < 0) {
 			while (current->next) current = current->next;
@@ -90,7 +132,7 @@
 			}
 		}
 
-		if (offset < -1 || offset > 0 || !current) return (NULL);
+		if (offset < -1 || offset > 0 || !current) return (errno = E_DIRS_RANGE, NULL);
 
 		if (current->prev)	current->prev->next = current->next;
 		else				shell.dirs.stack = current->next;
@@ -260,12 +302,16 @@
 		return (0);
 	}
 
-#pragma endregion
+	int dirs_length() {
+		t_dir_stack *current = shell.dirs.stack;
+		int count = 0;
 
-#pragma region "Initialize"
+		while (current) {
+			count++;
+			current = current->next;
+		}
 
-	void dirs_initialize() {
-		
+		return (count);
 	}
 
 #pragma endregion

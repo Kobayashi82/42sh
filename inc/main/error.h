@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 20:58:55 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:29:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@
 			E_START_ARGS			= 200,		// 
 			E_START_BIN				= 201,		// 
 			E_START_DIR				= 202,		// 
-			E_NO_MEMORY				= 290,		// No more memory available (usually an allocation failed)
-			E_END					= 297,		// 
+			E_NO_MEMORY				= 990,		// No more memory available (usually an allocation failed)
+			E_END					= 997,		// 
 		};
 
 	#pragma endregion
@@ -43,12 +43,12 @@
 	#pragma region "Variable"
 
 		enum e_error_variable {
-			E_VAR_MAX_REFERENCES	= 250,		// 
-			E_VAR_CYCLE_REFERENCE	= 251,		// 
-			E_VAR_INVALID_TYPE		= 252,		// 
-			E_VAR_INVALID_INDEX		= 253,		// 
-			E_VAR_IDENTIFIER		= 254,		// 
-			E_VAR_READONLY			= 255		// 
+			E_VAR_MAX_REFERENCES	= 250,		// Maximum reference depth exceeded
+			E_VAR_CYCLE_REFERENCE	= 251,		// Circular reference
+			E_VAR_INVALID_TYPE		= 252,		// Invalid type
+			E_VAR_INVALID_INDEX		= 253,		// Invalid array index
+			E_VAR_IDENTIFIER		= 254,		// Invalid identifier
+			E_VAR_READONLY			= 255		// Read-only variable
 		};
 
 	#pragma endregion
@@ -56,22 +56,29 @@
 	#pragma region "Builtin"
 
 		enum e_error_builtin {
-			E_OPT_MAX				= 300,		// 
-			E_OPT_INVALID			= 301,		//
-			E_OPT_NO_ARGUMENT		= 302,		//
-			E_OPT_ARGUMENT			= 303,		//
+			// Getopt
+			E_OPT_MAX				= 300,		// Maximum number of options exceeded
+			E_OPT_INVALID			= 301,		// Invalid option
+			E_OPT_NO_ARGUMENT		= 302,		// Missing required argument for option
+			E_OPT_ARGUMENT			= 303,		// Unexpected argument for option
 
-			E_DIRS_EMPTY			= 305,		// 
-			E_DIRS_INVALID			= 306,		// 
-			E_DIRS_RANGE			= 307,		// 
-			E_CD_PATH				= 310,		// 
-			E_CD_ARGS				= 311,		// 
-			E_CD_HOME				= 312,		// 
-			E_CD_OLDPWD				= 313,		// 
-			E_CD_NODIR				= 314,		// 
-			E_CD_PER				= 315,		// 
-			E_HIS_ARGS				= 340,		// 
-			E_HIS_DIG				= 341,		// 
+			// CD, PWD, Dirs, Pushd, Popd
+			E_DIRS_EMPTY			= 310,		// Directory stack is empty
+			E_DIRS_EMPTY_DIR		= 311,		// Directory stack is empty (used for pushd)
+			E_DIRS_ARGS				= 312,		// Too many arguments
+			E_DIRS_OFFSET			= 313,		// Invalid offset number
+			E_DIRS_RANGE			= 314,		// Offset out of range
+			E_DIRS_NOT_FOUND		= 315,		// Directory not found
+			E_DIRS_NOT_DIR			= 316,		// Not a directory
+			E_DIRS_PERMISSION		= 317,		// Permission denied
+			E_DIRS_HOME				= 318,		// HOME variable not set
+			E_DIRS_OLDPWD			= 319,		// OLDPWD variable not set
+
+			// History
+			E_HIS_ARGS				= 320,		// 
+			E_HIS_DIG				= 321,		// 
+
+			// Exit
 			E_EXIT_NUM				= 380,		// 
 			E_EXIT_ARGS				= 381		// 
 		};

@@ -186,7 +186,7 @@
 		//	CD
 		shell.options.cd_resolve		= 0;
 		shell.options.cdable_vars		= 1;
-		shell.options.autocd			= 0;
+		shell.options.autocd			= 1;
 		shell.options.cdspell			= 0;
 		shell.options.dirspell			= 0;
 

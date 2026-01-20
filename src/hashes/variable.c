@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/15 20:57:20 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 14:26:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -872,7 +872,7 @@
 				t_var *var = variable_get(env, key, 0);
 				if (!var) return (NULL);
 
-				if (!(var->flags & VAR_REFERENCE)) return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!(var->flags & VAR_REFERENCE)) return (errno = E_VAR_INVALID_TYPE, NULL);
 
 				return (var->data.scalar);
 			}

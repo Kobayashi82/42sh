@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 12:08:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 18:05:02 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -336,7 +336,6 @@
 		if (builtin && !builtin->disabled) {
 			int exit_code = builtin->execute(argc, argv);
 			if (exit_code != -1) shell.exit_code = exit_code;
-			printf("$? = %d\n", shell.exit_code % 255);
 			return (1);
 		}
 

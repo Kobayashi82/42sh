@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 21:02:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/20 17:28:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,36 +52,26 @@
 	#pragma region "Builtin"
 
 		static void builtin_msg(int error_type, char *value1, char *value2) {
+			// Getopt
 			if (error_type == E_OPT_MAX) {
 				print(STDERR_FILENO, value1,                                                                 P_JOIN);
 				print(STDERR_FILENO, ft_strjoin_sep(": Too many options (max ", value2, ")\n", J_FREE_NONE), P_FREE_PRINT);
 			}
 
-			if (error_type == E_DIRS_EMPTY)	print(STDERR_FILENO, ft_strjoin(value1, ": directory stack empty\n", J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_DIRS_INVALID) {
-				print(STDERR_FILENO, value1,                                                          P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": invalid number\n", J_FREE_NONE), P_FREE_PRINT);
-			}
-			if (error_type == E_DIRS_RANGE) {
-				print(STDERR_FILENO, value1,                                                                              P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": directory stack index out of range\n", J_FREE_NONE), P_FREE_PRINT);
-			}
+			// CD, PWD, Dirs, Pushd, Popd
+			if (error_type >= E_DIRS_OFFSET && error_type <= E_DIRS_PERMISSION) print(STDERR_FILENO, value1,                                                  P_JOIN);
+			if (error_type == E_DIRS_OFFSET)		print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": invalid number\n",                     J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_RANGE)			print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": directory stack index out of range\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": No such file or directory\n",          J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_NOT_DIR)		print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Not a directory\n",                    J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_PERMISSION)	print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Permission denied\n",                  J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_EMPTY)			print(STDERR_FILENO, ft_strjoin(value1, ": directory stack empty\n",                        J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_EMPTY_DIR)		print(STDERR_FILENO, ft_strjoin(value1, ": no other directory\n",                        J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_HOME)			print(STDERR_FILENO, ft_strjoin(value1, ": HOME not set\n",                                 J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_OLDPWD)		print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n",                               J_FREE_NONE), P_FREE_PRINT);
 
-			if (error_type == E_CD_ARGS)	print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n", J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_CD_HOME)	print(STDERR_FILENO, ft_strjoin(value1, ": HOME not set\n",       J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_CD_OLDPWD)	print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n",     J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_CD_PATH) {
-				print(STDERR_FILENO, value1,                                                                     P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": No such file or directory\n", J_FREE_NONE), P_FREE_PRINT);
-			}
-			if (error_type == E_CD_NODIR) {
-				print(STDERR_FILENO, value1,                                                           P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Not a directory\n", J_FREE_NONE), P_FREE_PRINT);
-			}
-			if (error_type == E_CD_PER) {
-				print(STDERR_FILENO, value1,                                                             P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Permission denied\n", J_FREE_NONE), P_FREE_PRINT);
-			}
+			// Otro
 		}
 
 	#pragma endregion
