@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 17:59:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:39:21 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@
 			path = corrected;
 		}
 
-		if ((shell.options.cd_resolve && !result->options)  || has_option(result, 'P')) {
+		if ((shell.options.physical && !result->options)  || has_option(result, 'P')) {
 			char *tmp = realpath(path, NULL);
 			free(path);
 			path = tmp;
@@ -152,7 +152,7 @@
 		if (physical) {
 			new_cwd = getcwd(NULL, 0);
 			if (!new_cwd) {
-				if (((shell.options.cd_resolve && !result->options) || has_option(result, 'P')) && has_option(result, 'e')) {
+				if (((shell.options.physical && !result->options) || has_option(result, 'P')) && has_option(result, 'e')) {
 					free(path);
 					return (1);
 				}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:32:05 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:36:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 			int	nocaseglob;			//	SHOPT		1 = Case-insensitive globbing										0 = Case-sensitive
 
 			//	CD
-			int	cd_resolve;			//	SET			1 = Physical paths (set -P)											0 = Logical
+			int	physical;			//	SET			1 = Physical paths (set -P)											0 = Logical
 			int	cdable_vars;		//	SHOPT		1 = Variables can be used as directories for 'cd'					0 = Disabled
 			int	autocd;				//	SHOPT		1 = Automatically change to a directory without 'cd'				0 = Disabled
 			int	cdspell;			//	SHOPT		1 = Automatically correct minor errors in directory names			0 = Disabled

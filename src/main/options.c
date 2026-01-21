@@ -25,7 +25,7 @@
 		"history",				"histexpand",			"histappend",			"histreedit",			"histverify",
 		"expand_aliases",
 		"noglob",				"dotglob",				"nullglob",				"failglob",				"nocaseglob",
-		"cd_resolve",			"cdable_vars",			"autocd",				"cdspell",				"dirspell"
+		"physical",				"cdable_vars",			"autocd",				"cdspell",				"dirspell"
 	};
 
 	static int *option_values[] = {
@@ -33,7 +33,7 @@
 		&shell.options.history,				&shell.options.histexpand,			&shell.options.histappend,			&shell.options.histreedit,			&shell.options.histverify,
 		&shell.options.expand_aliases,
 		&shell.options.noglob,				&shell.options.dotglob,				&shell.options.nullglob,			&shell.options.failglob,			&shell.options.nocaseglob,
-		&shell.options.cd_resolve,			&shell.options.cdable_vars,			&shell.options.autocd,				&shell.options.cdspell,				&shell.options.dirspell
+		&shell.options.physical,			&shell.options.cdable_vars,			&shell.options.autocd,				&shell.options.cdspell,				&shell.options.dirspell
 	};
 
 	static int option_types[] = {
@@ -54,38 +54,41 @@
 		//	READINPUT
 		if (!strcmp("emacs", option)) {
 			if (value) shell.options.vi = !value;
-			shell.options.emacs = value;	return (0);
+			shell.options.emacs = value;
+			return (0);
 		}
 		if (!strcmp("vi", option)) {
 			if (value) shell.options.emacs = !value;
-			shell.options.vi = value;		return (0);
+			shell.options.vi = value;
+			return (0);
 		}
-		if (!strcmp("hide_ctrl_chars", option)) 	{ shell.options.hide_ctrl_chars = value;	return (0); }
-		if (!strcmp("multiwidth_chars", option)) 	{ shell.options.multiwidth_chars = value;	return (0); }
+
+		if (!strcmp("hide_ctrl_chars",	option)) 	{ shell.options.hide_ctrl_chars		= value;	return (0); }
+		if (!strcmp("multiwidth_chars",	option)) 	{ shell.options.multiwidth_chars	= value;	return (0); }
 
 		//	HISTORY
-		if (!strcmp("history", option)) 			{ shell.options.history = value;			return (0); }
-		if (!strcmp("histexpand", option)) 			{ shell.options.histexpand = value;		return (0); }
-		if (!strcmp("histappend", option)) 			{ shell.options.histappend = value;		return (0); }
-		if (!strcmp("histreedit", option)) 			{ shell.options.histreedit = value;		return (0); }
-		if (!strcmp("histverify", option)) 			{ shell.options.histverify = value;		return (0); }
+		if (!strcmp("history",			option)) 	{ shell.options.history				= value;	return (0); }
+		if (!strcmp("histexpand",		option)) 	{ shell.options.histexpand			= value;	return (0); }
+		if (!strcmp("histappend",		option)) 	{ shell.options.histappend			= value;	return (0); }
+		if (!strcmp("histreedit",		option)) 	{ shell.options.histreedit			= value;	return (0); }
+		if (!strcmp("histverify",		option)) 	{ shell.options.histverify			= value;	return (0); }
 
 		//	ALIAS
-		if (!strcmp("expand_aliases", option)) 		{ shell.options.expand_aliases = value;	return (0); }
+		if (!strcmp("expand_aliases",	option))	{ shell.options.expand_aliases		= value;	return (0); }
 
 		//	GLOBBING
-		if (!strcmp("noglob", option)) 				{ shell.options.noglob = value;			return (0); }
-		if (!strcmp("dotglob", option)) 			{ shell.options.dotglob = value;			return (0); }
-		if (!strcmp("nullglob", option)) 			{ shell.options.nullglob = value;			return (0); }
-		if (!strcmp("failglob", option)) 			{ shell.options.failglob = value;			return (0); }
-		if (!strcmp("nocaseglob", option)) 			{ shell.options.nocaseglob = value;		return (0); }
+		if (!strcmp("noglob",			option)) 	{ shell.options.noglob				= value;	return (0); }
+		if (!strcmp("dotglob",			option)) 	{ shell.options.dotglob				= value;	return (0); }
+		if (!strcmp("nullglob",			option)) 	{ shell.options.nullglob			= value;	return (0); }
+		if (!strcmp("failglob",			option)) 	{ shell.options.failglob			= value;	return (0); }
+		if (!strcmp("nocaseglob",		option)) 	{ shell.options.nocaseglob			= value;	return (0); }
 
 		//	CD
-		if (!strcmp("cd_resolve", option)) 			{ shell.options.cd_resolve = value;		return (0); }
-		if (!strcmp("cdable_vars", option)) 		{ shell.options.cdable_vars = value;		return (0); }
-		if (!strcmp("autocd", option)) 				{ shell.options.autocd = value;			return (0); }
-		if (!strcmp("cdspell", option)) 			{ shell.options.cdspell = value;			return (0); }
-		if (!strcmp("dirspell", option)) 			{ shell.options.dirspell = value;			return (0); }
+		if (!strcmp("physical",			option)) 	{ shell.options.physical			= value;	return (0); }
+		if (!strcmp("cdable_vars",		option)) 	{ shell.options.cdable_vars			= value;	return (0); }
+		if (!strcmp("autocd",			option)) 	{ shell.options.autocd				= value;	return (0); }
+		if (!strcmp("cdspell",			option)) 	{ shell.options.cdspell				= value;	return (0); }
+		if (!strcmp("dirspell",			option)) 	{ shell.options.dirspell			= value;	return (0); }
 
 		return (1);
 	}
@@ -184,7 +187,7 @@
 		shell.options.nocaseglob		= 0;
 
 		//	CD
-		shell.options.cd_resolve		= 0;
+		shell.options.physical			= 0;
 		shell.options.cdable_vars		= 1;
 		shell.options.autocd			= 1;
 		shell.options.cdspell			= 0;
