@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 21:30:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:21:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@
 	#pragma region "KEY / VALUE"
 
 		int		get_key_value(const char *line, char **key, char **value, char sep);
-		char	*format_for_shell(const char *value, char quote_type);
+		char	*format_for_shell(const char *value);
 
 	#pragma endregion
 

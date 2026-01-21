@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 23:24:04 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:21:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@
 
 				errno = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (errno);
+				if (errno) return (1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -272,18 +272,18 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
-				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, E_VAR_READONLY);
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, 1);
+				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, 1);
 
 				// If doesn't exist, create new variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!var) return (errno = E_NO_MEMORY, 1);
 
 					var->key = ft_strdup(key);
 					if (!var->key) {
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (errno = E_NO_MEMORY, 1);
 					}
 
 					if (value) {
@@ -291,7 +291,7 @@
 						if (!var->data.scalar) {
 							free(var->key);
 							free(var);
-							return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							return (errno = E_NO_MEMORY, 1);
 						}
 					}
 
@@ -307,12 +307,12 @@
 				// Variable exists, update value
 				if (append) {
 					char *new_value = ft_strjoin(var->data.scalar, value, J_FREE_NONE);
-					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!new_value) return (errno = E_NO_MEMORY, 1);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				} else {
 					char *new_value = ft_strdup(value);
-					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!new_value) return (errno = E_NO_MEMORY, 1);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				}
@@ -583,7 +583,7 @@
 
 				for (int i = 0; i < count; ++i) {
 					char buffer[4096];
-					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+					char *formatted = format_for_shell(elements[i]->data.scalar);
 					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", (i > 0) ? " " : "", elements[i]->key, formatted);
 					free(formatted);
 
@@ -831,7 +831,7 @@
 
 				for (int i = 0; i < count; ++i) {
 					char buffer[4096];
-					char *formatted = format_for_shell(elements[i]->data.scalar, '\"');
+					char *formatted = format_for_shell(elements[i]->data.scalar);
 					snprintf(buffer, sizeof(buffer), "%s[%s]=\"%s\"", (i > 0) ? " " : "", elements[i]->key, formatted);
 					free(formatted);
 					
@@ -1091,7 +1091,7 @@
 					char *values = format_assoc_values(var);
 					if (values) array[i] = ft_strjoin_sep(array[i], "=", values, J_FREE_VAL_3);
 				} else if (var->data.scalar) {
-					char *value = format_for_shell(var->data.scalar, '\"');
+					char *value = format_for_shell(var->data.scalar);
 					array[i] = ft_strjoin_sep(array[i], "=", value, J_FREE_VAL_1_3);
 				}
 

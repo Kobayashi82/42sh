@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/07 23:49:36 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:21:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,32 +63,92 @@
 #pragma region "Format for Shell"
 
 	// Escapes a string for safe use within shell quotes (' or ")
-	char *format_for_shell(const char *value, char quote_type) {
-		if (!value || (quote_type != '\'' && quote_type != '\"')) return (NULL);
+	char *format_for_shell(const char *value) {
+		if (!value) return (NULL);
 
-		size_t length = ft_strlen(value), j = 0;
-		char *escaped = malloc(length * 6 + 3);
-
-		if (quote_type == '\'') escaped[j++] = '\'';
-		if (quote_type == '\"') escaped[j++] = '\"';
+		size_t length = ft_strlen(value);
+		int needs_ansi = 0;
 
 		for (size_t i = 0; i < length; i++) {
-			if (quote_type == '\'' && value[i] == '\'') {
-				escaped[j++] = '\'';
-				escaped[j++] = '\\';
-				escaped[j++] = '\'';
-				escaped[j++] = '\'';
-			} else if (quote_type == '\"' && value[i] == '\"') {
+			unsigned char c = (unsigned char)value[i];
+			if (c < 32 || c == 127) {
+				needs_ansi = 1;
+				break;
+			}
+		}
+
+		if (needs_ansi) {
+			size_t j = 0;
+			char *escaped = malloc(length * 6 + 4);
+			if (!escaped) return (NULL);
+
+			escaped[j++] = '$';
+			escaped[j++] = '\'';
+
+			for (size_t i = 0; i < length; i++) {
+				unsigned char c = (unsigned char)value[i];
+				if (c == '\\') {
+					escaped[j++] = '\\';
+					escaped[j++] = '\\';
+				} else if (c == '\'') {
+					escaped[j++] = '\\';
+					escaped[j++] = '\'';
+				} else if (c == '\n') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'n';
+				} else if (c == '\t') {
+					escaped[j++] = '\\';
+					escaped[j++] = 't';
+				} else if (c == '\r') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'r';
+				} else if (c == '\v') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'v';
+				} else if (c == '\f') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'f';
+				} else if (c == '\a') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'a';
+				} else if (c == '\b') {
+					escaped[j++] = '\\';
+					escaped[j++] = 'b';
+				} else if (c == 27) {
+					escaped[j++] = '\\';
+					escaped[j++] = 'e';
+				} else if (c < 32 || c == 127) {
+					escaped[j++] = '\\';
+					escaped[j++] = (char)('0' + ((c >> 6) & 7));
+					escaped[j++] = (char)('0' + ((c >> 3) & 7));
+					escaped[j++] = (char)('0' + (c & 7));
+				} else {
+					escaped[j++] = (char)c;
+				}
+			}
+
+			escaped[j++] = '\'';
+			escaped[j] = '\0';
+			return (escaped);
+		}
+
+		size_t j = 0;
+		char *escaped = malloc(length * 6 + 3);
+		if (!escaped) return (NULL);
+
+		escaped[j++] = '\"';
+
+		for (size_t i = 0; i < length; i++) {
+			if (value[i] == '\"') {
 				escaped[j++] = '\\';
 				escaped[j++] = '\"';
-			} else if (quote_type == '\"' && (value[i] == '$' || value[i] == '`' || value[i] == '\\')) {
+			} else if (value[i] == '$' || value[i] == '`' || value[i] == '\\') {
 				escaped[j++] = '\\';
 				escaped[j++] = value[i];
 			} else escaped[j++] = value[i];
 		}
 
-		if (quote_type == '\'') escaped[j++] = '\'';
-		if (quote_type == '\"') escaped[j++] = '\"';
+		escaped[j++] = '\"';
 		escaped[j] = '\0';
 
 		return (escaped);

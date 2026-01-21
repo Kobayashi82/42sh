@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 20:05:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:27:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,9 @@
 
 	#define BUFFER_SIZE 8192
 
-	static char		g_output_buffer[BUFFER_SIZE];
-	static size_t	g_buffer_pos = 0;
+	static char		*g_output;
+	static char		g_output_buffer[BUFFER_SIZE + 1];
+	static size_t	g_buffer_pos;
 
 	typedef struct s_fmt_token {
 		int			is_spec;
@@ -142,8 +143,9 @@
 
 			static void buffer_char(char c) {
 				if (g_buffer_pos >= BUFFER_SIZE) {
-					write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+					g_output_buffer[g_buffer_pos] = '\0';
 					g_buffer_pos = 0;
+					g_output = ft_strjoin(g_output, g_output_buffer, J_FREE_VAL_1);
 				}
 				g_output_buffer[g_buffer_pos++] = c;
 			}
@@ -159,8 +161,11 @@
 				if (!str || len == 0) return;
 				while (len > 0) {
 					if (g_buffer_pos >= BUFFER_SIZE) {
-						write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+						g_output_buffer[g_buffer_pos] = '\0';
 						g_buffer_pos = 0;
+						g_output = ft_strjoin(g_output, g_output_buffer, J_FREE_VAL_1);
+						// write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+						// g_buffer_pos = 0;
 					}
 					space = BUFFER_SIZE - g_buffer_pos;
 					chunk = (len < space) ? len : space;
@@ -169,8 +174,11 @@
 					str += chunk;
 					len -= chunk;
 					if (g_buffer_pos == BUFFER_SIZE) {
-						write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+						g_output_buffer[g_buffer_pos] = '\0';
 						g_buffer_pos = 0;
+						g_output = ft_strjoin(g_output, g_output_buffer, J_FREE_VAL_1);
+						// write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+						// g_buffer_pos = 0;
 					}
 				}
 			}
@@ -181,8 +189,11 @@
 
 			static void flush_buffer() {
 				if (g_buffer_pos > 0) {
-					write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+					g_output_buffer[g_buffer_pos] = '\0';
 					g_buffer_pos = 0;
+					g_output = ft_strjoin(g_output, g_output_buffer, J_FREE_VAL_1);
+					// write(STDOUT_FILENO, g_output_buffer, g_buffer_pos);
+					// g_buffer_pos = 0;
 				}
 			}
 
@@ -708,7 +719,7 @@
 					if (!ok) {
 						char err_msg[256];
 						snprintf(err_msg, sizeof(err_msg), "%s: printf: %s: invalid number\n", shell.name, arg);
-						write(2, err_msg, ft_strlen(err_msg));
+						write(STDERR_FILENO, err_msg, ft_strlen(err_msg));
 						num = 0;
 					}
 					print_int(num, width, precision, flags);
@@ -844,7 +855,7 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "printf [-v var] format [arguments]", IGNORE_OFF);
+		t_parse_result *result = parse_options(argc, argv, "v:", NULL, long_opts, "printf [-v var] format [arguments]", IGNORE_OFF);
 		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_printf_help(HELP_NORMAL, 0));
@@ -858,7 +869,40 @@
 			return (free_options(result), 1);
 		}
 
-		ret = printf_main(result->argc, result->argv);
+		const char *name = NULL;
+		t_var *var = NULL;
+
+		if (has_option(result, 'v')) {
+			name = get_option_value(result, 'v');
+			var = variable_get(shell.env, name, 1);
+			if (!var) {
+				if (errno == E_NO_MEMORY)			ret = exit_error(E_NO_MEMORY,           1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN);
+				if (errno == E_VAR_IDENTIFIER)		ret = exit_error(E_VAR_IDENTIFIER,      1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (errno == E_VAR_MAX_REFERENCES)	ret = exit_error(E_VAR_MAX_REFERENCES,  1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (errno == E_VAR_CYCLE_REFERENCE)	ret = exit_error(E_VAR_CYCLE_REFERENCE, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (ret) return (free_options(result), 1);
+			}
+		}
+
+		printf_main(result->argc, result->argv);
+		if (g_output) {
+			if (has_option(result, 'v')) {
+				if (var && (var->flags & VAR_READONLY)) {
+					ret = exit_error(E_VAR_READONLY, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				} else {
+					ret = variable_scalar_set(shell.env, name, g_output, 0, VAR_NONE, 0);
+					if (ret) {
+						if (errno == E_NO_MEMORY)		return (exit_error(E_NO_MEMORY,      1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN));
+						if (errno == E_VAR_IDENTIFIER)	return (exit_error(E_VAR_IDENTIFIER, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN));
+						// invalid type...
+					}
+				}
+			} else {
+				if (write(STDOUT_FILENO, g_output, ft_strlen(g_output)) == -1) ret = 1;
+			}
+			free(g_output);
+			g_output = NULL;
+		}
 
 		return (free_options(result), ret);
 	}
