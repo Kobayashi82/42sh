@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 21:30:31 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/history.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 	

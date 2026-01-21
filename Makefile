@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/17 17:09:09 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/21 22:00:57 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -56,11 +56,16 @@ SRC_DIR				= src/
 # ── FILES ── #
 # ─────────── #
 
-SRCS	=	main/main.c										\
-			main/options.c									\
-			main/shell.c									\
-			main/error.c									\
+SRCS	=	main.c											\
 															\
+			internal/alias.c								\
+			internal/builtin.c								\
+			internal/dirs.c									\
+			internal/error.c								\
+			internal/hash.c									\
+			internal/options.c								\
+			internal/shell.c								\
+			internal/variable.c								\
 															\
 			terminal/input.c								\
 			terminal/signal.c								\
@@ -76,7 +81,6 @@ SRCS	=	main/main.c										\
 			terminal/readinput/common/termcaps.c			\
 			terminal/readinput/common/undo.c				\
 															\
-															\
 			parser/lexer/container.c						\
 			parser/lexer/expansion.c						\
 			parser/lexer/group.c							\
@@ -87,11 +91,9 @@ SRCS	=	main/main.c										\
 			parser/lexer/token.c							\
 			parser/lexer/utils.c							\
 			parser/lexer/word.c								\
-															\
 			parser/parser/ast.c								\
 			parser/parser/command.c							\
 			parser/parser/parser.c							\
-															\
 															\
 			expansion/arithmetic.c							\
 			expansion/brace.c								\
@@ -104,14 +106,6 @@ SRCS	=	main/main.c										\
 			expansion/globbing/globbing.c					\
 			expansion/globbing/match.c						\
 			expansion/globbing/pattern.c					\
-															\
-															\
-			hashes/alias.c									\
-			hashes/builtin.c								\
-			hashes/dirs.c									\
-			hashes/hash.c									\
-			hashes/variable.c								\
-															\
 															\
 			builtins/42sh/banner.c							\
 			builtins/42sh/builtin.c							\
@@ -129,7 +123,6 @@ SRCS	=	main/main.c										\
 			builtins/42sh/pushd.c							\
 			builtins/42sh/shopt.c							\
 			builtins/42sh/suspend.c							\
-															\
 			builtins/regular/alias.c						\
 			builtins/regular/bg.c							\
 			builtins/regular/cd.c							\
@@ -152,7 +145,6 @@ SRCS	=	main/main.c										\
 			builtins/regular/umask.c						\
 			builtins/regular/unalias.c						\
 			builtins/regular/wait.c							\
-															\
 			builtins/special/break.c						\
 			builtins/special/continue.c						\
 			builtins/special/dot.c							\
@@ -168,7 +160,6 @@ SRCS	=	main/main.c										\
 			builtins/special/times.c						\
 			builtins/special/trap.c							\
 			builtins/special/unset.c						\
-															\
 															\
 			utils/array.c									\
 			utils/getopt.c									\

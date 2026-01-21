@@ -6,14 +6,14 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/20 16:28:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/09 12:43:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
 	#include "expansion/globbing.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 
 	#define MAX_NEW_PATTERN_SIZE 512

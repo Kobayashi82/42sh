@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 21:55:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 	#include "terminal/terminal.h"
 	#include "parser/parser.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion

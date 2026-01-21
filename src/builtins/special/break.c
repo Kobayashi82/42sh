@@ -6,13 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 20:51:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
 

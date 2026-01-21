@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/06 15:20:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/12 13:23:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 	#include "terminal/readinput/prompt.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion

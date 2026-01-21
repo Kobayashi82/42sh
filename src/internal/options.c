@@ -13,7 +13,7 @@
 #pragma region "Includes"
 
 	#include "terminal/colors.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion

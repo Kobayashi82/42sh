@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 15:57:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/13 13:38:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 	#include "terminal/terminal.h"
 	#include "terminal/readinput/readinput.h"
 	#include "terminal/readinput/termcaps.h"
-	#include "main/shell.h"
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include <signal.h>
 	#include <sys/ioctl.h>

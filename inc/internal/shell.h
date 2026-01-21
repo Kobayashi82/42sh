@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 10:50:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 21:54:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,13 @@
 
 #pragma region "Includes"
 
-	#include "hashes/alias.h"
-	#include "hashes/builtin.h"
-	#include "hashes/dirs.h"
-	#include "hashes/hash.h"
-	#include "hashes/variable.h"
-	#include "main/error.h"
-	#include "main/options.h"
+	#include "internal/alias.h"
+	#include "internal/builtin.h"
+	#include "internal/dirs.h"
+	#include "internal/hash.h"
+	#include "internal/variable.h"
+	#include "internal/options.h"
+	#include "internal/error.h"
 
 #pragma endregion
 
