@@ -1,18 +1,5 @@
 # 42sh
 
-- Redirections
-- Syntax error
-- Arithmetic expresion
-- Arithmetic expansion
-- Conditional expresion
-- Braces expansion
-- Parameter expansion
-
-## Variables (con entorno)
-
-- Soporte para multi-entornos
-- Añadir local para cuando se añada local (solo añade al entorno actual)
-
 ## Límites
 - Límite de expansión
 - Límite de eval
@@ -31,6 +18,15 @@
 - getopt (builtin) debe soportar multibyte chars
 - getopt (for builtin) soportar argumentos opcionales separados (o.) aceptaria no argumento o el siguiente argumento si existe y no es una opcion (empieza por -) - Util para set y otro builtin que no recuerdo, creo que ulimit
 
+## FC
+
+- Argumentos del editor en fc
+- Quizás lo más razonable sea usar el editor tal cual y llamar a parse_and_execute mío con el comando formado.
+- Editor tmp_file
+- Y que falle lo que tenga que fallar y tal. Cuando termina el comando, si es 0 continua, si no, error
+- Devuelvo en default_editor el primero available, da igual si existe o no.
+- O -e arg
+
 ## History
 - Cambiar sistema de -a -n para que use timestamp y ordene automaticamente
 - fc en script
@@ -46,18 +42,6 @@
 ## Source
 - Opciones de arranque (mirar Bash_Options.md)
 
-## 42
-
-- parse_subshell()
-- parse_arithmetic()
-- parser_conditional()
-- process_heredocs()
-- create_heredoc()
-- Señales en parser
-- Mensajes de error (syntax)
-- Funciones de argumentos (unid, dividir, array)
-- Funciones de redirección (aplicar, heredoc)
-
 ---
 
 ### No Interactivo
@@ -70,14 +54,3 @@
 - Contexto abierto
 - Termina en \
 - Termina en operdor de continuación (&&, ||, |, |&)
-
-
-### Ni puta idea de porqué escribí esto
-
-- Modo vi de fc hace beep si falla?
-- Argumentos del editor en fc
-- Quizás lo más razonable sea usar el editor tal cual y llamar a parse_and_execute mío con el comando formado.
-- Editor tmp_file
-- Y que falle lo que tenga que fallar y tal. Cuando termina el comando, si es 0 continua, si no, error
-- Devuelvo en default_editor el primero available, da igual si existe o no.
-- O -e arg
