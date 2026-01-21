@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 19:56:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/21 20:05:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -867,7 +867,7 @@
 
 #pragma region "Tests"
 
-	// Comandos básicos de formato:
+	// Comandos básicos:
 	// 
 	// printf "Hola mundo\n"
 	// printf "Número: %d\n" 42
@@ -877,42 +877,54 @@
 	// printf "Octal: %o\n" 64
 	// printf "Float: %f\n" 3.14159
 
-	// Comandos con múltiples argumentos:
-	// 
-	// printf "%s %s %s\n" uno dos tres
-	// printf "%d + %d = %d\n" 5 3 8
-	// printf "%s tiene %d años\n" "María" 25
-
-	// Comandos con modificadores de ancho y precisión:
+	// Ancho, precisión y flags:
 	// 
 	// printf "%10s\n" "derecha"
 	// printf "%-10s\n" "izquierda"
 	// printf "%05d\n" 42
 	// printf "%.2f\n" 3.14159265
 	// printf "%10.2f\n" 3.14159265
+	// printf "%+d\n" 42
+	// printf "% d\n" 42
+	// printf "%#x\n" 255
+	// printf "%#o\n" 64
 
-	// Comandos con secuencias de escape:
+	// Secuencias de escape y %b:
 	// 
 	// printf "Línea 1\nLínea 2\n"
 	// printf "Tab\taqui\n"
 	// printf "Comillas: \"%s\"\n" texto
 	// printf "Backslash: \\\n"
 	// printf "Retorno: antes\rdespués\n"
+	// printf "%b\n" "Hola\tmundo\n"
+	// printf "%b\n" "Octal:\040ABC\n"
+	// printf "%b\n" "Hex:\x41\x42\x43\n"
 
-	// Comandos con múltiples especificadores (reutilización de formato):
+	// Formatos científicos y generales:
+	// 
+	// printf "Sci: %e\n" 1234.5
+	// printf "Sci: %E\n" 0.0000123
+	// printf "Gen: %g\n" 1234.5
+	// printf "Gen: %G\n" 0.0000123
+	// printf "%.3e\n" 1234.5
+	// printf "%.3g\n" 1234.5
+	// printf "%#g\n" 10.0
+
+	// Reutilización de formato:
 	// 
 	// printf "%s\n" uno dos tres cuatro
 	// printf "%d %d\n" 1 2 3 4 5
 	// printf "%s-%d\n" a 1 b 2 c 3
 
-	// Comandos con formato especial:
+	// Modificadores de longitud:
 	// 
-	// printf "%b\n" "Hola\tmundo\n"
-	// printf "%%\n"
-	// printf "%10s %-10s\n" "Col1" "Col2"
-	// printf "|%-20s| %5d |\n" "Producto" 100
+	// printf "%ld\n" 2147483648
+	// printf "%lld\n" 9223372036854775807
+	// printf "%lu\n" 4294967295
+	// printf "%llu\n" 18446744073709551615
+	// printf "%llx\n" 18446744073709551615
 
-	// Comandos edge case (casos límite):
+	// Otros:
 	// 
 	// printf ""
 	// printf "\n"
@@ -921,12 +933,8 @@
 	// printf "%d\n"
 	// printf "%d\n" abc
 	// printf "%s\n" 123
-
-	// Comandos con flags adicionales:
-	// 
-	// printf "%+d\n" 42
-	// printf "% d\n" 42
-	// printf "%#x\n" 255
-	// printf "%#o\n" 64
+	// printf "%%\n"
+	// printf "%10s %-10s\n" "Col1" "Col2"
+	// printf "|%-20s| %5d |\n" "Producto" 100
 
 #pragma endregion
