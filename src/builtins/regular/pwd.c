@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:08:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:42:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@
 
 		int ret = 0;
 
-		if (has_option(result, 'P')) {
+		if (has_option(result, 'P', 0)) {
 			// Physical mode: Show real path (no symlinks)
 			char *cwd = get_cwd("cwd");
 			if (cwd)			print(STDOUT_FILENO, ft_strjoin(cwd, "\n", J_FREE_VAL_1), P_FREE_RESET_PRINT);

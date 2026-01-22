@@ -37,11 +37,11 @@
 	};
 
 	static int option_types[] = {
-		SET,	SET,	SET,	SET,
-		SET,	SET,	SHOPT,	SHOPT,	SHOPT,
-		SHOPT,
-		SET,	SHOPT,	SHOPT,	SHOPT,	SHOPT,
-		SET,	SHOPT,	SHOPT,	SHOPT,	SHOPT
+		O_SET,	O_SET,	O_SET,	O_SET,
+		O_SET,	O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,
+		O_SHOPT,
+		O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,	O_SHOPT,
+		O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,	O_SHOPT
 	};
 
 #pragma endregion

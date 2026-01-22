@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:12:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:45:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@
 
 		#pragma region "Create Opt Value"
 
-			static t_opt_value *create_opt_value(char opt, const char *value, int is_long, const char *long_name) {
+			static t_opt_value *create_opt_value(char opt, const char *value, int is_long, const char *long_name, int is_plus) {
 				t_opt_value *node = calloc(1, sizeof(t_opt_value));
 				if (!node) return (shell.error = E_NO_MEMORY, NULL);
 
 				node->opt = opt;
+				node->is_plus = is_plus;
 				node->value = ft_strdup(value);
 				node->long_name = ft_strdup(long_name);
 				if ((value && !node->value) || (long_name && !node->long_name)) {
@@ -142,7 +143,7 @@
 					}
 				}
 
-				t_opt_value *node = create_opt_value(opt->opt, value, 1, opt->name);
+				t_opt_value *node = create_opt_value(opt->opt, value, 1, opt->name, 0);
 				free(value);
 				if (!node) return (1);
 
@@ -257,12 +258,10 @@
 						}
 					}
 
-					t_opt_value *node = create_opt_value(opt, value, 0, NULL);
+					t_opt_value *node = create_opt_value(opt, value, 0, NULL, is_plus);
 					free(value);
 					if (!node) return (1);
-
-					if (is_plus)	add_opt_value(&result->plus_options, node);
-					else			add_opt_value(&result->options, node);
+					add_opt_value(&result->options, node);
 				}
 
 				return (0);
@@ -321,83 +320,37 @@
 
 	#pragma region "Short"
 
-		#pragma region "Short"
+		#pragma region "Find Option"
 
-			#pragma region "Find Option"
+			t_opt_value *find_option(t_parse_result *result, char opt, int is_plus) {
+				if (!result) return (NULL);
 
-				t_opt_value *find_option(t_parse_result *result, char opt) {
-					if (!result) return (NULL);
-
-					t_opt_value *found = NULL;
-					for (t_opt_value *curr = result->options; curr; curr = curr->next) {
-						if (curr->opt == opt) found = curr;
-					}
-
-					return (found);
+				t_opt_value *found = NULL;
+				for (t_opt_value *curr = result->options; curr; curr = curr->next) {
+					if (curr->opt == opt && curr->is_plus == is_plus) found = curr;
 				}
 
-			#pragma endregion
-
-			#pragma region "Has Option"
-
-				int has_option(t_parse_result *result, char opt) {
-					return (find_option(result, opt) != NULL);
-				}
-
-			#pragma endregion
-
-			#pragma region "Get Option Value"
-
-				const char *get_option_value(t_parse_result *result, char opt) {
-					t_opt_value *node = find_option(result, opt);
-					if (!node) return (NULL);
-
-					return (node->value);
-				}
-
-			#pragma endregion
+				return (found);
+			}
 
 		#pragma endregion
 
-		#pragma region "Short Plus"
+		#pragma region "Has Option"
 
-			#pragma region "Find Plus Option"
+			int has_option(t_parse_result *result, char opt, int is_plus) {
+				return (find_option(result, opt, is_plus) != NULL);
+			}
 
-				t_opt_value *find_plus_option(t_parse_result *result, char opt) {
-					if (!result) return (NULL);
+		#pragma endregion
 
-					for (t_opt_value *curr = result->plus_options; curr; curr = curr->next) {
-						if (curr->opt == opt) return (curr);
-					}
+		#pragma region "Get Option Value"
 
-					return (NULL);
-				}
+			const char *get_option_value(t_parse_result *result, char opt, int is_plus) {
+				t_opt_value *node = find_option(result, opt, is_plus);
+				if (!node) return (NULL);
 
-			#pragma endregion
-
-			#pragma region "Has Plus Option"
-
-				int has_plus_option(t_parse_result *result, char opt) {
-					if (!result) return (0);
-
-					for (t_opt_value *curr = result->plus_options; curr; curr = curr->next)
-						if (curr->opt == opt) return (1);
-
-					return (0);
-				}
-
-			#pragma endregion
-
-			#pragma region "Get Plus Option Value"
-
-				const char *get_plus_option_value(t_parse_result *result, char opt) {
-					t_opt_value *node = find_plus_option(result, opt);
-					if (!node) return (NULL);
-
-					return (node->value);
-				}
-
-			#pragma endregion
+				return (node->value);
+			}
 
 		#pragma endregion
 
@@ -453,6 +406,7 @@
 
 				// End of options '--'
 				if (!strcmp(arg, "--")) {
+					result->double_dash = 1;
 					done_with_opts = 1;
 					continue;
 				}
@@ -523,8 +477,8 @@
 			}
 
 			if (shell.error) {
-				if (shell.error == E_NO_MEMORY)	exit_error(E_NO_MEMORY, 1, argv[0], NULL, EE_FREE_NONE, EE_RETURN);
-				if (shell.error == E_OPT_MAX)		exit_error(E_OPT_MAX, 2, argv[0], ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
+				if (shell.error == E_NO_MEMORY)	exit_error(E_NO_MEMORY, 1, argv[0], NULL,                 EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_OPT_MAX)	exit_error(E_OPT_MAX,   2, argv[0], ft_itoa(MAX_OPTIONS), EE_FREE_VAL2, EE_RETURN);
 				array_free(tmp_args);
 				free_options(result);
 				return (NULL);
@@ -559,14 +513,6 @@
 				free(result->options->long_name);
 				free(result->options);
 				result->options = next;
-			}
-
-			while (result->plus_options) {
-				t_opt_value *next = result->plus_options->next;
-				free(result->plus_options->value);
-				free(result->plus_options->long_name);
-				free(result->plus_options);
-				result->plus_options = next;
 			}
 
 			if (result->argv) {

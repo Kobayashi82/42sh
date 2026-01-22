@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:42:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@
 
 		int ret = 0;
 
-		if (has_option(result, 'a')) return (free_options(result), alias_clear(), 0);
+		if (has_option(result, 'a', 0)) return (free_options(result), alias_clear(), 0);
 
 		char *invalues = NULL;
 		for (int i = 0; i < result->argc; ++i) {

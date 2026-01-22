@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:09:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:39:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,7 +204,7 @@
 		}
 
 		// Push
-		if (has_option(result, 'n')) {
+		if (has_option(result, 'n', 0)) {
 			if (!is_offset && dirs_push(new_path)) {
 				if (shell.error == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:40:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,12 +193,12 @@
 
 		if (!result->argc) return (free_options(result), 0);
 
-		if (has_option(result, 'V')) {
+		if (has_option(result, 'V', 0)) {
 			// ret = bt_type(result->argc, result->argv);
 			return (free_options(result), ret);
 		}
 
-		if (has_option(result, 'v')) {
+		if (has_option(result, 'v', 0)) {
 			print(STDOUT_FILENO, NULL, P_RESET);
 			print(STDERR_FILENO, NULL, P_RESET);
 
@@ -207,7 +207,7 @@
 				tmp_ret += check_alias(result->argv[i]);
 				tmp_ret += check_builtin(result->argv[i]);
 				tmp_ret += check_function(result->argv[i]);
-				tmp_ret += check_command(result->argv[i], has_option(result, 'p'));
+				tmp_ret += check_command(result->argv[i], has_option(result, 'p', 0));
 				if (!tmp_ret && ret == 0) ret = 1;
 				if (tmp_ret) ret = 2;
 			}
@@ -243,7 +243,7 @@
 			printf("Se ejecuta la función '%s()'\n", result->argv[0]);
 			//exec_func();
 		} else {
-			char *path = path_find_first(result->argv[0], (has_option(result, 'p')) ? PATH : NULL);
+			char *path = path_find_first(result->argv[0], (has_option(result, 'p', 0)) ? PATH : NULL);
 			if (path) {
 				printf("Se ejecuta el comando '%s' con la ruta '%s'\n", result->argv[0], path);
 				free(path);

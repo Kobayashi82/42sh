@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/18 11:31:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:46:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,17 @@
 
 		typedef struct s_opt_value {
 			char				*long_name;			// Long option name (NULL if short option)
+			int					is_long;			// 1 if long option, 0 if short option
 			char				opt;				// Option character
 			char				*value;				// Option value (NULL if none)
-			int					is_long;			// 1 if long option, 0 if short option
+			int                 is_plus;			// 1 if option uses '+' prefix, 0 if uses '-'
 			struct s_opt_value	*next;
 		} t_opt_value;
 
 		typedef struct s_parse_result {
 			t_opt_value			*options;			// List of parsed options
 			t_opt_value			*plus_options;		// List of parsed '+' options
+			int                 double_dash;		// Indicates if '--' was provided (end of options)
 			char				**argv_original;	// Original argv
 			int					argc_original;		// Original argc
 			int					argc;				// Number of non-option arguments
@@ -68,14 +70,9 @@
 	const char      *get_long_option_value(t_parse_result *result, const char *name);
 
 	// Short
-	t_opt_value     *find_option(t_parse_result *result, char opt);
-	int             has_option(t_parse_result *result, char opt);
-	const char      *get_option_value(t_parse_result *result, char opt);
-
-	// Short Plus
-	t_opt_value     *find_plus_option(t_parse_result *result, char opt);
-	int             has_plus_option(t_parse_result *result, char opt);
-	const char      *get_plus_option_value(t_parse_result *result, char opt);
+	t_opt_value     *find_option(t_parse_result *result, char opt, int is_plus);
+	int             has_option(t_parse_result *result, char opt, int is_plus);
+	const char      *get_option_value(t_parse_result *result, char opt, int is_plus);
 
 	// Parsing
 	t_parse_result *parse_options(int argc, char **argv, const char *short_opts, const char *short_opts_plus, const t_long_option *long_opts, const char *usage, int ignore_mode);

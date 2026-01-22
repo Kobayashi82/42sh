@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:10:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:43:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,9 @@
 
 		int reference = 1;
 		int type = VAR_READONLY;
-		if (has_option(result, 'A')) type = (VAR_ASSOCIATIVE | VAR_READONLY);
-		if (has_option(result, 'a')) type = (VAR_ARRAY       | VAR_READONLY);
-		if (has_option(result, 'n')) {
+		if (has_option(result, 'A', 0)) type = (VAR_ASSOCIATIVE | VAR_READONLY);
+		if (has_option(result, 'a', 0)) type = (VAR_ARRAY       | VAR_READONLY);
+		if (has_option(result, 'n', 0)) {
 			type = (VAR_REFERENCE   | VAR_READONLY);
 			reference = 0;
 		}
@@ -133,9 +133,9 @@
 		if (!var) {
 			if (shell.error) { free(value); value = NULL; }
 			if (shell.error == E_NO_MEMORY)					return (free(key), exit_error(E_NO_MEMORY, 1,      "readonly",   NULL, EE_FREE_NONE, EE_RETURN));
-			if (shell.error == E_VAR_IDENTIFIER)				return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
-			if (shell.error == E_VAR_MAX_REFERENCES)			return (exit_error(E_VAR_MAX_REFERENCES, 1,        "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
-			if (shell.error == E_VAR_CYCLE_REFERENCE)			return (exit_error(E_VAR_CYCLE_REFERENCE, 1,       "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error == E_VAR_IDENTIFIER)			return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error == E_VAR_MAX_REFERENCES)		return (exit_error(E_VAR_MAX_REFERENCES, 1,        "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error == E_VAR_CYCLE_REFERENCE)		return (exit_error(E_VAR_CYCLE_REFERENCE, 1,       "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
 		}
 		if (var && no_value)							return (free(key), free(value), var->flags |= type, 0);
 		if (var && var->flags & VAR_READONLY)			return (free(value), exit_error(E_VAR_READONLY, 1, "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
@@ -214,7 +214,7 @@
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (has_option(result, 'f'))	ret = funcion_readonly(result, result->argv[i]);
+			if (has_option(result, 'f', 0))	ret = funcion_readonly(result, result->argv[i]);
 			else							ret = variable_readonly(result, result->argv[i]);
 		}
 

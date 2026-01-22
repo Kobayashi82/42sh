@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:08:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:38:01 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@
 		int ret = 0;
 		int offset = 0;
 
-		if (has_option(result, 'c')) {
+		if (has_option(result, 'c', 0)) {
 			dirs_clear();
 			return (free_options(result), ret);
 		}
@@ -148,10 +148,10 @@
 		}
 
 		int line_mode = 0;
-		if (has_option(result, 'p')) line_mode = 1;
-		if (has_option(result, 'v')) line_mode = 2;
+		if (has_option(result, 'p', 0)) line_mode = 1;
+		if (has_option(result, 'v', 0)) line_mode = 2;
 
-		if (dirs_print(offset, line_mode, has_option(result, 'l'), !result->argc)) {
+		if (dirs_print(offset, line_mode, has_option(result, 'l', 0), !result->argc)) {
 			if (shell.error == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (shell.error == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (shell.error == E_DIRS_RANGE) {

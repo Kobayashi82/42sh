@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:42:08 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -872,11 +872,11 @@
 		const char *name = NULL;
 		t_var *var = NULL;
 
-		if (has_option(result, 'v')) {
-			name = get_option_value(result, 'v');
+		if (has_option(result, 'v', 0)) {
+			name = get_option_value(result, 'v', 0);
 			var = variable_get(shell.env, name, 1);
 			if (!var) {
-				if (shell.error == E_NO_MEMORY)			ret = exit_error(E_NO_MEMORY,           1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_NO_MEMORY)				ret = exit_error(E_NO_MEMORY,           1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN);
 				if (shell.error == E_VAR_IDENTIFIER)		ret = exit_error(E_VAR_IDENTIFIER,      1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
 				if (shell.error == E_VAR_MAX_REFERENCES)	ret = exit_error(E_VAR_MAX_REFERENCES,  1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
 				if (shell.error == E_VAR_CYCLE_REFERENCE)	ret = exit_error(E_VAR_CYCLE_REFERENCE, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
@@ -886,13 +886,13 @@
 
 		printf_main(result->argc, result->argv);
 		if (g_output) {
-			if (has_option(result, 'v')) {
+			if (has_option(result, 'v', 0)) {
 				if (var && (var->flags & VAR_READONLY)) {
 					ret = exit_error(E_VAR_READONLY, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
 				} else {
 					ret = variable_scalar_set(shell.env, name, g_output, 0, VAR_NONE, 0);
 					if (ret) {
-						if (shell.error == E_NO_MEMORY)		return (exit_error(E_NO_MEMORY,      1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN));
+						if (shell.error == E_NO_MEMORY)			return (exit_error(E_NO_MEMORY,      1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN));
 						if (shell.error == E_VAR_IDENTIFIER)	return (exit_error(E_VAR_IDENTIFIER, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN));
 						// invalid type...
 					}

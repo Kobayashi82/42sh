@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:56 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:40:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@
 			if (i + 1 < result->argc) print(STDOUT_FILENO, " ", P_JOIN);
 		}
 
-		if (has_option(result, 'n'))	print(STDOUT_FILENO, NULL, P_PRINT);
+		if (has_option(result, 'n', 0))	print(STDOUT_FILENO, NULL, P_PRINT);
 		else							print(STDOUT_FILENO, "\n", P_PRINT);
 
 		return (free_options(result), ret);

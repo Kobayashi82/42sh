@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:41:13 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@
 			end = tmp;
 		}
 
-		history_print_range(start, end, has_option(result, 'r'), has_option(result, 'n'));
+		history_print_range(start, end, has_option(result, 'r', 0), has_option(result, 'n', 0));
 
 		return (0);
 	}
@@ -304,7 +304,7 @@
 		static int fc_edit(t_parse_result *result) {
 			// Find editor command
 			char *editor = NULL;
-			if (default_editor(result, &editor, get_option_value(result, 'e')))		return (1);
+			if (default_editor(result, &editor, get_option_value(result, 'e', 0)))		return (1);
 
 			// Remove fc command from the history
 			history_remove_last_if_added(1);
@@ -415,9 +415,9 @@
 		int ret = 0;
 
 		if (!result->options)			{ ret = fc_edit(result);			return (free_options(result), ret); }
-		if (has_option(result, 's'))	{ ret = fc_replace(result);			return (free_options(result), ret); }
-		if (has_option(result, 'l'))	{ ret = fc_list(result);			return (free_options(result), ret); }
-		if (has_option(result, 'e'))	{ ret = fc_edit(result);			return (free_options(result), ret); }
+		if (has_option(result, 's', 0))	{ ret = fc_replace(result);			return (free_options(result), ret); }
+		if (has_option(result, 'l', 0))	{ ret = fc_list(result);			return (free_options(result), ret); }
+		if (has_option(result, 'e', 0))	{ ret = fc_edit(result);			return (free_options(result), ret); }
 
 		return (free_options(result), ret);
 	}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:44:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@
 
 		int ret = 0;
 
-		if (has_option(result, 'f') && has_option(result, 'v')) {
+		if (has_option(result, 'f', 0) && has_option(result, 'v', 0)) {
 			print(STDERR_FILENO, ft_strjoin(shell.name, ": unset: cannot simultaneously unset a function and a variable", J_FREE_NONE), P_FREE_RESET_PRINT);
 			return (free_options(result), 1);
 		}
@@ -145,7 +145,7 @@
 		print(STDERR_FILENO, NULL, P_RESET);
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (has_option(result, 'f'))	ret = delete_function(result->argv[i]);
+			if (has_option(result, 'f', 0))	ret = delete_function(result->argv[i]);
 			else							ret = delete_variable(result->argv[i]);
 		}
 

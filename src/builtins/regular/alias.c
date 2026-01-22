@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:39:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,7 +155,7 @@
 
 		char *values = NULL, *invalues = NULL;
 
-		if (!result->argc || has_option(result, 'p')) {
+		if (!result->argc || has_option(result, 'p', 0)) {
 			alias_print(1);
 			return (free_options(result), 0);
 		}

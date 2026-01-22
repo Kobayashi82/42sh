@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:43:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,7 +258,7 @@
 		int ret = 0;
 
 		if (!result->argc) {
-			if (has_option(result, 'f'))	variable_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);	// function
+			if (has_option(result, 'f', 0))	variable_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);	// function
 			else							variable_print(shell.env, VAR_EXPORTED, SORT_NORMAL, 0);
 			return (free_options(result), 0);
 		}
@@ -266,11 +266,11 @@
 		print(STDERR_FILENO, NULL, P_RESET);
 
 		for (int i = 0; i < result->argc; ++i) {
-			if (has_option(result, 'n')) {
-				if (has_option(result, 'f'))	ret = delete_export_function(result->argv[i]);
+			if (has_option(result, 'n', 0)) {
+				if (has_option(result, 'f', 0))	ret = delete_export_function(result->argv[i]);
 				else							ret = delete_export(result->argv[i]);
 			} else {
-				if (has_option(result, 'f'))	ret = add_export_function(result->argv[i]);
+				if (has_option(result, 'f', 0))	ret = add_export_function(result->argv[i]);
 				else							ret = add_export(result->argv[i]);
 			}
 		}

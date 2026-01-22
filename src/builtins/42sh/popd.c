@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:08:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:39:25 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@
 			return (free_options(result), 1);
 		}
 
-		if (!offset && !has_option(result, 'n')) {
+		if (!offset && !has_option(result, 'n', 0)) {
 			char *cd_argv[4] = {"popd", "--", path, NULL};
 			if (bt_cd(3, cd_argv)) {
 				if (dirs_add(path)) exit_error(E_NO_MEMORY, 1, "popd", NULL, EE_FREE_NONE, EE_RETURN);

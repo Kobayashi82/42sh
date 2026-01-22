@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 17:46:30 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:38:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,11 +116,11 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		if (has_option(result, 'a'))																				return (free_options(result), builtin_print(2, 0, 1), 0);
-		if (has_option(result, 'n') && has_option(result, 's'))														return (free_options(result), builtin_print(1, 1, 1), 0);
-		if (has_option(result, 's'))																				return (free_options(result), builtin_print(2, 1, 1), 0);
-		if ((has_option(result, 'n') && (!result->argv)) || (has_option(result, 'n') && has_option(result, 'p')))	return (free_options(result), builtin_print(1, 0, 1), 0);
-		if (has_option(result, 'p'))																				return (free_options(result), builtin_print(0, 0, 1), 0);
+		if (has_option(result, 'a', 0))																						return (free_options(result), builtin_print(2, 0, 1), 0);
+		if (has_option(result, 'n', 0) && has_option(result, 's', 0))														return (free_options(result), builtin_print(1, 1, 1), 0);
+		if (has_option(result, 's', 0))																						return (free_options(result), builtin_print(2, 1, 1), 0);
+		if ((has_option(result, 'n', 0) && (!result->argv)) || (has_option(result, 'n', 0) && has_option(result, 'p', 0)))	return (free_options(result), builtin_print(1, 0, 1), 0);
+		if (has_option(result, 'p', 0))																						return (free_options(result), builtin_print(0, 0, 1), 0);
 
 		int		ret = 0;
 		char	*invalues = NULL;
@@ -128,7 +128,7 @@
 			for (int i = 0; result->argv[i]; ++i) {
 				t_builtin *builtin = builtin_find(result->argv[i]);
 				if (builtin) {
-					if (has_option(result, 'n'))	builtin->disabled = 1;
+					if (has_option(result, 'n', 0))	builtin->disabled = 1;
 					else 							builtin->disabled = 0;
 				} else {
 					char *value = ft_strjoin_sep(": enable: ", result->argv[i], ": not a shell builtin\n", J_FREE_NONE);

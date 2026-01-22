@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:44:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,11 +191,11 @@
 			for (int i = 0; i < result->argc; ++i) {
 				t_builtin *builtin = builtin_find(result->argv[i]);
 				if (builtin) {
-					if		(has_option(result, 'd'))	builtin->help(HELP_DESCRIPTION, 1);
-					else if	(has_option(result, 'm')) {
+					if		(has_option(result, 'd', 0))	builtin->help(HELP_DESCRIPTION, 1);
+					else if	(has_option(result, 'm', 0)) {
 						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
 						builtin->help(HELP_MANPAGE, 1);
-					} else if	(has_option(result, 's'))	builtin->help(HELP_SYNTAX, 1);
+					} else if	(has_option(result, 's', 0))	builtin->help(HELP_SYNTAX, 1);
 					else {
 						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
 						builtin->help(HELP_NORMAL, 1);

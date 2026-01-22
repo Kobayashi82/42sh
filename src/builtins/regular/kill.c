@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:22:34 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:41:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -275,7 +275,7 @@
 
 		int ret = 0;
 
-		if (has_option(result, 'L') || has_option(result, 'l')) {
+		if (has_option(result, 'L', 0) || has_option(result, 'l', 0)) {
 			ret = display_signal(result);
 			return (free_options(result), ret);
 		}

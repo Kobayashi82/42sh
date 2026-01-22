@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:41:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,23 +162,23 @@
 		print(STDOUT_FILENO, NULL, P_RESET);
 		print(STDERR_FILENO, NULL, P_RESET);
 
-		if (has_option(result, 'r')) {
+		if (has_option(result, 'r', 0)) {
 			hash_clear();
 			return (free_options(result), 0);
 		}
 
-		if (has_option(result, 't')) {
+		if (has_option(result, 't', 0)) {
 			// -t             print the remembered location of each NAME, preceding
             //                each location with the corresponding NAME if multiple
             //                NAMEs are given
 			return (free_options(result), 0);
 		}
 
-		if (has_option(result, 'd') || has_option(result, 'p')) {
+		if (has_option(result, 'd', 0) || has_option(result, 'p', 0)) {
 			if (!result->argc) {
 				print(STDERR_FILENO, shell.name,                                                                    P_RESET);
-				if		(has_option(result, 'd')) print(STDERR_FILENO, ": hash: -d: option requires an argument\n", P_JOIN);
-				else if (has_option(result, 't')) print(STDERR_FILENO, ": hash: -t: option requires an argument\n", P_JOIN);
+				if		(has_option(result, 'd', 0)) print(STDERR_FILENO, ": hash: -d: option requires an argument\n", P_JOIN);
+				else if (has_option(result, 't', 0)) print(STDERR_FILENO, ": hash: -t: option requires an argument\n", P_JOIN);
 				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                   P_PRINT);
 				return (free_options(result), 2);
 			}
@@ -190,8 +190,8 @@
 			return (free_options(result), 0);
 		}
 
-		if (!result->options || has_option(result, 'l')) {
-			ret = print_hash(has_option(result, 'l'));
+		if (!result->options || has_option(result, 'l', 0)) {
+			ret = print_hash(has_option(result, 'l', 0));
 			return (free_options(result), ret);
 		}
 

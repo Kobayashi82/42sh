@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:36:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:26:50 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,9 @@
 	#pragma region "Enumerators"
 
 		enum e_option {
-			SHOPT,
-			SET
+			O_SET,					// 
+			O_SHOPT,				// 
+			O_BOTH					// 
 		};
 
 	#pragma endregion
@@ -30,8 +31,8 @@
 			//	READINPUT
 			int	emacs;				//	SET			1 = Emacs mode ON													0 = OFF
 			int	vi;					//	SET			1 = Vi mode ON														0 = OFF
-			int	hide_ctrl_chars;	//	SET (42sh)	1 = Show control chars (^C)											0 = OFF
-			int	multiwidth_chars;	//	SET (42sh)	1 = Enable multi-width chars (there are some issues)				0 = OFF
+			int	hide_ctrl_chars;	//	SHOPT		1 = Show control chars (^C)											0 = OFF
+			int	multiwidth_chars;	//	SHOPT		1 = Enable multi-width chars (there are some issues)				0 = OFF
 
 			//	HISTORY
 			int	history;			//	SET			1 = History enabled													0 = Disabled

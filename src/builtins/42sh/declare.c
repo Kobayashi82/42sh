@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:37:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,7 +244,7 @@
 
 		int ret = 0;
 		for (int i = 0; result->argv[i]; ++i) {
-			if (has_option(result, 'n')) {
+			if (has_option(result, 'n', 0)) {
 				if (delete_declare(result->argv[i])) ret = 1;
 			} else if (add_declare(result->argv[i])) ret = 1;
 		}

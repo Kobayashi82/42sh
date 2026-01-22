@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:39:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@
 		}
 
 		static int delete_history(t_parse_result *result) {
-			const char *offset_str = get_option_value(result, 'd');
+			const char *offset_str = get_option_value(result, 'd', 0);
 
 			if (!offset_str) {
 				print(STDERR_FILENO, shell.name, P_RESET);
@@ -328,10 +328,10 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 		int local_options = 0;
-		local_options += has_option(result, 'a');
-		local_options += has_option(result, 'n');
-		local_options += has_option(result, 'r');
-		local_options += has_option(result, 'w');
+		local_options += has_option(result, 'a', 0);
+		local_options += has_option(result, 'n', 0);
+		local_options += has_option(result, 'r', 0);
+		local_options += has_option(result, 'w', 0);
 
 		if (local_options > 1) {
 			print(STDERR_FILENO, shell.name, P_RESET);
@@ -342,14 +342,14 @@
 		int ret = 0;
 
 		if (!result->options)			{ ret = print_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'c'))	{ history_clear();					return (free_options(result), ret); }
-		if (has_option(result, 's'))	{ ret = append_args(result);		return (free_options(result), ret); }
-		if (has_option(result, 'p'))	{ ret = expansion_history(result);	return (free_options(result), ret); }
-		if (has_option(result, 'd'))	{ ret = delete_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'a'))	{ ret = write_append(result);		return (free_options(result), ret); }
-		if (has_option(result, 'w'))	{ ret = write_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'r'))	{ ret = read_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'n'))	{ ret = read_history_new(result);	return (free_options(result), ret); }
+		if (has_option(result, 'c', 0))	{ history_clear();					return (free_options(result), ret); }
+		if (has_option(result, 's', 0))	{ ret = append_args(result);		return (free_options(result), ret); }
+		if (has_option(result, 'p', 0))	{ ret = expansion_history(result);	return (free_options(result), ret); }
+		if (has_option(result, 'd', 0))	{ ret = delete_history(result);		return (free_options(result), ret); }
+		if (has_option(result, 'a', 0))	{ ret = write_append(result);		return (free_options(result), ret); }
+		if (has_option(result, 'w', 0))	{ ret = write_history(result);		return (free_options(result), ret); }
+		if (has_option(result, 'r', 0))	{ ret = read_history(result);		return (free_options(result), ret); }
+		if (has_option(result, 'n', 0))	{ ret = read_history_new(result);	return (free_options(result), ret); }
 
 		return (free_options(result), ret);
 	}
