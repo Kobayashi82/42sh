@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/17 10:40:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:17:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -465,14 +465,14 @@
 	//
 	//	Returns: 0 on success, 1 on failure
 
-	#define PRINT_TOTAL_FD	3						//	Total of FDs to manage
+	#define PRINT_TOTAL_FD	3							//	Total of FDs to manage
 
 	int		print(int fd, const char *str, int mode) {
-		static char		*msg[PRINT_TOTAL_FD];		//	Pointer to the buffer storing content for each file descriptor
-		static size_t	len[1024];					//	Current size of the content stored for each file descriptor
-		static size_t	cap[1024];					//	Total allocated capacity of the buffer for each file descriptor
+		static char		*msg[PRINT_TOTAL_FD];			//	Pointer to the buffer storing content for each file descriptor
+		static size_t	len[1024];						//	Current size of the content stored for each file descriptor
+		static size_t	cap[1024];						//	Total allocated capacity of the buffer for each file descriptor
 
-		if (fd < 0 || fd >= PRINT_TOTAL_FD) return (1);
+		if (fd < 0 || fd >= PRINT_TOTAL_FD) return (0);
 
 		if (mode == P_RESET_ALL) {
 			//	Reset and free all buffers
@@ -503,8 +503,7 @@
 				if (!msg[fd]) {
 					len[fd] = 0;
 					cap[fd] = 0;
-					errno = 290;
-					return (-1);
+					return (2);
 				}
 				len[fd] = 0;
 			}
@@ -518,8 +517,7 @@
 					free(msg[fd]);
 					len[fd] = 0;
 					cap[fd] = 0;
-					errno = 290;
-					return (-1);
+					return (2);
 				}
 				msg[fd] = new_msg;
 				cap[fd] = new_cap;
@@ -532,9 +530,9 @@
 		}
 
 		//	Write the buffer if the mode indicates it
-		int result = 0;
+		int ret = 0;
 		if (mode % 2 && msg[fd] && fd > 0) {
-			result = write(fd, msg[fd], len[fd]);
+			if (write(fd, msg[fd], len[fd]) == -1) ret = 1;
 			free(msg[fd]);
 			msg[fd] = NULL;
 			len[fd] = 0;
@@ -544,7 +542,7 @@
 		//	Free the input string if necessary
 		if ((mode >= P_FREE_RESET && mode <= P_FREE_PRINT) && str) free((void *)str);
 
-		return (result == -1);
+		return (ret);
 	}
 
 #pragma endregion

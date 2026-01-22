@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:39 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:10:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@
 
 		int		ret = 0, append = 0, no_value = 1;
 		char	*key = NULL, *value = NULL;
-		errno = 0;
+		shell.error = 0;
 
 		if (strchr(arg, '=')) {
 			no_value = 0;
@@ -127,15 +127,15 @@
 			}
 		} else key = ft_strdup(arg);
 
-		if ((!key || !value) && errno == E_NO_MEMORY)	return (free(key), free(value), exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN));
+		if ((!key || !value) && shell.error == E_NO_MEMORY)	return (free(key), free(value), exit_error(E_NO_MEMORY, 1, "readonly", NULL, EE_FREE_NONE, EE_RETURN));
 
 		t_var *var = variable_get(shell.env, key, reference);
 		if (!var) {
-			if (errno) { free(value); value = NULL; }
-			if (errno == E_NO_MEMORY)					return (free(key), exit_error(E_NO_MEMORY, 1,      "readonly",   NULL, EE_FREE_NONE, EE_RETURN));
-			if (errno == E_VAR_IDENTIFIER)				return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
-			if (errno == E_VAR_MAX_REFERENCES)			return (exit_error(E_VAR_MAX_REFERENCES, 1,        "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
-			if (errno == E_VAR_CYCLE_REFERENCE)			return (exit_error(E_VAR_CYCLE_REFERENCE, 1,       "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error) { free(value); value = NULL; }
+			if (shell.error == E_NO_MEMORY)					return (free(key), exit_error(E_NO_MEMORY, 1,      "readonly",   NULL, EE_FREE_NONE, EE_RETURN));
+			if (shell.error == E_VAR_IDENTIFIER)				return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error == E_VAR_MAX_REFERENCES)			return (exit_error(E_VAR_MAX_REFERENCES, 1,        "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error == E_VAR_CYCLE_REFERENCE)			return (exit_error(E_VAR_CYCLE_REFERENCE, 1,       "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
 		}
 		if (var && no_value)							return (free(key), free(value), var->flags |= type, 0);
 		if (var && var->flags & VAR_READONLY)			return (free(value), exit_error(E_VAR_READONLY, 1, "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
@@ -163,9 +163,9 @@
 		}
 
 		if (ret) {
-			if (errno) { free(value); value = NULL; }
-			if (errno == E_NO_MEMORY)					return (free(key), exit_error(E_NO_MEMORY, 1,      "readonly",   NULL, EE_FREE_NONE, EE_RETURN));
-			if (errno == E_VAR_IDENTIFIER)				return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
+			if (shell.error) { free(value); value = NULL; }
+			if (shell.error == E_NO_MEMORY)					return (free(key), exit_error(E_NO_MEMORY, 1,      "readonly",   NULL, EE_FREE_NONE, EE_RETURN));
+			if (shell.error == E_VAR_IDENTIFIER)				return (exit_error(E_VAR_IDENTIFIER, 1,            "readonly: ", key,  EE_FREE_VAL2, EE_RETURN));
 		}
 
 		free(key);
@@ -198,7 +198,7 @@
 		};
 		
 		t_parse_result *result = parse_options(argc, argv, "aAfnp", NULL, long_opts, "readonly [-aAfn] [name[=value] ...] or readonly [-fp]", IGNORE_OFF);
-		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 
 		int ret = 0;

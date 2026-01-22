@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:15:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@
 	#pragma region "Index"
 
 		static unsigned int hash_index(const char *key) {
-			if (!key) return (errno = E_VAR_INVALID_INDEX, 0);
+			if (!key) return (shell.error = E_VAR_INVALID_INDEX, 0);
 
 			unsigned int hash = 0;
 
@@ -154,10 +154,10 @@
 		t_var *variable_get(t_env *env, const char *key, int reference) {
 			if (!env || !key) return (NULL);
 
-			errno = 0;
+			shell.error = 0;
 			int count = 0;
 			if (variable_validate(key)) {
-				errno = E_VAR_IDENTIFIER;
+				shell.error = E_VAR_IDENTIFIER;
 				return (NULL);
 			}
 
@@ -170,7 +170,7 @@
 					free(key_copy);
 					free(visited_var);
 					variable_clear_table(visited);
-					errno = E_NO_MEMORY;
+					shell.error = E_NO_MEMORY;
 					return (NULL);
 				}
 				visited_var->key = key_copy;
@@ -186,7 +186,7 @@
 					while (check_var) {
 						if (!strcmp(check_var->key, target)) {
 							variable_clear_table(visited);
-							errno = E_VAR_CYCLE_REFERENCE;
+							shell.error = E_VAR_CYCLE_REFERENCE;
 							return (NULL);
 						}
 						check_var = check_var->next;
@@ -206,7 +206,7 @@
 						free(target_copy);
 						free(visited_var);
 						variable_clear_table(visited);
-						errno = E_NO_MEMORY;
+						shell.error = E_NO_MEMORY;
 						return (NULL);
 					}
 					visited_var->key = target_copy;
@@ -218,7 +218,7 @@
 
 				if (count == MAX_REFERENCES) {
 					variable_clear_table(visited);
-					errno = E_VAR_MAX_REFERENCES;
+					shell.error = E_VAR_MAX_REFERENCES;
 					return (NULL);
 				}
 			}
@@ -242,7 +242,7 @@
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
-				if (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				return (var->data.scalar);
 			}
@@ -256,9 +256,9 @@
 
 				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER);
 
-				errno = 0;
+				shell.error = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (1);
+				if (shell.error) return (1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -272,18 +272,18 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, 1);
-				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, 1);
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (shell.error = E_VAR_INVALID_TYPE, 1);
+				if (var && (var->flags & VAR_READONLY))						return (shell.error = E_VAR_READONLY, 1);
 
 				// If doesn't exist, create new variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (errno = E_NO_MEMORY, 1);
+					if (!var) return (shell.error = E_NO_MEMORY, 1);
 
 					var->key = ft_strdup(key);
 					if (!var->key) {
 						free(var);
-						return (errno = E_NO_MEMORY, 1);
+						return (shell.error = E_NO_MEMORY, 1);
 					}
 
 					if (value) {
@@ -291,7 +291,7 @@
 						if (!var->data.scalar) {
 							free(var->key);
 							free(var);
-							return (errno = E_NO_MEMORY, 1);
+							return (shell.error = E_NO_MEMORY, 1);
 						}
 					}
 
@@ -307,12 +307,12 @@
 				// Variable exists, update value
 				if (append) {
 					char *new_value = ft_strjoin(var->data.scalar, value, J_FREE_NONE);
-					if (!new_value) return (errno = E_NO_MEMORY, 1);
+					if (!new_value) return (shell.error = E_NO_MEMORY, 1);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				} else {
 					char *new_value = ft_strdup(value);
-					if (!new_value) return (errno = E_NO_MEMORY, 1);
+					if (!new_value) return (shell.error = E_NO_MEMORY, 1);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				}
@@ -334,14 +334,14 @@
 
 			char *variable_array_get(t_env *env, const char *key, int index) {
 				if (!env || !key)	return (NULL);
-				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (index < 0)		return (shell.error = E_VAR_INVALID_INDEX, NULL);
 
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
 				// If scalar and requesting index 0, return the scalar
 				if (!(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && !index)	return (var->data.scalar);
-				if (!(var->flags & VAR_ARRAY))									return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_ARRAY))									return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				// Search in array hash
 				char idx_str[32];
@@ -363,11 +363,11 @@
 
 			int variable_array_set(t_env *env, const char *key, int index, const char *value, int append, int local) {
 				if (!env || !key)	return (0);
-				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
+				if (index < 0)		return (shell.error = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
-				errno = 0;
+				shell.error = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (errno);
+				if (shell.error) return (1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -381,18 +381,18 @@
 					}
 				}
 
-				if (var && (var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
-				if (var && (var->flags & VAR_READONLY))		return (errno = E_VAR_READONLY, E_VAR_READONLY);
+				if (var && (var->flags & VAR_ASSOCIATIVE))	return (shell.error = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))		return (shell.error = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new array variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!var) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 					char *new_key = ft_strdup(key);
 					if (!new_key) {
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					}
 					var->key = new_key;
 					var->flags = VAR_ARRAY;
@@ -400,7 +400,7 @@
 					if (!var->data.array) {
 						free(var->key);
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					// Insert into current environment
@@ -413,7 +413,7 @@
 				if (!(var->flags & VAR_ARRAY)) {
 					char *old_value = var->data.scalar;
 					var->data.array = calloc(HASH_SIZE, sizeof(t_var *));
-					if (!var->data.array) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!var->data.array) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 					// Save old value at index 0
 					if (old_value) {
@@ -421,14 +421,14 @@
 						if (!elem) {
 							free(var->data.array);
 							var->data.scalar = old_value;
-							return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 						}
 						char *new_elem_key = ft_strdup("0");
 						if (!new_elem_key) {
 							free(elem);
 							free(var->data.array);
 							var->data.scalar = old_value;
-							return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 						}
 						elem->key = new_elem_key;
 						elem->data.scalar = old_value;
@@ -450,12 +450,12 @@
 					if (!strcmp(elem->key, idx_str)) {
 						if (append) {
 							char *new_value = ft_strjoin(elem->data.scalar, value, J_FREE_NONE);
-							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						} else {
 							char *new_value = ft_strdup(value);
-							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						}
@@ -466,19 +466,19 @@
 				
 				// Create new element
 				elem = calloc(1, sizeof(t_var));
-				if (!elem) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+				if (!elem) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 				char *new_elem_key = ft_strdup(idx_str);
 				if (!new_elem_key) {
 					free(elem);
-					return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->key = new_elem_key;
 				char *new_elem_value = ft_strdup(value);
 				if (!new_elem_value) {
 					free(elem->key);
 					free(elem);
-					return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->data.scalar = new_elem_value;
 				elem->flags = 0;
@@ -494,12 +494,12 @@
 
 			int variable_array_remove(t_env *env, const char *key, int index) {
 				if (!env || !key)	return (0);
-				if (index < 0)		return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
+				if (index < 0)		return (shell.error = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || errno) return (errno);
+				if (!var || shell.error) return (1);
 
-				if (!(var->flags & VAR_ARRAY)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (!(var->flags & VAR_ARRAY)) return (shell.error = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
 				char idx_str[32];
 				snprintf(idx_str, sizeof(idx_str), "%d", index);
@@ -532,7 +532,7 @@
 			// Format array values for display: ([0]="val1" [3]="val2")
 			static char *format_array_values(t_var *var) {
 				if (!var)								return (NULL);
-				if (!(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE))	return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				// First pass: count elements
 				int count = 0;
@@ -546,12 +546,12 @@
 
 				if (!count) {
 					char *result = ft_strdup("()");
-					if (!result) return (errno = E_NO_MEMORY, result);
+					if (!result) return (shell.error = E_NO_MEMORY, result);
 				}
 
 				// Allocate exact space needed
 				t_var **elements = malloc(count * sizeof(t_var *));
-				if (!elements) return (errno = E_NO_MEMORY, NULL);
+				if (!elements) return (shell.error = E_NO_MEMORY, NULL);
 
 				// Second pass: collect elements
 				int index = 0;
@@ -578,7 +578,7 @@
 				char *result = ft_strdup("(");
 				if (!result) {
 					free(elements);
-					return (errno = E_NO_MEMORY, NULL);
+					return (shell.error = E_NO_MEMORY, NULL);
 				}
 
 				for (int i = 0; i < count; ++i) {
@@ -591,13 +591,13 @@
 					result = ft_strjoin(result, buffer, J_FREE_VAL_1);
 					if (!result) {
 						free(elements);
-						return (errno = E_NO_MEMORY, NULL);
+						return (shell.error = E_NO_MEMORY, NULL);
 					}
 				}
 
 				// Add closing parenthesis
 				result = ft_strjoin(result, ")", J_FREE_VAL_1);
-				if (!result) errno = E_NO_MEMORY;
+				if (!result) shell.error = E_NO_MEMORY;
 				free(elements);
 
 				return (result);
@@ -609,7 +609,7 @@
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
-				if (!(var->flags & VAR_ARRAY)) return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_ARRAY)) return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				return (format_array_values(var));
 			}
@@ -624,12 +624,12 @@
 
 			char *variable_assoc_get(t_env *env, const char *key, const char *assoc_key) {
 				if (!env || !key)				return (NULL);
-				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!assoc_key || !*assoc_key)	return (shell.error = E_VAR_INVALID_INDEX, NULL);
 
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
-				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_INDEX, NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (shell.error = E_VAR_INVALID_INDEX, NULL);
 
 				// Search in assoc hash
 				t_var *elem = var->data.array[hash_index(assoc_key)];
@@ -647,11 +647,11 @@
 
 			int variable_assoc_set(t_env *env, const char *key, const char *assoc_key, const char *value, int append, int local) {
 				if (!env || !key )				return (0);
-				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
+				if (!assoc_key || !*assoc_key)	return (shell.error = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
-				errno = 0;
+				shell.error = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (errno);
+				if (shell.error) return (1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -665,18 +665,18 @@
 					}
 				}
 
-				if (var && !(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
-				if (var && (var->flags & VAR_READONLY))		return (errno = E_VAR_READONLY, E_VAR_READONLY);
+				if (var && !(var->flags & VAR_ASSOCIATIVE))	return (shell.error = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))		return (shell.error = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new associative variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!var) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 					char *new_key = ft_strdup(key);
 					if (!new_key) {
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					}
 					var->key = new_key;
 					var->flags = VAR_ASSOCIATIVE;
@@ -684,7 +684,7 @@
 					if (!var->data.array) {
 						free(var->key);
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					// Insert into current environment
@@ -700,12 +700,12 @@
 					if (!strcmp(elem->key, assoc_key)) {
 						if (append) {
 							char *new_value = ft_strjoin(elem->data.scalar, value, J_FREE_NONE);
-							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						} else {
 							char *new_value = ft_strdup(value);
-							if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 							free(elem->data.scalar);
 							elem->data.scalar = new_value;
 						}
@@ -716,19 +716,19 @@
 
 				// Create new element
 				elem = calloc(1, sizeof(t_var));
-				if (!elem) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+				if (!elem) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 				char *new_elem_key = ft_strdup(assoc_key);
 				if (!new_elem_key) {
 					free(elem);
-					return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->key = new_elem_key;
 				char *new_elem_value = ft_strdup(value);
 				if (!new_elem_value) {
 					free(elem->key);
 					free(elem);
-					return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 				}
 				elem->data.scalar = new_elem_value;
 				elem->flags = 0;
@@ -744,12 +744,12 @@
 
 			int variable_assoc_remove(t_env *env, const char *key, const char *assoc_key) {
 				if (!env || !key )				return (0);
-				if (!assoc_key || !*assoc_key)	return (errno = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
+				if (!assoc_key || !*assoc_key)	return (shell.error = E_VAR_INVALID_INDEX, E_VAR_INVALID_INDEX);
 
 				t_var *var = variable_get(env, key, 1);
-				if (!var || errno) return (errno);
+				if (!var || shell.error) return (1);
 
-				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (shell.error = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
 
 				unsigned int hash = hash_index(assoc_key);
 				t_var *elem = var->data.array[hash];
@@ -779,7 +779,7 @@
 			// Format associative array values for display: ([key1]="val1" [key2]="val2")
 			static char *format_assoc_values(t_var *var) {
 				if (!var)								return (NULL);
-				if (!(var->flags & VAR_ASSOCIATIVE))	return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE))	return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				// First pass: count elements
 				int count = 0;
@@ -793,13 +793,13 @@
 
 				if (!count) {
 					char *result = ft_strdup("()");
-					if (result) errno = E_NO_MEMORY;
+					if (result) shell.error = E_NO_MEMORY;
 					return (result);
 				}
 
 				// Allocate exact space needed
 				t_var **elements = malloc(count * sizeof(t_var *));
-				if (!elements) return (errno = E_NO_MEMORY, NULL);
+				if (!elements) return (shell.error = E_NO_MEMORY, NULL);
 
 				// Second pass: collect elements
 				int idx = 0;
@@ -826,7 +826,7 @@
 				char *result = ft_strdup("(");
 				if (!result) {
 					free(elements);
-					return (errno = E_NO_MEMORY, NULL);
+					return (shell.error = E_NO_MEMORY, NULL);
 				}
 
 				for (int i = 0; i < count; ++i) {
@@ -839,13 +839,13 @@
 					result = ft_strjoin(result, buffer, J_FREE_VAL_1);
 					if (!result) {
 						free(elements);
-						return (errno = E_NO_MEMORY, NULL);
+						return (shell.error = E_NO_MEMORY, NULL);
 					}
 				}
 
 				// Add closing parenthesis
 				result = ft_strjoin(result, ")", J_FREE_VAL_1);
-				if (!result) errno = E_NO_MEMORY;
+				if (!result) shell.error = E_NO_MEMORY;
 				free(elements);
 				
 				return (result);
@@ -857,7 +857,7 @@
 				t_var *var = variable_get(env, key, 1);
 				if (!var) return (NULL);
 
-				if (!(var->flags & VAR_ASSOCIATIVE)) return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_ASSOCIATIVE)) return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				return (format_assoc_values(var));
 			}
@@ -876,7 +876,7 @@
 				t_var *var = variable_get(env, key, 0);
 				if (!var) return (NULL);
 
-				if (!(var->flags & VAR_REFERENCE)) return (errno = E_VAR_INVALID_TYPE, NULL);
+				if (!(var->flags & VAR_REFERENCE)) return (shell.error = E_VAR_INVALID_TYPE, NULL);
 
 				return (var->data.scalar);
 			}
@@ -890,9 +890,9 @@
 
 				type &= (VAR_EXPORTED | VAR_READONLY | VAR_INTEGER | VAR_REFERENCE);
 
-				errno = 0;
+				shell.error = 0;
 				t_var *var = (local) ? NULL : variable_get(env, key, 1);
-				if (errno) return (errno);
+				if (shell.error) return (1);
 
 				// If not found or local, search only in current environment
 				if (!var) {
@@ -906,18 +906,18 @@
 					}
 				}
 
-				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (errno = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
-				if (var && (var->flags & VAR_READONLY))						return (errno = E_VAR_READONLY, E_VAR_READONLY);
+				if (var && (var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)))	return (shell.error = E_VAR_INVALID_TYPE, E_VAR_INVALID_TYPE);
+				if (var && (var->flags & VAR_READONLY))						return (shell.error = E_VAR_READONLY, E_VAR_READONLY);
 
 				// If doesn't exist, create new variable
 				if (!var) {
 					var = calloc(1, sizeof(t_var));
-					if (!var) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!var) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 
 					var->key = ft_strdup(key);
 					if (!var->key) {
 						free(var);
-						return (errno = E_NO_MEMORY, E_NO_MEMORY);
+						return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					}
 
 					if (value) {
@@ -925,7 +925,7 @@
 						if (!var->data.scalar) {
 							free(var->key);
 							free(var);
-							return (errno = E_NO_MEMORY, E_NO_MEMORY);
+							return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 						}
 					}
 
@@ -941,12 +941,12 @@
 				// Variable exists, update value
 				if (append) {
 					char *new_value = ft_strjoin(var->data.scalar, value, J_FREE_NONE);
-					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				} else {
 					char *new_value = ft_strdup(value);
-					if (!new_value) return (errno = E_NO_MEMORY, E_NO_MEMORY);
+					if (!new_value) return (shell.error = E_NO_MEMORY, E_NO_MEMORY);
 					free(var->data.scalar);
 					var->data.scalar = new_value;
 				}
@@ -964,7 +964,7 @@
 				if (!env || !key) return (0);
 
 				t_var *var = variable_get(env, key, 1);
-				if (errno) return (errno);
+				if (shell.error) return (1);
 
 				if (var) var->flags &= ~VAR_REFERENCE;
 
@@ -1013,7 +1013,7 @@
 								t_var *entry = malloc(sizeof(t_var));
 								if (!entry) {
 									variable_clear_table(seen);
-									return (errno = E_NO_MEMORY, NULL);
+									return (shell.error = E_NO_MEMORY, NULL);
 								}
 								entry->key = ft_strdup(var->key);
 								entry->data.scalar = ft_strjoin_sep(var->key, "=", var->data.scalar, J_FREE_NONE);
@@ -1023,7 +1023,7 @@
 
 								if (!entry->key || !entry->data.scalar) {
 									variable_clear_table(seen);
-									return (errno = E_NO_MEMORY, NULL);
+									return (shell.error = E_NO_MEMORY, NULL);
 								}
 
 								count++;
@@ -1038,7 +1038,7 @@
 			char **array = malloc((count + 1) * sizeof(char *));
 			if (!array) {
 				variable_clear_table(seen);
-				return (errno = E_NO_MEMORY, NULL);
+				return (shell.error = E_NO_MEMORY, NULL);
 			}
 
 			// Extract values from hash
@@ -1081,7 +1081,7 @@
 				var_type[j] = '\0';
 
 				array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
-				if (!array[i]) return (errno = E_NO_MEMORY, 0);
+				if (!array[i]) return (shell.error = E_NO_MEMORY, 0);
 
 				// Add value based on type
 				if (var->flags & VAR_ARRAY) {
@@ -1120,7 +1120,7 @@
 			void variable_print(t_env *env, unsigned int type, int sort, int local) {
 				if (!env) return;
 
-				errno = 0;
+				shell.error = 0;
 				if (local) env->parent = NULL;
 
 				// First pass: count total variables
@@ -1141,7 +1141,7 @@
 				// Allocate memory for tracking seen variables
 				t_var **seen = malloc(count * sizeof(t_var *));
 				if (!seen) {
-					errno = E_NO_MEMORY;
+					shell.error = E_NO_MEMORY;
 					return;
 				}
 
@@ -1161,7 +1161,7 @@
 				}
 				if (!count) {
 					free(seen);
-					errno = E_NO_MEMORY;
+					shell.error = E_NO_MEMORY;
 					return;
 				}
 
@@ -1169,7 +1169,7 @@
 				char **array = malloc((count + 1) * sizeof(char *));
 				if (!array) {
 					free(seen);
-					errno = E_NO_MEMORY;
+					shell.error = E_NO_MEMORY;
 					return;
 				}
 
@@ -1177,9 +1177,9 @@
 				int i = 0;
 				for (int j = 0; j < count; ++j) {
 					i += array_value(type, array, i, seen[j]);
-					if (errno) {
+					if (shell.error) {
 						array_free(array);
-						errno = E_NO_MEMORY;
+						shell.error = E_NO_MEMORY;
 						return ;
 					}
 				}
@@ -1240,7 +1240,7 @@
 			if (!env || !key) return (0);
 
 			t_var *var = variable_get(env, key, reference);
-			if (!var || errno) return (errno);
+			if (!var || shell.error) return (1);
 
 			char *last_key = var->key;
 
@@ -1251,7 +1251,7 @@
 
 				while (var) {
 					if (!strcmp(var->key, last_key)) {
-						if (var->flags & VAR_READONLY) return (errno = E_VAR_READONLY, E_VAR_READONLY);
+						if (var->flags & VAR_READONLY) return (shell.error = E_VAR_READONLY, E_VAR_READONLY);
 
 						if (prev)	prev->next = var->next;
 						else		env->table[hash] = var->next;

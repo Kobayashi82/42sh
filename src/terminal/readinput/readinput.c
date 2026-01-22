@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:08:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@
 			int readed = read(STDIN_FILENO, &buffer.c, 1);
 
 			if (readed < 0) {
-				if (errno == EINTR) {
+				if (shell.error == EINTR) {
 					if (shell.exit) {
 						disable_raw_mode();
 						write(STDOUT_FILENO, "\n", 1);

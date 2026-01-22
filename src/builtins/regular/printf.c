@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -276,10 +276,10 @@
 				char		*endptr;
 				long long	val;
 
-				errno = 0;
+				shell.error = 0;
 				if (length == 2)	val = strtoll(arg, &endptr, 10);
 				else				val = (long long)strtol(arg, &endptr, 10);
-				if (*arg && (*endptr != '\0' || errno == ERANGE))	*ok = 0;
+				if (*arg && (*endptr != '\0' || shell.error == ERANGE))	*ok = 0;
 				else												*ok = 1;
 
 				return (val);
@@ -856,7 +856,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "v:", NULL, long_opts, "printf [-v var] format [arguments]", IGNORE_OFF);
-		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_printf_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -876,10 +876,10 @@
 			name = get_option_value(result, 'v');
 			var = variable_get(shell.env, name, 1);
 			if (!var) {
-				if (errno == E_NO_MEMORY)			ret = exit_error(E_NO_MEMORY,           1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN);
-				if (errno == E_VAR_IDENTIFIER)		ret = exit_error(E_VAR_IDENTIFIER,      1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
-				if (errno == E_VAR_MAX_REFERENCES)	ret = exit_error(E_VAR_MAX_REFERENCES,  1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
-				if (errno == E_VAR_CYCLE_REFERENCE)	ret = exit_error(E_VAR_CYCLE_REFERENCE, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_NO_MEMORY)			ret = exit_error(E_NO_MEMORY,           1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_VAR_IDENTIFIER)		ret = exit_error(E_VAR_IDENTIFIER,      1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_VAR_MAX_REFERENCES)	ret = exit_error(E_VAR_MAX_REFERENCES,  1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_VAR_CYCLE_REFERENCE)	ret = exit_error(E_VAR_CYCLE_REFERENCE, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN);
 				if (ret) return (free_options(result), 1);
 			}
 		}
@@ -892,8 +892,8 @@
 				} else {
 					ret = variable_scalar_set(shell.env, name, g_output, 0, VAR_NONE, 0);
 					if (ret) {
-						if (errno == E_NO_MEMORY)		return (exit_error(E_NO_MEMORY,      1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN));
-						if (errno == E_VAR_IDENTIFIER)	return (exit_error(E_VAR_IDENTIFIER, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN));
+						if (shell.error == E_NO_MEMORY)		return (exit_error(E_NO_MEMORY,      1, "printf",   NULL,         EE_FREE_NONE, EE_RETURN));
+						if (shell.error == E_VAR_IDENTIFIER)	return (exit_error(E_VAR_IDENTIFIER, 1, "printf: ", (char *)name, EE_FREE_NONE, EE_RETURN));
 						// invalid type...
 					}
 				}

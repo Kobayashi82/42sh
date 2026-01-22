@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "n", NULL, long_opts, "pushd [-n] [+N | -N | dir]", IGNORE_NUMBER);
-		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_pushd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -162,7 +162,7 @@
 		if (!result->argc) {
 			new_path = dirs_pop(0);
 			if (!new_path) {
-				if (errno == E_DIRS_EMPTY) exit_error(E_DIRS_EMPTY_DIR, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_DIRS_EMPTY) exit_error(E_DIRS_EMPTY_DIR, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		}
@@ -170,7 +170,7 @@
 		// Rotate
 		if (is_offset) {
 			if ((offset < -1 && (dirs_length() + (offset + 1)) == 0) || !offset) {
-				if (dirs_print(0, 0, 0, 1) && errno == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				if (dirs_print(0, 0, 0, 1) && shell.error == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), ret);
 			}
 			is_rotate = 1;
@@ -178,9 +178,9 @@
 			if (offset > 0) offset--;
 			new_path = dirs_rotate(offset);
 			if (!new_path) {
-				if (errno == E_NO_MEMORY)		exit_error(E_NO_MEMORY,  1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
-				if (errno == E_DIRS_EMPTY)		exit_error(E_DIRS_EMPTY, 1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
-				if (errno == E_DIRS_RANGE) {
+				if (shell.error == E_NO_MEMORY)		exit_error(E_NO_MEMORY,  1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_DIRS_EMPTY)		exit_error(E_DIRS_EMPTY, 1, "pushd", NULL,            EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_DIRS_RANGE) {
 					if (result->argc)			exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
 					else						exit_error(E_DIRS_RANGE, 1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
 				}
@@ -191,14 +191,14 @@
 		// Path
 		if (!new_path) new_path = ft_strdup(result->argv[0]);
 		if (!new_path) {
-			errno = E_NO_MEMORY;
+			shell.error = E_NO_MEMORY;
 			exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 		char *old_path = ft_strdup(shell.dirs.cwd);
 		if (!old_path) {
 			free(new_path);
-			errno = E_NO_MEMORY;
+			shell.error = E_NO_MEMORY;
 			exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
@@ -206,14 +206,14 @@
 		// Push
 		if (has_option(result, 'n')) {
 			if (!is_offset && dirs_push(new_path)) {
-				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}
 		} else {
 			char *cd_argv[4] = {"pushd", "--", new_path, NULL};
 			ret = bt_cd(3, cd_argv);
 			if (!ret && !is_rotate && dirs_push(old_path)) {
-				if (errno == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+				if (shell.error == E_NO_MEMORY) exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}
 		}
@@ -221,9 +221,9 @@
 		free(new_path);
 		free(old_path);
 		if (!ret && dirs_print(0, 0, 0, 1)) {
-			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
-			if (errno == E_DIRS_RANGE) {
+			if (shell.error == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "pushd", NULL, EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_DIRS_RANGE) {
 				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "pushd", result->argv[0], EE_FREE_NONE, EE_RETURN);
 				else					ret = exit_error(E_DIRS_RANGE, 1, "pushd", "0",             EE_FREE_NONE, EE_RETURN);
 			}

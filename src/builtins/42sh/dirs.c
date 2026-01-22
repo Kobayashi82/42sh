@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:08:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "clpv", NULL, long_opts, "dirs [-clpv] [+N] [-N]", IGNORE_OFF);
-		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_dirs_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -152,9 +152,9 @@
 		if (has_option(result, 'v')) line_mode = 2;
 
 		if (dirs_print(offset, line_mode, has_option(result, 'l'), !result->argc)) {
-			if (errno == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
-			if (errno == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
-			if (errno == E_DIRS_RANGE) {
+			if (shell.error == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_DIRS_RANGE) {
 				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);
 				else					ret = exit_error(E_DIRS_RANGE, 1, "dirs", "0",             EE_FREE_NONE, EE_RETURN);
 			}

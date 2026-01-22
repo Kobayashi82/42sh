@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,10 +249,10 @@
 			printf("%s\n", value);
 
 			char *endptr;
-			errno = 0;
+			shell.error = 0;
 			unsigned long val = strtoul(value, &endptr, 10);
 
-			if (errno == ERANGE || val == ULONG_MAX)	{ *ret = 1; return (0); };
+			if (shell.error == ERANGE || val == ULONG_MAX)	{ *ret = 1; return (0); };
 			if (endptr == value || *endptr != '\0')		{ *ret = 1; return (0); };
 
 			return ((rlim_t)(val * get_divisor(resource)));
@@ -299,7 +299,7 @@
 
 				print(STDERR_FILENO, ": cannot modify limit: ", P_JOIN);
 
-				if (errno == EINVAL && (resource == RLIMIT_RTPRIO || resource == RLIMIT_NICE || resource == RLIMIT_MEMLOCK)) {
+				if (shell.error == EINVAL && (resource == RLIMIT_RTPRIO || resource == RLIMIT_NICE || resource == RLIMIT_MEMLOCK)) {
 					print(STDERR_FILENO, "Operation not permitted\n", P_JOIN);
 				} else {
 					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", J_FREE_NONE), P_JOIN);

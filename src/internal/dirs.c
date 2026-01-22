@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/17 10:43:27 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,14 +21,14 @@
 #pragma region "Add"
 
 	int dirs_add(char *path) {
-		errno = 0;
+		shell.error = 0;
 		if (!path) return (1);
 
 		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
-		if (!new_dir) return (errno = E_NO_MEMORY, 1);
+		if (!new_dir) return (shell.error = E_NO_MEMORY, 1);
 
 		new_dir->path = ft_strdup(path);
-		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, 1);
+		if (!new_dir->path) return (free(new_dir), shell.error = E_NO_MEMORY, 1);
 		new_dir->prev = NULL;
 		new_dir->next = shell.dirs.stack;
 
@@ -44,7 +44,7 @@
 
 	char *dirs_rotate(int offset) {
 		t_dir_stack *current = shell.dirs.stack;
-		if (!current) return (errno = E_DIRS_EMPTY, NULL);
+		if (!current) return (shell.error = E_DIRS_EMPTY, NULL);
 
 		// Find target node
 		if (offset < 0) {
@@ -60,14 +60,14 @@
 			}
 		}
 
-		if (offset < -1 || offset > 0 || !current) return (errno = E_DIRS_RANGE, NULL);
+		if (offset < -1 || offset > 0 || !current) return (shell.error = E_DIRS_RANGE, NULL);
 
 		char *path = current->path;
 
 		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
-		if (!new_dir) return (errno = E_NO_MEMORY, NULL);
+		if (!new_dir) return (shell.error = E_NO_MEMORY, NULL);
 		new_dir->path = ft_strdup(shell.dirs.cwd);
-		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, NULL);
+		if (!new_dir->path) return (free(new_dir), shell.error = E_NO_MEMORY, NULL);
 		new_dir->prev = NULL;
 		new_dir->next = shell.dirs.stack;
 		if (new_dir->next) new_dir->next->prev = new_dir;
@@ -100,13 +100,13 @@
 #pragma region "Push"
 
 	int dirs_push(char *path) {
-		errno = 0;
+		shell.error = 0;
 
 		t_dir_stack *new_dir = malloc(sizeof(t_dir_stack));
-		if (!new_dir) return (errno = E_NO_MEMORY, 1);
+		if (!new_dir) return (shell.error = E_NO_MEMORY, 1);
 
 		new_dir->path = ft_strdup(path);
-		if (!new_dir->path) return (free(new_dir), errno = E_NO_MEMORY, 1);
+		if (!new_dir->path) return (free(new_dir), shell.error = E_NO_MEMORY, 1);
 
 		new_dir->prev = NULL;
 		new_dir->next = shell.dirs.stack;
@@ -122,10 +122,10 @@
 #pragma region "Pop"
 
 	char *dirs_pop(int offset) {
-		errno = 0;
+		shell.error = 0;
 		if (offset > 0) offset--;
 		t_dir_stack *current = shell.dirs.stack;
-		if (!current) return (errno = E_DIRS_EMPTY, NULL);
+		if (!current) return (shell.error = E_DIRS_EMPTY, NULL);
 
 		if (offset < 0) {
 			while (current->next) current = current->next;
@@ -140,7 +140,7 @@
 			}
 		}
 
-		if (offset < -1 || offset > 0 || !current) return (errno = E_DIRS_RANGE, NULL);
+		if (offset < -1 || offset > 0 || !current) return (shell.error = E_DIRS_RANGE, NULL);
 
 		if (current->prev)	current->prev->next = current->next;
 		else				shell.dirs.stack = current->next;
@@ -176,7 +176,7 @@
 		int	 home_len = 0;
 		if (!no_tilde) {
 			char *home_tmp = get_home();
-			if (!home_tmp && errno == E_NO_MEMORY) return (1);
+			if (!home_tmp && shell.error == E_NO_MEMORY) return (1);
 			if (home_tmp) {
 				snprintf(home, sizeof(home), "%s", home_tmp);
 				free(home_tmp);
@@ -186,7 +186,7 @@
 
 		if (!no_offset && offset) {
 			t_dir_stack *current = shell.dirs.stack;
-			if (!current) return (errno = E_DIRS_EMPTY, 1);
+			if (!current) return (shell.error = E_DIRS_EMPTY, 1);
 
 			if (offset < 0) {
 				index++;
@@ -207,7 +207,7 @@
 				}
 			}
 
-			if (offset < -1 || offset > 0 || !current) return (errno = E_DIRS_RANGE, 1);
+			if (offset < -1 || offset > 0 || !current) return (shell.error = E_DIRS_RANGE, 1);
 
 			print(STDOUT_FILENO, NULL, P_RESET);
 

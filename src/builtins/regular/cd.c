@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@
 
 		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) {
 			char *corrected = correct_path(final_path);
-			if (!corrected) return (errno = E_NO_MEMORY, 1);
+			if (!corrected) return (shell.error = E_NO_MEMORY, 1);
 			if (strcmp(corrected, final_path)) show_path = 1;
 			path = corrected;
 		}
@@ -141,11 +141,11 @@
 			path = tmp;
 		}
 
-		if (!path) return (errno = E_NO_MEMORY, 1);
+		if (!path) return (shell.error = E_NO_MEMORY, 1);
 
 		if (access(path, X_OK) == -1 || !is_directory(path) || chdir(path)) {
 			free(path);
-			return (errno = E_DIRS_NOT_FOUND, 1);
+			return (shell.error = E_DIRS_NOT_FOUND, 1);
 		}
 
 		char *new_cwd = NULL;
@@ -169,8 +169,8 @@
 		// Update OLDPWD
 		char ret_var = variable_scalar_set(shell.env, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
 		if (ret_var) {
-			if (errno == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
-			if (errno == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
 			ret = 1;
 		}
 
@@ -181,8 +181,8 @@
 		// Update PWD
 		ret_var = variable_scalar_set(shell.env, "PWD", shell.dirs.cwd, 0, VAR_NONE, 0);
 		if (ret_var) {
-			if (errno == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
-			if (errno == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
 			ret = 1;
 		}
 
@@ -211,16 +211,16 @@
 			char *token;
 			if (!len)	token = ft_strdup(".");
 			else		token = ft_strndup(start, len);
-			if (!token) return (errno = E_NO_MEMORY, NULL);
+			if (!token) return (shell.error = E_NO_MEMORY, NULL);
 
 			char *check_path = ft_strjoin_sep(token, "/", path, J_FREE_NONE);
 			free(token);
-			if (!check_path) return (errno = E_NO_MEMORY, NULL);
+			if (!check_path) return (shell.error = E_NO_MEMORY, NULL);
 
 			char *absolute_path = resolve_path(check_path);
 			free(check_path);
 			if (!absolute_path) {
-				if (errno == E_NO_MEMORY) return (NULL);
+				if (shell.error == E_NO_MEMORY) return (NULL);
 				if (!end) break;
 				start = end + 1;
 				continue;
@@ -251,7 +251,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "LPe", NULL, long_opts, "cd [-L | [-P [-e]]] [dir]", IGNORE_OFF);
-		if (!result) return (free_options(result), (errno == E_OPT_MAX || errno == E_OPT_INVALID) ? 2 : 1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_cd_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -289,20 +289,20 @@
 		if (no_cdpath) {
 			final_path = ft_strdup(path);
 			if (!final_path) {
-				errno = E_NO_MEMORY;
+				shell.error = E_NO_MEMORY;
 				exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 				return (free_options(result), 1);
 			}
 		} else {
 			final_path = cdpath(path);
 			if (!final_path) {
-				if (errno == E_NO_MEMORY) {
+				if (shell.error == E_NO_MEMORY) {
 					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
 				final_path = ft_strdup(path);
 				if (!final_path) {
-					errno = E_NO_MEMORY;
+					shell.error = E_NO_MEMORY;
 					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
 				}
@@ -314,7 +314,7 @@
 		if (!no_cdpath && shell.options.cdable_vars) {
 			char *absolute_path = resolve_path(final_path);
 			if (!absolute_path) {
-				if (errno == E_NO_MEMORY) {
+				if (shell.error == E_NO_MEMORY) {
 					free(final_path);
 					exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 					return (free_options(result), 1);
@@ -326,7 +326,7 @@
 						free(absolute_path);
 						absolute_path = resolve_path(var);
 						if (!absolute_path) {
-							if (errno == E_NO_MEMORY) {
+							if (shell.error == E_NO_MEMORY) {
 								free(final_path);
 								exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 								return (free_options(result), 1);
@@ -336,7 +336,7 @@
 								free(final_path);
 								final_path = ft_strdup(var);
 								if (!final_path) {
-									errno = E_NO_MEMORY;
+									shell.error = E_NO_MEMORY;
 									free(absolute_path);
 									exit_error(E_NO_MEMORY, 1, (char *)result->name, NULL, EE_FREE_NONE, EE_RETURN);
 									return (free_options(result), 1);
@@ -352,8 +352,8 @@
 
 		// Change path
 		if (change_dir(result, final_path, show_path)) {
-			if (errno == E_NO_MEMORY)											exit_error(E_NO_MEMORY,       1, (char *)result->name, NULL,       EE_FREE_NONE, EE_RETURN);
-			if (errno == E_DIRS_NOT_FOUND) {
+			if (shell.error == E_NO_MEMORY)											exit_error(E_NO_MEMORY,       1, (char *)result->name, NULL,       EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_DIRS_NOT_FOUND) {
 				if		(access(path, F_OK) != -1 && !is_directory(path))		exit_error(E_DIRS_NOT_DIR,    1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);
 				else if (access(path, F_OK) != -1 && access(path, X_OK) == -1)	exit_error(E_DIRS_PERMISSION, 1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);
 				else if (access(path, F_OK) == -1)								exit_error(E_DIRS_NOT_FOUND,  1, (char *)result->name, final_path, EE_FREE_NONE, EE_RETURN);

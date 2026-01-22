@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #pragma region "Normalize"
 
 	char *normalize_path(char *path, int free_mode) {
-		errno = 0;
+		shell.error = 0;
 		if (!path) {
 			if (free_mode == J_FREE_VAL_1) free(path);
 			return (NULL);
@@ -31,7 +31,7 @@
 
 		char *new_path = ft_strdup(path);
 		if (free_mode == J_FREE_VAL_1) free(path);
-		if (!new_path) return (errno = E_NO_MEMORY, NULL);
+		if (!new_path) return (shell.error = E_NO_MEMORY, NULL);
 
 		// Remove duplicate slashes
 		int i = 0;
@@ -50,7 +50,7 @@
 		int count = 0;
 		char *components[1024] = {NULL};
 		char *copy = ft_strdup(new_path);
-		if (!copy) return (free(new_path), errno = E_NO_MEMORY, NULL);
+		if (!copy) return (free(new_path), shell.error = E_NO_MEMORY, NULL);
 		char *token = ft_strtok(copy, "/", 17);
 
 		// Handle . and ..
@@ -63,7 +63,7 @@
 					array_free(components);
 					free(copy);
 					free(new_path);
-					return (errno = E_NO_MEMORY, NULL);
+					return (shell.error = E_NO_MEMORY, NULL);
 				}
 				count++;
 			}
@@ -76,7 +76,7 @@
 		new_path = ft_strdup("/");
 		if (!new_path) {
 			array_free(components);
-			return (errno = E_NO_MEMORY, NULL);
+			return (shell.error = E_NO_MEMORY, NULL);
 		}
 
 		for (int j = 0; j < count; ++j) {
@@ -86,7 +86,7 @@
 			}
 			if (!new_path) {
 				array_free(components);
-				return (errno = E_NO_MEMORY, NULL);
+				return (shell.error = E_NO_MEMORY, NULL);
 			}
 		}
 
@@ -101,17 +101,17 @@
 	#pragma region "Path"
 
 		char *resolve_path(const char *path) {
-			errno = 0;
+			shell.error = 0;
 			if (!path) return (NULL);
 
 			// Make absolute if relative
 			char *abs_path = (path[0] != '/') ? ft_strjoin_sep(shell.dirs.cwd, "/", path, J_FREE_NONE) : ft_strdup(path);
-			if (!abs_path) return (errno = E_NO_MEMORY, NULL);
+			if (!abs_path) return (shell.error = E_NO_MEMORY, NULL);
 
 			// Split into components
 			char **components = ft_split(abs_path, '/');
 			free(abs_path);
-			if (!components) return (errno = E_NO_MEMORY, NULL);
+			if (!components) return (shell.error = E_NO_MEMORY, NULL);
 
 			// Filter . and .. 
 			char *stack[256];
@@ -139,7 +139,7 @@
 			char *result = malloc(total_len + 1);
 			if (!result) {
 				array_free(components);
-				return (errno = E_NO_MEMORY, NULL);
+				return (shell.error = E_NO_MEMORY, NULL);
 			}
 
 			char *ptr = result;
