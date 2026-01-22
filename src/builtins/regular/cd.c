@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:40:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:28:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,13 +121,22 @@
 		if (!final_path) return (1);
 
 		char *path = ft_strdup(final_path);
+		if (!path) return (shell.error = E_NO_MEMORY, 1);
+
 		int physical = 0;
 
 		if (shell.options.cdspell && shell.mode == MD_INTERACTIVE) {
 			char *corrected = correct_path(final_path);
-			if (!corrected) return (shell.error = E_NO_MEMORY, 1);
-			if (strcmp(corrected, final_path)) show_path = 1;
-			path = corrected;
+			if (!corrected) {
+				if (shell.error == E_NO_MEMORY) {
+					free(path);
+					return (shell.error = E_NO_MEMORY, 1);
+				}
+			} else {
+				free(path);
+				path = corrected;
+				show_path = 1;
+			}
 		}
 
 		if ((shell.options.physical && !result->options)  || has_option(result, 'P', 0)) {
@@ -158,6 +167,9 @@
 				}
 				new_cwd = path;
 				path = NULL;
+			} else {
+				free(path);
+				path = NULL;
 			}
 		} else {
 			new_cwd = path;
@@ -170,7 +182,7 @@
 		char ret_var = variable_scalar_set(shell.env, "OLDPWD", shell.dirs.cwd, 0, VAR_NONE, 0);
 		if (ret_var) {
 			if (shell.error == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
-			if (shell.error == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_READONLY)		exit_error(E_VAR_READONLY,   1, (char *)result->name, ": OLDPWD",  EE_FREE_NONE, EE_RETURN);
 			ret = 1;
 		}
 
@@ -182,14 +194,13 @@
 		ret_var = variable_scalar_set(shell.env, "PWD", shell.dirs.cwd, 0, VAR_NONE, 0);
 		if (ret_var) {
 			if (shell.error == E_VAR_IDENTIFIER)	exit_error(E_VAR_IDENTIFIER, 1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
-			if (shell.error == E_VAR_READONLY)	exit_error(E_VAR_READONLY,   1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_VAR_READONLY)		exit_error(E_VAR_READONLY,   1, (char *)result->name, ": PWD",  EE_FREE_NONE, EE_RETURN);
 			ret = 1;
 		}
 
 		// Print path (only if OLDPWD or CDPATH or )
 		if (show_path) print(STDOUT_FILENO, ft_strjoin(shell.dirs.cwd, "\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 
-		free(path);
 		return (ret);
 	}
 

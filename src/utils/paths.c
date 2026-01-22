@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:09:57 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 21:29:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -415,9 +415,9 @@
 			// Handle absolute and relative paths
 			if (path[0] == '/') strcpy(resolved_path, "/");
 			else {
-				if (getcwd(resolved_path, sizeof(resolved_path)) == NULL) {
+				if (!getcwd(resolved_path, sizeof(resolved_path))) {
 					free(temp_path);
-					return (ft_strdup(path));
+					return (NULL);
 				}
 				size_t len = ft_strlen(resolved_path);
 				if (len == 0 || resolved_path[len - 1] != '/') {
@@ -443,6 +443,21 @@
 			if (len > 1 && resolved_path[len - 1] == '/') resolved_path[len - 1] = '\0';
 
 			// Resolve final path and copy it back
+			char *resolved_original = resolve_path(path);
+			char *resolved_corrected = resolve_path(resolved_path);
+			if (!resolved_original || !resolved_corrected) {
+				free(resolved_original);
+				free(resolved_corrected);
+				return (shell.error = E_NO_MEMORY, NULL);
+			}
+			if (!strcmp(resolved_corrected, resolved_original)) {
+				free(resolved_original);
+				free(resolved_corrected);
+				return (NULL);
+			}
+			free(resolved_original);
+			free(resolved_corrected);
+
 			return (ft_strdup(resolved_path));
 		}
 
