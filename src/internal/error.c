@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 13:47:56 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:04:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@
 
 		while (shell.env) {
 			t_env *parent = shell.env->parent;
-			array_free(shell.env->argv);
+			positional_params_clear(shell.env);
 			variable_clear(shell.env);
 			free(shell.env);
 			shell.env = parent;

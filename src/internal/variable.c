@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:15:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:06:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1434,3 +1434,41 @@
 	// Tendría que detectar [ y si el caracter anterior no es isspace o es ([ y buscando el final (cumpliendo contextos) termina en ]= entonces es un indice
 	// Todo esto se hace en el parseo, de forma que cuando llega como argumento, tenemos algo... no se que, pero algo
 	// Quién me mandaría meterme en ese lío
+
+
+	void positional_params_clear(t_env *env) {
+		if (!env) return;
+
+		for (int i = 0; i < env->argc; ++i)
+			free(env->argv[i]);
+		free(env->argv);
+		env->argv = NULL;
+		env->argc = 0;
+	}
+
+	int positional_params_set(t_env *env, int argc, char **argv) {
+		if (!env) return (1);
+
+		positional_params_clear(env);
+
+		char **new_argv = malloc(sizeof(char *) * (argc + 1));
+		if (!new_argv) return (shell.error = E_NO_MEMORY, 1);
+
+		for (int i = 0; i < argc; ++i) {
+			new_argv[i] = ft_strdup(argv[i]);
+			if (!new_argv[i]) {
+				array_free(new_argv);
+				return (shell.error = E_NO_MEMORY, 1);
+			}
+		}
+		new_argv[argc] = NULL;
+		env->argc = argc;
+		env->argv = new_argv;
+
+		return (0);
+	}
+
+	void positional_params_print(t_env *env, int index) {
+		(void) index;
+		if (env) array_print((const char **)env->argv, STDOUT_FILENO, 0);
+	}

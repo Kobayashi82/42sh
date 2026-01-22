@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:44:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:57:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@
 
 #pragma endregion
 
-#pragma region "Help"
+#pragma region "Set"
 
 	int bt_set(int argc, char **argv) {
 		t_long_option long_opts[] = {
@@ -171,44 +171,77 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "abefhmnopuvxBCEHPTSVXLFN", NULL, long_opts, "set [-abefhmnpuvxBCEHPTSVXLFN] [-o option-name] [--] [-] [arg ...]", IGNORE_OFF);
-		if (!result)		return (1);
+		t_parse_result *result = parse_options(argc, argv, "abefhmno.puvxBCEHPTSVXLFN", "abefhmno.puvxBCEHPT", long_opts, "set [-abefhmnpuvxBCEHPTSVXLFN] [-o option-name] [--] [-] [arg ...]", IGNORE_OFF);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_set_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
 		int ret = 0;
+		int positional	= has_option(result, 'S', 0);
+		int variable	= has_option(result, 'V', 0);
+		int local		= has_option(result, 'L', 0);
+		int exported	= has_option(result, 'X', 0);
+		int func		= has_option(result, 'F', 0);
+		int func_name	= has_option(result, 'N', 0);
 
-		if (!result->argc) {
-			print(STDOUT_FILENO, "main\n", P_RESET_PRINT);
+		if (positional) {
+			positional_params_print(shell.env, -1);
+			return (free_options(result), ret);
 		}
 
-		if (result->argv) {
-			int add_newline = 0;
-			print(STDOUT_FILENO, NULL, P_RESET);
-			print(STDERR_FILENO, NULL, P_RESET);
-			for (int i = 0; i < result->argc; ++i) {
-				t_builtin *builtin = builtin_find(result->argv[i]);
-				if (builtin) {
-					if		(has_option(result, 'd', 0))	builtin->help(HELP_DESCRIPTION, 1);
-					else if	(has_option(result, 'm', 0)) {
-						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
-						builtin->help(HELP_MANPAGE, 1);
-					} else if	(has_option(result, 's', 0))	builtin->help(HELP_SYNTAX, 1);
-					else {
-						if (add_newline) print(STDOUT_FILENO, "\n", P_JOIN);
-						builtin->help(HELP_NORMAL, 1);
+		if (variable || local || exported) {
+			variable_print(shell.env, ((exported) ? VAR_EXPORTED : VAR_NONE), SORT_NORMAL, local);
+			if (shell.error == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY, 1, "set", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), ret);
+		}
+
+		if (func || func_name) {
+			print(STDOUT_FILENO, "mostrar funciones\n", P_RESET_PRINT);
+			// function_print(shell.env, ((exported) ? VAR_EXPORTED : VAR_NONE), SORT_NORMAL, local, func_name);
+			if (shell.error == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY, 1, "set", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), ret);
+		}
+
+
+		for (t_opt_value *curr = result->options; curr; curr = curr->next) {
+			int enable = (curr->is_plus) ? 0 : 1;
+
+			if (curr->opt == 'o') {
+				if (curr->value) {
+					if (option_set(curr->value, enable, O_SET)) {
+						if (shell.error == E_SOPT_INVALID) exit_error(E_SOPT_INVALID, 1, "set: ", curr->value, EE_FREE_NONE, EE_RETURN);
+						ret = 1;
 					}
-					add_newline = 1;
 				} else {
-					print(STDERR_FILENO, shell.name,                                                                            P_JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep(": help: no help topics match `", result->argv[i], "'.",  J_FREE_NONE), P_FREE_JOIN);
-					print(STDERR_FILENO, ft_strjoin_sep("  Try `help help' or `man -k ", result->argv[i], "'.\n", J_FREE_NONE), P_FREE_JOIN);
+					if (options_print(O_SET, 0, 0)) {
+						if (shell.error == E_NO_MEMORY) {
+							exit_error(E_NO_MEMORY, 1, "set", NULL, EE_FREE_NONE, EE_RETURN);
+							return (free_options(result), 1);
+						}
+						ret = 1;
+					}
+				}
+			} else {
+				if (option_set_char(curr->opt, enable)) {
+					if (shell.error == E_SOPT_INVALID) {
+						char val[3] = {(curr->is_plus) ? '+' : '-', curr->opt, 0};
+						exit_error(E_SOPT_INVALID, 1, "set: ", val, EE_FREE_NONE, EE_RETURN);
+					}
+					ret = 1;
 				}
 			}
-			print(STDOUT_FILENO, NULL, P_PRINT);
-			print(STDERR_FILENO, NULL, P_PRINT);
+		}
+
+		if (result->double_dash) {
+			if (result->argc)	positional_params_set(shell.env, result->argc, result->argv);
+			else				positional_params_clear(shell.env);
+		} else if (result->argc && !strcmp(result->argv[0], "-")) {
+			if (option_set_char('v', 0)) ret = 1;
+			if (option_set_char('x', 0)) ret = 1;
+			if (result->argc > 1)	positional_params_set(shell.env, result->argc - 1, &result->argv[1]);
+			else					positional_params_clear(shell.env);
 		}
 
 		return (free_options(result), ret);
@@ -216,13 +249,13 @@
 
 #pragma endregion
 
-//	set -P (set +L)
-//	set -L (set +P)
+// set -P (set +L)
+// set -L (set +P)
 
-//	set -o emacs
-//	set -o vi
-//	set -o history;
-//	set -o hist_local;
+// set -o emacs
+// set -o vi
+// set -o history;
+// set -o hist_local;
 
 // set -- arg1 arg2 arg3  # Establece $1, $2, $3
 // set --                 # Limpia todos los argumentos ($# = 0)

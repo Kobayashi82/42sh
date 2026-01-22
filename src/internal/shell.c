@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:07:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,14 @@
 
 		shell.env = env;
 		if (argc > 0) {
-			static const char *argus[5];
-			argus[0] = "-a";
-			argus[1] = "patata";
-			argus[2] = "-b";
-			argus[3] = "frita";
-			argus[4] = NULL;
-			shell.env->argc = 4;
-			shell.env->argv = array_clone(shell.env->argc, argus);
-
-			// shell.env->argc = argc - 1;
-			// shell.env->argv = array_clone(shell.env->argc, &argv[1]);
+			char *my_argv[5];
+			my_argv[0] = "-a";
+			my_argv[1] = "patata";
+			my_argv[2] = "-b";
+			my_argv[3] = "frita";
+			my_argv[4] = NULL;
+			positional_params_set(shell.env, 4, my_argv);
+			// positional_params_set(shell.env, argc - 1, &argv[1]);
 		}
 		shell.env->argv0 = argv[0];
 		shell.env->optpos = 1;

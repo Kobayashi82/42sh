@@ -53,6 +53,9 @@
 		{	"cdspell",			&shell.options.cdspell,				O_SHOPT,	0	},
 		{	"dirspell",			&shell.options.dirspell,			O_SHOPT,	0	},
 
+		{	"verbose",			&shell.options.verbose,				O_SET,		'v'	},
+		{	"xtrace",			&shell.options.xtrace,				O_SET,		'x'	},
+
 		{	NULL,				NULL,								0,			0	}
 	};
 
@@ -61,6 +64,8 @@
 #pragma region "Set"
 
 	int option_set(const char *name, int value, int type) {
+		if (!name) return (0);
+
 		for (int i = 0; options[i].name; ++i) {
 			if (!strcmp(options[i].name, name)) {
 				int match = 0;
@@ -91,7 +96,7 @@
 			}
 		}
 
-		return (1);
+		return (shell.error = E_SOPT_INVALID, 1);
 	}
 
 	int option_set_char(char c, int value) {
@@ -102,7 +107,7 @@
 			}
 		}
 
-		return (1);
+		return (shell.error = E_SOPT_INVALID, 1);
 	}
 
 	int option_get(const char *name) {
@@ -158,11 +163,11 @@
 
 		if (padding) {
 			if (spaces < max_len) padding[spaces] = '\0';
-			*opt_str = ft_strjoin_sep(tmp, padding, (*opt->value) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
+			*opt_str = ft_strjoin_sep(tmp, padding, (*opt->value) ? GREEN500"on\n"NC : RED500"off\n"NC, J_FREE_VAL_1);
 			if (!*opt_str) return (1);
 			if (spaces < max_len) padding[spaces] = ' ';
 		} else {
-			*opt_str = ft_strjoin_sep(tmp, " ", (*opt->value) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
+			*opt_str = ft_strjoin_sep(tmp, " ", (*opt->value) ? GREEN500"on\n"NC : RED500"off\n"NC, J_FREE_VAL_1);
 			if (!*opt_str) return (1);
 		}
 

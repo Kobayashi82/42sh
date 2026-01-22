@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/11 22:00:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:33:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,10 @@
 	void	variable_print(t_env *env, unsigned int type, int sort, int local);
 	//	-------- INITIALIZE --------
 	int		variable_initialize(t_env *env, const char **envp);
+
+	//	-------- POSITIONAL --------
+	void	positional_params_clear(t_env *env);
+	int		positional_params_set(t_env *env, int argc, char **argv);
+	void	positional_params_print(t_env *env, int index);
 
 #pragma endregion

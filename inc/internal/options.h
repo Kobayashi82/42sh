@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 13:42:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 18:55:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,9 @@
 			int	autocd;				//	SHOPT		1 = Automatically change to a directory without 'cd'				0 = Disabled
 			int	cdspell;			//	SHOPT		1 = Automatically correct minor errors in directory names			0 = Disabled
 			int	dirspell;			//	SHOPT		1 = Correct minor errors in the first segment of an absolute path	0 = Disabled
+
+			int	verbose;			//	SET			1 = Correct minor errors in the first segment of an absolute path	0 = Disabled
+			int	xtrace;				//	SET			1 = Correct minor errors in the first segment of an absolute path	0 = Disabled
 
 		} t_options;
 

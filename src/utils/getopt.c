@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 13:57:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 17:50:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@
 				const char *pos = strchr(short_opts, opt);
 				if (!pos) return (-1);								// Invalid
 
+				if (pos[1] == '.')					return (3);		// Optional (support arg separated)
 				if (pos[1] == ':' && pos[2] == ':')	return (2);		// Optional
 				if (pos[1] == ':')					return (1);		// Required
 
@@ -255,6 +256,21 @@
 							value = ft_strdup(arg + i + 1);
 							if (!value) return (shell.error = E_NO_MEMORY, 1);
 							i = ft_strlen(arg) - 1;
+						}
+					} else if (arg_type == OPTIONAL_ARG_SEP) {
+						if (arg[i + 1]) {
+							// -avalue
+							value = ft_strdup(arg + i + 1);
+							if (!value) return (shell.error = E_NO_MEMORY, 1);
+							i = ft_strlen(arg) - 1;
+						} else if (*idx + 1 < argc) {
+							char *next = argv[*idx + 1];
+							if (strcmp(next, "--") && strcmp(next, "-") && strcmp(next, "+") && next[0] != '-' && next[0] != '+') {
+								// -a value
+								(*idx)++;
+								value = ft_strdup(argv[*idx]);
+								if (!value) return (shell.error = E_NO_MEMORY, 1);
+							}
 						}
 					}
 
