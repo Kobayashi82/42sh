@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/20 17:29:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 13:46:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,8 @@
 			E_OPT_INVALID			= 301,		// Invalid option
 			E_OPT_NO_ARGUMENT		= 302,		// Missing required argument for option
 			E_OPT_ARGUMENT			= 303,		// Unexpected argument for option
+
+			E_SOPT_INVALID			= 305,		// Invalid shell option
 
 			// CD, PWD, Dirs, Pushd, Popd
 			E_DIRS_EMPTY			= 310,		// Directory stack is empty

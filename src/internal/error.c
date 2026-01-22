@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 13:47:56 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@
 			if (error_type == E_START_BIN)		print(STDERR_FILENO, ft_strjoin(value1, ": cannot execute binary file\n", J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_START_DIR)		print(STDERR_FILENO, ft_strjoin(value1, ": is a directory\n", J_FREE_NONE), P_FREE_PRINT);
 			// if (error_type == E_SHLVL_HIGH)		print(STDERR_FILENO, ft_strjoin_sep("warning: shell level (", value, ") too high, resetting to 1\n", 0), P_FREE_PRINT);
+
+			if (error_type == E_SOPT_INVALID)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": invalid shell option name\n",  J_FREE_NONE), P_FREE_PRINT);
 		}
 
 	#pragma endregion

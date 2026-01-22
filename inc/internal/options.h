@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:53:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 13:42:47 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,12 @@
 
 #pragma region "Methods"
 
+	int		option_set(const char *name, int value, int type);
+	int		option_set_char(char c, int value);
+	int		option_get(const char *name);
+	int		option_get_char(char c);
+	int		options_print(int type, int reusable, int suppress);
+	int		option_print(const char *name, int type, int reusable, int suppress);
 	int		options_initialize();
-	int		options_set(const char *option, int value);
-	char	*options_print(char *value, int type);
 
 #pragma endregion

@@ -20,176 +20,246 @@
 
 #pragma region "Variables"
 
-	static char *option_names[] = {
-		"emacs",				"vi",					"hide_ctrl_chars",		"multiwidth_chars",
-		"history",				"histexpand",			"histappend",			"histreedit",			"histverify",
-		"expand_aliases",
-		"noglob",				"dotglob",				"nullglob",				"failglob",				"nocaseglob",
-		"physical",				"cdable_vars",			"autocd",				"cdspell",				"dirspell"
-	};
-
-	static int *option_values[] = {
-		&shell.options.emacs,				&shell.options.vi,					&shell.options.hide_ctrl_chars,		&shell.options.multiwidth_chars,
-		&shell.options.history,				&shell.options.histexpand,			&shell.options.histappend,			&shell.options.histreedit,			&shell.options.histverify,
-		&shell.options.expand_aliases,
-		&shell.options.noglob,				&shell.options.dotglob,				&shell.options.nullglob,			&shell.options.failglob,			&shell.options.nocaseglob,
-		&shell.options.physical,			&shell.options.cdable_vars,			&shell.options.autocd,				&shell.options.cdspell,				&shell.options.dirspell
-	};
-
-	static int option_types[] = {
-		O_SET,	O_SET,	O_SET,	O_SET,
-		O_SET,	O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,
-		O_SHOPT,
-		O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,	O_SHOPT,
-		O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,	O_SHOPT
-	};
-
 	typedef struct s_option {
-		const char  *name;          // Long option name
-		int         *value;         // Pointer to option value
-		int         type;           // SET, SHOPT, BOTH
-		char        short_opt;      // Short option (0 if none)
+		const char	*name;          // Long option name
+		int			*value;         // Pointer to option value
+		int			type;           // O_SET, O_SHOPT, O_BOTH
+		char		short_opt;      // Short option (0 if none)
 	} t_option;
 
 	static t_option options[] = {
-		{	"emacs",			&shell.options.emacs,				O_SET,		0	},
-		{	"vi",				&shell.options.vi,					O_SET,		0	},
+		{	"emacs",			&shell.options.emacs,				O_BOTH,		0	},
+		{	"vi",				&shell.options.vi,					O_BOTH,		0	},
 		{	"hide_ctrl_chars",	&shell.options.hide_ctrl_chars,		O_SHOPT,	0	},
 		{	"multiwidth_chars",	&shell.options.multiwidth_chars,	O_SHOPT,	0	},
 
-		{	"history",			&shell.options.history,				O_SET,		0	},
-		{	"histexpand",		&shell.options.histexpand,			O_SET,		'H'	},
+		{	"history",			&shell.options.history,				O_BOTH,		0	},
+		{	"histexpand",		&shell.options.histexpand,			O_BOTH,		'H'	},
 		{	"histappend",		&shell.options.histappend,			O_SHOPT,	0	},
 		{	"histreedit",		&shell.options.histreedit,			O_SHOPT,	0	},
 		{	"histverify",		&shell.options.histverify,			O_SHOPT,	0	},
 
 		{	"expand_aliases",	&shell.options.expand_aliases,		O_SHOPT,	0	},
 
-		{	"noglob",			&shell.options.noglob,				O_SET,		'f'	},
+		{	"noglob",			&shell.options.noglob,				O_BOTH,		'f'	},
 		{	"dotglob",			&shell.options.dotglob,				O_SHOPT,	0	},
 		{	"nullglob",			&shell.options.nullglob,			O_SHOPT,	0	},
 		{	"failglob",			&shell.options.failglob,			O_SHOPT,	0	},
 		{	"nocaseglob",		&shell.options.nocaseglob,			O_SHOPT,	0	},
 
-		{	"physical",			&shell.options.physical,			O_SET,		'P'	},
+		{	"physical",			&shell.options.physical,			O_BOTH,		'P'	},
 		{	"cdable_vars",		&shell.options.cdable_vars,			O_SHOPT,	0	},
 		{	"autocd",			&shell.options.autocd,				O_SHOPT,	0	},
 		{	"cdspell",			&shell.options.cdspell,				O_SHOPT,	0	},
 		{	"dirspell",			&shell.options.dirspell,			O_SHOPT,	0	},
+
+		{	NULL,				NULL,								0,			0	}
 	};
 
 #pragma endregion
 
 #pragma region "Set"
 
-	int options_set(const char *option, int value) {
-		if (!option) return (1);
+	int option_set(const char *name, int value, int type) {
+		for (int i = 0; options[i].name; ++i) {
+			if (!strcmp(options[i].name, name)) {
+				int match = 0;
+				if (type == O_SHOPT)	match = (options[i].type == O_SHOPT);
+				if (type == O_SET)		match = (options[i].type == O_SET   || options[i].type == O_BOTH);
+				if (type == O_BOTH)		match = (options[i].type == O_BOTH);
+				if (!match) return (shell.error = E_SOPT_INVALID, 1);
 
-		//	READINPUT
-		if (!strcmp("emacs", option)) {
-			if (value) shell.options.vi = !value;
-			shell.options.emacs = value;
-			return (0);
+				if (!strcmp(options[i].name, "emacs")) {
+					for (int j = 0; options[j].name; ++j) {
+						if (!strcmp(options[j].name, "vi")) {
+							*options[j].value = !value;
+							break;
+						}
+					}
+				}
+				if (!strcmp(options[i].name, "vi")) {
+					for (int j = 0; options[j].name; ++j) {
+						if (!strcmp(options[j].name, "emacs")) {
+							*options[j].value = !value;
+							break;
+						}
+					}
+				}
+
+				*options[i].value = value;
+				return (0);
+			}
 		}
-		if (!strcmp("vi", option)) {
-			if (value) shell.options.emacs = !value;
-			shell.options.vi = value;
-			return (0);
-		}
-
-		if (!strcmp("hide_ctrl_chars",	option)) 	{ shell.options.hide_ctrl_chars		= value;	return (0); }
-		if (!strcmp("multiwidth_chars",	option)) 	{ shell.options.multiwidth_chars	= value;	return (0); }
-
-		//	HISTORY
-		if (!strcmp("history",			option)) 	{ shell.options.history				= value;	return (0); }
-		if (!strcmp("histexpand",		option)) 	{ shell.options.histexpand			= value;	return (0); }
-		if (!strcmp("histappend",		option)) 	{ shell.options.histappend			= value;	return (0); }
-		if (!strcmp("histreedit",		option)) 	{ shell.options.histreedit			= value;	return (0); }
-		if (!strcmp("histverify",		option)) 	{ shell.options.histverify			= value;	return (0); }
-
-		//	ALIAS
-		if (!strcmp("expand_aliases",	option))	{ shell.options.expand_aliases		= value;	return (0); }
-
-		//	GLOBBING
-		if (!strcmp("noglob",			option)) 	{ shell.options.noglob				= value;	return (0); }
-		if (!strcmp("dotglob",			option)) 	{ shell.options.dotglob				= value;	return (0); }
-		if (!strcmp("nullglob",			option)) 	{ shell.options.nullglob			= value;	return (0); }
-		if (!strcmp("failglob",			option)) 	{ shell.options.failglob			= value;	return (0); }
-		if (!strcmp("nocaseglob",		option)) 	{ shell.options.nocaseglob			= value;	return (0); }
-
-		//	CD
-		if (!strcmp("physical",			option)) 	{ shell.options.physical			= value;	return (0); }
-		if (!strcmp("cdable_vars",		option)) 	{ shell.options.cdable_vars			= value;	return (0); }
-		if (!strcmp("autocd",			option)) 	{ shell.options.autocd				= value;	return (0); }
-		if (!strcmp("cdspell",			option)) 	{ shell.options.cdspell				= value;	return (0); }
-		if (!strcmp("dirspell",			option)) 	{ shell.options.dirspell			= value;	return (0); }
 
 		return (1);
+	}
+
+	int option_set_char(char c, int value) {
+		for (int i = 0; options[i].name; ++i) {
+			if (options[i].short_opt == c) {
+				*options[i].value = value;
+				return (0);
+			}
+		}
+
+		return (1);
+	}
+
+	int option_get(const char *name) {
+		for (int i = 0; options[i].name; ++i) {
+			if (!strcmp(options[i].name, name)) {
+				return (*options[i].value);
+			}
+		}
+		return (-1);
+	}
+
+	int option_get_char(char c) {
+		for (int i = 0; options[i].name; ++i) {
+			if (options[i].short_opt == c) {
+				return (*options[i].value);
+			}
+		}
+		return (-1);
 	}
 
 #pragma endregion
 
 #pragma region "Print"
 
-	char *options_print(char *value, int type) {
-		int num_options = sizeof(option_names) / sizeof(option_names[0]);
-		char *opt_str = NULL;
+	static int options_type_match(int requested, int option_type) {
+		if (requested == O_SHOPT)	return (option_type == O_SHOPT);
+		if (requested == O_SET)		return (option_type == O_SET || option_type == O_BOTH);
+		if (requested == O_BOTH)	return (option_type == O_BOTH);
 
-		if (!value) {
-			// Sort options
-			int *sorted_indices = malloc(sizeof(int) * num_options);
-			if (!sorted_indices) return (NULL);
+		return (0);
+	}
 
-			for (int i = 0; i < num_options; ++i) sorted_indices[i] = i;
-			for (int i = 0; i < num_options - 1; ++i) {
-				for (int j = 0; j < num_options - i - 1; ++j) {
-					if (strcmp(option_names[sorted_indices[j]], option_names[sorted_indices[j + 1]]) > 0) {
-						int temp = sorted_indices[j];
-						sorted_indices[j] = sorted_indices[j + 1];
-						sorted_indices[j + 1] = temp;
-					}
-				}
-			}
+	static int options_append_reusable(char **opt_str, const t_option *opt, int type) {
+		int			is_on = *opt->value;
+		int			use_set = (type == O_BOTH);
+		const char	*prefix = (use_set) ? "set " : "shopt ";
+		const char	*flag = (use_set) ? ((is_on) ? "-o " : "+o ") : ((is_on) ? "-s " : "-u ");
 
-			// Max line length
-			int max_len = 0;
-			for (int i = 0; i < num_options; ++i) {
-				if (option_types[i] != type) continue;
-				int len = ft_strlen(option_names[i]);
-				if (len > max_len) max_len = len;
-			}
+		char *tmp = ft_strjoin_sep(*opt_str, prefix, flag, J_FREE_VAL_1);
+		if (!tmp) return (1);
+		*opt_str = ft_strjoin_sep(tmp, opt->name, "\n", J_FREE_VAL_1);
+		if (!*opt_str) return (1);
 
-			// Create options string
-			for (int i = 0; i < num_options; ++i) {
-				int idx = sorted_indices[i];
-				if (option_types[idx] != type) continue;
+		return (0);
+	}
 
-				int len = ft_strlen(option_names[idx]);
-				int spaces = max_len - len + 1;
+	static int options_append_normal(char **opt_str, const t_option *opt, char *padding, int max_len) {
+		int len = ft_strlen(opt->name);
+		int spaces = max_len - len + 1;
 
-				opt_str = ft_strjoin_sep(opt_str, CYAN300, option_names[idx], J_FREE_VAL_1);
+		char *tmp = ft_strjoin_sep(*opt_str, CYAN300, opt->name, J_FREE_VAL_1);
+		if (!tmp) return (1);
 
-				// Add spaces
-				char *padding = malloc(spaces + 1);
-				if (padding) {
-					memset(padding, ' ', spaces);
-					padding[spaces] = '\0';
-					opt_str = ft_strjoin_sep(opt_str, padding, (*option_values[idx]) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1_2);
-				}
-			}
-			free(sorted_indices);
+		if (padding) {
+			if (spaces < max_len) padding[spaces] = '\0';
+			*opt_str = ft_strjoin_sep(tmp, padding, (*opt->value) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
+			if (!*opt_str) return (1);
+			if (spaces < max_len) padding[spaces] = ' ';
 		} else {
-			// Single option string
-			for (int i = 0; i < num_options; ++i) {
-				if (!strcmp(value, option_names[i]) && option_types[i] == type) {
-					opt_str = ft_strjoin_sep(CYAN300, option_names[i], " ", J_FREE_NONE);
-					opt_str = ft_strjoin(opt_str, *option_values[i] ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
-					break;
-				}
+			*opt_str = ft_strjoin_sep(tmp, " ", (*opt->value) ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
+			if (!*opt_str) return (1);
+		}
+
+		return (0);
+	}
+
+	int options_print(int type, int reusable, int suppress) {
+		int		num_options = 0;
+		char	*opt_str = NULL;
+
+		while (options[num_options].name) num_options++;
+
+		// Sort options
+		int *sorted_indices = malloc(sizeof(int) * num_options);
+		if (!sorted_indices) return (shell.error = E_NO_MEMORY, 1);
+
+		for (int i = 0; i < num_options; ++i) sorted_indices[i] = i;
+		for (int i = 1; i < num_options; ++i) {
+			int key = sorted_indices[i];
+			int j = i - 1;
+			while (j >= 0 && strcmp(options[sorted_indices[j]].name, options[key].name) > 0) {
+				sorted_indices[j + 1] = sorted_indices[j];
+				j--;
+			}
+			sorted_indices[j + 1] = key;
+		}
+
+		// Max line length
+		int max_len = 0;
+		for (int i = 0; i < num_options; ++i) {
+			if (!options_type_match(type, options[i].type)) continue;
+			int len = ft_strlen(options[i].name);
+			if (len > max_len) max_len = len;
+		}
+
+		// Create options string
+		char *padding = NULL;
+		if (!reusable && max_len > 0) {
+			padding = malloc(max_len + 1);
+			if (!padding) {
+				free(sorted_indices);
+				return (shell.error = E_NO_MEMORY, 1);
+			}
+			memset(padding, ' ', max_len);
+			padding[max_len] = '\0';
+		}
+
+		for (int i = 0; i < num_options; ++i) {
+			int idx = sorted_indices[i];
+			if (!options_type_match(type, options[idx].type)) continue;
+
+			int ret = 0;
+			if (reusable)	ret = options_append_reusable(&opt_str, &options[idx], type);
+			else			ret = options_append_normal(&opt_str, &options[idx], padding, max_len);
+			if (ret) {
+				free(padding);
+				free(sorted_indices);
+				return (shell.error = E_NO_MEMORY, 1);
 			}
 		}
 
-		return (opt_str);
+		free(padding);
+		free(sorted_indices);
+
+		if (!opt_str)	return (1);
+		if (!suppress)	print(STDOUT_FILENO, opt_str, P_RESET_PRINT);
+		free(opt_str);
+
+		return (0);
+	}
+
+	int option_print(const char *name, int type, int reusable, int suppress) {
+		int		num_options = 0;
+		char	*opt_str = NULL;
+
+		while (options[num_options].name) num_options++;
+
+		for (int i = 0; i < num_options; ++i) {
+			if (!strcmp(name, options[i].name)) {
+				if (!options_type_match(type, options[i].type)) continue;
+
+				int ret = 0;
+				if (reusable)	ret = options_append_reusable(&opt_str, &options[i], type);
+				else			ret = options_append_normal(&opt_str, &options[i], NULL, 0);
+				if (ret) {
+					free(opt_str);
+					return (shell.error = E_NO_MEMORY, 1);
+				}
+				break;
+			}
+		}
+
+		if (!opt_str)	return (shell.error = E_SOPT_INVALID, 1);
+		if (!suppress)	print(STDOUT_FILENO, opt_str, P_RESET_PRINT);
+		free(opt_str);
+
+		return (0);
 	}
 
 #pragma endregion
@@ -197,7 +267,6 @@
 #pragma region "Initialize"
 
 	int options_initialize() {
-		(void) options;
 
 		//	READINPUT
 		shell.options.emacs				= 1;

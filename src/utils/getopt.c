@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:45:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 13:57:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -419,22 +419,14 @@
 					continue;
 				}
 
-				// Detect "-" or "+" alone (they are arguments, not options)
-				if (!strcmp(arg, "-") || !strcmp(arg, "+")) {
-					tmp_args[arg_count] = ft_strdup(arg);
-					if (!tmp_args[arg_count++]) { shell.error = E_NO_MEMORY; break; }
-					done_with_opts = 1;
-					continue;
-				}
-
 				// Long options (--...)
-				if (arg[0] == '-' && arg[1] == '-') {
+				if (arg[0] == '-' && arg[1] == '-' && long_opts) {
 					if (parse_long_option(result, argv, &i, argc, long_opts, silent_mode, opt_count++) == 1) break;
 					continue;
 				}
 
 				// Options with '-'
-				if (arg[0] == '-' && arg[1]) {
+				if (arg[0] == '-' && short_opts && arg[1]) {
 					int ret = parse_short_option(result, argv, &i, argc, short_opts, 0, silent_mode, ignore_mode, opt_count);
 					if (ret == 0) opt_count++;
 					if (ret == 1) break;
@@ -447,7 +439,7 @@
 				}
 
 				// Options with '+'
-				if (arg[0] == '+' && arg[1]) {
+				if (arg[0] == '+' && short_opts_plus && arg[1]) {
 					int ret = parse_short_option(result, argv, &i, argc, short_opts_plus, 1, silent_mode_plus, ignore_mode, opt_count);
 					if (ret == 0) opt_count++;
 					if (ret == 1) break;

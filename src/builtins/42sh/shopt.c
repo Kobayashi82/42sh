@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 14:30:33 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,18 +15,6 @@
 	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
-
-#pragma endregion
-
-#pragma region Info
-
-	// shopt: Muestra las opciones de configuración actuales del shell
-	//
-	// shopt -o: Muestra o aplica a las opciones que existen en set
-	// shopt -q: No muestra nada en la salida standard
-	// shopt -s <opción>: Habilita una opción
-	// shopt -u <opción>: Deshabilita una opción
-	// shopt -p: Muestra las opciones con la sintaxis de shopt que puedes usar para restablecer la configuración
 
 #pragma endregion
 
@@ -112,7 +100,7 @@
 
 #pragma endregion
 
-#pragma region "Unset"
+#pragma region "Shopt"
 
 	int bt_shopt(int argc, char **argv) {
 		t_long_option long_opts[] = {
@@ -122,62 +110,54 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "pqsuo", NULL, long_opts, "shopt [-pqsu] [-o] [optname ...]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_shopt_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
 		int ret = 0;
+		int type = has_option(result, 'o', 0) ? O_BOTH : O_SHOPT;
+		int reusable = has_option(result, 'p', 0);
+		int suppress = has_option(result, 'q', 0);
+		int enable = -1;
+		if (!reusable) {
+			for (t_opt_value *curr = result->options; curr; curr = curr->next) {
+				if (curr->opt == 'u') enable = 0;
+				if (curr->opt == 's') enable = 1;
+			}
+		}
 
 		if (!result->argc) {
-			print(STDOUT_FILENO, "main\n", P_RESET_PRINT);
+			if (options_print(type, reusable, suppress)) {
+				if (shell.error == E_NO_MEMORY) exit_error(E_NO_MEMORY, 1, "shopt", NULL, EE_FREE_NONE, EE_RETURN);
+				ret = 1;
+			}
+			return (free_options(result), ret);
+		}
+
+		if (enable == -1) {
+			for (int i = 0; i < result->argc; ++i) {
+				if (option_print(result->argv[i], type, reusable, suppress)) {
+					if (shell.error == E_NO_MEMORY) {
+						exit_error(E_NO_MEMORY, 1, "shopt", NULL, EE_FREE_NONE, EE_RETURN);
+						return (free_options(result), 1);
+					}
+					if (shell.error == E_SOPT_INVALID) exit_error(E_SOPT_INVALID, 1, "shopt: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					ret = 1;
+				}
+			}
+		} else {
+			for (int i = 0; i < result->argc; ++i) {
+				if (option_set(result->argv[i], enable, type)) {
+					if (shell.error == E_SOPT_INVALID) exit_error(E_SOPT_INVALID, 1, "shopt: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					ret = 1;
+				}
+			}
 		}
 
 		return (free_options(result), ret);
 
-
-
-
-
-
-
-
-
-
-
-		// t_opt *opts = parse_options_old(args, "pqsuo", '-', 0);
-
-		// if (*opts->invalid) {
-		// 	invalid_option("shopt", opts->invalid, "[-pqsu] [-o] [optname ...]");
-		// 	return (free(opts), 1);
-		// }
-
-		// if (strchr(opts->valid, '?')) return (free(opts), bt_shopt_help(HELP_NORMAL, 0));
-		// if (strchr(opts->valid, '#')) return (free(opts), version());
-
-		// int result = 0;
-		// char *values = NULL, *invalues = NULL;
-
-		// if (!opts->args) {
-		// 	values = options_print(NULL, SHOPT);
-		// } else {
-		// 	while (opts->args) {
-		// 		char *opt_str = options_print(opts->args->value, SHOPT);
-		// 		if (opt_str)
-		// 			values = ft_strjoin(values, opt_str, 3);
-		// 		else {
-		// 			invalues = ft_strjoin_sep(invalues, "shopt: ", opts->args->value, 1);
-		// 			invalues = ft_strjoin(invalues, ": invalid shell option name\n", 1);
-		// 		}
-		// 		opts->args = opts->args->next;
-		// 	}
-		// }
-
-		// if (values) { print(STDOUT_FILENO, values, P_RESET_PRINT); free(values); }
-		// if (invalues) { print(STDERR_FILENO, invalues, P_RESET_PRINT); free(invalues); }
-
-		// return (free(opts), result);
 	}
 
 #pragma endregion
