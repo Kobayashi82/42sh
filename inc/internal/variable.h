@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 19:11:28 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 18:33:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:19:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@
 	void	variable_clear(t_env *env);
 	//	---------- EXPORT ----------
 	char	**variable_to_array(t_env *env);
-	void	variable_print(t_env *env, unsigned int type, int sort, int local);
+	void	variable_print(t_env *env, unsigned int type, int sort, int local, int reuse);
 	//	-------- INITIALIZE --------
 	int		variable_initialize(t_env *env, const char **envp);
 

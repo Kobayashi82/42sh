@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:20:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,7 +168,7 @@
 				print(STDERR_FILENO, ft_strjoin(shell.name, ": local: can only be used in a function\n", J_FREE_NONE), P_FREE_RESET_PRINT);
 				ret = 1;
 			} else {
-				variable_print(shell.env, VAR_NONE, SORT_NORMAL, 1);
+				variable_print(shell.env, VAR_NONE, SORT_NORMAL, 1, 1);
 			}
 			return (free_options(result), ret);
 		}

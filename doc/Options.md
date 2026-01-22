@@ -194,3 +194,43 @@ shopt -u -o opcion_larga    # Válido solo para opciones compartidas con 'set'
 42sh -c "comando"           # Ejecuta un comando directamente
 set -euo pipefail           # Para scripts más seguros: sale en error, variables no definidas causan error, y detecta errores en pipelines
 ```
+| Opción               | Descripción           |
+|----------------------|-----------------------|
+Permite que palabras reservadas (como `if`, `while`, `for`) se reconozcan en cualquier posición de un comando, no solo al principio |
+Evita que las definiciones de funciones se guarden en el historial de comandos |
+El shell sale después de leer y ejecutar un solo comando (usado principalmente para testing) |
+Cambia el comportamiento de Bash para que cumpla estrictamente con el estándar POSIX cuando difiere del comportamiento normal |
+Guarda comandos multi-línea como una sola entrada en el historial en lugar de múltiples líneas separadas |
+Activa modo de compatibilidad con Bash 3.1 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 3.2 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 4.0 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 4.1 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 4.2 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 4.3 (restaura comportamientos antiguos) |
+Activa modo de compatibilidad con Bash 4.4 (restaura comportamientos antiguos) |
+Guarda comandos multi-línea en el historial con newlines embebidos en lugar de usar punto y coma como separador |
+Muestra un mensaje de advertencia si se accede a un archivo de correo desde la última vez que fue revisado |
+Desactiva la traducción de cadenas $"..." (gettext) para internacionalización |
+Hace que el shell cierre automáticamente los file descriptors asignados mediante redirección de variables cuando la variable sale de scope |
+
+## No implementados
+
+| Opción               | Descripción                                                                                                              |
+|----------------------|--------------------------------------------------------------------------------------------------------------------------|
+| keyword              | Permite que palabras reservadas se reconozcan en cualquier posición de un comando, no solo al principio                  |
+| nolog                | Evita que las definiciones de funciones se guarden en el historial de comandos                                           |
+| onecmd               | El shell sale después de leer y ejecutar un solo comando (usado principalmente para testing)                             |
+| posix                | Cumple estrictamente con el estándar POSIX                                                                               |
+| cmdhist              | Guarda comandos multi-línea como una sola entrada en el historial en lugar de múltiples líneas separadas                 |
+| compat31             | Activa modo de compatibilidad con Bash 3.1 (restaura comportamientos antiguos)                                           |
+| compat32             | Activa modo de compatibilidad con Bash 3.2 (restaura comportamientos antiguos)                                           |
+| compat40             | Activa modo de compatibilidad con Bash 4.0 (restaura comportamientos antiguos)                                           |
+| compat41             | Activa modo de compatibilidad con Bash 4.1 (restaura comportamientos antiguos)                                           |
+| compat42             | Activa modo de compatibilidad con Bash 4.2 (restaura comportamientos antiguos)                                           |
+| compat43             | Activa modo de compatibilidad con Bash 4.3 (restaura comportamientos antiguos)                                           |
+| compat44             | Activa modo de compatibilidad con Bash 4.4 (restaura comportamientos antiguos)                                           |
+| lithist              | Guarda comandos multi-línea en el historial con newlines embebidos en lugar de usar punto y coma como separador          |
+| mailwarn             | Muestra un mensaje de advertencia si se accede a un archivo de correo desde la última vez que fue revisado               |
+| noexpand_translation | Desactiva la traducción de cadenas $"..." (gettext) para internacionalización                                            |
+| varredir_close       | Cierre automáticamente los file descriptors asignados mediante redirección de variables cuando la variable sale de scope |
+|

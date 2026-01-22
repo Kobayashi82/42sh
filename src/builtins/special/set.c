@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:10:33 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 18:57:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 20:04:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@
 		}
 
 		if (variable || local || exported) {
-			variable_print(shell.env, ((exported) ? VAR_EXPORTED : VAR_NONE), SORT_NORMAL, local);
+			variable_print(shell.env, ((exported) ? VAR_EXPORTED : VAR_NONE), SORT_NORMAL, local, 0);
 			if (shell.error == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY, 1, "set", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), ret);
 		}
@@ -248,14 +248,3 @@
 	}
 
 #pragma endregion
-
-// set -P (set +L)
-// set -L (set +P)
-
-// set -o emacs
-// set -o vi
-// set -o history;
-// set -o hist_local;
-
-// set -- arg1 arg2 arg3  # Establece $1, $2, $3
-// set --                 # Limpia todos los argumentos ($# = 0)

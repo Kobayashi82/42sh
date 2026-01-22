@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:06:23 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:22:29 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1065,7 +1065,7 @@
 		#pragma region "Array Value"
 
 			// Format a variable into a string
-			static int array_value(unsigned int type, char **array, size_t i, t_var *var) {
+			static int array_value(unsigned int type, char **array, size_t i, t_var *var, int reuse) {
 				if (type && (var->flags & type) != type) return (0);
 
 				int j = 0;
@@ -1080,8 +1080,13 @@
 				while (j < 6)							var_type[j++] = ' ';
 				var_type[j] = '\0';
 
-				array[i] = ft_strjoin_sep("declare ", var_type, var->key, 0);
-				if (!array[i]) return (shell.error = E_NO_MEMORY, 0);
+				if (reuse) {
+					array[i] = ft_strjoin_sep("declare ", var_type, var->key, J_FREE_NONE);
+					if (!array[i]) return (shell.error = E_NO_MEMORY, 0);
+				} else {
+					array[i] = ft_strdup(var->key);
+					if (!array[i]) return (shell.error = E_NO_MEMORY, 0);
+				}
 
 				// Add value based on type
 				if (var->flags & VAR_ARRAY) {
@@ -1117,7 +1122,7 @@
 
 		#pragma region "Print"
 
-			void variable_print(t_env *env, unsigned int type, int sort, int local) {
+			void variable_print(t_env *env, unsigned int type, int sort, int local, int reuse) {
 				if (!env) return;
 
 				shell.error = 0;
@@ -1176,7 +1181,7 @@
 				// Third pass: format variables
 				int i = 0;
 				for (int j = 0; j < count; ++j) {
-					i += array_value(type, array, i, seen[j]);
+					i += array_value(type, array, i, seen[j], reuse);
 					if (shell.error) {
 						array_free(array);
 						shell.error = E_NO_MEMORY;

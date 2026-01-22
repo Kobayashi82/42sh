@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 14:10:32 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:47:53 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,8 @@
 			shell.mode = MD_STDIN;
 			read_input(NULL);
 		} else {
-			option_set("history", 1, O_BOTH);
-			option_set("histexpand", 1, O_BOTH);
+			option_set("history", 1, O_SET);
+			option_set("histexpand", 1, O_SET);
 			option_set("expand_aliases", 1, O_SHOPT);
 			shell.mode = MD_INTERACTIVE;
 			while (!shell.exit && !read_input(NULL)) ;

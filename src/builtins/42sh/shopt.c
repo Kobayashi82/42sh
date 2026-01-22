@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/23 12:38:13 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 14:30:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 19:47:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@
 
 
 		int ret = 0;
-		int type = has_option(result, 'o', 0) ? O_BOTH : O_SHOPT;
+		int type = has_option(result, 'o', 0) ? O_SET : O_SHOPT;
 		int reusable = has_option(result, 'p', 0);
 		int suppress = has_option(result, 'q', 0);
 		int enable = -1;
