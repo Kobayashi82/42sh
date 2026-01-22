@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 16:51:51 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:26:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:53:15 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 
 	#pragma region "Structures"
 
-		typedef struct {
+		typedef struct s_options {
 
 			//	READINPUT
 			int	emacs;				//	SET			1 = Emacs mode ON													0 = OFF

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:26:41 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:46:12 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/22 10:52:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@
 			int					is_long;			// 1 if long option, 0 if short option
 			char				opt;				// Option character
 			char				*value;				// Option value (NULL if none)
-			int                 is_plus;			// 1 if option uses '+' prefix, 0 if uses '-'
+			int					is_plus;			// 1 if option uses '+' prefix, 0 if uses '-'
 			struct s_opt_value	*next;
 		} t_opt_value;
 
 		typedef struct s_parse_result {
 			t_opt_value			*options;			// List of parsed options
 			t_opt_value			*plus_options;		// List of parsed '+' options
-			int                 double_dash;		// Indicates if '--' was provided (end of options)
+			int					double_dash;		// Indicates if '--' was provided (end of options)
 			char				**argv_original;	// Original argv
 			int					argc_original;		// Original argc
 			int					argc;				// Number of non-option arguments

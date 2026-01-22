@@ -44,6 +44,40 @@
 		O_SET,	O_SHOPT,	O_SHOPT,	O_SHOPT,	O_SHOPT
 	};
 
+	typedef struct s_option {
+		const char  *name;          // Long option name
+		int         *value;         // Pointer to option value
+		int         type;           // SET, SHOPT, BOTH
+		char        short_opt;      // Short option (0 if none)
+	} t_option;
+
+	static t_option options[] = {
+		{	"emacs",			&shell.options.emacs,				O_SET,		0	},
+		{	"vi",				&shell.options.vi,					O_SET,		0	},
+		{	"hide_ctrl_chars",	&shell.options.hide_ctrl_chars,		O_SHOPT,	0	},
+		{	"multiwidth_chars",	&shell.options.multiwidth_chars,	O_SHOPT,	0	},
+
+		{	"history",			&shell.options.history,				O_SET,		0	},
+		{	"histexpand",		&shell.options.histexpand,			O_SET,		'H'	},
+		{	"histappend",		&shell.options.histappend,			O_SHOPT,	0	},
+		{	"histreedit",		&shell.options.histreedit,			O_SHOPT,	0	},
+		{	"histverify",		&shell.options.histverify,			O_SHOPT,	0	},
+
+		{	"expand_aliases",	&shell.options.expand_aliases,		O_SHOPT,	0	},
+
+		{	"noglob",			&shell.options.noglob,				O_SET,		'f'	},
+		{	"dotglob",			&shell.options.dotglob,				O_SHOPT,	0	},
+		{	"nullglob",			&shell.options.nullglob,			O_SHOPT,	0	},
+		{	"failglob",			&shell.options.failglob,			O_SHOPT,	0	},
+		{	"nocaseglob",		&shell.options.nocaseglob,			O_SHOPT,	0	},
+
+		{	"physical",			&shell.options.physical,			O_SET,		'P'	},
+		{	"cdable_vars",		&shell.options.cdable_vars,			O_SHOPT,	0	},
+		{	"autocd",			&shell.options.autocd,				O_SHOPT,	0	},
+		{	"cdspell",			&shell.options.cdspell,				O_SHOPT,	0	},
+		{	"dirspell",			&shell.options.dirspell,			O_SHOPT,	0	},
+	};
+
 #pragma endregion
 
 #pragma region "Set"
@@ -147,7 +181,7 @@
 		} else {
 			// Single option string
 			for (int i = 0; i < num_options; ++i) {
-				if (strcmp(value, option_names[i]) == 0 && option_types[i] == type) {
+				if (!strcmp(value, option_names[i]) && option_types[i] == type) {
 					opt_str = ft_strjoin_sep(CYAN300, option_names[i], " ", J_FREE_NONE);
 					opt_str = ft_strjoin(opt_str, *option_values[i] ? GREEN500"on\n" : RED500"off\n", J_FREE_VAL_1);
 					break;
@@ -163,6 +197,8 @@
 #pragma region "Initialize"
 
 	int options_initialize() {
+		(void) options;
+
 		//	READINPUT
 		shell.options.emacs				= 1;
 		shell.options.vi				= 0;
