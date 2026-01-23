@@ -25,11 +25,11 @@
 
 ## 4. File System/Directories
 
-- `cd` - Change directory
-- `pwd` - Print working directory
-- `dirs` - Display directory stack
-- `pushd` - Push to directory stack
-- `popd` - Pop from directory stack
+- ✓ `cd` - Change directory
+- ✓ `pwd` - Print working directory
+- ✓ `dirs` - Display directory stack
+- ✓ `pushd` - Push to directory stack
+- ✓ `popd` - Pop from directory stack
 
 ## 5. Variables and Attributes
 
@@ -50,7 +50,7 @@
 ## 7. I/O and Formatting
 
 - ✓ `echo` - Print text
-- `printf` - Print with format
+- ✓ `printf` - Print with format
 
 ## 8. Traps, Signals and Control
 
@@ -65,11 +65,11 @@
 - `times` - Show accumulated CPU time
 - `umask` - Show/set permission mask
 - `ulimit` - Show/set resource limits
-- `hash` - Manage command hash table
+- ✓ `hash` - Manage command hash table
 
 ## 10. Shell Options
 
-- `shopt` - Set shell options (42sh specific)
+- ✓ `shopt` - Set shell options (42sh specific)
 - `set` - Also controls options (POSIX)
 
 ## 11. History
@@ -88,3 +88,4 @@
 - `true` - Always returns success
 - `false` - Always returns failure
 - `:` - No-op, always returns success
+
