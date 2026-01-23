@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 14:00:39 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,12 +97,12 @@
 			if (variable_validate(key)) return;
 
 			(void) value;
-			// t_var *var = variable_find(shell.env->table, key);
+			// t_var *var = variable_find(shell.env->variable, key);
 			// if (var && var->readonly) {
 			// 	print(STDERR_FILENO, shell.name, P_RESET);
 			// 	print(STDERR_FILENO, ft_strjoin_sep(": ", key, ": readonly variable\n", 0), P_FREE_PRINT);
 			// } else {
-			// 	variables_add(shell.env->table, key, value, -1, -1, -1, 0);
+			// 	variables_add(shell.env->variable, key, value, -1, -1, -1, 0);
 			// }
 		}
 

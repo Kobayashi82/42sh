@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 13:58:19 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@
 			if (special  != -1)	new_builtin->special  = special;
 			if (execute)		new_builtin->execute  = execute;
 			if (help)			new_builtin->help     = help;
-			new_builtin->next = shell.builtin_table[index];
-			shell.builtin_table[index] = new_builtin;
+			new_builtin->next = shell.builtin[index];
+			shell.builtin[index] = new_builtin;
 
 			return (0);
 		}
@@ -71,7 +71,7 @@
 			if (!name) return (NULL);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = shell.builtin_table[index];
+			t_builtin *builtin = shell.builtin[index];
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) return (builtin);
@@ -85,7 +85,7 @@
 			if (!name) return (0);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = shell.builtin_table[index];
+			t_builtin *builtin = shell.builtin[index];
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) return (!builtin->disabled);
@@ -103,7 +103,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_builtin *builtin = shell.builtin_table[index];
+				t_builtin *builtin = shell.builtin[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
 					builtin = builtin->next;
@@ -115,7 +115,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_builtin *builtin = shell.builtin_table[index];
+				t_builtin *builtin = shell.builtin[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
 						array[i] = ft_strdup(builtin->name);
@@ -137,7 +137,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_builtin *builtin = shell.builtin_table[index];
+				t_builtin *builtin = shell.builtin[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) i++;
 					builtin = builtin->next;
@@ -149,7 +149,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_builtin *builtin = shell.builtin_table[index];
+				t_builtin *builtin = shell.builtin[index];
 				while (builtin) {
 				
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || builtin->special == special)) {
@@ -186,7 +186,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_builtin *builtin = shell.builtin_table[index];
+				t_builtin *builtin = shell.builtin[index];
 				while (builtin) {
 					if (builtin->name && (builtin->disabled == disabled || disabled == 2) && (!special || (!special || builtin->special == special))) i++;
 					builtin = builtin->next;
@@ -208,13 +208,13 @@
 			if (!name) return (1);
 
 			unsigned int index = hash_index(name);
-			t_builtin *builtin = shell.builtin_table[index];
+			t_builtin *builtin = shell.builtin[index];
 			t_builtin *prev = NULL;
 
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) {
 					if (prev)	prev->next = builtin->next;
-					else		shell.builtin_table[index] = builtin->next;
+					else		shell.builtin[index] = builtin->next;
 					free(builtin->name); free(builtin);
 					return (0);
 				}
@@ -231,15 +231,15 @@
 
 		void builtin_clear() {
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				if (shell.builtin_table[index]) {
-					t_builtin *builtin = shell.builtin_table[index];
+				if (shell.builtin[index]) {
+					t_builtin *builtin = shell.builtin[index];
 					while (builtin) {
 						t_builtin *next = builtin->next;
 						free(builtin->name);
 						free(builtin);
 						builtin = next;
 					}
-					shell.builtin_table[index] = NULL;
+					shell.builtin[index] = NULL;
 				}
 			}
 		}

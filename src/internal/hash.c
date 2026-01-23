@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 15:38:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,179 +22,96 @@
 	static unsigned int hash_index(const char *key) {
 		unsigned int hash = 0;
 
-		while (*key) hash = (hash * 31) + *key++;
+		while (key && *key) hash = (hash * 31) + *key++;
 		return (hash % HASH_SIZE);
 	}
 
 #pragma endregion
 
-#pragma region "Import"
+#pragma region "Get"
 
-	#pragma region "CMDP"
+	t_hash *hash_find(const char *name, int no_hit) {
+		if (!name) return (NULL);
 
-		int hash_add(const char *path, int check_file, int check_exec) {
-			if (!path) return (1);
-
-			if (check_exec && access(path, X_OK) == -1) return (1);
-			if (check_file && access(path, F_OK) == -1) return (1);
-			char *name = strrchr(path, '/');
-			if (name && *name) name++;
-			if (ft_isspace_s(name)) return (1);
-
-			t_hash *new_hash = hash_find(name, 1);
-			if (new_hash) {
-				free(new_hash->path);
-				new_hash->path = ft_strdup(path);
-
-				return (0);
+		t_hash *hash = shell.hash[hash_index(name)];
+		for (; hash; hash = hash->next) {
+			if (!strcmp(hash->name, name)) {
+				if (!no_hit) hash->hits++;
+				return (hash);
 			}
-
-			unsigned int index = hash_index(name);
-			new_hash = calloc(1, sizeof(t_hash));
-
-			new_hash->name = ft_strdup(name);
-			new_hash->path = ft_strdup(path);
-
-			new_hash->next = shell.hash_table[index];
-			shell.hash_table[index] = new_hash;
-
-			return (0);
 		}
 
-	#pragma endregion
+		return (NULL);
+	}
+
+	char *hash_get(const char *name, int no_hit) {
+		t_hash *hash = hash_find(name, no_hit);
+
+		return ((hash) ? hash->path : NULL);
+	}
 
 #pragma endregion
 
-#pragma region "Export"
+#pragma region "Add"
 
-	#pragma region "CMDP"
+	int hash_add(const char *path) {
+		shell.error = 0;
+		if (!path) return (1);
 
-		t_hash *hash_find(const char *name, int ninja) {
-			if (!name) return (NULL);
+		char *name = strrchr(path, '/');
+		if (!name || !*(name++)) return (1);
 
-			unsigned int index = hash_index(name);
-			t_hash *hash = shell.hash_table[index];
-
-			while (hash) {
-				if (!strcmp(hash->name, name)) {
-					if (!ninja) hash->hits++;
-					return (hash);
-				}
-				hash = hash->next;
+		t_hash *hash = hash_find(name, 1);
+		if (hash) {
+			free(hash->path);
+			hash->path = ft_strdup(path);
+			if (!hash->path) {
+				hash_delete(name);
+				return (shell.error = E_NO_MEMORY, 1);
 			}
-
-			return (NULL);
-		}
-
-		char *hash_find_value(const char *name, int ninja) {
-			if (!name) return (NULL);
-
-			unsigned int index = hash_index(name);
-			t_hash *hash = shell.hash_table[index];
-
-			while (hash) {
-				if (!strcmp(hash->name, name)) {
-					if (!ninja) hash->hits++;
-					return (hash->path);
-				}
-				hash = hash->next;
-			}
-
-			return (NULL);
-		}
-
-	#pragma endregion
-
-	#pragma region "Array"
-
-		char **hash_to_array(int sort) {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = shell.hash_table[index];
-				while (hash) {
-					if (hash->name && hash->path) i++;
-					hash = hash->next;
-				}
-			}
-
-			if (i == 0) return (NULL);
-			char **array = malloc((i + 1) * sizeof(char *));
-
-			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = shell.hash_table[index];
-				while (hash) {
-					if (hash->name && hash->path) {
-						array[i] = ft_strdup(hash->path);
-						i++;
-					}
-					hash = hash->next;
-				}
-			} array[i] = NULL;
-
-			if (sort) array_sort(array, sort);
-			return (array);
-		}
-
-	#pragma endregion
-
-	#pragma region "Print"
-
-		int hash_print(int sort) {
-			char **array = hash_to_array(sort);
-
-			if (array && array[0]) {
-				print(STDOUT_FILENO, NULL, P_RESET);
-				for (size_t i = 0; array[i]; ++i) {
-					print(STDOUT_FILENO, array[i], P_JOIN);
-					print(STDOUT_FILENO, "\n", P_JOIN);
-				}
-				print(STDOUT_FILENO, NULL, P_PRINT);
-			}
-			if (array) array_free(array);
 
 			return (0);
 		}
 
-	#pragma endregion
-
-	#pragma region "Length"
-
-		size_t hash_length() {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				t_hash *hash = shell.hash_table[index];
-				while (hash) {
-					if (hash->name && hash->path) i++;
-					hash = hash->next;
-				}
-			}
-
-			return (i);
+		t_hash *new_hash = calloc(1, sizeof(t_hash));
+		if (!new_hash) return (shell.error = E_NO_MEMORY, 1);
+		
+		new_hash->name = ft_strdup(name);
+		new_hash->path = ft_strdup(path);
+		if (!new_hash->name || !new_hash->path) {
+			free(new_hash->name);
+			free(new_hash->path);
+			free(new_hash);
+			return (shell.error = E_NO_MEMORY, 1);
 		}
+		
+		unsigned int index = hash_index(name);
+		new_hash->next = shell.hash[index];
+		shell.hash[index] = new_hash;
 
-	#pragma endregion
+		return (0);
+	}
 
 #pragma endregion
 
 #pragma region "Delete"
 
-	#pragma region "CMDP"
+	#pragma region "Delete"
 
 		int hash_delete(const char *name) {
 			if (!name) return (1);
 
 			unsigned int index = hash_index(name);
-			t_hash *hash = shell.hash_table[index];
+			t_hash *hash = shell.hash[index];
 			t_hash *prev = NULL;
 
 			while (hash) {
 				if (!strcmp(hash->name, name)) {
 					if (prev)	prev->next = hash->next;
-					else		shell.hash_table[index] = hash->next;
-					free(hash->name); free(hash->path); free(hash);
+					else		shell.hash[index] = hash->next;
+					free(hash->name);
+					free(hash->path);
+					free(hash);
 					return (0);
 				}
 				prev = hash;
@@ -210,8 +127,8 @@
 
 		void hash_clear() {
 			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-				if (shell.hash_table[index]) {
-					t_hash *hash = shell.hash_table[index];
+				if (shell.hash[index]) {
+					t_hash *hash = shell.hash[index];
 					while (hash) {
 						t_hash *next = hash->next;
 						free(hash->name);
@@ -219,7 +136,7 @@
 						free(hash);
 						hash = next;
 					}
-					shell.hash_table[index] = NULL;
+					shell.hash[index] = NULL;
 				}
 			}
 		}
@@ -228,10 +145,127 @@
 
 #pragma endregion
 
-#pragma region "Initialize"
+#pragma region "Print"
 
-	int hash_initialize() {
-		return (0);
-	}
+	#pragma region "Contains Spaces"
+
+		static int contains_spaces(const char *value) {
+			if (!value) return (0);
+
+			for (const char *c = value; *c; ++c) {
+				if (isspace((unsigned char)*c)) return (1);
+			}
+
+			return (0);
+		}
+
+	#pragma endregion
+
+	#pragma region "Max Name Len"
+
+		static int hash_max_name_len() {
+			int max_len = 0;
+
+			for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+				t_hash *hash = shell.hash[index];
+				for (; hash; hash = hash->next) {
+					if (hash->name) {
+						int len = ft_strlen(hash->name);
+						if (len > max_len) max_len = len;
+					}
+				}
+			}
+
+			return (max_len);
+		}
+
+	#pragma endregion
+
+	#pragma region "Print"
+
+		int hash_print(char *name, int reusable, int is_name, int print_name) {
+			int printed = shell.error = 0;
+			print(STDOUT_FILENO, NULL, P_RESET);
+
+			if (name) {
+				if (is_name) {
+					t_hash *hash = hash_find(name, 1);
+					if (hash) {
+						if (print_name) {
+							int max_len = hash_max_name_len();
+							int len = ft_strlen(hash->name);
+							int spaces = ((max_len > len) ? (max_len - len) : 0) + 4;
+
+							print(STDOUT_FILENO, hash->name, P_JOIN);
+							while (spaces--) print(STDOUT_FILENO, " ", P_JOIN);
+							print(STDOUT_FILENO, hash->path, P_JOIN);
+							print(STDOUT_FILENO, "\n", P_JOIN);
+						} else {
+							print(STDOUT_FILENO, hash->path, P_JOIN);
+							print(STDOUT_FILENO, "\n", P_JOIN);
+						}
+						printed = 1;
+					}
+				} else if (reusable) {
+					t_hash *hash = hash_find(name, 1);
+					if (hash) {
+						print(STDOUT_FILENO, "hash -p ", P_JOIN);
+						if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
+						else								print(STDOUT_FILENO, hash->path, P_JOIN);
+						print(STDOUT_FILENO, " ", P_JOIN);
+						if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
+						else								print(STDOUT_FILENO, hash->name, P_JOIN);
+						print(STDOUT_FILENO, "\n", P_JOIN);
+						printed = 1;
+					}
+				}
+			} else {
+				if (reusable) {
+					for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+						t_hash *hash = shell.hash[index];
+						for (; hash; hash = hash->next) {
+								if (hash->name && hash->path) {
+									print(STDOUT_FILENO, "hash -p ", P_JOIN);
+									if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
+									else								print(STDOUT_FILENO, hash->path, P_JOIN);
+									print(STDOUT_FILENO, " ", P_JOIN);
+									if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
+									else								print(STDOUT_FILENO, hash->name, P_JOIN);
+									print(STDOUT_FILENO, "\n", P_JOIN);
+									printed = 1;
+								}
+						}
+					}
+				} else {
+					int title = 0;
+					for (unsigned int index = 0; index < HASH_SIZE; ++index) {
+						t_hash *hash = shell.hash[index];
+							for (; hash; hash = hash->next) {
+								if (hash->name && hash->path) {
+									if (!title) {
+										title = 1;
+										print(STDOUT_FILENO, "hits    command\n", P_JOIN);
+									}
+									char hit_buf[20];
+									snprintf(hit_buf, sizeof(hit_buf), "%4d    ", hash->hits);
+									print(STDOUT_FILENO, hit_buf, P_JOIN);
+									print(STDOUT_FILENO, hash->path, P_JOIN);
+									print(STDOUT_FILENO, "\n", P_JOIN);
+									printed = 1;
+								}
+							}
+					}
+				}
+			}
+
+			if (printed) {
+				print(STDOUT_FILENO, NULL, P_PRINT);
+				return (0);
+			}
+				
+			return (1);
+		}
+
+	#pragma endregion
 
 #pragma endregion

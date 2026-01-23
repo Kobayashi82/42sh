@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:22:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 14:01:54 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,7 +135,7 @@
 
 			// Search in current environment and parents
 			while (env) {
-				t_var *var = env->table[hash_index(key)];
+				t_var *var = env->variable[hash_index(key)];
 				while (var) {
 					if (!strcmp(var->key, key)) return (var);
 					var = var->next;
@@ -262,7 +262,7 @@
 
 				// If not found or local, search only in current environment
 				if (!var) {
-					t_var *local_var = env->table[hash_index(key)];
+					t_var *local_var = env->variable[hash_index(key)];
 					while (local_var) {
 						if (!strcmp(local_var->key, key)) {
 							var = local_var;
@@ -298,8 +298,8 @@
 					var->flags = type;
 
 					unsigned int hash = hash_index(key);
-					var->next = env->table[hash];
-					env->table[hash] = var;
+					var->next = env->variable[hash];
+					env->variable[hash] = var;
 
 					return (0);
 				}
@@ -371,7 +371,7 @@
 
 				// If not found or local, search only in current environment
 				if (!var) {
-					t_var *local_var = env->table[hash_index(key)];
+					t_var *local_var = env->variable[hash_index(key)];
 					while (local_var) {
 						if (!strcmp(local_var->key, key)) {
 							var = local_var;
@@ -405,8 +405,8 @@
 
 					// Insert into current environment
 					unsigned int hash = hash_index(key);
-					var->next = env->table[hash];
-					env->table[hash] = var;
+					var->next = env->variable[hash];
+					env->variable[hash] = var;
 				}
 
 				// If scalar, convert to array
@@ -655,7 +655,7 @@
 
 				// If not found or local, search only in current environment
 				if (!var) {
-					t_var *local_var = env->table[hash_index(key)];
+					t_var *local_var = env->variable[hash_index(key)];
 					while (local_var) {
 						if (!strcmp(local_var->key, key)) {
 							var = local_var;
@@ -689,8 +689,8 @@
 
 					// Insert into current environment
 					unsigned int hash = hash_index(key);
-					var->next = env->table[hash];
-					env->table[hash] = var;
+					var->next = env->variable[hash];
+					env->variable[hash] = var;
 				}
 
 				unsigned int hash = hash_index(assoc_key);
@@ -896,7 +896,7 @@
 
 				// If not found or local, search only in current environment
 				if (!var) {
-					t_var *local_var = env->table[hash_index(key)];
+					t_var *local_var = env->variable[hash_index(key)];
 					while (local_var) {
 						if (!strcmp(local_var->key, key)) {
 							var = local_var;
@@ -932,8 +932,8 @@
 					var->flags = type;
 
 					unsigned int hash = hash_index(key);
-					var->next = env->table[hash];
-					env->table[hash] = var;
+					var->next = env->variable[hash];
+					env->variable[hash] = var;
 
 					return (0);
 				}
@@ -991,7 +991,7 @@
 			// Add to hash while counting
 			for (t_env *e = env; e; e = e->parent) {
 				for (int i = 0; i < HASH_SIZE; ++i) {
-					t_var *var = e->table[i];
+					t_var *var = e->variable[i];
 					while (var) {
 						if (var->flags & VAR_EXPORTED && !(var->flags & (VAR_ARRAY | VAR_ASSOCIATIVE)) && var->data.scalar) {
 
@@ -1133,7 +1133,7 @@
 				t_env *current = env;
 				while (current) {
 					for (int index = 0; index < HASH_SIZE; ++index) {
-						t_var *var = current->table[index];
+						t_var *var = current->variable[index];
 						while (var) {
 							count++;
 							var = var->next;
@@ -1155,7 +1155,7 @@
 				current = env;
 				while (current) {
 					for (int index = 0; index < HASH_SIZE; ++index) {
-						t_var *var = current->table[index];
+						t_var *var = current->variable[index];
 						while (var) {
 							if (!is_shadowed(var->key, seen, count) && (!type || (var->flags & type) == type))
 								seen[count++] = var;
@@ -1251,7 +1251,7 @@
 
 			while (env) {
 				unsigned int hash = hash_index(last_key);
-				var = env->table[hash];
+				var = env->variable[hash];
 				t_var *prev = NULL;
 
 				while (var) {
@@ -1259,7 +1259,7 @@
 						if (var->flags & VAR_READONLY) return (shell.error = E_VAR_READONLY, E_VAR_READONLY);
 
 						if (prev)	prev->next = var->next;
-						else		env->table[hash] = var->next;
+						else		env->variable[hash] = var->next;
 
 						variable_free(var);
 						specials_unset(env, last_key);
@@ -1297,7 +1297,7 @@
 		void variable_clear(t_env *env) {
 			if (!env) return;
 
-			variable_clear_table(env->table);
+			variable_clear_table(env->variable);
 			if (env->parent) variable_clear(env->parent);
 		}
 

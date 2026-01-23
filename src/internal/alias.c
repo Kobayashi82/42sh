@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 13:58:10 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,8 @@
 			if (value)	new_alias->value = ft_strdup(value);
 			else		new_alias->value = ft_strdup("");
 
-			new_alias->next = shell.alias_table[index];
-			shell.alias_table[index] = new_alias;
+			new_alias->next = shell.alias[index];
+			shell.alias[index] = new_alias;
 
 			return (0);
 		}
@@ -93,7 +93,7 @@
 			if (!key) return (NULL);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = shell.alias_table[index];
+			t_alias *alias = shell.alias[index];
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) return (alias);
@@ -107,7 +107,7 @@
 			if (!key) return (NULL);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = shell.alias_table[index];
+			t_alias *alias = shell.alias[index];
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) return (alias->value);
@@ -125,7 +125,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias_table[index];
+				t_alias *alias = shell.alias[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
 					alias = alias->next;
@@ -137,7 +137,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias_table[index];
+				t_alias *alias = shell.alias[index];
 				while (alias) {
 					
 					if (alias->name && alias->value) {
@@ -160,7 +160,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias_table[index];
+				t_alias *alias = shell.alias[index];
 				while (alias) {
 					if (alias->name && alias->value) i++;
 					alias = alias->next;
@@ -172,7 +172,7 @@
 
 			i = 0;
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias_table[index];
+				t_alias *alias = shell.alias[index];
 				while (alias) {
 					
 					if (alias->name) {
@@ -207,7 +207,7 @@
 			size_t i = 0;
 
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias_table[index];
+				t_alias *alias = shell.alias[index];
 				while (alias) {
 					if (alias->name) i++;
 					alias = alias->next;
@@ -229,13 +229,13 @@
 			if (!key) return (1);
 
 			unsigned int index = hash_index(key);
-			t_alias *alias = shell.alias_table[index];
+			t_alias *alias = shell.alias[index];
 			t_alias *prev = NULL;
 
 			while (alias) {
 				if (!strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
-					else		shell.alias_table[index] = alias->next;
+					else		shell.alias[index] = alias->next;
 					free(alias->name); free(alias->value); free(alias);
 					return (0);
 				}
@@ -252,8 +252,8 @@
 
 		void alias_clear() {
 			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				if (shell.alias_table[index]) {
-					t_alias *alias = shell.alias_table[index];
+				if (shell.alias[index]) {
+					t_alias *alias = shell.alias[index];
 					while (alias) {
 						t_alias *next = alias->next;
 						free(alias->name);
@@ -261,7 +261,7 @@
 						free(alias);
 						alias = next;
 					}
-					shell.alias_table[index] = NULL;
+					shell.alias[index] = NULL;
 				}
 			}
 		}

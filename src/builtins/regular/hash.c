@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:41:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 13:58:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@
 	static int print_hash(int reuse) {
 		int title = 0; int total = 0;
 		for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-			t_hash *hash = shell.hash_table[index];
+			t_hash *hash = shell.hash[index];
 			while (hash) {
 				if (hash->name && hash->path) {
 					if (reuse) {
