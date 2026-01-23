@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 21:30:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:43:52 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,5 +194,3 @@
 	}
 
 #pragma endregion
-
-// IMPORTANTE, AL MODIFICAR PATH, LIMPIAR HASH

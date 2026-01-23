@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 14:01:54 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:43:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@
 			if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(value);
 			if (!strcmp(key, "42_HISTCONTROL"))		history_hist_control_set(value);
 			if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(value);
+
+			// PATH
+			if (!strcmp(key, "PATH"))				hash_clear();
 		}
 
 		void specials_unset(t_env *env, const char *key) {
@@ -71,6 +74,9 @@
 			if (!strcmp(key, "42_HISTFILESIZE"))	history_size_set(2000, HIST_FILE);
 			if (!strcmp(key, "42_HISTTIMEFORMAT"))	history_hist_timeformat_set(NULL);
 			if (!strcmp(key, "42_HISTIGNORE"))		history_hist_ignore_set(NULL);
+
+			// PATH
+			if (!strcmp(key, "PATH"))				hash_clear();
 		}
 
 	#pragma endregion
