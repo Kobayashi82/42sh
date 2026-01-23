@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 13:50:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 15:38:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:41:06 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,9 @@
 
 #pragma region "Add"
 
-	int hash_add(const char *path) {
+	int hash_add_path(const char *name, const char *path) {
 		shell.error = 0;
-		if (!path) return (1);
-
-		char *name = strrchr(path, '/');
-		if (!name || !*(name++)) return (1);
+		if (!name || !path) return (1);
 
 		t_hash *hash = hash_find(name, 1);
 		if (hash) {
@@ -79,6 +76,53 @@
 		new_hash->name = ft_strdup(name);
 		new_hash->path = ft_strdup(path);
 		if (!new_hash->name || !new_hash->path) {
+			free(new_hash->name);
+			free(new_hash->path);
+			free(new_hash);
+			return (shell.error = E_NO_MEMORY, 1);
+		}
+		
+		unsigned int index = hash_index(name);
+		new_hash->next = shell.hash[index];
+		shell.hash[index] = new_hash;
+
+		return (0);
+	}
+
+	int hash_add(const char *path) {
+		shell.error = 0;
+		if (!path) return (1);
+
+		char *final_path = path_find_first(path, NULL);
+		if (!final_path) return (shell.error = E_HASH_NOT_FOUND, 1);
+
+		if (access(final_path, X_OK) == -1 || is_directory(final_path)) {
+			free(final_path);
+			return (shell.error = E_HASH_NOT_FOUND, 1);
+		}
+
+		char *name = strrchr(final_path, '/');
+		if (!name || !*(name++)) {
+			free(final_path);
+			return (1);
+		}
+
+		t_hash *hash = hash_find(name, 1);
+		if (hash) {
+			free(hash->path);
+			hash->path = final_path;
+			return (0);
+		}
+
+		t_hash *new_hash = calloc(1, sizeof(t_hash));
+		if (!new_hash) {
+			free(final_path);
+			return (shell.error = E_NO_MEMORY, 1);
+		}
+		
+		new_hash->name = ft_strdup(name);
+		new_hash->path = final_path;
+		if (!new_hash->name) {
 			free(new_hash->name);
 			free(new_hash->path);
 			free(new_hash);
@@ -183,12 +227,24 @@
 
 	#pragma region "Print"
 
-		int hash_print(char *name, int reusable, int is_name, int print_name) {
+		int hash_print(char *name, int reusable, int print_name) {
 			int printed = shell.error = 0;
 			print(STDOUT_FILENO, NULL, P_RESET);
 
 			if (name) {
-				if (is_name) {
+				if (reusable) {
+					t_hash *hash = hash_find(name, 1);
+					if (hash) {
+						print(STDOUT_FILENO, "hash -p ", P_JOIN);
+						if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
+						else								print(STDOUT_FILENO, hash->path, P_JOIN);
+						print(STDOUT_FILENO, " ", P_JOIN);
+						if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
+						else								print(STDOUT_FILENO, hash->name, P_JOIN);
+						print(STDOUT_FILENO, "\n", P_JOIN);
+						printed = 1;
+					}
+				} else {
 					t_hash *hash = hash_find(name, 1);
 					if (hash) {
 						if (print_name) {
@@ -206,54 +262,40 @@
 						}
 						printed = 1;
 					}
-				} else if (reusable) {
-					t_hash *hash = hash_find(name, 1);
-					if (hash) {
-						print(STDOUT_FILENO, "hash -p ", P_JOIN);
-						if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
-						else								print(STDOUT_FILENO, hash->path, P_JOIN);
-						print(STDOUT_FILENO, " ", P_JOIN);
-						if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
-						else								print(STDOUT_FILENO, hash->name, P_JOIN);
-						print(STDOUT_FILENO, "\n", P_JOIN);
-						printed = 1;
-					}
 				}
 			} else {
 				if (reusable) {
 					for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 						t_hash *hash = shell.hash[index];
 						for (; hash; hash = hash->next) {
-								if (hash->name && hash->path) {
-									print(STDOUT_FILENO, "hash -p ", P_JOIN);
-									if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
-									else								print(STDOUT_FILENO, hash->path, P_JOIN);
-									print(STDOUT_FILENO, " ", P_JOIN);
-									if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
-									else								print(STDOUT_FILENO, hash->name, P_JOIN);
-									print(STDOUT_FILENO, "\n", P_JOIN);
-									printed = 1;
-								}
+							print(STDOUT_FILENO, "hash -p ", P_JOIN);
+							if (contains_spaces(hash->path))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->path, "'", J_FREE_NONE), P_FREE_JOIN);
+							else								print(STDOUT_FILENO, hash->path, P_JOIN);
+							print(STDOUT_FILENO, " ", P_JOIN);
+							if (contains_spaces(hash->name))	print(STDOUT_FILENO, ft_strjoin_sep("'", hash->name, "'", J_FREE_NONE), P_FREE_JOIN);
+							else								print(STDOUT_FILENO, hash->name, P_JOIN);
+							print(STDOUT_FILENO, "\n", P_JOIN);
+							printed = 1;
 						}
 					}
 				} else {
 					int title = 0;
 					for (unsigned int index = 0; index < HASH_SIZE; ++index) {
 						t_hash *hash = shell.hash[index];
-							for (; hash; hash = hash->next) {
-								if (hash->name && hash->path) {
-									if (!title) {
-										title = 1;
-										print(STDOUT_FILENO, "hits    command\n", P_JOIN);
-									}
-									char hit_buf[20];
-									snprintf(hit_buf, sizeof(hit_buf), "%4d    ", hash->hits);
-									print(STDOUT_FILENO, hit_buf, P_JOIN);
-									print(STDOUT_FILENO, hash->path, P_JOIN);
-									print(STDOUT_FILENO, "\n", P_JOIN);
-									printed = 1;
+						for (; hash; hash = hash->next) {
+							if (hash->name && hash->path) {
+								if (!title) {
+									title = 1;
+									print(STDOUT_FILENO, "hits    command\n", P_JOIN);
 								}
+								char hit_buf[20];
+								snprintf(hit_buf, sizeof(hit_buf), "%4d    ", hash->hits);
+								print(STDOUT_FILENO, hit_buf, P_JOIN);
+								print(STDOUT_FILENO, hash->path, P_JOIN);
+								print(STDOUT_FILENO, "\n", P_JOIN);
+								printed = 1;
 							}
+						}
 					}
 				}
 			}

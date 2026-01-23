@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 13:58:28 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:30:51 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,44 +103,6 @@
 
 #pragma endregion
 
-#pragma region "Print"
-
-	static int print_hash(int reuse) {
-		int title = 0; int total = 0;
-		for (unsigned int index = 0; index < HASH_SIZE; ++index) {
-			t_hash *hash = shell.hash[index];
-			while (hash) {
-				if (hash->name && hash->path) {
-					if (reuse) {
-						print(STDOUT_FILENO, "builtin hash -p ", P_JOIN);
-						print(STDOUT_FILENO, hash->path, P_JOIN);
-						print(STDOUT_FILENO, " ", P_JOIN);
-						print(STDOUT_FILENO, hash->name, P_JOIN);
-						print(STDOUT_FILENO, "\n", P_JOIN);
-					} else {
-						if (!title) { title = 1; print(STDOUT_FILENO, "hits    command\n", P_JOIN); }
-						char *hits = ft_itoa(hash->hits);
-						int spaces = 4 - ft_strlen(hits);
-						while (spaces--) print(STDOUT_FILENO, " ", P_JOIN);
-						print(STDOUT_FILENO, hits, P_FREE_JOIN);
-						print(STDOUT_FILENO, "    ", P_JOIN);
-						print(STDOUT_FILENO, hash->path, P_JOIN);
-						print(STDOUT_FILENO, "\n", P_JOIN);
-					}
-					total++;
-				}
-				hash = hash->next;
-			}
-		}
-
-		if (!total) { print(STDERR_FILENO, "hash: hash table empty\n", P_PRINT); return (1); }
-		else print(STDOUT_FILENO, NULL, P_PRINT);
-
-		return (0);
-	}
-
-#pragma endregion
-
 #pragma region "Hash"
 
 	int bt_hash(int argc, char **argv) {
@@ -151,54 +113,86 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "lrp:dt", NULL, long_opts, "hash [-lr] [-p pathname] [-dt] [name ...]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_hash_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
 		int ret = 0;
+		int clear		= has_option(result, 'r', 0);
+		int location	= has_option(result, 't', 0);
+		int pathname	= has_option(result, 'p', 0);
+		int delete		= has_option(result, 'd', 0);
+		int reusable	= has_option(result, 'l', 0);
+		// -r > -t > -p > -d > (operación por defecto)
 
-		print(STDOUT_FILENO, NULL, P_RESET);
-		print(STDERR_FILENO, NULL, P_RESET);
+		if (clear) hash_clear();
 
-		if (has_option(result, 'r', 0)) {
-			hash_clear();
-			return (free_options(result), 0);
-		}
-
-		if (has_option(result, 't', 0)) {
-			// -t             print the remembered location of each NAME, preceding
-            //                each location with the corresponding NAME if multiple
-            //                NAMEs are given
-			return (free_options(result), 0);
-		}
-
-		if (has_option(result, 'd', 0) || has_option(result, 'p', 0)) {
+		if (location) {
 			if (!result->argc) {
-				print(STDERR_FILENO, shell.name,                                                                    P_RESET);
-				if		(has_option(result, 'd', 0)) print(STDERR_FILENO, ": hash: -d: option requires an argument\n", P_JOIN);
-				else if (has_option(result, 't', 0)) print(STDERR_FILENO, ": hash: -t: option requires an argument\n", P_JOIN);
-				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                   P_PRINT);
-				return (free_options(result), 2);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": hash: -t: option requires an argument\n", J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                       P_PRINT);
+				ret = 2;
+			} else {
+				for (int i = 0; i < result->argc; ++i) {
+					if (hash_print(result->argv[i], reusable, result->argc > 1)) {
+						ret = exit_error(E_HASH_NOT_FOUND, 1, "hash: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					}
+				}
 			}
-
-			for (int i = 0; i < result->argc; ++i)  {
-				// -d             forget the remembered location of each NAME
-				// -p pathname    use PATHNAME as the full pathname of NAME
-			}
-			return (free_options(result), 0);
-		}
-
-		if (!result->options || has_option(result, 'l', 0)) {
-			ret = print_hash(has_option(result, 'l', 0));
 			return (free_options(result), ret);
 		}
 
-		print(STDOUT_FILENO, NULL, P_PRINT);
-		print(STDERR_FILENO, NULL, P_PRINT);
+		if (pathname) {
+			if (!result->argc) {
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": hash: -p: option requires a name\n", J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                  P_PRINT);
+				ret = 2;
+			} else {
+				const char *path = get_option_value(result, 'p', 0);
+				for (int i = 0; i < result->argc; ++i) {
+					if (hash_add_path(result->argv[i], path)) {
+						if (shell.error == E_NO_MEMORY) {
+							ret = exit_error(E_NO_MEMORY, 1, "hash", NULL, EE_FREE_NONE, EE_RETURN);
+							break;
+						}
+					}
+				}
+			}
+			return (free_options(result), ret);
+		} else if (delete) {
+			if (!result->argc) {
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": hash: -d: option requires an argument\n", J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, "hash: usage: hash [-lr] [-p pathname] [-dt] [name ...]\n",                       P_PRINT);
+				ret = 2;
+			} else {
+				for (int i = 0; i < result->argc; ++i) {
+					if (hash_delete(result->argv[i])) {
+						ret = exit_error(E_HASH_NOT_FOUND, 1, "hash: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					}
+				}
+			}
+			return (free_options(result), ret);
+		}
 
-		return (free_options(result), 0);
+		if (!result->argc) {
+			if (hash_print(NULL, reusable, 0)) exit_error(E_HASH_EMPTY, 1, NULL, NULL, EE_FREE_NONE, EE_RETURN);
+		} else {
+			for (int i = 0; i < result->argc; ++i) {
+				if (hash_add(result->argv[i])) {
+					if (shell.error == E_NO_MEMORY) {
+						ret = exit_error(E_NO_MEMORY, 1, "hash", NULL, EE_FREE_NONE, EE_RETURN);
+						break;
+					}
+					if (shell.error == E_HASH_NOT_FOUND) ret = exit_error(E_HASH_NOT_FOUND, 1, "hash: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+				}
+			}
+		}
+
+		return (free_options(result), ret);
 	}
 
 #pragma endregion
+
+// IMPORTANTE, AL MODIFICAR PATH, LIMPIAR HASH

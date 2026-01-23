@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 00:45:44 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:21:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:22:07 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@
 
 		#pragma region "SPLIT"
 
-			char	**ft_split(char *str, char c);
+			char	**ft_split(const char *str, char c);
 
 		#pragma endregion
 
@@ -235,7 +235,7 @@
 
 		char	*normalize_path(char *path, int free_mode);
 		char	*resolve_path(const char *path);
-		char	*path_find_first(char *cmd, char *paths);
+		char	*path_find_first(const char *cmd, const char *paths);
 		char	**path_find_all(char *cmd, char *paths);
 		char	*get_fullpath(char *path);
 		char	*get_fullpath_command(const char *value, int fullpath);

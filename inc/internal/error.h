@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 13:46:45 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 20:29:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,11 @@
 			E_OPT_INVALID			= 301,		// Invalid option
 			E_OPT_NO_ARGUMENT		= 302,		// Missing required argument for option
 			E_OPT_ARGUMENT			= 303,		// Unexpected argument for option
+			E_SOPT_INVALID			= 304,		// Invalid shell option
 
-			E_SOPT_INVALID			= 305,		// Invalid shell option
+			// Hash
+			E_HASH_EMPTY			= 306,		// Hash is empty
+			E_HASH_NOT_FOUND		= 307,		// Hash command not found
 
 			// CD, PWD, Dirs, Pushd, Popd
 			E_DIRS_EMPTY			= 310,		// Directory stack is empty

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:04:33 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:30:22 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,10 +68,14 @@
 			if (error_type == E_DIRS_NOT_DIR)		print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Not a directory\n",                    J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_PERMISSION)	print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": Permission denied\n",                  J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_EMPTY)			print(STDERR_FILENO, ft_strjoin(value1, ": directory stack empty\n",                        J_FREE_NONE), P_FREE_PRINT);
-			if (error_type == E_DIRS_EMPTY_DIR)		print(STDERR_FILENO, ft_strjoin(value1, ": no other directory\n",                        J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_DIRS_EMPTY_DIR)		print(STDERR_FILENO, ft_strjoin(value1, ": no other directory\n",                           J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_HOME)			print(STDERR_FILENO, ft_strjoin(value1, ": HOME not set\n",                                 J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_OLDPWD)		print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n",                               J_FREE_NONE), P_FREE_PRINT);
+
+			// Hash
+			if (error_type == E_HASH_EMPTY)			print(STDERR_FILENO, ": hash: hash table empty\n",                                 P_PRINT);
+			if (error_type == E_HASH_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n", J_FREE_NONE), P_FREE_PRINT);
 
 			// Otro
 		}

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 21:29:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:36:17 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,8 +235,9 @@
 
 	#pragma region "First"
 
-		char *path_find_first(char *cmd, char *paths) {
+		char *path_find_first(const char *cmd, const char *paths) {
 			if (!cmd) return (NULL);
+
 			if (strchr(cmd, '/')) {
 				char *fullpath = realpath(cmd, NULL);
 				if (access(fullpath, F_OK) != -1) return (fullpath);
@@ -244,6 +245,7 @@
 			}
 
 			if (!paths && !(paths = variable_scalar_get(shell.env, "PATH"))) return (NULL);
+
 			char **search_paths = ft_split(paths, ':');
 			if (!search_paths) return (NULL);
 
@@ -255,8 +257,7 @@
 
 				char *resolved_path = realpath(fullpath, NULL);
 				free(fullpath);
-				if (!resolved_path) break;
-
+				if (!resolved_path) continue;;
 				fullpath = resolved_path;
 
 				if (access(fullpath, F_OK) != -1) { final_path = fullpath; break; }

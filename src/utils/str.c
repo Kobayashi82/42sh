@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 20:09:18 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:17:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/23 21:22:48 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,11 +241,11 @@
 
 #pragma region "SPLIT"
 
-	char **ft_split(char *str, char c) {
+	char **ft_split(const char *str, char c) {
 		if (!str) return (NULL);
 
 		int	count = 0, in_word = 0;
-		for (char *tmp = str; *tmp; tmp++) {
+		for (const char *tmp = str; *tmp; tmp++) {
 			if (*tmp != c && !in_word && ++count)	in_word = 1;
 			else if (*tmp == c)						in_word = 0;
 		}
