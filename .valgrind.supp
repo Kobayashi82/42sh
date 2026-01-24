@@ -27,6 +27,12 @@
    ...
 }
 {
+   <vim.gtk3>
+   Memcheck:Leak
+   ...
+   obj:*/vim.gtk3
+}
+{
    <grep>
    Memcheck:Leak
    ...
@@ -81,4 +87,34 @@
    ...
    obj:/usr/bin/head
    ...
+}
+{
+   <libX11>
+   Memcheck:Leak
+   ...
+   obj:*/libX11.so*
+}
+{
+   <libglib>
+   Memcheck:Leak
+   ...
+   obj:*/libglib-2.0.so*
+}
+{
+   <libgobject>
+   Memcheck:Leak
+   ...
+   obj:*/libgobject-2.0.so*
+}
+{
+   <libXt>
+   Memcheck:Leak
+   ...
+   obj:*/libXt.so*
+}
+{
+   <dl_init>
+   Memcheck:Leak
+   ...
+   fun:_dl_init
 }

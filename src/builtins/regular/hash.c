@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:03 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 21:43:52 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 16:45:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@
 		int pathname	= has_option(result, 'p', 0);
 		int delete		= has_option(result, 'd', 0);
 		int reusable	= has_option(result, 'l', 0);
-		// -r > -t > -p > -d > (operación por defecto)
 
 		if (clear) hash_clear();
 

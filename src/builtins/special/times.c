@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 17:08:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
+
+	#include <sys/times.h>
 
 #pragma endregion
 
@@ -101,16 +103,46 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "", NULL, long_opts, "times", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_times_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
 		int ret = 0;
-
+		struct tms	buf;
+		long		clk_tck;
+		char		output[256];
+		
+		clk_tck = sysconf(_SC_CLK_TCK);
+		if (clk_tck == -1 || times(&buf) == (clock_t)-1) ret = 1;
+		else {
+			snprintf(output, sizeof(output), "%ldm%.3fs %ldm%.3fs\n%ldm%.3fs %ldm%.3fs\n",
+				buf.tms_utime / clk_tck / 60,
+				(double)(buf.tms_utime % (clk_tck * 60)) / clk_tck,
+				buf.tms_stime / clk_tck / 60,
+				(double)(buf.tms_stime % (clk_tck * 60)) / clk_tck,
+				buf.tms_cutime / clk_tck / 60,
+				(double)(buf.tms_cutime % (clk_tck * 60)) / clk_tck,
+				buf.tms_cstime / clk_tck / 60,
+				(double)(buf.tms_cstime % (clk_tck * 60)) / clk_tck);
+			
+			print(STDOUT_FILENO, output, P_RESET_PRINT);
+		}
 
 		return (free_options(result), ret);
 	}
+
+#pragma endregion
+
+#pragma region "Info"
+
+	// 0m0.010s 0m0.005s
+	// 0m0.100s 0m0.050s
+
+	// linea 1, tiempo 1: tms_utime  (user time del proceso actual)
+	// linea 1, tiempo 2: tms_stime  (system time del proceso actual)
+	// linea 2, tiempo 1: tms_cutime (user time acumulado de hijos)
+	// linea 2, tiempo 2: tms_cstime (system time acumulado de hijos)
 
 #pragma endregion

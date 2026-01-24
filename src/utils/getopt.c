@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/29 13:27:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 17:50:07 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 16:34:44 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,8 +212,14 @@
 					char opt = arg[i];
 					int arg_type = get_short_type(short_opts, opt);
 
+					if (ignore_mode == IGNORE_STRING) {
+						int len = ft_strlen(arg);
+						for (int i = 0; i < len; ++i) {
+							if (get_short_type(short_opts, arg[i]) == -1) return (2);
+						}
+					}
+
 					if (arg_type == -1) {
-						if (ignore_mode == IGNORE_STRING) return (2);
 						char utf8_char[5];
 						extract_utf8_char(&arg[i], utf8_char, 4);
 						if (!silent_mode) {
