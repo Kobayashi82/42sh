@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 14:03:30 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 15:41:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,11 @@
 	#include "internal/alias.h"
 	#include "internal/builtin.h"
 	#include "internal/dirs.h"
-	#include "internal/hash.h"
-	#include "internal/variable.h"
-	#include "internal/options.h"
 	#include "internal/error.h"
+	#include "internal/hash.h"
+	#include "internal/options.h"
+	#include "internal/positional.h"
+	#include "internal/variable.h"
 
 #pragma endregion
 

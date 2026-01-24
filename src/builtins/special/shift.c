@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 16:12:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,34 +107,24 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
+		int ret = 0;
+
 		if (result->argc && !ft_isdigit_s(result->argv[0])) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ",                          J_FREE_NONE), P_FREE_RESET);
-			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": numeric argument required\n", J_FREE_NONE), P_FREE_PRINT);
+			exit_error(E_POS_PARAM_NUMERIC, 1, "shift", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
 		if (result->argc > 1) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: too many arguments\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+			exit_error(E_POS_PARAM_ARGS, 1, "shift", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
-		int number = (result->argc) ? atoi(result->argv[0]) : 1;
-
-		if (number < 0) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": shift: ",                         J_FREE_NONE), P_FREE_RESET);
-			print(STDERR_FILENO, ft_strjoin(result->argv[0], ": shift count out of range\n", J_FREE_NONE), P_FREE_PRINT);
-			return (free_options(result), 1);
+		if (positional_params_shift(shell.env, (result->argc) ? atoi(result->argv[0]) : 1)) {
+			if (shell.error == E_POS_PARAM_RANGE) exit_error(E_POS_PARAM_RANGE, 1, "shift", NULL, EE_FREE_NONE, EE_RETURN);
+			ret = 1;
 		}
 
-		if (!number)					return (free_options(result), 0);
-		if (number > shell.env->argc)	return (free_options(result), 1);
-
-		for (int i = 0; i < number; ++i)
-			free(shell.env->argv[i]);
-		memmove(shell.env->argv, shell.env->argv + number, (shell.env->argc - number + 1) * sizeof(char *));
-		shell.env->argc -= number;
-
-		return (free_options(result), 0);
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

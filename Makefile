@@ -6,7 +6,7 @@
 #    By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/16 12:54:20 by vzurera-          #+#    #+#              #
-#    Updated: 2026/01/21 22:00:57 by vzurera-         ###   ########.fr        #
+#    Updated: 2026/01/24 15:17:07 by vzurera-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,7 @@ SRCS	=	main.c											\
 			internal/error.c								\
 			internal/hash.c									\
 			internal/options.c								\
+			internal/positional.c							\
 			internal/shell.c								\
 			internal/variable.c								\
 															\

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 21:30:22 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 15:36:37 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@
 	#pragma region "Variable"
 
 		static void variable_msg(int error_type, char *value1, char *value2) {
+			if (error_type == E_POS_PARAM_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": numeric argument required\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_POS_PARAM_NUMERIC)		print(STDERR_FILENO, ft_strjoin(value1, ": shift: too many arguments\n", J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_POS_PARAM_RANGE)		print(STDERR_FILENO, ft_strjoin(value1, ": shift count out of range\n",  J_FREE_NONE), P_FREE_PRINT);
+			
 			if (error_type == E_VAR_IDENTIFIER)			print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not a valid identifier\n",  J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_VAR_MAX_REFERENCES)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": too many references\n",     J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_VAR_CYCLE_REFERENCE)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": circular name reference\n", J_FREE_NONE), P_FREE_PRINT);

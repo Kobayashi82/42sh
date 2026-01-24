@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 20:29:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/24 15:32:03 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,10 @@
 	#pragma region "Variable"
 
 		enum e_error_variable {
+			E_POS_PARAM_ARGS		= 245,		// 
+			E_POS_PARAM_NUMERIC		= 246,		// 
+			E_POS_PARAM_RANGE		= 247,		// 
+
 			E_VAR_MAX_REFERENCES	= 250,		// Maximum reference depth exceeded
 			E_VAR_CYCLE_REFERENCE	= 251,		// Circular reference
 			E_VAR_INVALID_TYPE		= 252,		// Invalid type
@@ -84,8 +88,8 @@
 			E_HIS_DIG				= 321,		// 
 
 			// Exit
-			E_EXIT_NUM				= 380,		// 
-			E_EXIT_ARGS				= 381		// 
+			E_EXIT_ARGS				= 380,		// 
+			E_EXIT_NUMERIC			= 381		// 
 		};
 
 	#pragma endregion
