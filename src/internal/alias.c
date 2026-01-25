@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 13:58:10 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 11:25:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 	#pragma region "Alias"
 
 		int alias_add(const char *key, const char *value) {
-			if (!key) return (0);
+			if (!key) return (1);
 
 			t_alias *new_alias = alias_find(key);
 			if (new_alias) {
@@ -63,7 +63,7 @@
 	#pragma region "Validate"
 
 		int alias_validate(char *key, int show_msg) {
-			if (!key) return (0);
+			if (!key) return (1);
 			int result = 0;
 
 			size_t len = ft_strlen(key);
@@ -119,41 +119,6 @@
 
 	#pragma endregion
 
-	#pragma region "Array"
-
-		char **alias_to_array(int sort) {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias[index];
-				while (alias) {
-					if (alias->name && alias->value) i++;
-					alias = alias->next;
-				}
-			}
-
-			if (i == 0) return (NULL);
-			char **array = malloc((i + 1) * sizeof(char *));
-
-			i = 0;
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias[index];
-				while (alias) {
-					
-					if (alias->name && alias->value) {
-						array[i] = ft_strjoin_sep(alias->name, "=", alias->value, 0);
-						i++;
-					}
-					alias = alias->next;
-				}
-			} array[i] = NULL;
-
-			if (sort) array_sort(array, sort);
-			return (array);
-		}
-
-	#pragma endregion
-
 	#pragma region "Print"
 
 		int alias_print(int sort) {
@@ -201,24 +166,6 @@
 
 	#pragma endregion
 
-	#pragma region "Length"
-
-		size_t alias_length() {
-			size_t i = 0;
-
-			for (unsigned int index = 0; index < HASH_SIZE; index++) {
-				t_alias *alias = shell.alias[index];
-				while (alias) {
-					if (alias->name) i++;
-					alias = alias->next;
-				}
-			}
-
-			return (i);
-		}
-
-	#pragma endregion
-
 #pragma endregion
 
 #pragma region "Delete"
@@ -236,7 +183,9 @@
 				if (!strcmp(alias->name, key)) {
 					if (prev)	prev->next = alias->next;
 					else		shell.alias[index] = alias->next;
-					free(alias->name); free(alias->value); free(alias);
+					free(alias->name);
+					free(alias->value);
+					free(alias);
 					return (0);
 				}
 				prev = alias;

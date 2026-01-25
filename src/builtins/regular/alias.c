@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:39:48 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 11:24:42 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,29 +112,6 @@
 
 #pragma endregion
 
-#pragma region "Print"
-
-	static int print_alias(char *arg, char **values, char **invalues) {
-		if (!arg) return (0);
-
-		t_alias *alias = alias_find(arg);
-		if (alias && alias->name) {
-			char *value = ft_strjoin_sep("alias ", alias->name, "='", J_FREE_NONE);
-			if (alias->value) value = ft_strjoin_sep(value, alias->value, "'\n", J_FREE_VAL_1);
-			if (value) *values = ft_strjoin(*values, value, J_FREE_VAL_1_2);
-		}
-
-		if (!alias) {
-			char *value = ft_strjoin(shell.name, ": alias: ", J_FREE_NONE);
-			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL_1);
-			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL_1_2);
-		}
-
-		return (0);
-	}
-
-#pragma endregion
-
 #pragma region "Alias"
 
 	int bt_alias(int argc, char **argv) {
@@ -145,7 +122,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "p", NULL, long_opts, "alias [-p] [name[=value] ... ]", 0);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_alias_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -153,23 +130,39 @@
 
 		int ret = 0;
 
-		char *values = NULL, *invalues = NULL;
-
 		if (!result->argc || has_option(result, 'p', 0)) {
-			alias_print(1);
+			alias_print(SORT_NORMAL);
 			return (free_options(result), 0);
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
 			if (result->argv[i][0] != '=' && strchr(result->argv[i], '=')) {
+				// Add alias
 				if (add_alias(result->argv[i])) ret = 1;
+
+				char *key = NULL, *value = NULL;
+				get_key_value(result->argv[i], &key, &value, '=');
+				if (alias_validate(key, 1)) {
+					// exit_error E_ALIAS_INVALID
+					ret = 1;
+				} else {
+					alias_add(key, value);
+				}
+				free(key);
+				free(value);
 			} else {
-				print_alias(result->argv[i], &values, &invalues);
+				// Print alias
+				t_alias *alias = alias_find(result->argv[i]);
+				if (alias) {
+					print(STDOUT_FILENO, ft_strjoin_sep("alias ", alias->name, "='", J_FREE_NONE), P_FREE_RESET);
+					print(STDOUT_FILENO, ft_strjoin(alias->value, "'\n",             J_FREE_NONE), P_FREE_PRINT);
+				} else {
+					exit_error(E_ALIAS_NOT_FOUND, 1, "alias: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					ret = 1;
+				}
+
 			}
 		}
-
-		if (values)		{ print(STDOUT_FILENO, values, P_RESET_PRINT); free(values); }
-		if (invalues)	{ print(STDERR_FILENO, invalues, P_RESET_PRINT); free(invalues); }
 
 		return (free_options(result), ret);
 	}

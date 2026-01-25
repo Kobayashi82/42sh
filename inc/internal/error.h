@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/25 10:56:40 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 11:11:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,9 @@
 			// History
 			E_HIS_ARGS				= 320,		// 
 			E_HIS_DIG				= 321,		// 
+
+			// Alias
+			E_ALIAS_NOT_FOUND		= 330,		// 
 
 			// Exit / Logout
 			E_EXIT_ARGS				= 380,		// 

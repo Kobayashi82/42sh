@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/18 21:38:29 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:42:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 11:14:23 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,26 +91,6 @@
 
 #pragma endregion
 
-#pragma region "Delete"
-
-	static int delete_alias(char *arg, char **invalues) {
-		if (!arg) return (0);
-
-		t_alias *alias = alias_find(arg);
-		if (alias && alias->name) alias_delete(arg);
-
-		if (!alias) {
-			char *value = ft_strjoin(shell.name, ": unalias: ", J_FREE_NONE);
-			value = ft_strjoin_sep(value, arg, ": not found\n", J_FREE_VAL_1);
-			if (value) *invalues = ft_strjoin(*invalues, value, J_FREE_VAL_1_2);
-			return (1);
-		}
-
-		return (0);
-	}
-
-#pragma endregion
-
 #pragma region "Unalias"
 
 	int bt_unalias(int argc, char **argv) {
@@ -121,7 +101,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "a", NULL, long_opts, "unalias [-a] name [name ...]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_unalias_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -129,17 +109,16 @@
 
 		int ret = 0;
 
-		if (has_option(result, 'a', 0)) return (free_options(result), alias_clear(), 0);
-
-		char *invalues = NULL;
-		for (int i = 0; i < result->argc; ++i) {
-			if (delete_alias(result->argv[i], &invalues)) ret = 1;
-
+		if (has_option(result, 'a', 0)) {
+			alias_clear();
+			return (free_options(result), 0);
 		}
 
-		if (invalues) {
-			print(STDERR_FILENO, invalues, P_RESET_PRINT);
-			free(invalues);
+		for (int i = 0; i < result->argc; ++i) {
+			if (alias_delete(result->argv[i])) {
+				exit_error(E_ALIAS_NOT_FOUND, 1, "unalias: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+				ret = 1;
+			}
 		}
 
 		return (free_options(result), ret);
