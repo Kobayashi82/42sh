@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:38:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:39:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,7 +152,7 @@
 		if (has_option(result, 'v', 0)) line_mode = 2;
 
 		if (dirs_print(offset, line_mode, has_option(result, 'l', 0), !result->argc)) {
-			if (shell.error == E_NO_MEMORY)	ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
+			if (shell.error == E_NO_MEMORY)		ret = exit_error(E_NO_MEMORY,  1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (shell.error == E_DIRS_EMPTY)	ret = exit_error(E_DIRS_EMPTY, 1, "dirs", NULL, EE_FREE_NONE, EE_RETURN);
 			if (shell.error == E_DIRS_RANGE) {
 				if (result->argc)		ret = exit_error(E_DIRS_RANGE, 1, "dirs", result->argv[0], EE_FREE_NONE, EE_RETURN);

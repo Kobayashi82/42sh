@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 11:03:45 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,7 +373,10 @@
 
 	int terminal_initialize() {
 		static int initialize = 0;
-		if (initialize) return (0);
+		if (initialize) {
+			terminal_update_limits();
+			return (0);
+		}
 		initialize = 1;
 
 		char *termtype = getenv("TERM");
@@ -382,6 +385,8 @@
 		int success = tgetent(NULL, termtype);
 		if (success < 0)	{ write(STDERR_FILENO, "Could not access the termcap data base.\n", 41);	return (1); }
 		if (success == 0)	{ write(STDERR_FILENO, "Terminal type is not defined.\n", 31);				return (1); }
+
+		terminal_update_limits();
 
 		return (0);
 	}

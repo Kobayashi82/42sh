@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/24 15:36:37 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:58:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,13 @@
 				print(STDERR_FILENO, ft_strjoin_sep(": Too many options (max ", value2, ")\n", J_FREE_NONE), P_FREE_PRINT);
 			}
 
+			// Builtin
+			if (error_type == E_BUILTIN_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not a shell builtin\n",              J_FREE_NONE), P_FREE_PRINT);
+
+			// Hash
+			if (error_type == E_HASH_EMPTY)			print(STDERR_FILENO, ": hash: hash table empty\n",                                                        P_PRINT);
+			if (error_type == E_HASH_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);
+
 			// CD, PWD, Dirs, Pushd, Popd
 			if (error_type >= E_DIRS_OFFSET && error_type <= E_DIRS_PERMISSION) print(STDERR_FILENO, value1,                                                  P_JOIN);
 			if (error_type == E_DIRS_OFFSET)		print(STDERR_FILENO, ft_strjoin_sep(": ", value2, ": invalid number\n",                     J_FREE_NONE), P_FREE_PRINT);
@@ -77,11 +84,11 @@
 			if (error_type == E_DIRS_HOME)			print(STDERR_FILENO, ft_strjoin(value1, ": HOME not set\n",                                 J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_DIRS_OLDPWD)		print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n",                               J_FREE_NONE), P_FREE_PRINT);
 
-			// Hash
-			if (error_type == E_HASH_EMPTY)			print(STDERR_FILENO, ": hash: hash table empty\n",                                 P_PRINT);
-			if (error_type == E_HASH_NOT_FOUND)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n", J_FREE_NONE), P_FREE_PRINT);
-
-			// Otro
+			// Exit / Logout
+			if (error_type == E_EXIT_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_EXIT_NUMERIC)		print(STDERR_FILENO, ft_strjoin(value1, ": numeric argument required\n",                    J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_EXIT_OVERFLOW)		print(STDERR_FILENO, ft_strjoin(value1, ": numeric argument out of range\n",                J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_EXIT_NO_LOGIN)		print(STDERR_FILENO, ft_strjoin(value1, ": not login shell: use `exit'\n",                  J_FREE_NONE), P_FREE_PRINT);
 		}
 
 	#pragma endregion

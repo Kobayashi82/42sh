@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/24 15:32:03 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:56:40 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,9 @@
 			E_OPT_ARGUMENT			= 303,		// Unexpected argument for option
 			E_SOPT_INVALID			= 304,		// Invalid shell option
 
+			// Builtin
+			E_BUILTIN_NOT_FOUND		= 305,		// Builtin not found
+
 			// Hash
 			E_HASH_EMPTY			= 306,		// Hash is empty
 			E_HASH_NOT_FOUND		= 307,		// Hash command not found
@@ -87,9 +90,11 @@
 			E_HIS_ARGS				= 320,		// 
 			E_HIS_DIG				= 321,		// 
 
-			// Exit
+			// Exit / Logout
 			E_EXIT_ARGS				= 380,		// 
-			E_EXIT_NUMERIC			= 381		// 
+			E_EXIT_NUMERIC			= 381,		// 
+			E_EXIT_OVERFLOW			= 382,		// 
+			E_EXIT_NO_LOGIN			= 383		// 
 		};
 
 	#pragma endregion

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:09:10 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:50:43 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,32 +98,31 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "exit [n]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_exit_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		int ret = 0;
+		char *endptr = NULL;
+		long number = shell.exit_code;
 
-		if (shell.login_shell && shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", P_RESET_PRINT);
+		if (shell.login_shell  && shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", P_RESET_PRINT);
 		if (!shell.login_shell && shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "exit\n", P_RESET_PRINT);
 
-		if (result->argc > 1) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": exit: too many arguments\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-			ret = 1;
-		} else if (result->argc && !ft_isdigit_s(result->argv[0])) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": exit: numeric argument required\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-			ret = 2;
-		} else if (result->argc) {
-			ret = atol(result->argv[0]);
+		if		(result->argc > 1)									number = exit_error(E_EXIT_ARGS,     1, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+		else if (result->argc && !ft_isdigit_s(result->argv[0]))	number = exit_error(E_EXIT_NUMERIC,  2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+		else if (result->argc)										{
+			number = strtol(result->argv[0], &endptr, 10);
+			if		(errno == ERANGE)								number = exit_error(E_EXIT_OVERFLOW, 2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+			else if (*endptr && endptr != result->argv[0])			number = exit_error(E_EXIT_NUMERIC,  2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
 		}
 
 		free_argv_original(result);
 		free_options(result);
-		exit_error(NOTHING, ret, NULL, NULL, EE_FREE_NONE, EE_EXIT);
+		exit_error(NOTHING, number % 256, NULL, NULL, EE_FREE_NONE, EE_EXIT);
 
-		return (ret);
+		return (number);
 	}
 
 #pragma endregion

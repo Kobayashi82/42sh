@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/20 11:01:35 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:32:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "builtin [shell-builtin [arg ...]]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_builtin_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -112,13 +112,12 @@
 
 		int ret = 0;
 
-		if (result->argv) {
+		if (result->argc) {
 			t_builtin *builtin = builtin_find(result->argv[0]);
 			if (builtin && !builtin->disabled) {
 				ret = builtin_exec(result->argc, result->argv);
 			} else {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": builtin: ", result->argv[0], ": not a shell builtin\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_BUILTIN_NOT_FOUND, 1, "builtin: ", result->argv[0], EE_FREE_NONE, EE_RETURN);
 				ret = 1;
 			}
 		}

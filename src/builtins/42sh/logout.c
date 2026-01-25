@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/20 12:07:07 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/25 10:59:27 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,65 +98,68 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, NULL, NULL, long_opts, "logout [n]", IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_logout_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 
-		int ret = 0;
+		char *endptr = NULL;
+		long number = shell.exit_code;
 
 		if (!shell.login_shell) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: not login shell: use `exit'\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+			exit_error(E_EXIT_NO_LOGIN, 1, "logout", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
-		if (shell.mode == MD_INTERACTIVE && !shell.subshell_level) print(STDERR_FILENO, "logout\n", P_RESET_PRINT);
+		if (shell.mode == MD_INTERACTIVE && !shell.subshell_level)	print(STDERR_FILENO, "logout\n", P_RESET_PRINT);
 
-		if (result->argc > 1) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: too many arguments\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-			ret = 1;
-		} else if (result->argc && !ft_isdigit_s(result->argv[0])) {
-			print(STDERR_FILENO, ft_strjoin(shell.name, ": logout: numeric argument required\n", J_FREE_NONE), P_FREE_RESET_PRINT);
-			ret = 2;
-		} else if (result->argc) {
-			ret = atol(result->argv[0]);
+		if		(result->argc > 1)									number = exit_error(E_EXIT_ARGS,     1, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+		else if (result->argc && !ft_isdigit_s(result->argv[0]))	number = exit_error(E_EXIT_NUMERIC,  2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+		else if (result->argc)										{
+			number = strtol(result->argv[0], &endptr, 10);
+			if		(errno == ERANGE)								number = exit_error(E_EXIT_OVERFLOW, 2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
+			else if (*endptr && endptr != result->argv[0])			number = exit_error(E_EXIT_NUMERIC,  2, "exit", NULL, EE_FREE_NONE, EE_RETURN);
 		}
 
 		free_argv_original(result);
 		free_options(result);
-		exit_error(NOTHING, ret, NULL, NULL, EE_FREE_NONE, EE_EXIT);
+		exit_error(NOTHING, number % 256, NULL, NULL, EE_FREE_NONE, EE_EXIT);
 
-		return (ret);
+		return (number);
 	}
 
 #pragma endregion
 
-// int login_shell = 0;
-// int interactive_shell = 0; // 
+#pragma region "Info"
 
-// // Detectar si es login shell (llamado como "-42sh" o si pasaron -l o --login)
-// if (argv[0][0] == '-' || has_flag("--login") || has_flag("-l")) login_shell = 1;
+	// int login_shell = 0;
+	// int interactive_shell = 0; // 
 
-// if (login_shell) {
-//     source_file("/etc/profile");	// 1º (configuración global del sistema)
-// 	// El primero disponible de los siguientes
-// 	source_file("~/.42sh_profile");	// 2º (preferido por 42sh)
-// 	source_file("~/.42sh_login");	// 2º (archivo alternativo)
-// 	source_file("~/.profile");		// 2º (POSIX, compatible con todos los shells)
-// } else if (interactive_shell) {
-// 	source_file("~/.bashrc");		// 1º (configuración interactiva)
-// }
+	// // Detectar si es login shell (llamado como "-42sh" o si pasaron -l o --login)
+	// if (argv[0][0] == '-' || has_flag("--login") || has_flag("-l")) login_shell = 1;
 
-// // Builtin logout:
-// int bt_logout() {
-//     if (!login_shell) {
-//         fprintf(stderr, "logout: not login shell: use 'exit'\n");
-//         return (1);
-//     }
+	// if (login_shell) {
+	//     source_file("/etc/profile");	// 1º (configuración global del sistema)
+	// 	// El primero disponible de los siguientes
+	// 	source_file("~/.42sh_profile");	// 2º (preferido por 42sh)
+	// 	source_file("~/.42sh_login");	// 2º (archivo alternativo)
+	// 	source_file("~/.profile");		// 2º (POSIX, compatible con todos los shells)
+	// } else if (interactive_shell) {
+	// 	source_file("~/.bashrc");		// 1º (configuración interactiva)
+	// }
 
-//     source_file("~/.42sh_logout");	// Ejecutar si existe
+	// // Builtin logout:
+	// int bt_logout() {
+	//     if (!login_shell) {
+	//         fprintf(stderr, "logout: not login shell: use 'exit'\n");
+	//         return (1);
+	//     }
 
-// 	// Cleanup
-//     exit(0);
-// }
+	//     source_file("~/.42sh_logout");	// Ejecutar si existe
+
+	// 	// Cleanup
+	//     exit(0);
+	// }
+
+#pragma endregion
