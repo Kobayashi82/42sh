@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 11:09:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 16:34:49 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,8 +87,14 @@
 			E_DIRS_OLDPWD			= 319,		// OLDPWD variable not set
 
 			// History
-			E_HIS_ARGS				= 320,		// 
 			E_HIS_DIG				= 321,		// 
+			E_HIS_OPT_MORE			= 322,		//
+			E_HIS_ARGS				= 323,		// 
+			E_HIS_READABLE			= 324,		// 
+			E_HIS_WRITABLE			= 325,		// 
+			E_HIS_NOT_FOUND			= 326,		// 
+			E_HIS_RANGE				= 327,		// 
+			E_HIS_NUMERIC			= 328,		// 
 
 			// Alias
 			E_ALIAS_NOT_FOUND		= 330,		// 

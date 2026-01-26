@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:39:15 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 16:34:26 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,7 @@
 				history_print(history_length(), 0);
 			} else {
 				if (!ft_isdigit_s(result->argv[0])) {
-					print(STDERR_FILENO, shell.name, P_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", result->argv[0], ": numeric argument required\n", J_FREE_NONE), P_FREE_PRINT);
+					exit_error(E_HIS_NUMERIC, 1, "history: ", result->argv[0], EE_FREE_NONE, EE_RETURN);
 					return (1);
 				} else {
 					history_print(atoi(result->argv[0]), 0);
@@ -195,8 +194,7 @@
 			const char *offset_str = get_option_value(result, 'd', 0);
 
 			if (!offset_str) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ": history: -d: option requires an argument\n", P_PRINT);
+				exit_error(E_HIS_NUMERIC, 2, "history: ", (char *)offset_str, EE_FREE_NONE, EE_RETURN);
 				return (2);
 			}
 
@@ -204,8 +202,7 @@
 
 			if (strchr(offset_str + 1, '-')) {
 				if (parse_history_range(offset_str, &start, &end)) {
-					print(STDERR_FILENO, shell.name, P_RESET);
-					print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
+					exit_error(E_HIS_RANGE, 1, "history: ", (char *)offset_str, EE_FREE_NONE, EE_RETURN);
 					return (1);
 				}
 				history_remove_offset_range(start, end);
@@ -213,14 +210,12 @@
 			}
 
 			if (!ft_isdigit_s(offset_str)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
-				return (1);
+					exit_error(E_HIS_RANGE, 1, "history: ", (char *)offset_str, EE_FREE_NONE, EE_RETURN);
+					return (1);
 			}
 
 			if (history_remove_offset(atoi(offset_str))) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", offset_str, ": history position out of range\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_RANGE, 1, "history: ", (char *)offset_str, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			}
 
@@ -235,8 +230,7 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_WRITABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else {
 				history_write(filename, 0);
@@ -253,12 +247,10 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_NOT_FOUND, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_READABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else {
 				history_read(filename);
@@ -275,8 +267,7 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not writable\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_WRITABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else {
 				history_write(filename, 1);
@@ -293,12 +284,10 @@
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
 			if (filename && access(filename, F_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file does not exist\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_NOT_FOUND, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else if (filename && access(filename, R_OK)) {
-				print(STDERR_FILENO, shell.name, P_RESET);
-				print(STDERR_FILENO, ft_strjoin_sep(": history: ", filename, ": file is not readable\n", J_FREE_NONE), P_FREE_PRINT);
+				exit_error(E_HIS_READABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			} else {
 				history_read_append(filename);
@@ -321,8 +310,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "cd:pranws", NULL, long_opts, "history [-c] [-d offset] [n] or history -anrw [filename] or history -ps arg [arg...]", IGNORE_OFF);
-
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_history_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
@@ -334,12 +322,16 @@
 		local_options += has_option(result, 'w', 0);
 
 		if (local_options > 1) {
-			print(STDERR_FILENO, shell.name, P_RESET);
-			print(STDERR_FILENO, ": history: cannot use more than one of -anrw\n", P_PRINT);
+			exit_error(E_HIS_OPT_MORE, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
 			return (free_options(result), 1);
 		}
 
 		int ret = 0;
+
+		if (result->argc > 1) {
+			exit_error(E_HIS_ARGS, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
 
 		if (!result->options)			{ ret = print_history(result);		return (free_options(result), ret); }
 		if (has_option(result, 'c', 0))	{ history_clear();					return (free_options(result), ret); }
