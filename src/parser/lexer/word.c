@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/23 11:30:22 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:36:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@
 			buffer = buffer->next;
 		}
 
-		if (!alias_find_value(alias_name)) return (0);
+		if (!alias_get_value(alias_name)) return (0);
 		
 		return (1);
 	}
@@ -51,7 +51,7 @@
 		char *value = segment_last_value(segment);
 
 		if (expand_alias(lexer, value)) {
-			char *alias_content = alias_find_value(value);
+			char *alias_content = alias_get_value(value);
 			if (alias_content) {
 				int expand_next = 0;
 				if (*alias_content) expand_next = isspace(alias_content[ft_strlen(alias_content) - 1]);

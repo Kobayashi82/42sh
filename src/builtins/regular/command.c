@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:40:51 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:36:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@
 		static int check_alias(char *arg) {
 			if (!arg) return (0);
 
-			t_alias *alias = alias_find(arg);
+			t_alias *alias = alias_get(arg);
 			if (alias) {
 				print(STDOUT_FILENO, alias->name, P_JOIN);
 				print(STDOUT_FILENO, ft_strjoin_sep(" is aliased to `", alias->value, "'\n", J_FREE_NONE), P_FREE_JOIN);
@@ -122,7 +122,7 @@
 		static int check_builtin(char *arg) {
 			if (!arg) return (0);
 
-			if (alias_find(arg)) return (0);
+			if (alias_get(arg)) return (0);
 
 			t_builtin *builtin = builtin_find(arg);
 			if (builtin && !builtin->disabled) {
@@ -140,7 +140,7 @@
 		static int check_function(char *arg) {
 			if (!arg) return (0);
 			
-			if (alias_find(arg) || builtin_isactive(arg)) return (0);
+			if (alias_get(arg) || builtin_isactive(arg)) return (0);
 
 			// t_builtin *builtin = builtin_find(arg);
 			// if (builtin && !builtin->disabled) {
@@ -158,7 +158,7 @@
 		static int check_command(char *arg, int has_p) {
 			if (!arg) return (0);
 
-			if (alias_find(arg) || builtin_isactive(arg)) return (0);
+			if (alias_get(arg) || builtin_isactive(arg)) return (0);
 
 			char *path = path_find_first(arg, (has_p) ? PATH : NULL);
 			if (path) {
@@ -219,7 +219,7 @@
 			return (free_options(result), ret);
 		}
 
-		t_alias *alias_cmd = alias_find(result->argv[0]);
+		t_alias *alias_cmd = alias_get(result->argv[0]);
 		t_builtin *builtin_cmd = builtin_find(result->argv[0]);
 		if (alias_cmd && alias_cmd->value) {
 			if (builtin_find(alias_cmd->value)) {

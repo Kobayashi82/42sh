@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/25 11:15:58 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:10:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,8 @@
 			if (error_type == E_DIRS_OLDPWD)		print(STDERR_FILENO, ft_strjoin(value1, ": OLDPWD not set\n",                               J_FREE_NONE), P_FREE_PRINT);
 
 			// Alias
-			if (error_type == E_ALIAS_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);			
+			if (error_type == E_ALIAS_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_ALIAS_INVALID)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);
 
 			// Exit / Logout
 			if (error_type == E_EXIT_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);

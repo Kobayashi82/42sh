@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/19 16:22:02 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/25 11:10:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:36:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,13 @@
 
 	//	---------- IMPORT ----------
 	int		alias_add(const char *key, const char *value);
-	int		alias_validate(char *key, int show_msg);
+	int		alias_validate(const char *key);
 	//	---------- EXPORT ----------
-	t_alias	*alias_find(const char *key);
-	char	*alias_find_value(const char *key);
+	t_alias	*alias_get(const char *key);
+	char	*alias_get_value(const char *key);
 	int		alias_print(int sort);
 	//	---------- DELETE ----------
 	int		alias_delete(const char *key);
 	void	alias_clear();
-	//	-------- INITIALIZE --------
-	int		alias_initialize();
 
 #pragma endregion

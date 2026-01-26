@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:15 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:07:29 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:37:18 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@
 		//	column, row
 		builtin_initialize();
 		options_initialize();
-		alias_initialize();
 		variable_initialize(shell.env, envp);
 		shell.mode = MD_NO_INTERACTIVE;
 		shell.pid = getpid();

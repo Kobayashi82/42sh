@@ -6,12 +6,13 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/06 22:47:08 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:21:50 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 15:28:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "internal/shell.h"
 	#include "utils/utils.h"
 
 #pragma endregion
@@ -24,7 +25,10 @@
 		char *delimiter = strchr(key, sep);
 		if (!delimiter) return (NULL);
 
-		return (ft_strdup(delimiter + 1));
+		char *value = ft_strdup(delimiter + 1);
+		if (!value) return (shell.error = E_NO_MEMORY, NULL);
+
+		return (value);
 	}
 
 #pragma endregion
@@ -32,23 +36,27 @@
 #pragma region "Key / Value"
 
 	int get_key_value(const char *line, char **key, char **value, char sep) {
+		shell.error = 0;
 		if (*key)	{ free(*key); *key = NULL; }
 		if (*value) { free(*value); *value = NULL; }
-		if (!line) 	{ return (2); }
+		if (!line) 	{ return (1); }
 
 		char *delimiter = strchr(line, sep);
 		if (!delimiter) {
 			*key = ft_strdup(line);
-			return (1);
+			if (!key) return (shell.error = E_NO_MEMORY, 1);
+			return (0);
 		}
 
 		size_t key_length = delimiter - line;
 		*key = malloc(key_length + 1);
+		if (!key) return (shell.error = E_NO_MEMORY, 1);
 
 		strncpy(*key, line, key_length);
 		(*key)[key_length] = '\0';
 
 		*value = ft_strdup(delimiter + 1);
+		if (!value) return (shell.error = E_NO_MEMORY, 1);
 
 		size_t value_len = ft_strlen(*value);
 		while (value_len > 0 && ((*value)[value_len - 1] == '\n' || (*value)[value_len - 1] == '\r')) {

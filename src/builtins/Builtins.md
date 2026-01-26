@@ -58,11 +58,6 @@
 - · `history`
 - · `fc`
 
-## 12. Aliases
-
-- · `alias`
-- · `unalias`
-
 ## 13. Testing/Conditionals
 
 - `test` / `[`

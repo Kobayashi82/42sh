@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:11:49 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/25 11:24:42 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 15:18:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,20 +98,6 @@
 
 #pragma endregion
 
-#pragma region "Add"
-
-	static int add_alias(char *arg) {
-		if (!arg) return (0);
-
-		char *key = NULL, *value = NULL;
-		get_key_value(arg, &key, &value, '=');
-		if (alias_validate(key, 1)) return (free(key), free(value), 1);
-		alias_add(key, value);
-		return (free(key), free(value), 0);
-	}
-
-#pragma endregion
-
 #pragma region "Alias"
 
 	int bt_alias(int argc, char **argv) {
@@ -131,28 +117,35 @@
 		int ret = 0;
 
 		if (!result->argc || has_option(result, 'p', 0)) {
-			alias_print(SORT_NORMAL);
-			return (free_options(result), 0);
+			ret = alias_print(SORT_NORMAL);
+			if (shell.error == E_NO_MEMORY) ret = exit_error(E_NO_MEMORY, 1, "alias", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), ret);
 		}
 
 		for (int i = 0; i < result->argc; ++i) {
 			if (result->argv[i][0] != '=' && strchr(result->argv[i], '=')) {
 				// Add alias
-				if (add_alias(result->argv[i])) ret = 1;
-
 				char *key = NULL, *value = NULL;
 				get_key_value(result->argv[i], &key, &value, '=');
-				if (alias_validate(key, 1)) {
-					// exit_error E_ALIAS_INVALID
-					ret = 1;
-				} else {
-					alias_add(key, value);
+				if (shell.error == E_NO_MEMORY) {
+					exit_error(E_NO_MEMORY, 1, "alias", NULL, EE_FREE_NONE, EE_RETURN);
+					return (free_options(result), 1);
 				}
+
+				if (alias_add(key, value)) {
+					if (shell.error == E_NO_MEMORY) {
+						exit_error(E_NO_MEMORY, 1, "alias", NULL, EE_FREE_NONE, EE_RETURN);
+						return (free_options(result), 1);
+					}
+					if (shell.error == E_ALIAS_INVALID) exit_error(E_ALIAS_INVALID, 1, "alias: ", result->argv[i], EE_FREE_NONE, EE_RETURN);
+					ret = 1;
+				}
+
 				free(key);
 				free(value);
 			} else {
 				// Print alias
-				t_alias *alias = alias_find(result->argv[i]);
+				t_alias *alias = alias_get(result->argv[i]);
 				if (alias) {
 					print(STDOUT_FILENO, ft_strjoin_sep("alias ", alias->name, "='", J_FREE_NONE), P_FREE_RESET);
 					print(STDOUT_FILENO, ft_strjoin(alias->value, "'\n",             J_FREE_NONE), P_FREE_PRINT);

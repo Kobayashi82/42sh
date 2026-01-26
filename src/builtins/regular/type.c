@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/26 11:36:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,11 +116,11 @@
 		static int check_alias(char *arg, char *opts) {
 			if (!arg) return (0);
 
-			if (!strchr(opts, 'P') && strchr(opts, 't') && alias_find(arg)) {
+			if (!strchr(opts, 'P') && strchr(opts, 't') && alias_get(arg)) {
 				print(STDOUT_FILENO, "alias\n", P_JOIN);
 				return (1);
 			} if (!strchr(opts, 'p') && !strchr(opts, 'P')) {
-				t_alias *alias = alias_find(arg);
+				t_alias *alias = alias_get(arg);
 				if (alias) {
 					if (!strchr(opts, 't')) {
 						print(STDOUT_FILENO, alias->name, P_JOIN);
@@ -140,7 +140,7 @@
 		static int check_builtin(char *arg, char *opts) {
 			if (!arg) return (0);
 
-			if ((!opts || !*opts || !strcmp(opts, "t")) && alias_find(arg)) return (0);
+			if ((!opts || !*opts || !strcmp(opts, "t")) && alias_get(arg)) return (0);
 
 			if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
 				print(STDOUT_FILENO, "builtin\n", P_JOIN);
@@ -166,7 +166,7 @@
 		static int check_function(char *arg, char *opts) {
 			if (!arg) return (0);
 			
-			if ((!opts || !*opts || !strcmp(opts, "t")) && (alias_find(arg) || builtin_isactive(arg))) return (0);
+			if ((!opts || !*opts || !strcmp(opts, "t")) && (alias_get(arg) || builtin_isactive(arg))) return (0);
 
 			// if (!strchr(opts, 'P') && strchr(opts, 't') && builtin_isactive(arg)) {
 			// 	print(STDOUT_FILENO, "builtin\n", P_JOIN);
@@ -193,7 +193,7 @@
 			if (!arg) return (0);
 
 			if (!opts || !*opts) {
-				if (alias_find(arg) || builtin_isactive(arg)) return (0);
+				if (alias_get(arg) || builtin_isactive(arg)) return (0);
 				t_hash *hash = hash_find(arg, 0);
 				if (hash) {
 					if (access(hash->path, F_OK) != -1) {
@@ -215,7 +215,7 @@
 				return (free(path), 0);
 			}
 
-			if (!strchr(opts, 'P') && !strchr(opts, 'a') && (alias_find(arg) || builtin_isactive(arg))) return (0);
+			if (!strchr(opts, 'P') && !strchr(opts, 'a') && (alias_get(arg) || builtin_isactive(arg))) return (0);
 
 			char **paths = path_find_all(arg, NULL);
 			if ((!paths || !*paths) && strchr(opts, 'a')) return (array_free(paths), 0);
