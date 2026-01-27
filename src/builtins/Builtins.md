@@ -12,8 +12,8 @@
 
 - `exec`
 - `eval`
-- · `command`
-- `.` / `source`
+- `command`
+- `.`
 
 ## 3. Flow Control
 
@@ -23,14 +23,14 @@
 
 ## 5. Variables and Attributes
 
-- · `export`
-- · `unset`
+- `export`
+- `unset`
 - · `set`
-- `declare` / `typeset`
-- · `readonly`
+- `declare`
+- `readonly`
 - `local`
 - `read`
-- `mapfile` / `readarray`
+- `mapfile`
 
 ## 6. Arithmetic
 
@@ -39,18 +39,13 @@
 ## 8. Traps, Signals and Control
 
 - `trap`
-- · `kill`
+- `kill`
 - `suspend`
 
 ## 9. Information and Query
 
-- · `type`
-- · `help`
-- · `ulimit`
-
-## 10. Shell Options
-
-- · `set`
+- `type`
+- `help`
 
 ## 13. Testing/Conditionals
 
