@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/12 11:35:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 16:34:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 14:23:00 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,17 @@
 			// Alias
 			E_ALIAS_NOT_FOUND		= 330,		// 
 			E_ALIAS_INVALID			= 331,		// 
+
+			// FC
+			E_FC_ARGS				= 335,		// 
+			E_FC_RANGE				= 336,		// 
+			E_FC_INVALID_FORMAT		= 337,		// 
+			E_FC_NO_EDITOR			= 338,		// 
+			E_FC_NO_COMMAND			= 339,		// 
+
+			// Umask
+			E_UMASK_ARGS			= 345,		// 
+			E_UMASK_INVALID			= 346,		// 
 
 			// Exit / Logout
 			E_EXIT_ARGS				= 380,		// 

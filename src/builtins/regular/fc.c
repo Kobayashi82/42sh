@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:41:13 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 14:05:16 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,13 +116,13 @@
 	static int fc_get_position(int offset, char *query, size_t *out) {
 		if (!ft_isdigit_s(query)) {
 			if (history_position_query(offset , query, out)) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: no command found\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+				exit_error(E_FC_NO_COMMAND, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			}
 		} else {
 			int number = atoi(query);
 			if (!strcmp(query, "-0")) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: history specification out of range\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+				exit_error(E_FC_RANGE, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN);
 				return (1);
 			}
 			if (!strcmp(query, "0")) number = -1;
@@ -143,7 +143,7 @@
 		for (int i = 0; i < result->argc; ++i) {
 			if (!strchr(result->argv[i], '=')) {
 				if (i < result->argc - 1) {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: too many arguments\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+					exit_error(E_FC_ARGS, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN);
 					return (1);
 				}
 				no_command = 0;
@@ -179,7 +179,7 @@
 					free(key);
 					free(value);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: invalid substitution format\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+					exit_error(E_FC_INVALID_FORMAT, 1, "fc", NULL, EE_FREE_NONE, EE_RETURN);
 					free(command);
 					free(key);
 					free(value);
@@ -276,7 +276,7 @@
 
 			if (!*editor || access(*editor, F_OK) == -1) {
 				if (name)		exit_error(E_CMD_NOT_FOUND, 1, ft_strjoin("fc: ", name, J_FREE_NONE), NULL, EE_FREE_VAL1, EE_RETURN);
-				else			print(STDERR_FILENO, ft_strjoin(shell.name, ": fc: editor not found\n", J_FREE_NONE), P_FREE_RESET_PRINT);
+				else			exit_error(E_FC_NO_EDITOR,  1, "fc",                                  NULL, EE_FREE_NONE, EE_RETURN);
 				free(name); free(*editor); *editor = NULL;
 				return (1);
 			}
@@ -406,8 +406,7 @@
 		};
 
 		t_parse_result *result = parse_options(argc, argv, "se:lnr", NULL, long_opts, "fc [-e ename] [-lnr] [first] [last] or fc -s [pat=rep] [command]", IGNORE_NUMBER);
-
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_fc_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());

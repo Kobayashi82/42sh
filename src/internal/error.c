@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 13:08:16 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 16:34:09 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 14:24:05 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,17 @@
 			// Alias
 			if (error_type == E_ALIAS_NOT_FOUND)	print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);
 			if (error_type == E_ALIAS_INVALID)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": not found\n",                        J_FREE_NONE), P_FREE_PRINT);
+
+			// FC
+			if (error_type == E_FC_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_FC_RANGE)			print(STDERR_FILENO, ft_strjoin(value1, ": history specification out of range\n",           J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_FC_INVALID_FORMAT)	print(STDERR_FILENO, ft_strjoin(value1, ": invalid substitution format\n",                  J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_FC_NO_EDITOR)		print(STDERR_FILENO, ft_strjoin(value1, ": editor not found\n",                             J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_FC_NO_COMMAND)		print(STDERR_FILENO, ft_strjoin(value1, ": no command found\n",                             J_FREE_NONE), P_FREE_PRINT);
+
+			// Umask
+			if (error_type == E_UMASK_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);
+			if (error_type == E_UMASK_INVALID)		print(STDERR_FILENO, ft_strjoin_sep(value1, value2, ": invalid mode\n",                     J_FREE_NONE), P_FREE_PRINT);
 
 			// Exit / Logout
 			if (error_type == E_EXIT_ARGS)			print(STDERR_FILENO, ft_strjoin(value1, ": too many arguments\n",                           J_FREE_NONE), P_FREE_PRINT);

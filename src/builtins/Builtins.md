@@ -46,17 +46,11 @@
 
 - · `type`
 - · `help`
-- `umask`
 - · `ulimit`
 
 ## 10. Shell Options
 
 - · `set`
-
-## 11. History
-
-- · `history`
-- · `fc`
 
 ## 13. Testing/Conditionals
 
