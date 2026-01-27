@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:08:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 10:42:49 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 15:46:32 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -246,14 +246,12 @@
 			if (!strcmp(value, "hard"))			{ *ret = 2; return (0); }
 			if (!strcmp(value, "soft"))			{ *ret = 3; return (0); }
 
-			printf("%s\n", value);
-
 			char *endptr;
 			shell.error = 0;
 			unsigned long val = strtoul(value, &endptr, 10);
 
 			if (shell.error == ERANGE || val == ULONG_MAX)	{ *ret = 1; return (0); };
-			if (endptr == value || *endptr != '\0')		{ *ret = 1; return (0); };
+			if (endptr == value || *endptr != '\0')			{ *ret = 1; return (0); };
 
 			return ((rlim_t)(val * get_divisor(resource)));
 		}
@@ -269,7 +267,8 @@
 
 		struct rlimit rlim;
 		if (getrlimit(resource, &rlim) == -1) {
-			perror("ulimit"); // nop
+			print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ",                               J_FREE_NONE), P_FREE_RESET);
+			print(STDERR_FILENO, ft_strjoin_sep(": cannot retrieve limit: ", strerror(errno), "\n", J_FREE_NONE), P_FREE_PRINT);
 			return (1);
 		}
 
@@ -279,8 +278,8 @@
 			if		(ret == 3)	new_limit = rlim.rlim_cur;
 			else if (ret == 2)	new_limit = rlim.rlim_max;
 			else if (ret == 1) {
-				print(STDERR_FILENO, shell.name,                                                             P_JOIN);
-				print(STDERR_FILENO, ft_strjoin_sep(": ulimit: ", value, ": invalid number\n", J_FREE_NONE), P_FREE_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ",    J_FREE_NONE), P_FREE_RESET);
+				print(STDERR_FILENO, ft_strjoin(value, ": invalid number\n", J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			}
 
@@ -288,7 +287,7 @@
 			else		rlim.rlim_cur = new_limit;
 
 			if (setrlimit(resource, &rlim) == -1) {
-				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ", J_FREE_NONE), P_JOIN);
+				print(STDERR_FILENO, ft_strjoin(shell.name, ": ulimit: ", J_FREE_NONE), P_FREE_JOIN);
 
 				for (int i = 0; limits[i].resource != -1; i++) {
 					if (limits[i].resource == resource) {
@@ -302,7 +301,7 @@
 				if (shell.error == EINVAL && (resource == RLIMIT_RTPRIO || resource == RLIMIT_NICE || resource == RLIMIT_MEMLOCK)) {
 					print(STDERR_FILENO, "Operation not permitted\n", P_JOIN);
 				} else {
-					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", J_FREE_NONE), P_JOIN);
+					print(STDERR_FILENO, ft_strjoin(strerror(errno), "\n", J_FREE_NONE), P_FREE_JOIN);
 				}
 
 				return (1);
@@ -325,8 +324,8 @@
 			{NULL, 0, 0}
 		};
 
-		t_parse_result *result = parse_options(argc, argv, "SHac::d::e::f::i::l::m::n::q::r::s::t::u::v::x::R::", NULL, long_opts, "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]", IGNORE_OFF);
-		if (!result)		return (1);
+		t_parse_result *result = parse_options(argc, argv, "SHac.d.e.f.i.l.m.n.q.r.s.t.u.v.x.R.", NULL, long_opts, "ulimit [-SHabcdefiklmnpqrstuvxPRT] [limit]", IGNORE_OFF);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help"))		return (free_options(result), bt_ulimit_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
