@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:43:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 12:53:24 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,12 +149,16 @@
 
 		// Read entries from a history file into a temporary array
 		static int read_file(const char *filename, HIST_ENTRY **tmp_history, size_t *tmp_length) {
-			if (!filename || access(filename, R_OK))	filename = hist_file;
-			if (!filename || access(filename, R_OK))	return (1);
-			if (!hist_size)								return (0);
+			shell.error = 0;
+			if (!filename || access(filename, R_OK)) filename = hist_file;
+			if (!filename) {
+				if (access(filename, F_OK))	return (shell.error = E_HIS_NOT_FOUND, 1);
+				if (access(filename, R_OK))	return (shell.error = E_HIS_READABLE, 1);
+			}
+			if (!hist_size) return (0);
 
 			int fd = open(filename, O_RDONLY);
-			if (fd < 0)									return (1);
+			if (fd < 0) return (shell.error = E_HIS_READABLE, 1);
 
 			*tmp_length = 0;
 			char *line = NULL;
@@ -470,11 +474,14 @@
 		int history_write(const char *filename, int append) {
 			if (!filename) filename = hist_file;
 
+			shell.error = 0;
+			if (!access(filename, F_OK) && access(filename, W_OK)) return (shell.error = E_HIS_WRITABLE, 1);
+
 			int fd;
 			if (append == -1) append = shell.options.histappend;
 			if (append)	fd = open(filename, O_CREAT | O_WRONLY | O_APPEND, 0664);
 			else		fd = open(filename, O_CREAT | O_TRUNC  | O_WRONLY, 0664);
-			if (fd < 0) return (1);
+			if (fd < 0) return (shell.error = E_HIS_WRITABLE, 1);
 
 			if (!history || !hist_filesize || !length) {
 				close(fd);
@@ -1133,7 +1140,6 @@
 		if ((value = variable_scalar_get(shell.env, "42_HISTCONTROL")))		history_hist_control_set(value);
 		if ((value = variable_scalar_get(shell.env, "42_HISTIGNORE")))		history_hist_ignore_set(value);
 
-		history_size_set(5, HIST_MEM);
 		history_hist_control_set("ignoreboth");
 		// history_hist_timeformat_set("%F %T ");
 		history_read(NULL);

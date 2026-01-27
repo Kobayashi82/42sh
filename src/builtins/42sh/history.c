@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:02:57 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 16:34:26 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 13:05:41 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,16 +224,14 @@
 
 	#pragma endregion
 
-	#pragma region "(-w) Write"
+	#pragma region "(-w) Write / (-a) Append"
 
-		static int write_history(t_parse_result *result) {
+		static int write_history(t_parse_result *result, int append) {
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
-			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				exit_error(E_HIS_WRITABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
+			if (history_write(filename, append)) {
+				exit_error(E_HIS_WRITABLE, 1, "history", (filename) ? (char *)filename : "", EE_FREE_NONE, EE_RETURN);
 				return (1);
-			} else {
-				history_write(filename, 0);
 			}
 
 			return (0);
@@ -241,56 +239,27 @@
 
 	#pragma endregion
 
-	#pragma region "(-r) Read"
+	#pragma region "(-r) Read / (-n) Read New"
 
-		static int read_history(t_parse_result *result) {
+		static int read_history(t_parse_result *result, int append) {
 			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
 
-			if (filename && access(filename, F_OK)) {
-				exit_error(E_HIS_NOT_FOUND, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
-				return (1);
-			} else if (filename && access(filename, R_OK)) {
-				exit_error(E_HIS_READABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
-				return (1);
+			if (result->argc && access(result->argv[0], R_OK)) return (1);
+
+			if (!append) {
+				if (history_read(filename)) {
+					if (shell.error == E_NO_MEMORY)		exit_error(E_NO_MEMORY, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
+					if (shell.error == E_HIS_NOT_FOUND)	exit_error(E_HIS_NOT_FOUND, 1, "history", (filename) ? (char *)filename : "", EE_FREE_NONE, EE_RETURN);
+					if (shell.error == E_HIS_READABLE)	exit_error(E_HIS_READABLE, 1, "history", (filename) ? (char *)filename : "", EE_FREE_NONE, EE_RETURN);
+					return (1);
+				}
 			} else {
-				history_read(filename);
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "(-a) Append"
-
-		static int write_append(t_parse_result *result) {
-			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
-
-			if (filename && !access(filename, F_OK) && access(filename, W_OK)) {
-				exit_error(E_HIS_WRITABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
-				return (1);
-			} else {
-				history_write(filename, 1);
-			}
-
-			return (0);
-		}
-
-	#pragma endregion
-
-	#pragma region "(-n) Read New"
-
-		static int read_history_new(t_parse_result *result) {
-			const char *filename = (result->argc > 0) ? result->argv[0] : NULL;
-
-			if (filename && access(filename, F_OK)) {
-				exit_error(E_HIS_NOT_FOUND, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
-				return (1);
-			} else if (filename && access(filename, R_OK)) {
-				exit_error(E_HIS_READABLE, 1, "history: ", (char *)filename, EE_FREE_NONE, EE_RETURN);
-				return (1);
-			} else {
-				history_read_append(filename);
+				if (history_read_append(filename)) {
+					if (shell.error == E_NO_MEMORY)		exit_error(E_NO_MEMORY, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
+					if (shell.error == E_HIS_NOT_FOUND)	exit_error(E_HIS_NOT_FOUND, 1, "history", (filename) ? (char *)filename : "", EE_FREE_NONE, EE_RETURN);
+					if (shell.error == E_HIS_READABLE)	exit_error(E_HIS_READABLE, 1, "history", (filename) ? (char *)filename : "", EE_FREE_NONE, EE_RETURN);
+					return (1);
+				}
 			}
 
 			return (0);
@@ -328,20 +297,21 @@
 
 		int ret = 0;
 
-		if (result->argc > 1) {
-			exit_error(E_HIS_ARGS, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
-			return (free_options(result), 1);
-		}
-
 		if (!result->options)			{ ret = print_history(result);		return (free_options(result), ret); }
 		if (has_option(result, 'c', 0))	{ history_clear();					return (free_options(result), ret); }
 		if (has_option(result, 's', 0))	{ ret = append_args(result);		return (free_options(result), ret); }
 		if (has_option(result, 'p', 0))	{ ret = expansion_history(result);	return (free_options(result), ret); }
 		if (has_option(result, 'd', 0))	{ ret = delete_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'a', 0))	{ ret = write_append(result);		return (free_options(result), ret); }
-		if (has_option(result, 'w', 0))	{ ret = write_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'r', 0))	{ ret = read_history(result);		return (free_options(result), ret); }
-		if (has_option(result, 'n', 0))	{ ret = read_history_new(result);	return (free_options(result), ret); }
+
+		if (result->argc > 1) {
+			exit_error(E_HIS_ARGS, 1, "history", NULL, EE_FREE_NONE, EE_RETURN);
+			return (free_options(result), 1);
+		}
+
+		if (has_option(result, 'a', 0))	{ ret = write_history(result, 1);	return (free_options(result), ret); }
+		if (has_option(result, 'w', 0))	{ ret = write_history(result, 0);	return (free_options(result), ret); }
+		if (has_option(result, 'r', 0))	{ ret = read_history(result, 0);	return (free_options(result), ret); }
+		if (has_option(result, 'n', 0))	{ ret = read_history(result, 1);	return (free_options(result), ret); }
 
 		return (free_options(result), ret);
 	}

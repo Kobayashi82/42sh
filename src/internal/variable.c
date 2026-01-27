@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 17:39:40 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 15:29:00 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 12:12:55 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1349,7 +1349,7 @@
 			home = ft_strjoin(home, "/.42sh_history", J_FREE_VAL_1);
 			default_add(env,	"42_HISTFILE",		home,							VAR_NONE,					0, 1);		//	
 		}
-		default_add(env,		"42_HISTSIZE",		"5",							VAR_NONE,					0, 0);		//	
+		default_add(env,		"42_HISTSIZE",		"500",							VAR_NONE,					0, 0);		//	
 		default_add(env,		"42_HISTFILESIZE",	"2000",							VAR_NONE,					0, 0);		//	
 		default_add(env,		"42_HISTCONTROL",	"ignoreboth",					VAR_NONE,					0, 0);		//	
 
