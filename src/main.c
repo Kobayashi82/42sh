@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/29 13:40:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:47:53 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 22:12:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 	int read_input(char *value) {
 		signals_set();
 
-		if (shell.mode == MD_INTERACTIVE && interactive_input())			return (1);
+		if (shell.mode == MD_INTERACTIVE  && interactive_input())			return (1);
 		if (shell.mode != MD_INTERACTIVE && no_interactive_input(value))	return (1);
  
 		if (shell.ast) {

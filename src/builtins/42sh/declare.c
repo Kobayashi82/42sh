@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:06:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/22 19:19:59 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 22:22:30 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -230,7 +230,7 @@
 		if (argc && !strcmp(argv[0], "typeset")) syntax = "typeset [-aAfFgiIlnrtux] name[=value] ... or typeset -p [-aAfFilnrtux] [name ...]";
 
 		t_parse_result *result = parse_options(argc, argv, "fFgIpaAilrux", "aAilrux", long_opts, syntax, IGNORE_OFF);
-		if (!result)		return (1);
+		if (!result) return (free_options(result), (shell.error == E_OPT_MAX || shell.error == E_OPT_INVALID) ? 2 : 1);
 
 		if (find_long_option(result, "help") && !strcmp(argv[0], "typeset"))	return (free_options(result), bt_typeset_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "help"))									return (free_options(result), bt_declare_help(HELP_NORMAL, 0));

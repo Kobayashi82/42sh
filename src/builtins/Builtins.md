@@ -11,7 +11,6 @@
 ## 2. Process/Execution Control
 
 - `exec`
-- `eval`
 - `command`
 - `.`
 
@@ -25,7 +24,7 @@
 
 - `export`
 - `unset`
-- · `set`
+- ·`set`
 - `declare`
 - `readonly`
 - `local`

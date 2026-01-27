@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 15:02:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/27 22:13:58 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@
 	static char *more_input() {
 		char *input = NULL;
 
-		if (shell.mode == MD_INTERACTIVE) {
+		if (shell.mode == MD_INTERACTIVE && !shell.is_eval) {
 			input = readinput(prompt_PS2);
 		} else {
 			input = get_next_line(fd);
@@ -65,15 +65,17 @@
 			if (value) fd = open(value, O_RDONLY);
 			if (!value || fd == -1) {
 				// error
+				shell.is_eval = 0;
 				return (1);
 			}
 			filename = value;
 		}
 
-		if (shell.mode == MD_ARGUMENT) {
+		if (shell.mode == MD_ARGUMENT || shell.is_eval) {
 			int fd_pipe[2];
 			if (!value || pipe(fd_pipe) == -1) {
 				// error
+				shell.is_eval = 0;
 				return (1);
 			}
 			fd = fd_pipe[0];
@@ -85,6 +87,7 @@
 		if (!input) {
 			// error
 			if (shell.mode != MD_STDIN) close(fd);
+			shell.is_eval = 0;
 			return (1);
 		}
 
@@ -96,6 +99,7 @@
 		ast_print(shell.ast);
 		printf("\n");
 
+		shell.is_eval = 0;
 		return (0);
 	}
 
