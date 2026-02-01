@@ -10,6 +10,14 @@
 
 </div>
 
+<div align="center">
+  <img src="/doc/42sh_logo.png">
+</div>
+
+<div align="center">
+  <img src="/doc/42sh.jpg">
+</div>
+
 # 42sh
 ### <span style="color:yellow;">**🚨 ESTE README ES UN TEMPLATE Y NO REFLEJA EL ESTADO ACTUAL DEL PROYECTO 🚨**</span>
 

@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 09:44:04 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/21 21:55:08 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/02/01 20:41:57 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,8 +91,9 @@
 				tmp_prompt = ft_strdup(new_prompt);
 			} else {
 				if (type == PS1) {
-					char *popo = ft_strjoin_sep(PS1_DFLT, shell.dirs.cwd, " ", J_FREE_NONE);
-					tmp_prompt = backslashes(popo);	//	"\\$USER-\u"
+					// char *popo = ft_strjoin_sep(PS1_DFLT, shell.dirs.cwd, " ", J_FREE_NONE);
+					// tmp_prompt = backslashes(popo);	//	"\\$USER-\u"
+					tmp_prompt = backslashes(ft_strdup(PS1_DFLT));
 				}
 				if (type == PS2) tmp_prompt = backslashes(ft_strdup(PS2_DFLT));	//	"\\$USER-\u"
 				//	Procesa barras, variables ($var & \u)
