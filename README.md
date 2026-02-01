@@ -164,7 +164,7 @@ Este proyecto está licenciado bajo la WTFPL – [Do What the Fuck You Want to P
 
 <div align="center">
 
-**🌐 Desarrollado como parte del curriculum de 42 School 🌐**
+**📟 Desarrollado como parte del curriculum de 42 School 📟**
 
 *"It's not magic... just pipes and processes"*
 
