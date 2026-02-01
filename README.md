@@ -11,10 +11,6 @@
 </div>
 
 <div align="center">
-  <img src="/doc/42sh_logo.png">
-</div>
-
-<div align="center">
   <img src="/doc/42sh.jpg">
 </div>
 
