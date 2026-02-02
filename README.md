@@ -11,6 +11,10 @@
 </div>
 
 <div align="center">
+  <img src="/42sh.png">
+</div>
+
+<div align="center">
   <img src="/doc/42sh.jpg">
 </div>
 
