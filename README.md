@@ -17,8 +17,6 @@
 # 42sh
 ### <span style="color:yellow;">**🚨 ESTE README ES UN TEMPLATE Y NO REFLEJA EL ESTADO ACTUAL DEL PROYECTO 🚨**</span>
 
-
-
 ## Descripción
 `42sh` es una implementación personalizada de un shell Unix compatible con POSIX.
 
