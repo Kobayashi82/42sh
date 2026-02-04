@@ -20,14 +20,13 @@
 
 ### <span style="color:yellow;">**🚨 ESTE README ES UN TEMPLATE Y NO REFLEJA EL ESTADO ACTUAL DEL PROYECTO 🚨**</span>
 
-## Descripción
 `42sh` es una implementación personalizada de un shell Unix compatible con POSIX.
 
 Diseñado como un proyecto educativo, este shell proporciona una interfaz potente para la ejecución de comandos, scripting y manipulación de procesos, con soporte para edición de línea de comandos en modo `readline` y `vi`.
 
 Además, se han implementado características avanzadas como globbing, redirecciones, job control y ejecución de scripts.
 
-## Características
+## ✨ Características
 
 - `Readline personalizado`: Creado desde cero con historial, búsqueda, autocompletado y edición en tiempo real.
 - `Modos de edición`: Soporte para los modos **emacs** y **vi**, permitiendo navegación y edición eficiente.
@@ -39,59 +38,59 @@ Además, se han implementado características avanzadas como globbing, redirecci
 - `Señales`: Manejo adecuado de todas las señales.
 - `Variables`: Soporte para variables de shell y de entorno.
 
-## Builtins Implementados
+### Builtins Implementados
 
 42sh incluye los siguientes builtins:
 
-### Alias
-- `alias` - Define alias para comandos.
-- `unalias` - Elimina alias definidos.
+	#### Alias
+	- `alias` - Define alias para comandos.
+	- `unalias` - Elimina alias definidos.
 
-### Variables de entorno
-- `declare` - Declara variables y atributos.
-- `export` - Define variables de entorno.
-- `readonly` - Marca variables como de solo lectura.
-- `set` - Muestra o define opciones del shell.
-- `shopt` - Configura opciones del shell.
-- `unset` - Elimina variables de entorno.
+	#### Variables de entorno
+	- `declare` - Declara variables y atributos.
+	- `export` - Define variables de entorno.
+	- `readonly` - Marca variables como de solo lectura.
+	- `set` - Muestra o define opciones del shell.
+	- `shopt` - Configura opciones del shell.
+	- `unset` - Elimina variables de entorno.
 
-### Sistema de archivos
-- `cd` - Cambia el directorio actual.
-- `hash` - Mantiene un caché de comandos.
-- `pwd` - Muestra el directorio de trabajo actual.
+	#### Sistema de archivos
+	- `cd` - Cambia el directorio actual.
+	- `hash` - Mantiene un caché de comandos.
+	- `pwd` - Muestra el directorio de trabajo actual.
 
-### Historial
-- `fc` - Edita y ejecuta comandos previos.
-- `history` - Muestra el historial de comandos.
+	#### Historial
+	- `fc` - Edita y ejecuta comandos previos.
+	- `history` - Muestra el historial de comandos.
 
-### Gestión de trabajos
-- `bg` - Reanuda un trabajo en segundo plano.
-- `fg` - Trae un trabajo al primer plano.
-- `jobs` - Lista los trabajos en ejecución.
-- `kill` - Envía señales a procesos.
-- `wait` - Espera la finalización de un proceso.
+	#### Gestión de trabajos
+	- `bg` - Reanuda un trabajo en segundo plano.
+	- `fg` - Trae un trabajo al primer plano.
+	- `jobs` - Lista los trabajos en ejecución.
+	- `kill` - Envía señales a procesos.
+	- `wait` - Espera la finalización de un proceso.
 
-### Expresiones matemáticas
-- `let` - Evalúa expresiones aritméticas.
+	#### Expresiones matemáticas
+	- `let` - Evalúa expresiones aritméticas.
 
-### Scripting
-- `.` - Ejecuta un script en el contexto actual.
-- `eval` - Evalúa y ejecuta una cadena de comandos.
-- `exec` - Reemplaza el shell actual con un comando.
-- `source` - Ejecuta un script en el contexto actual.
-- `test` - Evalúa expresiones condicionales.
+	#### Scripting
+	- `.` - Ejecuta un script en el contexto actual.
+	- `eval` - Evalúa y ejecuta una cadena de comandos.
+	- `exec` - Reemplaza el shell actual con un comando.
+	- `source` - Ejecuta un script en el contexto actual.
+	- `test` - Evalúa expresiones condicionales.
 
-### Shell
-- `banner` - Muestra el banner de 42sh.
-- `builtin` - Muestra información sobre comandos internos.
-- `command` - Ejecuta un comando sin aplicar alias o funciones.
-- `echo` - Imprime texto en la salida estándar.
-- `enable` - Activa o desactiva builtins.
-- `exit` - Cierra la sesión del shell.
-- `help` - Muestra ayuda sobre 42sh.
-- `type` - Indica cómo se interpretará un comando.
+	#### Shell
+	- `banner` - Muestra el banner de 42sh.
+	- `builtin` - Muestra información sobre comandos internos.
+	- `command` - Ejecuta un comando sin aplicar alias o funciones.
+	- `echo` - Imprime texto en la salida estándar.
+	- `enable` - Activa o desactiva builtins.
+	- `exit` - Cierra la sesión del shell.
+	- `help` - Muestra ayuda sobre 42sh.
+	- `type` - Indica cómo se interpretará un comando.
 
-## Globbing
+### Globbing
 
 El shell implementa globbing para la expansión de patrones en nombres de archivos y directorios. Se han integrado los siguientes patrones:
 
@@ -101,7 +100,7 @@ El shell implementa globbing para la expansión de patrones en nombres de archiv
 - `**` - Coincide de manera recursiva con cualquier número de subdirectorios.
 - `**/` - Coincide con cualquier número de subdirectorios, sin incluir archivos.
 
-## Redirecciones y Pipes
+### Redirecciones y Pipes
 
 Se soportan las siguientes redirecciones:
 
@@ -115,7 +114,7 @@ Se soportan las siguientes redirecciones:
 - `|`   - Conecta la salida de un comando con la entrada de otro.
 - `|&`  - Conecta tanto la salida estándar como la de error con la entrada de otro comando.
 
-## Scripting
+### Scripting
 
 42sh permite la ejecución de scripts con estructuras de control y operadores lógicos. Ejemplo de script:
 
@@ -135,7 +134,7 @@ for i in {1..5}; do
 done
 ```
 
-## Instalación y Uso
+## 🔧 Instalación
 
 Para compilar el shell:
 

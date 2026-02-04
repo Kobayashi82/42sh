@@ -20,14 +20,13 @@
 
 ### <span style="color:yellow;">**🚨 THIS README IS A TEMPLATE AND DOES NOT REFLECT THE CURRENT PROJECT STATUS 🚨**</span>
 
-## Description
 `42sh` is a custom implementation of a POSIX-compliant Unix shell.
 
 Designed as an educational project, this shell provides a powerful interface for command execution, scripting, and process management, with command-line editing support in `readline` and `vi` modes.
 
 In addition, advanced features have been implemented such as globbing, redirections, job control, and script execution.
 
-## Features
+## ✨ Features
 
 - `Custom readline`: Built from scratch with history, search, autocomplete, and real-time editing.
 - `Editing modes`: Support for **emacs** and **vi** modes for efficient navigation and editing.
@@ -39,59 +38,59 @@ In addition, advanced features have been implemented such as globbing, redirecti
 - `Signals`: Proper handling of all signals.
 - `Variables`: Support for shell and environment variables.
 
-## Implemented Builtins
+### Implemented Builtins
 
 42sh includes the following builtins:
 
-### Alias
-- `alias` - Defines command aliases.
-- `unalias` - Removes defined aliases.
+	#### Alias
+	- `alias` - Defines command aliases.
+	- `unalias` - Removes defined aliases.
 
-### Environment variables
-- `declare` - Declares variables and attributes.
-- `export` - Defines environment variables.
-- `readonly` - Marks variables as read-only.
-- `set` - Displays or defines shell options.
-- `shopt` - Configures shell options.
-- `unset` - Removes environment variables.
+	#### Environment variables
+	- `declare` - Declares variables and attributes.
+	- `export` - Defines environment variables.
+	- `readonly` - Marks variables as read-only.
+	- `set` - Displays or defines shell options.
+	- `shopt` - Configures shell options.
+	- `unset` - Removes environment variables.
 
-### Filesystem
-- `cd` - Changes the current directory.
-- `hash` - Maintains a command cache.
-- `pwd` - Prints the current working directory.
+	#### Filesystem
+	- `cd` - Changes the current directory.
+	- `hash` - Maintains a command cache.
+	- `pwd` - Prints the current working directory.
 
-### History
-- `fc` - Edits and executes previous commands.
-- `history` - Shows the command history.
+	#### History
+	- `fc` - Edits and executes previous commands.
+	- `history` - Shows the command history.
 
-### Job control
-- `bg` - Resumes a job in the background.
-- `fg` - Brings a job to the foreground.
-- `jobs` - Lists running jobs.
-- `kill` - Sends signals to processes.
-- `wait` - Waits for a process to finish.
+	#### Job control
+	- `bg` - Resumes a job in the background.
+	- `fg` - Brings a job to the foreground.
+	- `jobs` - Lists running jobs.
+	- `kill` - Sends signals to processes.
+	- `wait` - Waits for a process to finish.
 
-### Arithmetic expressions
-- `let` - Evaluates arithmetic expressions.
+	#### Arithmetic expressions
+	- `let` - Evaluates arithmetic expressions.
 
-### Scripting
-- `.` - Executes a script in the current context.
-- `eval` - Evaluates and executes a command string.
-- `exec` - Replaces the current shell with a command.
-- `source` - Executes a script in the current context.
-- `test` - Evaluates conditional expressions.
+	#### Scripting
+	- `.` - Executes a script in the current context.
+	- `eval` - Evaluates and executes a command string.
+	- `exec` - Replaces the current shell with a command.
+	- `source` - Executes a script in the current context.
+	- `test` - Evaluates conditional expressions.
 
-### Shell
-- `banner` - Displays the 42sh banner.
-- `builtin` - Shows information about built-in commands.
-- `command` - Executes a command without applying aliases or functions.
-- `echo` - Prints text to standard output.
-- `enable` - Enables or disables builtins.
-- `exit` - Closes the shell session.
-- `help` - Shows help about 42sh.
-- `type` - Indicates how a command will be interpreted.
+	#### Shell
+	- `banner` - Displays the 42sh banner.
+	- `builtin` - Shows information about built-in commands.
+	- `command` - Executes a command without applying aliases or functions.
+	- `echo` - Prints text to standard output.
+	- `enable` - Enables or disables builtins.
+	- `exit` - Closes the shell session.
+	- `help` - Shows help about 42sh.
+	- `type` - Indicates how a command will be interpreted.
 
-## Globbing
+### Globbing
 
 The shell implements globbing for pattern expansion in file and directory names. The following patterns are supported:
 
@@ -101,7 +100,7 @@ The shell implements globbing for pattern expansion in file and directory names.
 - `**` - Recursively matches any number of subdirectories.
 - `**/` - Matches any number of subdirectories, excluding files.
 
-## Redirections and Pipes
+### Redirections and Pipes
 
 The following redirections are supported:
 
@@ -115,7 +114,7 @@ The following redirections are supported:
 - `|`   - Connects the output of one command to the input of another.
 - `|&`  - Connects both standard output and error to the input of another.
 
-## Scripting
+### Scripting
 
 42sh supports script execution with control structures and logical operators. Example script:
 
@@ -135,7 +134,7 @@ for i in {1..5}; do
 done
 ```
 
-## Installation and Usage
+## 🔧 Installation
 
 To build the shell:
 
