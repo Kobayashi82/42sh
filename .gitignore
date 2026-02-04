@@ -15,6 +15,7 @@ doc/42sh\ 5.0.pdf
 !leaks
 !.gitignore
 !README.md
+!README_es.md
 !TODO.md
 !LICENSE
 !42sh.png
