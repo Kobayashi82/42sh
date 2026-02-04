@@ -38,15 +38,15 @@ In addition, advanced features have been implemented such as globbing, redirecti
 - `Signals`: Proper handling of all signals.
 - `Variables`: Support for shell and environment variables.
 
-### Implemented Builtins
+## Builtins
 
 42sh includes the following builtins:
 
-#### Alias
+### Alias
 - `alias` - Defines command aliases.
 - `unalias` - Removes defined aliases.
 
-#### Environment variables
+### Environment variables
 - `declare` - Declares variables and attributes.
 - `export` - Defines environment variables.
 - `readonly` - Marks variables as read-only.
@@ -54,33 +54,33 @@ In addition, advanced features have been implemented such as globbing, redirecti
 - `shopt` - Configures shell options.
 - `unset` - Removes environment variables.
 
-#### Filesystem
+### Filesystem
 - `cd` - Changes the current directory.
 - `hash` - Maintains a command cache.
 - `pwd` - Prints the current working directory.
 
-#### History
+### History
 - `fc` - Edits and executes previous commands.
 - `history` - Shows the command history.
 
-#### Job control
+### Job control
 - `bg` - Resumes a job in the background.
 - `fg` - Brings a job to the foreground.
 - `jobs` - Lists running jobs.
 - `kill` - Sends signals to processes.
 - `wait` - Waits for a process to finish.
 
-#### Arithmetic expressions
+### Arithmetic expressions
 - `let` - Evaluates arithmetic expressions.
 
-#### Scripting
+### Scripting
 - `.` - Executes a script in the current context.
 - `eval` - Evaluates and executes a command string.
 - `exec` - Replaces the current shell with a command.
 - `source` - Executes a script in the current context.
 - `test` - Evaluates conditional expressions.
 
-#### Shell
+### Shell
 - `banner` - Displays the 42sh banner.
 - `builtin` - Shows information about built-in commands.
 - `command` - Executes a command without applying aliases or functions.
@@ -90,7 +90,7 @@ In addition, advanced features have been implemented such as globbing, redirecti
 - `help` - Shows help about 42sh.
 - `type` - Indicates how a command will be interpreted.
 
-### Globbing
+## Globbing
 
 The shell implements globbing for pattern expansion in file and directory names. The following patterns are supported:
 
@@ -100,7 +100,7 @@ The shell implements globbing for pattern expansion in file and directory names.
 - `**` - Recursively matches any number of subdirectories.
 - `**/` - Matches any number of subdirectories, excluding files.
 
-### Redirections and Pipes
+## Redirections and Pipes
 
 The following redirections are supported:
 
@@ -114,7 +114,7 @@ The following redirections are supported:
 - `|`   - Connects the output of one command to the input of another.
 - `|&`  - Connects both standard output and error to the input of another.
 
-### Scripting
+## Scripting
 
 42sh supports script execution with control structures and logical operators. Example script:
 

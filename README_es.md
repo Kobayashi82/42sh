@@ -38,15 +38,15 @@ Además, se han implementado características avanzadas como globbing, redirecci
 - `Señales`: Manejo adecuado de todas las señales.
 - `Variables`: Soporte para variables de shell y de entorno.
 
-### Builtins Implementados
+## Builtins
 
 42sh incluye los siguientes builtins:
 
-#### Alias
+### Alias
 - `alias` - Define alias para comandos.
 - `unalias` - Elimina alias definidos.
 
-#### Variables de entorno
+### Variables de entorno
 - `declare` - Declara variables y atributos.
 - `export` - Define variables de entorno.
 - `readonly` - Marca variables como de solo lectura.
@@ -54,33 +54,33 @@ Además, se han implementado características avanzadas como globbing, redirecci
 - `shopt` - Configura opciones del shell.
 - `unset` - Elimina variables de entorno.
 
-#### Sistema de archivos
+### Sistema de archivos
 - `cd` - Cambia el directorio actual.
 - `hash` - Mantiene un caché de comandos.
 - `pwd` - Muestra el directorio de trabajo actual.
 
-#### Historial
+### Historial
 - `fc` - Edita y ejecuta comandos previos.
 - `history` - Muestra el historial de comandos.
 
-#### Gestión de trabajos
+### Gestión de trabajos
 - `bg` - Reanuda un trabajo en segundo plano.
 - `fg` - Trae un trabajo al primer plano.
 - `jobs` - Lista los trabajos en ejecución.
 - `kill` - Envía señales a procesos.
 - `wait` - Espera la finalización de un proceso.
 
-#### Expresiones matemáticas
+### Expresiones matemáticas
 - `let` - Evalúa expresiones aritméticas.
 
-#### Scripting
+### Scripting
 - `.` - Ejecuta un script en el contexto actual.
 - `eval` - Evalúa y ejecuta una cadena de comandos.
 - `exec` - Reemplaza el shell actual con un comando.
 - `source` - Ejecuta un script en el contexto actual.
 - `test` - Evalúa expresiones condicionales.
 
-#### Shell
+### Shell
 - `banner` - Muestra el banner de 42sh.
 - `builtin` - Muestra información sobre comandos internos.
 - `command` - Ejecuta un comando sin aplicar alias o funciones.
@@ -90,7 +90,7 @@ Además, se han implementado características avanzadas como globbing, redirecci
 - `help` - Muestra ayuda sobre 42sh.
 - `type` - Indica cómo se interpretará un comando.
 
-### Globbing
+## Globbing
 
 El shell implementa globbing para la expansión de patrones en nombres de archivos y directorios. Se han integrado los siguientes patrones:
 
@@ -100,7 +100,7 @@ El shell implementa globbing para la expansión de patrones en nombres de archiv
 - `**` - Coincide de manera recursiva con cualquier número de subdirectorios.
 - `**/` - Coincide con cualquier número de subdirectorios, sin incluir archivos.
 
-### Redirecciones y Pipes
+## Redirecciones y Pipes
 
 Se soportan las siguientes redirecciones:
 
@@ -114,7 +114,7 @@ Se soportan las siguientes redirecciones:
 - `|`   - Conecta la salida de un comando con la entrada de otro.
 - `|&`  - Conecta tanto la salida estándar como la de error con la entrada de otro comando.
 
-### Scripting
+## Scripting
 
 42sh permite la ejecución de scripts con estructuras de control y operadores lógicos. Ejemplo de script:
 
