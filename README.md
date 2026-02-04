@@ -42,53 +42,53 @@ In addition, advanced features have been implemented such as globbing, redirecti
 
 42sh includes the following builtins:
 
-	#### Alias
-	- `alias` - Defines command aliases.
-	- `unalias` - Removes defined aliases.
+#### Alias
+- `alias` - Defines command aliases.
+- `unalias` - Removes defined aliases.
 
-	#### Environment variables
-	- `declare` - Declares variables and attributes.
-	- `export` - Defines environment variables.
-	- `readonly` - Marks variables as read-only.
-	- `set` - Displays or defines shell options.
-	- `shopt` - Configures shell options.
-	- `unset` - Removes environment variables.
+#### Environment variables
+- `declare` - Declares variables and attributes.
+- `export` - Defines environment variables.
+- `readonly` - Marks variables as read-only.
+- `set` - Displays or defines shell options.
+- `shopt` - Configures shell options.
+- `unset` - Removes environment variables.
 
-	#### Filesystem
-	- `cd` - Changes the current directory.
-	- `hash` - Maintains a command cache.
-	- `pwd` - Prints the current working directory.
+#### Filesystem
+- `cd` - Changes the current directory.
+- `hash` - Maintains a command cache.
+- `pwd` - Prints the current working directory.
 
-	#### History
-	- `fc` - Edits and executes previous commands.
-	- `history` - Shows the command history.
+#### History
+- `fc` - Edits and executes previous commands.
+- `history` - Shows the command history.
 
-	#### Job control
-	- `bg` - Resumes a job in the background.
-	- `fg` - Brings a job to the foreground.
-	- `jobs` - Lists running jobs.
-	- `kill` - Sends signals to processes.
-	- `wait` - Waits for a process to finish.
+#### Job control
+- `bg` - Resumes a job in the background.
+- `fg` - Brings a job to the foreground.
+- `jobs` - Lists running jobs.
+- `kill` - Sends signals to processes.
+- `wait` - Waits for a process to finish.
 
-	#### Arithmetic expressions
-	- `let` - Evaluates arithmetic expressions.
+#### Arithmetic expressions
+- `let` - Evaluates arithmetic expressions.
 
-	#### Scripting
-	- `.` - Executes a script in the current context.
-	- `eval` - Evaluates and executes a command string.
-	- `exec` - Replaces the current shell with a command.
-	- `source` - Executes a script in the current context.
-	- `test` - Evaluates conditional expressions.
+#### Scripting
+- `.` - Executes a script in the current context.
+- `eval` - Evaluates and executes a command string.
+- `exec` - Replaces the current shell with a command.
+- `source` - Executes a script in the current context.
+- `test` - Evaluates conditional expressions.
 
-	#### Shell
-	- `banner` - Displays the 42sh banner.
-	- `builtin` - Shows information about built-in commands.
-	- `command` - Executes a command without applying aliases or functions.
-	- `echo` - Prints text to standard output.
-	- `enable` - Enables or disables builtins.
-	- `exit` - Closes the shell session.
-	- `help` - Shows help about 42sh.
-	- `type` - Indicates how a command will be interpreted.
+#### Shell
+- `banner` - Displays the 42sh banner.
+- `builtin` - Shows information about built-in commands.
+- `command` - Executes a command without applying aliases or functions.
+- `echo` - Prints text to standard output.
+- `enable` - Enables or disables builtins.
+- `exit` - Closes the shell session.
+- `help` - Shows help about 42sh.
+- `type` - Indicates how a command will be interpreted.
 
 ### Globbing
 
