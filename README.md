@@ -167,3 +167,7 @@ Este proyecto está licenciado bajo la WTFPL – [Do What the Fuck You Want to P
 *"It's not magic... just pipes and processes"*
 
 </div>
+
+<div align="center">
+  <img src="/doc/42sh.jpg">
+</div>
