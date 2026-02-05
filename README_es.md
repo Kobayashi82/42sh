@@ -1,6 +1,7 @@
 
 <div align="center">
 
+![WIP](https://img.shields.io/badge/work%20in%20progress-yellow?style=for-the-badge)
 ![System & Kernel](https://img.shields.io/badge/System-brown?style=for-the-badge)
 ![Unix Shell](https://img.shields.io/badge/Unix-Shell-blue?style=for-the-badge)
 ![POSIX Compliance](https://img.shields.io/badge/Compliance-POSIX-green?style=for-the-badge)
