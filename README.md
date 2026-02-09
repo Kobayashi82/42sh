@@ -12,7 +12,7 @@
 </div>
 
 <div align="center">
-  <img src="/42sh.png">
+  <img src="/W_42sh.png">
 </div>
 
 # 42sh
