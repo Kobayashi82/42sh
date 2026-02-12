@@ -12,7 +12,7 @@
 </div>
 
 <div align="center">
-  <img src="/W_42sh.png">
+  <img src="/images/W_42sh.jpg">
 </div>
 
 # 42sh
@@ -172,5 +172,5 @@ This project is licensed under the WTFPL – [Do What the Fuck You Want to Publi
 </div>
 
 <div align="center">
-  <img src="/doc/42sh.jpg">
+  <img src="/images/42sh_program.jpg">
 </div>

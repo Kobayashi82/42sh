@@ -1,15 +1,22 @@
 *
 !.vscode
 !.vscode/**
+
 !doc
 !doc/**
 doc/borrar/
 doc/42sh\ 3.1.pdf
 doc/42sh\ 5.0.pdf
+
+!images
+!images/**
+
 !inc
 !inc/**
+
 !src
 !src/**
+
 !Makefile
 !.valgrind.supp
 !leaks
@@ -18,5 +25,3 @@ doc/42sh\ 5.0.pdf
 !README_es.md
 !TODO.md
 !LICENSE
-!42sh.png
-!W_42sh.png
