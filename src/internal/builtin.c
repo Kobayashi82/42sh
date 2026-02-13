@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/22 12:49:17 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 13:58:19 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:38:09 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,7 @@
 		int builtin_isactive(const char *name) {
 			if (!name) return (0);
 
-			unsigned int index = hash_index(name);
-			t_builtin *builtin = shell.builtin[index];
-
+			t_builtin *builtin = shell.builtin[hash_index(name)];
 			while (builtin) {
 				if (!strcmp(builtin->name, name)) return (!builtin->disabled);
 				builtin = builtin->next;

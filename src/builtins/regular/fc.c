@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/05 21:00:36 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/27 14:05:16 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:41:34 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -362,7 +362,7 @@
 				free_argv_original(result);
 				array_free(env);
 				free_options(result);
-				exit_error(NOTHING, 1, editor, NULL, EE_FREE_VAL1, EE_EXIT);
+				exit_error(E_EXECVE_FAIL, 1, editor, NULL, EE_FREE_VAL1, EE_EXIT);
 			}
 			if (pid > 0) {	// Parent
 				int status;

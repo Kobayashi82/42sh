@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/16 12:12:32 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/27 22:21:11 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:59:12 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,55 +259,36 @@
 		if (find_long_option(result, "help"))		return (free_options(result), bt_type_help(HELP_NORMAL, 0));
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
-		(void) check_alias;
-		(void) check_builtin;
-		(void) check_function;
-		(void) check_command;
 
 		int ret = 0;
 
-		return (free_options(result), ret);
+		print(STDOUT_FILENO, NULL, P_RESET);
+		print(STDERR_FILENO, NULL, P_RESET);
 
-		// int is_command = 0;
-		// if (args && args->extra == 1) { is_command = 1; args->extra = 0; }
-		// t_opt *opts = parse_options_old(args, "afptP", '-', 0);
+		for (int i = 0; i < result->argc; ++i) {
+				int tmp_result = 0;
+				tmp_result += check_alias(result, result->argv[i]);
+				tmp_result += check_builtin(result, result->argv[i]);
+				tmp_result += check_function(result, result->argv[i]);
+				tmp_result += check_command(result, result->argv[i]);
+				if (is_command) {
+					if (!tmp_result && result == 0) result = 1;
+					if (tmp_result) result = 2;
+				} else if (!tmp_result) result = 1;
 
-		// if (*opts->invalid) {
-		// 	invalid_option("type", opts->invalid, "[-afptP] name [name ...]");
-		// 	return (free(opts), 1);
-		// }
-
-		// if (strchr(opts->valid, '?')) return (free(opts), print_help());
-		// if (strchr(opts->valid, '#')) return (free(opts), print_version("type", "1.0"));
-
-		// print(STDOUT_FILENO, NULL, P_RESET);
-		// print(STDERR_FILENO, NULL, P_RESET);
-
-		// int result = 0;
-		// while (opts->args) {
-		// 	if (opts->args->value) {
-		// 		int tmp_result = 0;
-		// 		tmp_result += check_alias(opts->args->value, opts->valid);
-		// 		tmp_result += check_builtin(opts->args->value, opts->valid);
-		// 		tmp_result += check_function(opts->args->value, opts->valid);
-		// 		tmp_result += check_command(opts->args->value, opts->valid, is_command);
-		// 		if (is_command) {
-		// 			if (!tmp_result && result == 0) result = 1;
-		// 			if (tmp_result) result = 2;
-		// 		} else if (!tmp_result) result = 1;
-
-		// 		if (!tmp_result && strchr(opts->valid, 'a'))
-		// 			print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), P_FREE_JOIN);
-		// 	}
-		// 	opts->args = opts->args->next;
-		// }
+				if (!tmp_result && strchr(opts->valid, 'a'))
+					print(STDERR_FILENO, ft_strjoin_sep("type: ", opts->args->value, ": not found\n", 0), P_FREE_JOIN);
+			}
+		}
 		
 
-		// print(STDOUT_FILENO, NULL, P_PRINT);
-		// print(STDERR_FILENO, NULL, P_PRINT);
+		print(STDOUT_FILENO, NULL, P_PRINT);
+		print(STDERR_FILENO, NULL, P_PRINT);
 
-		// if (result == 2) result = 0;
-		// return (free(opts), result);
+		if (result == 2) result = 0;
+
+		return (free_options(result), ret);
+
 	}
 
 #pragma endregion

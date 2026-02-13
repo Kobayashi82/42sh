@@ -6,15 +6,18 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/23 14:04:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/27 22:21:21 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:38:28 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma region "Includes"
 
+	#include "terminal/terminal.h"
 	#include "internal/shell.h"
 	#include "utils/utils.h"
 	#include "utils/getopt.h"
+
+	#include <sys/wait.h>
 
 #pragma endregion
 
@@ -107,8 +110,8 @@
 
 			t_alias *alias = alias_get(arg);
 			if (alias) {
-				print(STDOUT_FILENO, alias->name, P_JOIN);
-				print(STDOUT_FILENO, ft_strjoin_sep(" is aliased to `", alias->value, "'\n", J_FREE_NONE), P_FREE_JOIN);
+				print(STDOUT_FILENO, ft_strjoin_sep("alias ", alias->name, "='", J_FREE_NONE), P_FREE_RESET);
+				print(STDOUT_FILENO, ft_strjoin(alias->value, "'\n",             J_FREE_NONE), P_FREE_PRINT);
 				return (1);
 			}
 
@@ -120,13 +123,10 @@
 	#pragma region "Builtin"
 
 		static int check_builtin(char *arg) {
-			if (!arg) return (0);
+			if (!arg || alias_get(arg)) return (0);
 
-			if (alias_get(arg)) return (0);
-
-			t_builtin *builtin = builtin_find(arg);
-			if (builtin && !builtin->disabled) {
-				print(STDOUT_FILENO, ft_strjoin(builtin->name, "\n", J_FREE_NONE), P_FREE_JOIN);
+			if (builtin_isactive(arg)) {
+				print(STDOUT_FILENO, ft_strjoin(arg, "\n", J_FREE_NONE), P_FREE_JOIN);
 				return (1);
 			}
 
@@ -138,9 +138,7 @@
 	#pragma region "Function"
 
 		static int check_function(char *arg) {
-			if (!arg) return (0);
-			
-			if (alias_get(arg) || builtin_isactive(arg)) return (0);
+			if (!arg || alias_get(arg) || builtin_isactive(arg)) return (0);
 
 			// t_builtin *builtin = builtin_find(arg);
 			// if (builtin && !builtin->disabled) {
@@ -156,11 +154,9 @@
 	#pragma region "Command"
 
 		static int check_command(char *arg, int has_p) {
-			if (!arg) return (0);
+			if (!arg || alias_get(arg) || builtin_isactive(arg)) return (0);
 
-			if (alias_get(arg) || builtin_isactive(arg)) return (0);
-
-			char *path = path_find_first(arg, (has_p) ? PATH : NULL);
+			char *path = path_find_first(arg, (has_p) ? "/bin:/usr/bin:/sbin:/usr/sbin" : NULL);
 			if (path) {
 				print(STDOUT_FILENO, ft_strjoin(path, "\n", J_FREE_NONE), P_FREE_JOIN);
 				return (free(path), 1);
@@ -193,14 +189,27 @@
 
 		if (!result->argc) return (free_options(result), 0);
 
+		// -V
 		if (has_option(result, 'V', 0)) {
-			// ret = bt_type(result->argc, result->argv);
+			char **new_argv = malloc((result->argc + 2) * sizeof(char *));
+			if(!new_argv) {
+				exit_error(E_NO_MEMORY, 1, "command", NULL, EE_FREE_NONE, EE_RETURN);
+				return (free_options(result), 1);
+			}
+
+			new_argv[0] = "command";
+			for(int i = 0; i < result->argc; ++i)
+				new_argv[i + 1] = result->argv[i];
+			new_argv[result->argc + 1] = NULL;
+
+			ret = bt_type(result->argc + 1, new_argv);
+			free(new_argv);
 			return (free_options(result), ret);
 		}
 
+		// -v
 		if (has_option(result, 'v', 0)) {
 			print(STDOUT_FILENO, NULL, P_RESET);
-			print(STDERR_FILENO, NULL, P_RESET);
 
 			for (int i = 0; i < result->argc; ++i) {
 				int tmp_ret = 0;
@@ -208,50 +217,66 @@
 				tmp_ret += check_builtin(result->argv[i]);
 				tmp_ret += check_function(result->argv[i]);
 				tmp_ret += check_command(result->argv[i], has_option(result, 'p', 0));
-				if (!tmp_ret && ret == 0) ret = 1;
+				if (!tmp_ret && !ret) ret = 1;
 				if (tmp_ret) ret = 2;
 			}
 
 			print(STDOUT_FILENO, NULL, P_PRINT);
-			//print(STDERR_FILENO, "\n", P_PRINT);
 
 			if (ret == 2) ret = 0;
 			return (free_options(result), ret);
 		}
 
-		t_alias *alias_cmd = alias_get(result->argv[0]);
-		t_builtin *builtin_cmd = builtin_find(result->argv[0]);
-		if (alias_cmd && alias_cmd->value) {
-			if (builtin_find(alias_cmd->value)) {
-				// t_arg *cmd = test_create_args(alias_cmd->value);
-				// builtin_exec(cmd);
-				// args_clear(&cmd);	// quitar
-			} else {
-				// t_arg *cmd = test_create_args(alias_cmd->value);
-				// char *path = path_find_first(cmd->value, (has_option(result, 'p')) ? PATH : NULL);
-				// if (path) {
-					// printf("Se ejecuta el comando '%s' con la ruta '%s'\n", cmd->value, path);
-					// args_clear(&cmd);
-					// free(path);
-					// return (free_options(result), 1);
-				// }
-				// args_clear(&cmd);	// quitar
-			}
-		} else if (builtin_cmd) {
-			// builtin_exec(opts->args);
+		if (builtin_isactive(result->argv[0])) {
+			builtin_exec(result->argc, result->argv);
 		} else if (check_function(result->argv[0])) {
 			printf("Se ejecuta la función '%s()'\n", result->argv[0]);
 			//exec_func();
 		} else {
-			char *path = path_find_first(result->argv[0], (has_option(result, 'p', 0)) ? PATH : NULL);
-			if (path) {
-				printf("Se ejecuta el comando '%s' con la ruta '%s'\n", result->argv[0], path);
-				free(path);
-				return (free_options(result), 1);
+			if (!shell.is_child) {
+				pid_t pid = fork();
+				if (pid < 0) {	// Error
+					exit_error(E_FORK_FAIL, 1, "command", NULL, EE_FREE_NONE, EE_RETURN);
+					return (free_options(result), 1);
+				}
+				if (pid == 0) {	// Child
+					close(terminal.bk_stdin);
+					close(terminal.bk_stdout);
+					close(terminal.bk_stderr);
+					char *cmd = path_find_first(result->argv[0], (has_option(result, 'p', 0)) ? "/bin:/usr/bin:/sbin:/usr/sbin" : NULL);
+					if (!cmd) {
+						// not found
+					}
+					char **env = variable_to_array(shell.env);
+					execve(cmd, result->argv, env);
+					free_argv_original(result);
+					array_free(env);
+					free_options(result);
+					exit_error(E_EXECVE_FAIL, 1, cmd, NULL, EE_FREE_VAL1, EE_EXIT);
+				}
+				if (pid > 0) {	// Parent
+					int status;
+					waitpid(pid, &status, 0);
+					if		(WIFEXITED(status))		status = WEXITSTATUS(status);
+					else if	(WIFSIGNALED(status))	status = 128 + WTERMSIG(status);
+
+					return (free_options(result), status);
+				}
+			} else {
+				char *cmd = path_find_first(result->argv[0], (has_option(result, 'p', 0)) ? "/bin:/usr/bin:/sbin:/usr/sbin" : NULL);
+				if (!cmd) {
+					// not found
+				}
+				char **env = variable_to_array(shell.env);
+				execve(cmd, result->argv, env);
+				free_argv_original(result);
+				array_free(env);
+				free_options(result);
+				exit_error(E_EXECVE_FAIL, 1, cmd, NULL, EE_FREE_VAL1, EE_EXIT);
 			}
 		}
 
-		return (free_options(result), -1);	// porque -1 ???
+		return (free_options(result), ret);
 	}
 
 #pragma endregion

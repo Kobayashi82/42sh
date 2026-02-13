@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:53:43 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/27 22:08:01 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 12:42:20 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@
 		typedef struct s_ast t_ast;
 		typedef struct s_shell {
 			t_mode			mode;					// Execution mode (MD_INTERACTIVE, SRC_NON_INTERACTIVE, MD_STDIN, MD_ARGUMENT, MD_FILE)
+			int				is_child;				// 
 			int				is_eval;				// 
 			int				pid;					// Process ID of the current shell instance
 			int				parent_pid;				// Parent process ID (PPID)

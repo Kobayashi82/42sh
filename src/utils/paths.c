@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/17 15:37:42 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/23 21:36:17 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/01/29 13:39:59 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -239,9 +239,7 @@
 			if (!cmd) return (NULL);
 
 			if (strchr(cmd, '/')) {
-				char *fullpath = realpath(cmd, NULL);
-				if (access(fullpath, F_OK) != -1) return (fullpath);
-				return (free(fullpath), NULL);
+				return ((access(cmd, F_OK) != -1) ? ft_strdup(cmd) : NULL);
 			}
 
 			if (!paths && !(paths = variable_scalar_get(shell.env, "PATH"))) return (NULL);
@@ -251,15 +249,8 @@
 
 			char *final_path = NULL;
 			for (int i = 0; search_paths[i]; ++i) {
-
 				char *fullpath = ft_strjoin_sep(search_paths[i], "/", cmd, J_FREE_NONE);
 				if (!fullpath) break;
-
-				char *resolved_path = realpath(fullpath, NULL);
-				free(fullpath);
-				if (!resolved_path) continue;;
-				fullpath = resolved_path;
-
 				if (access(fullpath, F_OK) != -1) { final_path = fullpath; break; }
 				free(fullpath);
 			}
