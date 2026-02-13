@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/04 14:07:05 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/26 15:44:47 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/02/01 20:40:14 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -372,13 +372,6 @@
 	}
 
 	int terminal_initialize() {
-		static int initialize = 0;
-		// if (initialize) {
-		// 	terminal_update_limits();
-		// 	return (0);
-		// }
-		initialize = 1;
-
 		char *termtype = getenv("TERM");
 		if (!termtype) { termtype = "dumb"; shell.options.emacs = 0; shell.options.vi = 0; }
 

@@ -1,19 +1,27 @@
 *
 !.vscode
 !.vscode/**
+
 !doc
 !doc/**
 doc/borrar/
 doc/42sh\ 3.1.pdf
 doc/42sh\ 5.0.pdf
+
+!images
+!images/**
+
 !inc
 !inc/**
+
 !src
 !src/**
+
 !Makefile
 !.valgrind.supp
 !leaks
 !.gitignore
 !README.md
+!README_es.md
 !TODO.md
 !LICENSE

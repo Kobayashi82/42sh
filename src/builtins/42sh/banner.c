@@ -6,7 +6,7 @@
 /*   By: vzurera- <vzurera-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/01 14:08:19 by vzurera-          #+#    #+#             */
-/*   Updated: 2026/01/24 16:46:14 by vzurera-         ###   ########.fr       */
+/*   Updated: 2026/02/01 20:45:31 by vzurera-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,19 +104,19 @@
 		if (find_long_option(result, "version"))	return (free_options(result), version());
 
 		print(STDOUT_FILENO, RED600"\n\t        ,--,                                        \n",   P_RESET);
-		print(STDOUT_FILENO,         "\t      ,--.'|      ,----,  "Y"           ,---,     \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n",    P_JOIN);
-		print(STDOUT_FILENO,         "\t,---.'|  : '  ,----,'    |"Y"         |  |  :     \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t;   : |  | ;  |    :  .  ;"Y".--.--.  :  :  :     \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t|   | : _' |  ;    |.'  /"Y"/  /    ' :  |  |,--. \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t:   : |.'  |  `----'/  ;"Y"|  :  /`./ |  :  '   | \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t|   ' '  ; :    /  ;  / "Y"|  :  ;_   |  |   /' : \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t\\   \\  .'. |   ;  /  /-,"Y" \\  \\    `.'  :  | | | \n", P_JOIN);
-		print(STDOUT_FILENO,         "\t `---`:  | '  /  /  /.`|"Y"  `----.   \\  |  ' | : \n",    P_JOIN);
-		print(STDOUT_FILENO,         "\t      '  ; |./__;      :"Y" /  /`--'  /  :  :_:,' \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t      |  : ;|   :    .' "Y"'--'.     /|  | ,'     \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t      '  ,/ ;   | .'     "Y" `--'---' `--''       \n",     P_JOIN);
-		print(STDOUT_FILENO,         "\t      '--'  `---'                                \n\n"NC,  P_PRINT);
+		print(STDOUT_FILENO, RED600  "\t      ,--.'|      ,----,  "Y"           ,---,     \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t   ,--,  | :    .'   .' \\"Y"          ,--.' |     \n",    P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t,---.'|  : '  ,----,'    |"Y"         |  |  :     \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t;   : |  | ;  |    :  .  ;"Y".--.--.  :  :  :     \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t|   | : _' |  ;    |.'  /"Y"/  /    ' :  |  |,--. \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t:   : |.'  |  `----'/  ;"Y"|  :  /`./ |  :  '   | \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t|   ' '  ; :    /  ;  / "Y"|  :  ;_   |  |   /' : \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t\\   \\  .'. |   ;  /  /-,"Y" \\  \\    `.'  :  | | | \n", P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t `---`:  | '  /  /  /.`|"Y"  `----.   \\  |  ' | : \n",    P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t      '  ; |./__;      :"Y" /  /`--'  /  :  :_:,' \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t      |  : ;|   :    .' "Y"'--'.     /|  | ,'     \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t      '  ,/ ;   | .'     "Y" `--'---' `--''       \n",     P_JOIN);
+		print(STDOUT_FILENO, RED600  "\t      '--'  `---'                                \n\n"NC,  P_PRINT);
 
 		return (free_options(result), 0);
 	}
