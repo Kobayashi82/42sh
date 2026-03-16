@@ -38,8 +38,8 @@
 			char				*name;
 			int					disabled;
 			int					special;
-			int         		(*execute)(int argc, char **argv);
-			int         		(*help)(int format, int no_print);
+			int					(*execute)(int argc, char **argv);
+			int					(*help)(int format, int no_print);
 			struct s_builtin	*next;
 		} t_builtin;
 
